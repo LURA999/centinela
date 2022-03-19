@@ -13,13 +13,10 @@ const appRoutes: Routes = [
     loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
     canActivate: [AuthGuard]
   },
-  {
-   console.log("wewewe")
-   ///////***** EDITE EL CODIGO */
-  },
+  
   {
     path: 'user3s',
-    loadChildren: () => import('./pages3/users/users.module').then(m => m.UsersModule),
+    loadChildren: () => import('./pages/users/users.module').then(m => m.UsersModule),
     canActivate: [AuthGuard]
   },
   {
@@ -41,11 +38,6 @@ const appRoutes: Routes = [
     path: 'about',
     loadChildren: () => import('./pages/about/about.module').then(m => m.AboutModule),
     canActivate: [AuthGuard]
-  },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
   },
   {
     path: '**',

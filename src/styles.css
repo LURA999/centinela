@@ -57,7 +57,7 @@ body {
 }
 
 .mat-table .mat-row:hover {
-  background-color: rgba(0, 0, 0, 0.075);
+  background-color: rgba(38, 15, 141, 0.075);
 }
 
 .mat-table td.mat-cell a:hover {
