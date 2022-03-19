@@ -21,7 +21,7 @@
 }
 
 .navbar-container {
-  background-color: #333 !important; 
+ 
 
   display: flex;
   flex-direction: column;
@@ -45,21 +45,26 @@
   flex:1
   
   
+  
 }
 
 .navbar-is-mobile .navbar-sidenav-container {
   /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
            `<body>` to be our scrolling element for mobile layouts. */
   flex: 1 0 auto;
+  
 }
 
 /*Set sidenav width*/
 
 mat-sidenav {
   min-width: 180px !important;
-  border-right: 1px solid #eee;
+  border-right:  #303030;
   box-shadow: 6px 0 6px rgba(0, 0, 0, .1);
-  /* background-color:rgb(63, 81, 181); */
+   background-color:#1f1f1f; 
+   
+   
+  
 }
 
 /* Set height of wrapper to stop content from moving up & down */
@@ -68,8 +73,9 @@ mat-sidenav {
   height: 5px;
 }
 
-a.mat-list-item.active {
-  background: rgba(0, 0, 0, .04);
+a.mat-list-item {
+  background: #1f1f1f;
+  box-shadow: none !important;
 }
 
 #push-bottom {
@@ -87,9 +93,38 @@ mat-toolbar{
   border: solid 1px #ddd;
   border-radius: 10px;
   box-shadow: none;
-  color: #333;
   display: block;
   text-decoration: none!important;
   
 }
+mat-sidenav-content{
+  background-color: #303030;
+  
+}
+mat-expansion-panel {
+background-color: #1f1f1f;
+
+}
+a.mat-list-item{
+  color: hsla(0,0%,100%,.7);
+}
+
+::-webkit-scrollbar-thumb
+{
+    background: rgba(0, 0, 0, 0.712) !important;
+}
+::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+  
+::-webkit-scrollbar-track {
+    background-color: #303030 !important;
+  }
+   ::ng-deep .mat-drawer-inner-container {
+   overflow:  visible !important;
+  } 
+  
+
+
 
