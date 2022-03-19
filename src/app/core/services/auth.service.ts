@@ -1,71 +1,63 @@
-import { Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { delay, map } from 'rxjs/operators';
-import * as jwt_decode from 'jwt-decode';
-import * as moment from 'moment';
-
-import { environment } from '../../../environments/environment';
-import { of, EMPTY } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class AuthenticationService {
+export class AuthService {
 
-    constructor(private http: HttpClient,
-        @Inject('LOCALSTORAGE') private localStorage: Storage) {
+  constructor() { }
+
+  public auth(payload:string){
+    sessionStorage.setItem('sesion',payload)
+  }
+
+  public validateSession(){
+    let sesion = sessionStorage.getItem('sesion') 
+  }
+
+  public crearSesion(token:string){
+    let payload = token
+    localStorage.setItem('sesion',payload)
+    return true;
+  }
+
+   validatTiempoToken(){
+    const d = new Date();
+    let payload = localStorage.getItem('sesion')
+    let info = this.parseJwt(payload!!)
+    if(Number(info.expire) <d.getTime() ){
+      return false
     }
+    return true
+  }
 
-    login(email: string, password: string) {
-        return of(true)
-            .pipe(delay(1000),
-                map((/*response*/) => {
-                    // set token property
-                    // const decodedToken = jwt_decode(response['token']);
+   getTipo(){
+    let payload = localStorage.getItem('sesion')
+    let info = this.parseJwt(payload!!)
+    return info.tipo;
+  }
 
-                    // store email and jwt token in local storage to keep user logged in between page refreshes
-                    this.localStorage.setItem('currentUser', JSON.stringify({
-                        token: 'aisdnaksjdn,axmnczm',
-                        isAdmin: true,
-                        email: 'john.doe@gmail.com',
-                        id: '12312323232',
-                        alias: 'john.doe@gmail.com'.split('@')[0],
-                        expiration: moment().add(1, 'days').toDate(),
-                        fullName: 'John Doe'
-                    }));
+   getCveRol(){
+    let payload = localStorage.getItem('sesion')
+    let info = this.parseJwt(payload!!)
+    return info.administrador
+  }
 
-                    return true;
-                }));
-    }
+   getCveId(){
+    let payload = localStorage.getItem('sesion')
+    let info = this.parseJwt(payload!!)
+    return info.departamento
+  }
 
-    logout(): void {
-        // clear token remove user from local storage to log user out
-        this.localStorage.removeItem('currentUser');
-    }
+  parseJwt(token:string) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
-    getCurrentUser(): any {
-        // TODO: Enable after implementation
-        // return JSON.parse(this.localStorage.getItem('currentUser'));
-        return {
-            token: 'aisdnaksjdn,axmnczm',
-            isAdmin: true,
-            email: 'john.doe@gmail.com',
-            id: '12312323232',
-            alias: 'john.doe@gmail.com'.split('@')[0],
-            expiration: moment().add(1, 'days').toDate(),
-            fullName: 'John Doe'
-        };
-    }
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 
-    passwordResetRequest(email: string) {
-        return of(true).pipe(delay(1000));
-    }
+    return JSON.parse(jsonPayload);
+  }
 
-    changePassword(email: string, currentPwd: string, newPwd: string) {
-        return of(true).pipe(delay(1000));
-    }
-
-    passwordReset(email: string, token: string, password: string, confirmPassword: string): any {
-        return of(true).pipe(delay(1000));
-    }
 }

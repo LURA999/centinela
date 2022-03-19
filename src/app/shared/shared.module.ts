@@ -10,7 +10,11 @@ import { ContentPlaceholderAnimationComponent } from './content-placeholder-anim
 import { LocalDatePipe } from './pipes/local-date.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
 import { LayoutComponent } from './layout/layout.component';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { ToastrModule } from "ngx-toastr";
 @NgModule({
   imports: [
     RouterModule,
@@ -36,7 +40,12 @@ import { LayoutComponent } from './layout/layout.component';
     ConfirmDialogComponent,
     ContentPlaceholderAnimationComponent,
     LocalDatePipe,
-    YesNoPipe
+    YesNoPipe,
+        MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    CustomMaterialModule
   ],
   entryComponents: [
     ConfirmDialogComponent

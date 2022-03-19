@@ -62,6 +62,24 @@
       <mat-nav-list>
         <h3 mat-subheader>Menu</h3>
 
+        <mat-expansion-panel hideToggle>
+          
+  <mat-expansion-panel-header>
+    
+    
+    <mat-panel-title>
+      
+      <p mat-line> Red</p>
+    </mat-panel-title>
+    
+  </mat-expansion-panel-header>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      Segmentos</a>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Segmentos</a>
+</mat-expansion-panel>
+
+
 <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
   <mat-icon mat-list-icon>
     dashboard
@@ -123,8 +141,7 @@
 <mat-sidenav-content class="sidenav-content">
 
   <div class="progress-bar-container">
-    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="spinnerService.visibility | async">
-    </mat-progress-bar>
+
     <!-- <mat-spinner class="spinner" [diameter]="50" *ngIf="showSpinner"></mat-spinner> -->
   </div>
 

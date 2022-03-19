@@ -1,57 +1,20 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginContactoComponent } from './auth/login-contacto/login-contacto.component';
+import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.component';
+import { InicioGuard } from './core/guards/inicio.guard';
+import { DashUsuarioGuard } from './core/guards/dashUsuario.guard';
+import { DashAdminGuard } from './core/guards/dashAdmin.guard';
 
-import { AuthGuard } from './core/guards/auth.guard';
 
 const appRoutes: Routes = [
-  {
-    path: 'auth',
-    loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-  },
-  {
-    path: 'dashboard',
-    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
-    canActivate: [AuthGuard]
-  },
-  {
-   console.log("wewewe")
-   ///////***** EDITE EL CODIGO */
-  },
-  {
-    path: 'user3s',
-    loadChildren: () => import('./pages3/users/users.module').then(m => m.UsersModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'account',
-    loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'icons',
-    loadChildren: () => import('./pages/icons/icons.module').then(m => m.IconsModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'typography',
-    loadChildren: () => import('./pages/typography/typography.module').then(m => m.TypographyModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'about',
-    loadChildren: () => import('./pages/about/about.module').then(m => m.AboutModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
-  },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
-  }
+  { path: 'usuario',canActivate:[InicioGuard], component: LoginUsuarioComponent },
+  { path: 'admin',canActivate:[InicioGuard], component: LoginContactoComponent },
+  { path: 'admin/dashboard',canActivate:[DashAdminGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
+  { path: 'usuario/dashboard',canActivate:[DashUsuarioGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
+  { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
+  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) }, 
+  { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 ];
 
 @NgModule({

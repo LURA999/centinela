@@ -21,7 +21,8 @@
 }
 
 .navbar-container {
-  
+  background-color: #333 !important; 
+
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -42,6 +43,7 @@
   /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
            causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
   flex:1
+  
   
 }
 
@@ -88,4 +90,6 @@ mat-toolbar{
   color: #333;
   display: block;
   text-decoration: none!important;
+  
 }
+
