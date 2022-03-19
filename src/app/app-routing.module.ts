@@ -14,13 +14,13 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'customers',
-    loadChildren: () => import('./pages/customers/customers.module').then(m => m.CustomersModule),
+    path: 'customers3',
+    loadChildren: () => import('./pages3/customers/customers.module').then(m => m.CustomersModule),
     canActivate: [AuthGuard]
   },
   {
-    path: 'users',
-    loadChildren: () => import('./pages/users/users.module').then(m => m.UsersModule),
+    path: 'user3s',
+    loadChildren: () => import('./pages3/users/users.module').then(m => m.UsersModule),
     canActivate: [AuthGuard]
   },
   {
