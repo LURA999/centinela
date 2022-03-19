@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { NGXLogger } from 'ngx-logger';
+
 
 @Component({
   selector: 'app-dashboard-home',
@@ -12,11 +12,11 @@ export class DashboardHomeComponent implements OnInit {
 
   constructor(
     private titleService: Title,
-    private logger: NGXLogger) {
+ ) {
   }
 
   ngOnInit() {
     this.titleService.setTitle('angular-material-template - Dashboard');
-    this.logger.log('Dashboard loaded');
+    
   }
 }

@@ -15,9 +15,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ToastrModule } from "ngx-toastr";
+import { LoginContactoComponent } from './auth2/login-contacto/login-contacto.component';
+import { LoginUsuarioComponent } from './auth2/login-usuario/login-usuario.component';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginContactoComponent,
+    LoginUsuarioComponent
   ],
   imports: [
     CommonModule,
