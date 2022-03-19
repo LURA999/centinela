@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, ViewChi
 import { MediaMatcher } from '@angular/cdk/layout';
 import { timer } from 'rxjs';
 import { Subscription } from 'rxjs';
-import { Renderer2 } from '@angular/core';
 
  import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { SpinnerService } from '../../core/services/spinner.service';
@@ -15,7 +14,6 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
-@ViewChild("a") etiquetaa:any;
 
     private _mobileQueryListener: () => void;
     mobileQuery: MediaQueryList;
@@ -26,7 +24,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     private autoLogoutSubscription: Subscription = new Subscription;
 
     constructor( 
-        private  renderer: Renderer2,
+       
         private changeDetectorRef: ChangeDetectorRef,
         private media: MediaMatcher,
         public spinnerService: SpinnerService,
