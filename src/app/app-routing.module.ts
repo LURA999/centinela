@@ -14,9 +14,8 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'customers3',
-    loadChildren: () => import('./pages3/customers/customers.module').then(m => m.CustomersModule),
-    canActivate: [AuthGuard]
+   console.log("wewewe")
+   ///////***** EDITE EL CODIGO */
   },
   {
     path: 'user3s',
