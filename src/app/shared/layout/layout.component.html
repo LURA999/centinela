@@ -15,21 +15,6 @@
 
     <span class="navbar-spacer"></span>
 
-    <button mat-icon-button [matMenuTriggerFor]="notificationMenu">
-      <mat-icon matBadge="2" matBadgeColor="accent">notifications</mat-icon>
-    </button>
-    <mat-menu #notificationMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
-
-      <a mat-menu-item>
-        <span>You have new tasks</span>
-      </a>
-      <a mat-menu-item>
-        <span>You have a new message</span>
-      </a>
-
-    </mat-menu>
-
-
 
     <button mat-button [matMenuTriggerFor]="userMenu">
       <mat-icon>person</mat-icon>
@@ -40,14 +25,14 @@
     <mat-menu #userMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
 
       <a mat-menu-item [routerLink]="['/account/profile']">
-        <mat-icon>person</mat-icon>
-        <span>Red</span>
+        <mat-icon>edit</mat-icon>
+        <span>Editar perfil</span>
 
       </a>
 
       <a mat-menu-item [routerLink]="['/auth/login']">
         <mat-icon>exit_to_app</mat-icon>
-        <span>Tickets</span>
+        <span>Cerrar sesion</span>
       </a>
 
     </mat-menu>
@@ -62,77 +47,90 @@
 
       <mat-nav-list>
         
-        
+        <a mat-list-item [routerLink]="['/account/profile']">
+          <mat-icon mat-list-icon>person</mat-icon>
+          <p mat-line> Clientes </p>
+        </a>
 
-        <mat-expansion-panel hideToggle>
-          
+<mat-expansion-panel >  
   <mat-expansion-panel-header>
-    <a mat-list-item>   
+    <a mat-list-item>  
+      <mat-icon mat-list-icon>wifi_tethering</mat-icon> 
       <p mat-line> Red</p>
     </a>
-
-    
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-      Segmentos</a>
+    Ping</a>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-    Segmentos</a>
+    Repetidores</a>
+    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      Segmentos</a>
+      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+        Control de Ips</a>
+</mat-expansion-panel>
+
+
+<mat-expansion-panel >  
+  <mat-expansion-panel-header>
+    <a mat-list-item>  
+      <mat-icon mat-list-icon>notifications_active</mat-icon> 
+      <p mat-line> Activacion y cancelacion</p>
+    </a>
+  </mat-expansion-panel-header>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Servicios</a>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Clientes</a>
 </mat-expansion-panel>
 
 
 
 
-
-<a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-  <mat-icon mat-list-icon>
-    dashboard
-  </mat-icon>
-  <p mat-line> Activacion y cancelacion </p>
-</a>
-
 <a mat-list-item [routerLink]="['/customers']" routerLinkActive="active">
   <mat-icon mat-list-icon>
-    business
-  </mat-icon>
-  <p mat-line> Customers </p>
-</a>
-<a mat-list-item [routerLink]="['/users']" routerLinkActive="active">
-  <mat-icon mat-list-icon>
-    favorite
+    sticky_note_2
   </mat-icon>
   <p mat-line> Manuales </p>
 </a>
 
-<a mat-list-item [routerLink]="['/account/profile']">
-  <mat-icon mat-list-icon>person</mat-icon>
-  <p mat-line> Clientes </p>
-</a>
 
-<a mat-list-item [routerLink]="['/auth/login']">
-  <mat-icon mat-list-icon>exit_to_app</mat-icon>
-  <p mat-line> Incidencias </p>
-</a>
+<mat-expansion-panel >  
+  <mat-expansion-panel-header>
+    <a mat-list-item>  
+      <mat-icon mat-list-icon>notifications_active</mat-icon> 
+      <p mat-line> Incidencias</p>
+    </a>
+  </mat-expansion-panel-header>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Externas</a>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Internas</a>
+</mat-expansion-panel>
+
+<mat-expansion-panel >  
+  <mat-expansion-panel-header>
+    <a mat-list-item>  
+      <mat-icon mat-list-icon>confirmation_number</mat-icon> 
+      <p mat-line> Tickets</p>
+    </a>
+  </mat-expansion-panel-header>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      Generales</a>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Propios</a>
+    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      Informacion</a>
+      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+        Altas de ticket</a>
+</mat-expansion-panel>
 
 
 
-<a mat-list-item [routerLink]="['/icons']" routerLinkActive="active">
-  <mat-icon mat-list-icon>
-    toll
-  </mat-icon>
-  <p mat-line> Icons </p>
-</a>
 <a mat-list-item [routerLink]="['/typography']" routerLinkActive="active">
   <mat-icon mat-list-icon>
-    font_download
+    assignment_turned_in
   </mat-icon>
   <p mat-line> Ordenes </p>
-</a>
-
-<a mat-list-item href="https://material.angular.io/components/categories" target="_blank">
-  <mat-icon mat-list-icon>
-    link
-  </mat-icon>
-  <p mat-line> Material Components </p>
 </a>
 
 
