@@ -34,12 +34,13 @@ export class LoginUsuarioComponent implements OnInit {
   }
 
   form(){
-    console.log("ENTRO");
    var correo =<HTMLInputElement> document.getElementById('valorCorreo');
     var contra =<HTMLInputElement> document.getElementById('valorContra');
     let userCode = btoa(correo.value)
     let passwordCode= btoa(contra.value)
+
     this.usuarioServicio.login(userCode,passwordCode,0).subscribe((response:any) =>{
+      console.log(response)
       if(response.status === "ok"){
         this.auth.crearSesion( response.container);
         this.router.navigateByUrl('/usuario/dashboard')

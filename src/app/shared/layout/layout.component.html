@@ -55,12 +55,33 @@
   </mat-toolbar>
 
   <mat-sidenav-container class="navbar-sidenav-container">
+    
     <!-- Side nav -->
     <mat-sidenav #snav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'"
       [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
 
       <mat-nav-list>
-        <h3 mat-subheader>Menu</h3>
+        <h3 mat-subheader></h3>
+        
+
+        <mat-expansion-panel hideToggle>
+          
+  <mat-expansion-panel-header>
+    <a mat-list-item>   
+      <p mat-line> Red</p>
+    </a>
+
+    
+  </mat-expansion-panel-header>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      Segmentos</a>
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    Segmentos</a>
+</mat-expansion-panel>
+
+
+
+
 
         <mat-expansion-panel hideToggle>
           
@@ -140,15 +161,13 @@
 <!-- Main content -->
 <mat-sidenav-content class="sidenav-content">
 
-  <div class="progress-bar-container">
-
-    <!-- <mat-spinner class="spinner" [diameter]="50" *ngIf="showSpinner"></mat-spinner> -->
-  </div>
+  
 
 
   <router-outlet></router-outlet>
 
 </mat-sidenav-content>
+
 </mat-sidenav-container>
 
 </div>
