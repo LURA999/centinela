@@ -49,10 +49,12 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     salir(){
-        this.auth.cerrarSesion();
+        
         if(this.auth.getTipo()==1){
+            this.auth.cerrarSesion();
             this.router.navigateByUrl("/admin");
         }else{
+            this.auth.cerrarSesion();
             this.router.navigateByUrl("/usuario");
         }
     }
