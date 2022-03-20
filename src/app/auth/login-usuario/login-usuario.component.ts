@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Input } from '@angular/compiler/src/core';
 import {  Renderer2,ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,13 +22,12 @@ export class LoginUsuarioComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
+  
   //Validacion de correo en input
   getErrorMessage() {
     if (this.email.hasError('required')) {
       return 'Debe de ingresar correo ';
     }
-
     return this.email.hasError('email') ? 'Correo no valido' : '';
   }
 
@@ -48,10 +46,5 @@ export class LoginUsuarioComponent implements OnInit {
         alert(response.info)
       }
     });
-  }
-
-  imprimir(){
-    console.log("RESPONSE");
-    
   }
 }
