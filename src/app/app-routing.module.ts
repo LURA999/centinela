@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginContactoComponent } from './auth2/login-contacto/login-contacto.component';
-import { LoginUsuarioComponent } from './auth2/login-usuario/login-usuario.component';
+import { LoginContactoComponent } from './auth/login-contacto/login-contacto.component';
+import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.component';
 import { InicioGuard } from './core/guards/inicio.guard';
 import { DashUsuarioGuard } from './core/guards/dashUsuario.guard';
 import { DashAdminGuard } from './core/guards/dashAdmin.guard';
