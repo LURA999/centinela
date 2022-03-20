@@ -1,9 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { timer } from 'rxjs';
 import { Subscription } from 'rxjs';
-
-
+import { AuthService } from 'src/app/core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-layout',
@@ -22,9 +21,10 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     private autoLogoutSubscription: Subscription = new Subscription;
 
     constructor( 
-       
+       private auth : AuthService,
         private changeDetectorRef: ChangeDetectorRef,
         private media: MediaMatcher,
+        private router : Router
       ) {
 
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
@@ -46,6 +46,15 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
+    }
+
+    salir(){
+        this.auth.cerrarSesion();
+        if(this.auth.getTipo()==1){
+            this.router.navigateByUrl("/admin");
+        }else{
+            this.router.navigateByUrl("/usuario");
+        }
     }
 
    
