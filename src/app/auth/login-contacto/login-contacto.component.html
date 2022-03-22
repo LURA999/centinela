@@ -18,12 +18,12 @@
                         <mat-label>Ingresa tu contraseña</mat-label>
                         <input id="valorContra" class = "matInput" matInput [type]="hide ? 'password' : 'text'" required>
                         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        <mat-icon >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                         </button>
                     </mat-form-field>
                 </div>
             <div class="form">
-                <button id="btn-iniciar" type="submit" mat-raised-button  (click)="form()">Iniciar sesionn</button>
+                <button id="btn-iniciar" type="submit" mat-raised-button  (click)="form()">Iniciar sesion</button>
             </div>    
             </form>
             </div>

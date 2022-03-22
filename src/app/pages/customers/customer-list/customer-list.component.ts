@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { NGXLogger } from 'ngx-logger';
 import { Title } from '@angular/platform-browser';
 
 export interface PeriodicElement {
@@ -37,13 +36,11 @@ export class CustomerListComponent implements OnInit {
   sort: MatSort = new MatSort;
 
   constructor(
-    private logger: NGXLogger,
     private titleService: Title
   ) { }
 
   ngOnInit() {
-    this.titleService.setTitle('angular-material-template - Customers');
-    this.logger.log('Customers loaded');
+    this.titleService.setTitle('Centinela - Customers');
     this.dataSource.sort = this.sort;
 
   }
