@@ -107,8 +107,9 @@ mat-toolbar{
   
 }
 mat-sidenav-content{
-  background-color: white !important;
+  background-color: #fafafa !important;
   margin-left: auto!important;
+
 }
 mat-expansion-panel {
 background-color: white;

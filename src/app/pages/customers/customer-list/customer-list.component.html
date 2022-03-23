@@ -67,17 +67,17 @@
       
       <div class="babajo">
         
-      <div >
         <div class="import">
           <label class="boton" > 
             Importar
           <input (change)= "onFileChange($event)" style="display: none !important" type="file" multiple="false"/>
           </label>
           </div> 
-        </div>
+      
         <div>
           <button mat-raised-button color="primary" [disabled] = "clientes.length != 0" (click)="exportar()">Exportar</button>
         </div>
+
       </div>
     </mat-card-content>
     </mat-card>
