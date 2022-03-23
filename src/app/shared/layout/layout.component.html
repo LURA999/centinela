@@ -30,7 +30,7 @@
 
       </a>
 
-      <a mat-menu-item [routerLink]="['/auth/login']">
+      <a mat-menu-item (click)="salir()"  routerLinkActive="active" >
         <mat-icon>exit_to_app</mat-icon>
         <span>Cerrar sesion</span>
       </a>
