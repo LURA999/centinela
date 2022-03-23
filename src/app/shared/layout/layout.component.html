@@ -30,7 +30,7 @@
 
       </a>
 
-      <a mat-menu-item [routerLink]="['/auth/login']">
+      <a mat-menu-item (click)="salir()"  routerLinkActive="active" >
         <mat-icon>exit_to_app</mat-icon>
         <span>Cerrar sesion</span>
       </a>
@@ -49,15 +49,15 @@
         
         <a mat-list-item [routerLink]="['/usuario/clientes']">
           <mat-icon mat-list-icon>person</mat-icon>
-          <p mat-line> Clientes </p>
+          <p mat-line> Clientes  </p>
         </a>
 
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
-    <a mat-list-item>  
-      <mat-icon mat-list-icon>wifi_tethering</mat-icon> 
-      <p mat-line> Red</p>
-    </a>
+    
+      <mat-icon mat-list-icon>wifi_tethering </mat-icon> 
+      <p mat-line> Red </p>
+   
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
     Ping</a>
@@ -70,12 +70,16 @@
 </mat-expansion-panel>
 
 
-<mat-expansion-panel >  
+
+
+
+
+<mat-expansion-panel  >  
   <mat-expansion-panel-header>
-    <a mat-list-item>  
+   
       <mat-icon mat-list-icon>notifications_active</mat-icon> 
-      <p mat-line> Activacion y cancelacion</p>
-    </a>
+      <p  mat-line> Activacion y cancelacion </p>
+    
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
     Servicios</a>
@@ -96,10 +100,10 @@
 
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
-    <a mat-list-item>  
-      <mat-icon mat-list-icon>notifications_active</mat-icon> 
+    
+      <mat-icon mat-list-icon>account_tree</mat-icon> 
       <p mat-line> Incidencias</p>
-    </a>
+    
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
     Externas</a>
@@ -109,10 +113,10 @@
 
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
-    <a mat-list-item>  
+    
       <mat-icon mat-list-icon>confirmation_number</mat-icon> 
       <p mat-line> Tickets</p>
-    </a>
+   
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
       Generales</a>
@@ -133,6 +137,12 @@
   <p mat-line> Ordenes </p>
 </a>
 
+<a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <mat-icon mat-list-icon>
+    dashboard
+  </mat-icon>
+  <p mat-line> Dashboard </p>
+</a>
 
 <a mat-list-item (click)="salir()" routerLinkActive="active">
   <mat-icon mat-list-icon>

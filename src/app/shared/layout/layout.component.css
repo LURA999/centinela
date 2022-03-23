@@ -17,7 +17,8 @@
 
 .navbar-brand {
   text-decoration: none;
-  color: white;
+  color: #fafafa
+  ;
   font-size: 2.5vw;
   font-family: Arial, Helvetica, sans-serif;
 
@@ -26,7 +27,7 @@
 }
 
 .navbar-container {
-  background-color: #333 !important; 
+  background-color:  black !important; 
 
   display: flex;
   flex-direction: column;
@@ -65,11 +66,13 @@
 mat-sidenav {
   min-width: 180px !important;
   border-right:  #303030;
-  box-shadow: 6px 0 6px rgba(0, 0, 0, .1);
-  background-color:#1f1f1f !important; 
+  box-shadow: 6px 0 6px #fafafa
+  ;
+  background-color:#fafafa
+  !important; 
   
-
 }
+
 
 
 
@@ -80,17 +83,17 @@ mat-sidenav {
 }
 
 a.mat-list-item {
-  background: #1f1f1f;
+  background: white;
   box-shadow: none !important;
 }
-
 #push-bottom {
   position: absolute;
   bottom: 0;
 }
 
 mat-toolbar{
-  background-color: #e91d63 !important ;
+  background-color: #3f51b5
+   !important ;
   height: 75px;
   
   
@@ -104,21 +107,20 @@ mat-toolbar{
   
 }
 mat-sidenav-content{
-  background-color: #303030 !important;
+  background-color: white !important;
   margin-left: auto!important;
 }
 mat-expansion-panel {
-background-color: #1f1f1f;
+background-color: white;
 margin-left: -8.3%;
 
 }
-a.mat-list-item{
-  color: hsla(0,0%,100%,.7);
-}
+
 
 ::-webkit-scrollbar-thumb
 {
-    background: rgba(0, 0, 0, 0.712) !important;
+    background: #3f51b5
+     !important;
    
 }
 ::-webkit-scrollbar {
@@ -127,31 +129,43 @@ a.mat-list-item{
   }
   
 ::-webkit-scrollbar-track {
-    background-color: #303030 !important;
+    background-color: #b6b5b5 !important;
     
   }
   
   ::ng-deep .mat-drawer-inner-container {
     overflow:  visible !important;
-  
+    background-color: white !important;
 
    } 
   mat-expansion-panel-header{
     
-    margin-left: 0;
-
+    margin-left: 20px;
+  
   }
+  
   .mat-expansion-panel:not([class*='mat-elevation-z']) {
     box-shadow: none;
-    
+  }
+a.mat-list-item:hover{
+background-color: #f1f1f1;
 }
-::ng-deep .mat-expansion-indicator::after, .mat-expansion-panel-header-description { 
-  color: hsla(0,0%,100%,.7);
-  transform: rotate(225deg) !important; 
-}
+
 .mat-icon-button {
   transform: scale(1.5);
+  fill:white;
 }
+
+
+
+p{
+margin-left: 20px;
+}
+
+
+
+
+
 
 
 

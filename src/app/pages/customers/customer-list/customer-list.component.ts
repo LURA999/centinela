@@ -109,4 +109,5 @@ export class CustomerListComponent implements OnInit {
   exportar(){
 
   }
+  
 }

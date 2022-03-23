@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
-
+   
     private _mobileQueryListener: () => void;
     mobileQuery: MediaQueryList;
     showSpinner: boolean = false;
@@ -58,6 +58,5 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
             this.router.navigateByUrl("/usuario");
         }
     }
-
    
 }
