@@ -9,3 +9,31 @@ table {
 th.mat-sort-header-sorted {
     color: black;
 }
+
+.barriba {
+    display: flex;
+    justify-content: space-between;
+}
+.babajo {
+    display: inline-flex;
+}
+
+.babajo button {
+    margin-right: 5px;
+}
+#nuevoc {
+    margin-block: auto;
+}
+
+@media screen and (max-width:999px) {
+    .barriba {
+        display: block;
+        text-align: center;
+    }
+    #nuevoc {
+        margin-bottom: 25px;
+    }
+}
+
+
+

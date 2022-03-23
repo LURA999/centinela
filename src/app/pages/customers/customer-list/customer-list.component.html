@@ -3,39 +3,63 @@
     <mat-card>
       <mat-card-content>
          <h2>Clientes</h2>
-        <mat-form-field appearance="standard">
-          <mat-label>Filter</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-        </mat-form-field>
-
+        
+        <div class="barriba">
+        <div id="nuevoc">
+        <button mat-raised-button color="primary" (click)="nuevoCliente()">Nuevo usuario</button>
+        </div>
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Estatus</mat-label>
+            <select matNativeControl required>
+              <option value="volvo2">Seleccione un estatus</option>
+              <option value="volvo">Activos</option>
+              <option value="saab">Inactivos</option>
+              <option value="mercedes">Cerrado</option>
+            </select>
+          </mat-form-field>
+          </div>
+        <div>
+          <mat-form-field appearance="standard">
+            <mat-label>Filtro</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+          </mat-form-field>
+          </div>
+      </div>
         <table mat-table [dataSource]="dataSource">          
           <ng-container matColumnDef="Empresa">
             <th mat-header-cell *matHeaderCellDef>Empresa</th>
-            <td mat-cell *matCellDef="let element">  </td>
+            <td mat-cell *matCellDef="let element"> {{element.empresa}} </td>
           </ng-container>
           <ng-container matColumnDef="Nombre Corto">
             <th mat-header-cell *matHeaderCellDef>Nombre corto</th>
-            <td mat-cell *matCellDef="let element">  </td>
+            <td mat-cell *matCellDef="let element">{{element.nombre}} </td>
           </ng-container>
           <ng-container matColumnDef="Estatus">
             <th mat-header-cell *matHeaderCellDef >Estatus</th>
-            <td mat-cell *matCellDef="let element">  </td>
+            <td mat-cell *matCellDef="let element"> {{element.estatus}} </td>
           </ng-container>
           <ng-container matColumnDef="Opciones">
             <th mat-header-cell *matHeaderCellDef >Opciones</th>
-            <td mat-cell *matCellDef="let element">  </td>
+            <td mat-cell *matCellDef="let element">{{element.opciones}}</td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
         <mat-paginator 
-        [length]=""
+        [length]="1"
         [pageSize]="10"
         [pageSizeOptions]="[5, 10]"></mat-paginator>
-        
-
-      </mat-card-content>
-
+      
+      <div class="babajo">
+      <div>
+        <button mat-raised-button color="primary">Exportar</button>
+        </div>
+        <div>
+          <button mat-raised-button color="primary">Importar</button>
+        </div>
+      </div>
+    </mat-card-content>
     </mat-card>
 
   </div>
