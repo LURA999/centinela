@@ -8,8 +8,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
-import { LoggerModule } from 'ngx-logger';
-import { environment } from '../environments/environment';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,6 +23,7 @@ import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.compon
     LoginUsuarioComponent
   ],
   imports: [
+    NgbModule,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -37,6 +37,7 @@ import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.compon
     MatButtonModule,
     CustomMaterialModule,
     ToastrModule.forRoot(),
+    NgbPaginationModule
     
   ],
   exports:[
