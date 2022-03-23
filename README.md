@@ -2,7 +2,7 @@
 
  # [Angular Material Starter Template](https://onthecode.co.uk/angular-material-starter-template-for-your-next-project/)
 
- ![Product Gif](https://github.com/umutesen/angular-material-template/blob/media/material-template-demo.gif)
+ ![Product Gif](https://github.com/umutesen/Centinela/blob/media/material-template-demo.gif)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.
 

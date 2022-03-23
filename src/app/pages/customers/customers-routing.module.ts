@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from 'src/app/shared/layout/layout.component';
 
 import { CustomerListComponent } from './customer-list/customer-list.component';
-import { NuevoClienteComponent } from './nuevo-cliente/nuevo-cliente.component';
 
 const routes: Routes = [
   {

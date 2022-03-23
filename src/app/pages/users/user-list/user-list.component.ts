@@ -14,6 +14,6 @@ export class UserListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.titleService.setTitle('angular-material-template - Users');
+    this.titleService.setTitle('Centinela - Users');
   }
 }

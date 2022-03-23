@@ -16,7 +16,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.titleService.setTitle('angular-material-template - Dashboard');
+    this.titleService.setTitle('Centinela - Inicio');
     
   }
 }
