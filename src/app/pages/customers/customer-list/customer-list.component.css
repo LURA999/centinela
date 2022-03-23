@@ -9,3 +9,13 @@ table {
 th.mat-sort-header-sorted {
     color: black;
 }
+#botonusuario{
+    margin-left:1vw ;
+    background-color: rgba(231, 226, 226, 0.966);
+    font-size: 1.3vw;
+}
+#botonfiltro{
+    margin-left:1vw ;
+    background-color: rgba(231, 226, 226, 0.966);
+    font-size: 1.3vw;
+}

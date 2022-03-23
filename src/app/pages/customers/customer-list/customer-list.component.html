@@ -3,7 +3,13 @@
     <mat-card>
       <mat-card-content>
         <h2>Clientes</h2>
+        <button mat-raised-button id="botonusuario" > <mat-icon mat-list-icon>add</mat-icon> Nuevo usuario </button> 
 
+        <button mat-raised-button id="botonfiltro" >  <mat-icon mat-list-icon>filter_alt</mat-icon>  Filtrar </button> 
+
+        <p><br/>
+          
+        
         <table mat-table [dataSource]="dataSource" matSort>
 
           <ng-container matColumnDef="position">

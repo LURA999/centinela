@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { AppComponent } from './app.component';
 import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { CommonModule } from '@angular/common';
@@ -24,6 +23,7 @@ import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.compon
     LoginUsuarioComponent
   ],
   imports: [
+    
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,

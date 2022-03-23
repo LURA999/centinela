@@ -1,13 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';  
+
 
 export interface PeriodicElement {
   name: string;
   position: number;
   weight: number;
   symbol: string;
+  
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -31,6 +33,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class CustomerListComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
+  
 
   @ViewChild(MatSort, { static: true })
   sort: MatSort = new MatSort;
@@ -38,10 +41,12 @@ export class CustomerListComponent implements OnInit {
   constructor(
     private titleService: Title
   ) { }
+  
 
   ngOnInit() {
     this.titleService.setTitle('Centinela - Customers');
     this.dataSource.sort = this.sort;
 
   }
+  
 }

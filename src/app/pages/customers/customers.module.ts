@@ -8,7 +8,8 @@ import { CustomerListComponent } from './customer-list/customer-list.component';
   imports: [
     CommonModule,
     CustomersRoutingModule,
-    SharedModule
+    SharedModule,
+  
   ],
   declarations: [
     CustomerListComponent
