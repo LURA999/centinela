@@ -107,12 +107,11 @@ mat-toolbar{
   
 }
 mat-sidenav-content{
-  background-color: #fafafa
- !important;
+  background-color: white !important;
   margin-left: auto!important;
 }
 mat-expansion-panel {
-background-color: #fafafa;
+background-color: white;
 margin-left: -8.3%;
 
 }
@@ -136,7 +135,7 @@ margin-left: -8.3%;
   
   ::ng-deep .mat-drawer-inner-container {
     overflow:  visible !important;
-  
+    background-color: white !important;
 
    } 
   mat-expansion-panel-header{
@@ -154,6 +153,7 @@ background-color: #f1f1f1;
 
 .mat-icon-button {
   transform: scale(1.5);
+  fill:white;
 }
 
 
