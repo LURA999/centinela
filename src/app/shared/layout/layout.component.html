@@ -1,6 +1,23 @@
-<div class="navbar-container" [class.example-is-mobile]="mobileQuery.matches">
 
-  <!-- Top navbar -->
+
+
+<div class="navbar-container" [class.example-is-mobile]="mobileQuery.matches">
+<!--
+  <div>
+    <div></div>
+    <div >
+      <ul>
+          <li>Una ves completado, la pagina se reiniciara</li>
+          <li>Comparando clientes viejos y actuales</li>
+          <li>Por favor no cierre el navegador</li>
+          <li>Actualizando y/o subiendo clientes</li>
+          <li>Esto puede demorar dependiendo de la cantidad de clientes y/o servicios</li>
+          <li>Si interrumpe la pagina, se subira incompletamente</li>
+      </ul>
+  </div>
+  </div>
+    
+   Top navbar -->
   <mat-toolbar class="navbar" color="primary">
 
     <button mat-icon-button (click)="snav.toggle()">
@@ -157,10 +174,8 @@
 </mat-sidenav>
 
 <!-- Main content -->
+
 <mat-sidenav-content class="sidenav-content">
-
-  
-
 
   <router-outlet></router-outlet>
 

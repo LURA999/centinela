@@ -1,16 +1,3 @@
-<div id="contenedor_carga" [hidden]="contenedor_carga">
-  <div id="carga" [hidden]="carga"></div>
-  <div class="slider" [hidden] = "slider">
-    <ul>
-        <li>Una ves completado, la pagina se reiniciara</li>
-        <li>Comparando clientes viejos y actuales</li>
-        <li>Por favor no cierre el navegador</li>
-        <li>Actualizando y/o subiendo clientes</li>
-        <li>Esto puede demorar dependiendo de la cantidad de clientes y/o servicios</li>
-        <li>Si interrumpe la pagina, se subira incompletamente</li>
-    </ul>
-</div>
-</div>
 
 <div class="container" fxLayout="row" fxLayoutAlign="center none">
   <div fxFlex="95%" id="tablaCliente">
@@ -25,12 +12,13 @@
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Estatus</mat-label>
-            <select matNativeControl required>
-              <option value="volvo2">Seleccione un estatus</option>
-              <option value="volvo">Activos</option>
-              <option value="saab">Inactivos</option>
-              <option value="mercedes">Cerrado</option>
-            </select>
+            <mat-select matNativeControl  (selectionChange)="verEstatus($event.value)" required>
+              <mat-option value="0" selected disabled>Seleccione un estatus</mat-option>
+              <mat-option value="1">Activos</mat-option>
+              <mat-option value="2">Inactivos</mat-option>
+              <mat-option value="3">Ausente</mat-option>
+              <mat-option value="4">Todos</mat-option>
+            </mat-select>
           </mat-form-field>
           </div>
         <div>
@@ -60,7 +48,8 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator 
+
+        <mat-paginator  #paginator
         [length]="1"
         [pageSize]="10"
         [pageSizeOptions]="[5, 10]"></mat-paginator>
@@ -73,11 +62,9 @@
           <input (change)= "onFileChange($event)" style="display: none !important" type="file" multiple="false"/>
           </label>
           </div> 
-      
         <div>
-          <button mat-raised-button color="primary" [disabled] = "clientes.length != 0" (click)="exportar()">Exportar</button>
+          <button mat-raised-button color="primary" [disabled] = "ELEMENT_DATA.length == 0" (click)="exportar()">Exportar</button>
         </div>
-
       </div>
     </mat-card-content>
     </mat-card>

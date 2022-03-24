@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
-import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MyCustomPaginatorIntl } from './MyCustomPaginatorIntl';
 import { NuevoClienteComponent } from '../nuevo-cliente/nuevo-cliente.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import * as XLSX from 'xlsx';
+import { CustomerService } from 'src/app/services/customer.service';
 
 export interface cliente {
   empresa: string;
@@ -20,17 +21,12 @@ export interface cliente {
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css'],
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
-
 })
+
 export class CustomerListComponent implements OnInit {
   displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
-  ELEMENT_DATA: cliente[] = [
-    { empresa: "Redes y asesorias", nombre: 'red 7', estatus: this.estatus(1), opciones: '2'} 
-  ];
-
-  clientes :String [] =[];
+  ELEMENT_DATA: cliente[] = [];
   excel : String [][] = [];
-  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   totalItems: number = 0;
   page: number = 0; 
   carga :boolean=false;
@@ -38,45 +34,75 @@ export class CustomerListComponent implements OnInit {
   showPagination: boolean = true;
   contenedor_carga : boolean = false;
   slider : boolean = true;
+  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  @ViewChild ("paginator") paginator:any;
+  childMessage: string = "hola desde el componente customer-list";
+
   constructor(
     private titleService: Title,
     private config: NgbPaginationConfig,
-    private dialog : NgDialogAnimationService
+    private dialog : NgDialogAnimationService,
+    private clienteServicio : CustomerService,
    ) {
       this.config.boundaryLinks = true;
     }
 
-  ngOnInit() {
+  
+  ngOnInit() : void {
     this.titleService.setTitle('Centinela - Customers');
-    
+    this.llenaTabla(); 
   }
 
-
-  llenaTabla(){
-    
+  async llenaTabla(){
+    await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
+      for(let i of resp.container)
+      this.ELEMENT_DATA.push(
+        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+      );
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator =  this.paginator;    
+      this.paginator.hidePageSize=  true;
+    });
+   
   }
 
-  loadPage(page: number) {
-    if (page !== this.previousPage) {
-      this.previousPage = page;
-      //this.fillStudents(this.page-1);
-    }
+  async verEstatus(opcion: number) {
+    this.dataSource = new MatTableDataSource();
+    this.ELEMENT_DATA = [];
+
+    if(opcion < 4){
+    await this.clienteServicio.clienteEstatus(opcion).subscribe((resp : any) =>{
+      for(let i of resp.container)
+      this.ELEMENT_DATA.push(
+        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+      );
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    })
+  }else{
+     await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
+      for(let i of resp.container)
+      this.ELEMENT_DATA.push(
+        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+      );
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    });
+  }
   }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  estatus(numero : number) {
+  estatus(numero : string) {
     switch(numero){
-      case 1:
+      case '1':
         return "activo"
-      case 2:
+      case '2':
         return "inactivo"
-      case 3: 
+      case '3': 
         return "ausente"
       default:
-        return "cerrado"
+        return ""
     }
   }
   nuevoCliente(){
@@ -88,12 +114,13 @@ export class CustomerListComponent implements OnInit {
   }
 
   async onFileChange(evt: any){
-     const target : DataTransfer = <DataTransfer>(evt.target);
+    const target : DataTransfer = <DataTransfer>(evt.target);
      let formato= ""+target.files[0].name.split(".")[target.files[0].name.split(".").length-1];
-     if(formato == "xlsm" ||formato == "xlsx" || formato == "xlsb" ||formato == "xlts" ||formato == "xltm" ||formato == "xls" ||formato == "xlam" ||formato == "xla"||formato == "xlw" ){
+
+    if(formato == "xlsm" ||formato == "xlsx" || formato == "xlsb" ||formato == "xlts" ||formato == "xltm" ||formato == "xls" ||formato == "xlam" ||formato == "xla"||formato == "xlw" ){
+      if(target.files.length !==1) 
+      throw  alert('No puedes subir multiples archivos') ;
       
-      if(target.files.length !==1)
-      throw alert('No puedes subir multiples archivos');
       const reader: FileReader= new FileReader();
       reader.onload = async (e: any) =>{
       const bstr : string = e.target.result;
@@ -101,8 +128,33 @@ export class CustomerListComponent implements OnInit {
       const wsname : string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
       this.excel = (XLSX.utils.sheet_to_json(ws,{header: 1}));
-     }
+      try{
+       //insertar dos tablas juntas 
+       if(this.excel[0].length == 3){ 
+        this.contenedor_carga = await false;
+        this.slider = await false;
+        for (let p=0; p<this.excel.length; p++) {
+         let repetidocliente:any = await this.clienteServicio.clienteRepetido(this.excel[p][0]).toPromise();
+         repetidocliente = repetidocliente.container;
 
+           try{
+             if(this.excel[p][0] !== undefined  && repetidocliente[0].repetido == 0 || this.excel[p][0] == "" && repetidocliente[0].repetido == 0){    
+               await this.clienteServicio.insertaCliente({empresa:this.excel[p][0], nombre: this.excel[p][1],estatus:+this.excel[p][2]}).subscribe();
+             }
+            }catch(Exception){}
+         }
+     await location.reload();
+       }
+      }catch(Exception){
+        this.contenedor_carga = await true;
+        this.slider = await true;
+        alert("No se permiten archivos vacios")
+      }
+
+      };
+      await reader.readAsBinaryString(target.files[0]);
+    }else{
+      alert("Solo se permiten tipos de archivos Excel")
     }
   }
 

@@ -20,7 +20,8 @@ import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.compon
   declarations: [
     AppComponent,
     LoginContactoComponent,
-    LoginUsuarioComponent
+    LoginUsuarioComponent,
+    
   ],
   imports: [
     NgbModule,
@@ -37,8 +38,7 @@ import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.compon
     MatButtonModule,
     CustomMaterialModule,
     ToastrModule.forRoot(),
-    NgbPaginationModule
-    
+    NgbPaginationModule,
   ],
   exports:[
     CustomMaterialModule
