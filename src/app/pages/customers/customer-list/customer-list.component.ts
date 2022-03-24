@@ -13,6 +13,7 @@ export interface cliente {
   nombre: string;
   estatus: string;
   opciones: string;
+
 }
 
 @Component({
@@ -23,9 +24,30 @@ export interface cliente {
 
 })
 export class CustomerListComponent implements OnInit {
+  title = 'Centinela';
+  fileName= 'Excel_Clientes_Export.Xlsx'; 
+  userList = [
+    
+  ]
+  exportexcel(): void 
+    {
+       /* table id is passed over here */   
+       let element = document.getElementById('excel-table'); 
+       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+
+       /* generate workbook and add the worksheet */
+       const wb: XLSX.WorkBook = XLSX.utils.book_new();
+       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+       /* save to file */
+       XLSX.writeFile(wb, this.fileName);
+			
+    }
+
   displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
   ELEMENT_DATA: cliente[] = [
     { empresa: "Redes y asesorias", nombre: 'red 7', estatus: this.estatus(1), opciones: '2'} 
+    
   ];
 
   clientes :String [] =[];
@@ -104,10 +126,6 @@ export class CustomerListComponent implements OnInit {
      }
 
     }
-  }
-
-  exportar(){
-
   }
   
 }

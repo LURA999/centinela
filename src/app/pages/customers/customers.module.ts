@@ -6,9 +6,9 @@ import { CustomerListComponent } from './customer-list/customer-list.component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NuevoClienteComponent } from './nuevo-cliente/nuevo-cliente.component';
-
 @NgModule({
   imports: [
+    
     NgbPaginationModule,
     CommonModule,
     CustomersRoutingModule,
