@@ -10,6 +10,8 @@ import * as XLSX from 'xlsx';
 import { CustomerService } from 'src/app/services/customer.service';
 import { DeleteComponent } from '../delete/delete.component';
 import { NotificationService } from 'src/app/services/notification.service';
+import { Workbook } from 'exceljs'
+import * as fs from 'file-saver';
 
 export interface cliente {
   id : number;
@@ -43,24 +45,7 @@ export class CustomerListComponent implements OnInit {
   slider : boolean = true;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   @ViewChild ("paginator") paginator:any;
-  childMessage: string = "hola desde el componente customer-list";
 
-  exportexcel(): void 
-    {
-       /* table id is passed over here */   
-       let element = document.getElementById('excel-table'); 
-       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-       /* generate workbook and add the worksheet */
-       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-       /* save to file */
-       XLSX.writeFile(wb, this.fileName);
-			
-    }
-
- 
 
   constructor(
     private titleService: Title,
@@ -72,6 +57,46 @@ export class CustomerListComponent implements OnInit {
       this.config.boundaryLinks = true;
     }
 
+
+  llenarArchivoExcel(json_data : any){
+
+
+    for (let x = 0; x < this.ELEMENT_DATA.length; x++) {
+     json_data.push({ });
+      
+    }
+    return json_data
+  }
+
+  async exportexcel() 
+  {
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Id","Empresa","Nombre corto","Estatus"]
+    worksheet.addRow(header);
+  
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
+      for(let y of x2)
+      {
+        temp.push(this.ELEMENT_DATA[x1]["id" ])
+        temp.push(this.ELEMENT_DATA[x1]["empresa"])
+        temp.push(this.ELEMENT_DATA[x1]["nombre"])
+        temp.push(this.ELEMENT_DATA[x1]["estatus"])
+      }
+      worksheet.addRow(temp)
+    }
+
+    let fname="ExcelClientes"
+
+//add data and file name and download
+workbook.xlsx.writeBuffer().then((data) => {
+  let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');
+});
+  }
   
   ngOnInit() : void {
     this.titleService.setTitle('Centinela - Customers');
@@ -79,6 +104,8 @@ export class CustomerListComponent implements OnInit {
   }
 
   async llenaTabla(){
+    this.ELEMENT_DATA = [];
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
       for(let i of resp.container)
       this.ELEMENT_DATA.push(
@@ -130,12 +157,35 @@ export class CustomerListComponent implements OnInit {
         return ""
     }
   }
-  nuevoCliente(){
-    this.dialog.open(NuevoClienteComponent,
-      {data: {opc : "" ,mensaje: ""},
+  estatusNumero(numero : string) {
+    switch(numero){
+      case 'activo':
+        return '1'
+      case 'inactivo':
+        return '2'
+      case 'ausente': 
+        return '3'
+      default:
+        return ""
+    }
+  }
+  async nuevoCliente(){
+    let dialogRef  = this.dialog.open(NuevoClienteComponent,
+      {data: {opc : false },
       animation: { to: "bottom" },
         height:"50%", width:"350px",
       });
+
+      await dialogRef.afterClosed().subscribe(result => {
+        try{
+        if(result.length > 0  || result != undefined ){
+          setTimeout(() => {
+            this.notificationService.openSnackBar(result);
+            this.llenaTabla()
+          });
+          }
+        }catch(Exception) {}
+      }); 
   }
 
   async onFileChange(evt: any){
@@ -184,24 +234,24 @@ export class CustomerListComponent implements OnInit {
   }
 
 
-  editar(empresa : string, nombre : string,estatus:string,id:number){
+  async editar(empresa : string, nombre : string,estatus:string,id:number){
     let dialogRef  = this.dialog.open(NuevoClienteComponent,
-      {data: {empresa : empresa == undefined || empresa == "" 
-      || empresa.length>0 ? empresa: "", nombre : nombre == undefined || nombre == "" 
-      || nombre.length>0 ? nombre: "",estatus:estatus == undefined || estatus == "" 
-      || estatus.length>0 ? estatus: "",id:id == undefined ? id: ""},
+      {data: {empresa : empresa, nombre : nombre ,estatus:this.estatusNumero(estatus) ,id:id , opc:true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(result)
-        if(result.length > 0){
+      
+      await dialogRef.afterClosed().subscribe(result => {
+        try{
+        if(result.length > 0  ){
           setTimeout(() => {
             this.notificationService.openSnackBar(result);
+            this.llenaTabla()
           });
           }
-      });
+        }catch(Exception) {}
+      }); 
+    
   }
 
   eliminar(id:number){
@@ -212,11 +262,14 @@ export class CustomerListComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe((result : any) => {
-        if(result.length > 0){
+        try{
+        if(result.length > 0  ){
         setTimeout(() => {
           this.notificationService.openSnackBar(result);
+          this.llenaTabla()
         });
         }
+      }catch(Exception){}
       });
       
   }

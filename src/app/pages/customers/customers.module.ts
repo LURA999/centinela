@@ -8,9 +8,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NuevoClienteComponent } from './nuevo-cliente/nuevo-cliente.component';
 import { DeleteComponent } from './delete/delete.component';
 import { VarDirective } from './var.directive';
+
 @NgModule({
   imports: [
-    
     NgbPaginationModule,
     CommonModule,
     CustomersRoutingModule,

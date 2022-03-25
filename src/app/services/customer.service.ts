@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ClienteModel } from '../models/cliente.model';
 
@@ -24,7 +25,11 @@ export class CustomerService {
   clienteRepetido(nombre:String){
     return this.http.get(this.local+"Customer/customer.php?nombre="+nombre);
   }
-  eliminarFalso(id:String){
-    return this.http.patch(this.local+"Customer/customer.php?id="+id,{responseType: 'text'});
+  eliminarFalso(id:String): Observable<any>{
+    return this.http.patch<any>(this.local+"Customer/customer.php?id="+id,{responseType: 'text'});
+  }
+
+  acualizarCliente(input :ClienteModel){
+    return this.http.patch(this.local+"Customer/customer.php",input,{responseType: 'text'});
   }
 }

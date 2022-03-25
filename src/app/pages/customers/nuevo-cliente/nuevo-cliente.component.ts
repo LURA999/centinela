@@ -13,14 +13,28 @@ export class NuevoClienteComponent implements OnInit {
   nombre? : FormControl
   empresa? : FormControl
   ngOnInit(): void {
+    if(this.data.opc == false){
     this.nombre = new FormControl(this.data.nombre) 
-    this.empresa = new FormControl(this.data.empresa) 
+    this.empresa = new FormControl(this.data.empresa)
+    } 
   }
 ///crearCliente(select.value,empresa.value,nombre.value)
   crearCliente(select : number, empresa : string, nombre : string){
+    if(this.data.opc == false){
+      if(empresa.length >0 && nombre.length > 0 && select !=undefined ){
     this.customerService.insertaCliente({empresa:empresa, nombre: nombre,estatus:select}).toPromise();
     this.dialogRef.close("Se ha creado el usuario")
-    console.log("si entro");
+      }else{
+        alert("Llene todos los datos")
+      }
+    }else{
+      if(empresa.length >0 && nombre.length > 0 && select !=undefined){
+      this.customerService.acualizarCliente({id:this.data.id,empresa:empresa, nombre: nombre,estatus:select}).toPromise();
+      this.dialogRef.close("Se ha actualizado el usuario")
+    }else{
+      alert("Llene todos los datos")
+    }
+    }
   }
 
 }
