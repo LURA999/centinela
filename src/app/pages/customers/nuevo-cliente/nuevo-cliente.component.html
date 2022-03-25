@@ -1,31 +1,33 @@
-    <div class="container">
-        <h2>Ingrese los datos</h2>
-    <div>
-    <mat-form-field appearance="standard">
-      <mat-label>Empresa</mat-label>
-      <input matInput  placeholder="Nombre de empresa" #input>   
-    </mat-form-field>
-    </div>
-    <div>
-        <mat-form-field appearance="standard">
-          <mat-label>Nombre corto</mat-label>
-          <input matInput  placeholder="Ingrese nombre corto" #input>   
-        </mat-form-field>
-    </div>
-
+<div class="container">
+<h2 mat-dialog-title>Ingrese los datos</h2>
+<mat-dialog-content class="mat-typography">
   <div>
-    <mat-form-field appearance="fill">
-      <mat-label>Estatus</mat-label>
-      <select matNativeControl required>
-        <option value="volvo2">Seleccione un estatus</option>
-        <option value="volvo">Activos</option>
-        <option value="saab">Inactivos</option>
-        <option value="mercedes">Cerrado</option>
-      </select>
-    </mat-form-field>
-    </div>
+  <mat-form-field appearance="standard">
+    <mat-label>Empresa</mat-label>
+    <input matInput  placeholder="Nombre de empresa" #empresa >   
+  </mat-form-field>
+  </div>
+  <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Nombre corto</mat-label>
+        <input matInput  placeholder="Ingrese nombre corto" #nombre>   
+      </mat-form-field>
+  </div>
 
-    <div style="margin-top: 5%;">
-        <button mat-raised-button color="primary">Crear cliente</button>
-      </div>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Estatus</mat-label>
+    <mat-select [(value)]="data.select" matNativeControl required #select>
+      <mat-option value="0" disabled>Seleccione un estatus</mat-option>
+      <mat-option value="1">Activos</mat-option>
+      <mat-option value="2">Inactivos</mat-option>
+      <mat-option value="3">Ausente</mat-option>
+    </mat-select>
+  </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearCliente(select.value,empresa.value,nombre.value)" cdkFocusInitial>Crear</button>
+</mat-dialog-actions>
 </div>

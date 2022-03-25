@@ -24,4 +24,7 @@ export class CustomerService {
   clienteRepetido(nombre:String){
     return this.http.get(this.local+"Customer/customer.php?nombre="+nombre);
   }
+  eliminarFalso(id:String){
+    return this.http.patch(this.local+"Customer/customer.php?id="+id,{responseType: 'text'});
+  }
 }

@@ -1,15 +1,18 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MyCustomPaginatorIntl } from './MyCustomPaginatorIntl';
 import { NuevoClienteComponent } from '../nuevo-cliente/nuevo-cliente.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import * as XLSX from 'xlsx';
 import { CustomerService } from 'src/app/services/customer.service';
+import { DeleteComponent } from '../delete/delete.component';
+import { NotificationService } from 'src/app/services/notification.service';
 
 export interface cliente {
+  id : number;
   empresa: string;
   nombre: string;
   estatus: string;
@@ -27,9 +30,21 @@ export interface cliente {
 export class CustomerListComponent implements OnInit {
   title = 'Centinela';
   fileName= 'Excel_Clientes_Export.Xlsx'; 
-  userList = [
-    
-  ]
+  userList = []
+  displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
+  ELEMENT_DATA: cliente[] = [];
+  excel : string [][] = [];
+  totalItems: number = 0;
+  page: number = 0; 
+  carga :boolean=false;
+  previousPage: number = 0;
+  showPagination: boolean = true;
+  contenedor_carga : boolean = false;
+  slider : boolean = true;
+  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  @ViewChild ("paginator") paginator:any;
+  childMessage: string = "hola desde el componente customer-list";
+
   exportexcel(): void 
     {
        /* table id is passed over here */   
@@ -45,25 +60,14 @@ export class CustomerListComponent implements OnInit {
 			
     }
 
-  displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
-  ELEMENT_DATA: cliente[] = [];
-  excel : string [][] = [];
-  totalItems: number = 0;
-  page: number = 0; 
-  carga :boolean=false;
-  previousPage: number = 0;
-  showPagination: boolean = true;
-  contenedor_carga : boolean = false;
-  slider : boolean = true;
-  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  @ViewChild ("paginator") paginator:any;
-  childMessage: string = "hola desde el componente customer-list";
+ 
 
   constructor(
     private titleService: Title,
     private config: NgbPaginationConfig,
     private dialog : NgDialogAnimationService,
     private clienteServicio : CustomerService,
+    private notificationService: NotificationService
    ) {
       this.config.boundaryLinks = true;
     }
@@ -78,7 +82,7 @@ export class CustomerListComponent implements OnInit {
     await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
       for(let i of resp.container)
       this.ELEMENT_DATA.push(
-        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+        {id: i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
       );
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator;    
@@ -95,7 +99,7 @@ export class CustomerListComponent implements OnInit {
     await this.clienteServicio.clienteEstatus(opcion).subscribe((resp : any) =>{
       for(let i of resp.container)
       this.ELEMENT_DATA.push(
-        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+        {id:i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
       );
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     })
@@ -103,7 +107,7 @@ export class CustomerListComponent implements OnInit {
      await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
       for(let i of resp.container)
       this.ELEMENT_DATA.push(
-        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+        {id:i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
       );
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     });
@@ -177,6 +181,44 @@ export class CustomerListComponent implements OnInit {
     }else{
       alert("Solo se permiten tipos de archivos Excel")
     }
+  }
+
+
+  editar(empresa : string, nombre : string,estatus:string,id:number){
+    let dialogRef  = this.dialog.open(NuevoClienteComponent,
+      {data: {empresa : empresa == undefined || empresa == "" 
+      || empresa.length>0 ? empresa: "", nombre : nombre == undefined || nombre == "" 
+      || nombre.length>0 ? nombre: "",estatus:estatus == undefined || estatus == "" 
+      || estatus.length>0 ? estatus: "",id:id == undefined ? id: ""},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(result)
+        if(result.length > 0){
+          setTimeout(() => {
+            this.notificationService.openSnackBar(result);
+          });
+          }
+      });
+  }
+
+  eliminar(id:number){
+    let dialogRef = this.dialog.open(DeleteComponent,
+      {data: {idCliente : id},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+
+      dialogRef.afterClosed().subscribe((result : any) => {
+        if(result.length > 0){
+        setTimeout(() => {
+          this.notificationService.openSnackBar(result);
+        });
+        }
+      });
+      
   }
   
 }
