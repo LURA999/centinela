@@ -282,13 +282,13 @@ export class CustomerListComponent implements OnInit {
     }
   }
 
-  estatus(numero : string) {
+  estatus(numero : number) {
     switch(numero){
-      case '1':
+      case 1:
         return "activo"
-      case '2':
+      case 2:
         return "inactivo"
-      case '3': 
+      case 3: 
         return "ausente"
       default:
         return ""
