@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {  Renderer2,ViewEncapsulation } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsuarioService } from 'src/app/core/services/usuario.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 
+/**LOGIN PARA USUARIOS */
 @Component({
   selector: 'app-login-usuario',
   templateUrl: './login-usuario.component.html',
@@ -15,12 +16,17 @@ export class LoginUsuarioComponent implements OnInit {
 
   email = new FormControl('', [Validators.required, Validators.email])
   hide = true;
+  formSesion : FormGroup =  this.fb.group({
+    correo: ['', Validators.required],
+    contrasena:  ['', Validators.required],
+  });
 
-  constructor(private usuarioServicio : UsuarioService,
-    private rendered2 : Renderer2, private router:Router, private auth :AuthService) { }
+
+  constructor(private usuarioServicio : UsuarioService
+   , private router:Router, private auth :AuthService, private fb :FormBuilder) { }
 
   ngOnInit(): void {
-
+    
   }
   
   //Validacion de correo en input
@@ -32,19 +38,18 @@ export class LoginUsuarioComponent implements OnInit {
   }
 
   form(){
-   var correo =<HTMLInputElement> document.getElementById('valorCorreo');
-    var contra =<HTMLInputElement> document.getElementById('valorContra');
-    let userCode = btoa(correo.value)
-    let passwordCode= btoa(contra.value)
-
-    this.usuarioServicio.login(userCode,passwordCode,0).subscribe((response:any) =>{
-      console.log(response)
+    if(this.formSesion.valid){
+    this.usuarioServicio.login(btoa(this.formSesion.controls['correo'].value),btoa(this.formSesion.controls['contrasena'].value),0).subscribe((response:any) =>{
       if(response.status === "ok"){
         this.auth.crearSesion( response.container);
-        this.router.navigateByUrl('/usuario/dashboard')
+        location.reload();
       }else{
         alert(response.info)
       }
     });
+  }else{
+    alert("Por favor acomplete los campos")
   }
+}
+  
 }

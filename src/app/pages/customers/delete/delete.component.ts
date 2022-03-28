@@ -16,9 +16,10 @@ export class DeleteComponent implements OnInit {
   }
   
 
-  confirmar(){
-    this.servicioCliente.eliminarFalso(this.data.idCliente).toPromise();
+  async confirmar(){
+   await this.servicioCliente.eliminarFalso(this.data.idCliente).subscribe();
     this.dialogRef.close('Se ha eliminado con exito');
+  
   }
 
   closeDialog(){

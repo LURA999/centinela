@@ -1,25 +1,24 @@
-<body>
     <div class="container">
         <div class="containerform">
             <div class="containerfixed">
             <div class="titulo">
                 <h1>Centinela - Administrador</h1>
             </div>
-            <form method="post">
+            <form [formGroup]="formSesion">
                 <div>
                     <mat-form-field appearance="fill">
                         <mat-label>Ingresa tu correo</mat-label>
-                        <input id="valorCorreo" class = "matInput" matInput placeholder="email@example.com" [formControl]="email" required>
+                        <input  matInput placeholder="email@example.com" class = "matInput"  formControlName="correo" [formControl]="email" required>
                         <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </div>
                 <div class="grupo2">
                     <mat-form-field appearance="fill">
                         <mat-label>Ingresa tu contraseña</mat-label>
-                        <input id="valorContra" class = "matInput" matInput [type]="hide ? 'password' : 'text'" required>
-                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                        <mat-icon >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                        </button>
+                        <input matInput class = "matInput" formControlName="contrasena" [type]="hide ? 'password' : 'text'" required>
+                        <mat-icon  matSuffix (click)="hide = !hide">
+                        {{hide ? 'visibility' : 'visibility_off'}}
+                        </mat-icon>
                     </mat-form-field>
                 </div>
             <div class="form">
@@ -29,4 +28,3 @@
             </div>
     </div>
     </div>
-    </body>

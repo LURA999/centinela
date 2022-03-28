@@ -3,7 +3,6 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Router } from '@angular/router';
-import { CustomerListComponent } from 'src/app/pages/customers/customer-list/customer-list.component';
 
 @Component({
     selector: 'app-layout',
@@ -17,25 +16,33 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     showSpinner: boolean = false;
     userName: string = "";
     isAdmin: boolean = false;
-    @ViewChild(CustomerListComponent) child:any;
-
     private autoLogoutSubscription: Subscription = new Subscription;
 
     constructor( 
        private auth : AuthService,
         private changeDetectorRef: ChangeDetectorRef,
         private media: MediaMatcher,
-        private router : Router
+        private router : Router,
       ) {
 
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         // tslint:disable-next-line: deprecation
         this.mobileQuery.addListener(this._mobileQueryListener);
+
     }
 
     ngOnInit(): void {
+            
+    }
 
+    acceso(){
+        if(this.auth.getCveRol() == 4){
+            return "none"
+        }else{
+            return "block"
+        }
+         
     }
 
 
@@ -47,12 +54,10 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
-
-
     }
 
     salir(){
-        
+
         if(this.auth.getTipo()==1){
             this.auth.cerrarSesion();
             this.router.navigateByUrl("/admin");

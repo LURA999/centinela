@@ -59,7 +59,7 @@ mat-form-field {
     font-size: 1vw;
 }
 
-
+/*
 .mat-form-field-underline {
     background-color: rgb(241, 0, 0) !important;;
 }
@@ -69,8 +69,26 @@ mat-form-field {
 
 .mat-form-field.mat-focused .mat-form-field-ripple {
     background-color: #e91e63 !important;
+}  
+
+*/
+
+.mat-icon {
+    opacity: 0.5;
+    
+}
+/** Modificando los colores detallistas de angular */
+.mat-form-field-ripple {
+    background-color: transparent !important;
 }
 
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: white;
+}
+.mat-icon-button {
+    opacity: 0.5;
+    
+}
 @media (max-width: 850px) {
     .titulo h1 {
         font-size: 1rem;

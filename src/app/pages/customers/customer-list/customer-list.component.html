@@ -1,18 +1,20 @@
 
 <div class="container" fxLayout="row" fxLayoutAlign="center none">
-  <div fxFlex="95%" id="tablaCliente">
+
+  <div fxFlex="95%">
+
     <mat-card>
       <mat-card-content>
          <h2>Clientes</h2>
         
         <div class="barriba">
         <div id="nuevoc">
-        <button mat-raised-button color="primary" (click)="nuevoCliente()">Nuevo usuario</button>
+        <button mat-raised-button color="primary" (click)="nuevoCliente()">Nuevo cliente</button>
         </div>
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Estatus</mat-label>
-            <mat-select matNativeControl  (selectionChange)="verEstatus($event.value)" required>
+            <mat-select matNativeControl (selectionChange)="verEstatus($event.value)" required>
               <mat-option value="0" selected disabled>Seleccione un estatus</mat-option>
               <mat-option value="1">Activos</mat-option>
               <mat-option value="2">Inactivos</mat-option>
@@ -28,13 +30,14 @@
           </mat-form-field>
           </div>
       </div>
-        <table mat-table [dataSource]="dataSource" id='excel-table' >          
+      
+        <table mat-table [dataSource]="dataSource" >          
           <ng-container matColumnDef="Empresa">
-            <th mat-header-cell *matHeaderCellDef>Empresa</th>
+            <th mat-header-cell *matHeaderCellDef > Empresa</th>
             <td mat-cell *matCellDef="let element"> {{element.empresa}} </td>
           </ng-container>
           <ng-container matColumnDef="Nombre Corto">
-            <th mat-header-cell *matHeaderCellDef>Nombre corto</th>
+            <th mat-header-cell *matHeaderCellDef >Nombre corto</th>
             <td mat-cell *matCellDef="let element">{{element.nombre}} </td>
           </ng-container>
           <ng-container matColumnDef="Estatus">
@@ -43,21 +46,22 @@
           </ng-container>
           <ng-container matColumnDef="Opciones">
             <th mat-header-cell *matHeaderCellDef >Opciones</th>
-            <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element"> 
               <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="eliminar(element.id)"><mat-icon>delete</mat-icon>Eliminar</button> 
                 <button mat-menu-item (click)="editar(element.empresa,element.nombre,element.estatus,element.id)"><mat-icon>settings</mat-icon>Editar</button>  
-              </mat-menu>
+              </mat-menu> </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr [ngStyle]="{'display': hayClientes2()}" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-
+        <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" [hidden]="cargando"></div>
+        <div class="existe" [hidden] = "hayClientes()">No se encontraron resultados... </div>
+      
         <mat-paginator  #paginator
-        [length]="1"
         [pageSize]="10"
-        [pageSizeOptions]="[5, 10]"></mat-paginator>
+        [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
       
       <div class="babajo">
         
@@ -73,5 +77,5 @@
       </div>
     </mat-card-content>
     </mat-card>
-  </div>
+</div>
 </div>

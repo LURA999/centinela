@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsuarioService } from 'src/app/core/services/usuario.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 
+
+/**LOGIN PARA ADMINIS */
 @Component({
   selector: 'app-login-contacto',
   templateUrl: './login-contacto.component.html',
@@ -13,14 +15,19 @@ import { AuthService } from 'src/app/core/services/auth.service';
 })
 export class LoginContactoComponent implements OnInit {
 
-
-  email = new FormControl('', [Validators.required, Validators.email])
+  email = new FormControl('', [Validators.required, Validators.email]);
   hide = true;
+  formSesion : FormGroup =  this.fb.group({
+    correo: ['', Validators.required],
+    contrasena:  ['', Validators.required],
+  });
 
-  constructor(private router : Router, private usuarioServicio : UsuarioService, private auth : AuthService) { }
+  constructor(private router : Router, private usuarioServicio : UsuarioService, private auth : AuthService,
+    private fb : FormBuilder) { 
+  }
 
   ngOnInit(): void {
-
+   
   }
 
   //Validacion de correo en input
@@ -33,19 +40,18 @@ export class LoginContactoComponent implements OnInit {
   }
 
   form(){
-    var correo =<HTMLInputElement> document.getElementById('valorCorreo');
-    var contra =<HTMLInputElement> document.getElementById('valorContra');
-    let userCode = btoa(correo.value)
-    let passwordCode= btoa(contra.value)
-    this.usuarioServicio.login(userCode,passwordCode,1).subscribe((response:any) =>{
-      console.log(response)
+    if(this.formSesion.valid){
+    this.usuarioServicio.login(btoa(this.formSesion.controls['correo'].value),btoa(this.formSesion.controls['contrasena'].value),1).subscribe((response:any) =>{
       if(response.status === "ok"){
         this.auth.crearSesion(response.container);
-        this.router.navigateByUrl('/admin/dashboard')
+        location.reload();
       }else{
         alert(response.info)
       }
     });
+  }else{
+    alert("Por favor acomplete los campos")
   }
+}
   
 }

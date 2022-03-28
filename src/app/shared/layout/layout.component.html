@@ -2,22 +2,6 @@
 
 
 <div class="navbar-container" [class.example-is-mobile]="mobileQuery.matches">
-<!--
-  <div>
-    <div></div>
-    <div >
-      <ul>
-          <li>Una ves completado, la pagina se reiniciara</li>
-          <li>Comparando clientes viejos y actuales</li>
-          <li>Por favor no cierre el navegador</li>
-          <li>Actualizando y/o subiendo clientes</li>
-          <li>Esto puede demorar dependiendo de la cantidad de clientes y/o servicios</li>
-          <li>Si interrumpe la pagina, se subira incompletamente</li>
-      </ul>
-  </div>
-  </div>
-    
-   Top navbar -->
   <mat-toolbar class="navbar" color="primary">
 
     <button mat-icon-button (click)="snav.toggle()">
@@ -25,9 +9,7 @@
     </button>
 
     <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
-
       Centinela
-
     </a>
 
     <span class="navbar-spacer"></span>
@@ -60,13 +42,17 @@
     
     <!-- Side nav -->
     <mat-sidenav #snav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'"
-      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
+      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav"
+     >
 
       <mat-nav-list>
-        
-        <a mat-list-item [routerLink]="['/usuario/clientes']">
-          <mat-icon mat-list-icon>person</mat-icon>
-          <p mat-line> Clientes  </p>
+        <div  id="header-nav">
+          <p  > Menu  </p>
+        </div>
+
+        <a mat-list-item [routerLink]="['/admin/clientes']" [ngStyle]="{'display': acceso()}">
+          <mat-icon mat-list-icon >person</mat-icon>
+          <p mat-line > Clientes  </p>
         </a>
 
 <mat-expansion-panel >  
@@ -76,13 +62,13 @@
       <p mat-line> Red </p>
    
   </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Ping</a>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Repetidores</a>
-    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
       Segmentos</a>
-      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
         Control de Ips</a>
 </mat-expansion-panel>
 
@@ -98,16 +84,16 @@
       <p  mat-line> Activacion y cancelacion </p>
     
   </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Servicios</a>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Clientes</a>
 </mat-expansion-panel>
 
 
 
 
-<a mat-list-item [routerLink]="['/customers']" routerLinkActive="active">
+<a mat-list-item [routerLink]="['/customers']" routerLinkActive="active" mat-line>
   <mat-icon mat-list-icon>
     sticky_note_2
   </mat-icon>
@@ -122,9 +108,9 @@
       <p mat-line> Incidencias</p>
     
   </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Externas</a>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Internas</a>
 </mat-expansion-panel>
 
@@ -135,19 +121,19 @@
       <p mat-line> Tickets</p>
    
   </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
       Generales</a>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Propios</a>
-    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
       Informacion</a>
-      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
         Altas de ticket</a>
 </mat-expansion-panel>
 
 
 
-<a mat-list-item [routerLink]="['/typography']" routerLinkActive="active">
+<a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" >
   <mat-icon mat-list-icon>
     assignment_turned_in
   </mat-icon>

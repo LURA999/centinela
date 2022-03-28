@@ -5,21 +5,21 @@
                 <div class="titulo">
                     <h1>Centinela - Usuario</h1>
                 </div>
-                <form >
+                <form [formGroup]="formSesion" >
                     <div>
                         <mat-form-field appearance="fill">
                             <mat-label >Ingresa tu correo</mat-label>
-                            <input id="valorCorreo" class = "matInput" matInput placeholder="email@example.com" [formControl]="email" required>
+                            <input class = "matInput" matInput formControlName= "correo" placeholder="email@example.com" [formControl]="email" required>
                             <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
                         </mat-form-field>
                     </div>
                     <div class="grupo2" >
                         <mat-form-field appearance="fill">
                             <mat-label>Ingresa tu contraseña</mat-label>
-                            <input id="valorContra" class = "matInput" matInput [type]="hide ? 'password' : 'text'" required >
-                            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                            </button>
+                            <input class = "matInput" formControlName= "contrasena" matInput [type]="hide ? 'password' : 'text'" required >
+                            <mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                            {{hide ? 'visibility_off' : 'visibility'}}
+                            </mat-icon>
                         </mat-form-field>
                     </div>
                     <div class="form">

@@ -7,7 +7,6 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NuevoClienteComponent } from './nuevo-cliente/nuevo-cliente.component';
 import { DeleteComponent } from './delete/delete.component';
-import { VarDirective } from './var.directive';
 
 @NgModule({
   imports: [
@@ -21,7 +20,6 @@ import { VarDirective } from './var.directive';
     CustomerListComponent,
     NuevoClienteComponent,
     DeleteComponent,
-    VarDirective
   ],
   exports: [
     CustomerListComponent,

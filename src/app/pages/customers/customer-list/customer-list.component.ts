@@ -6,21 +6,17 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MyCustomPaginatorIntl } from './MyCustomPaginatorIntl';
 import { NuevoClienteComponent } from '../nuevo-cliente/nuevo-cliente.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import * as XLSX from 'xlsx';
 import { CustomerService } from 'src/app/services/customer.service';
 import { DeleteComponent } from '../delete/delete.component';
 import { NotificationService } from 'src/app/services/notification.service';
-import { Workbook } from 'exceljs'
+import { Subscription } from 'rxjs';
+import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import * as XLSX from 'xlsx';
+import { MatSort } from '@angular/material/sort';
 
-export interface cliente {
-  id : number;
-  empresa: string;
-  nombre: string;
-  estatus: string;
-  opciones: string;
 
-}
+
 
 @Component({
   selector: 'app-customer-list',
@@ -31,43 +27,55 @@ export interface cliente {
 
 export class CustomerListComponent implements OnInit {
   title = 'Centinela';
-  fileName= 'Excel_Clientes_Export.Xlsx'; 
   userList = []
   displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
-  ELEMENT_DATA: cliente[] = [];
+  ELEMENT_DATA: any = [];
   excel : string [][] = [];
   totalItems: number = 0;
   page: number = 0; 
-  carga :boolean=false;
-  previousPage: number = 0;
   showPagination: boolean = true;
-  contenedor_carga : boolean = false;
-  slider : boolean = true;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  @ViewChild ("paginator") paginator:any;
-
+  @ViewChild ("paginator") paginator2:any;
+  todosClientes : any;
+  autoSelect :number =0;
+  sub$ :Subscription | undefined;
+  cargando : boolean = false;
+  @ViewChild(MatSort, { static: true })
+  sort: MatSort = new MatSort;
 
   constructor(
     private titleService: Title,
     private config: NgbPaginationConfig,
     private dialog : NgDialogAnimationService,
     private clienteServicio : CustomerService,
-    private notificationService: NotificationService
-   ) {
+    private notificationService: NotificationService,
+    ) {
       this.config.boundaryLinks = true;
     }
-
-
-  llenarArchivoExcel(json_data : any){
-
-
-    for (let x = 0; x < this.ELEMENT_DATA.length; x++) {
-     json_data.push({ });
-      
-    }
-    return json_data
+  
+  ngOnInit() : void {
+    this.titleService.setTitle('Centinela - Customers');
+    this.llenarTabla(); 
   }
 
+  /**Funcion principal */
+  async llenarTabla(){
+    this.cargando = false;
+    this.ELEMENT_DATA = [];
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.todosClientes =  await this.clienteServicio.clientesTodos().toPromise();
+      for (let i=0; i<this.todosClientes.container.length; i++)
+      this.ELEMENT_DATA.push(
+        {id: this.todosClientes.container[i]["idCliente"],empresa: this.todosClientes.container[i]["nombre"],nombre:this.todosClientes.container[i]["nombreCorto"]
+          ,estatus:this.estatus(this.todosClientes.container[i]["estatus"])}
+      );
+      this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator = await this.paginator2;    
+      this.dataSource.sort = await this.sort;
+      this.cargando = true;
+  }
+
+  /**Las siguientes dos funciones, exportExcel y onfilechange, son para importar y exportar */
   async exportexcel() 
   {
     let workbook = new Workbook();
@@ -79,70 +87,199 @@ export class CustomerListComponent implements OnInit {
     {
       let x2=Object.keys(x1);
       let temp : any=[]
-      for(let y of x2)
-      {
+
         temp.push(this.ELEMENT_DATA[x1]["id" ])
         temp.push(this.ELEMENT_DATA[x1]["empresa"])
         temp.push(this.ELEMENT_DATA[x1]["nombre"])
         temp.push(this.ELEMENT_DATA[x1]["estatus"])
-      }
+      
       worksheet.addRow(temp)
     }
 
     let fname="ExcelClientes"
 
-//add data and file name and download
-workbook.xlsx.writeBuffer().then((data) => {
-  let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');
-});
-  }
-  
-  ngOnInit() : void {
-    this.titleService.setTitle('Centinela - Customers');
-    this.llenaTabla(); 
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
 
-  async llenaTabla(){
+  async onFileChange(evt: any){
+    this.cargando = false;
+    
+    const target : DataTransfer = <DataTransfer>(evt.target);
+     let formato= ""+target.files[0].name.split(".")[target.files[0].name.split(".").length-1];
+
+    if(formato == "xlsm" ||formato == "xlsx" || formato == "xlsb" ||formato == "xlts" ||formato == "xltm" ||formato == "xls" ||formato == "xlam" ||formato == "xla"||formato == "xlw" ){
+      if(target.files.length !==1) 
+      throw  alert('No puedes subir multiples archivos') ;
+      
+      const reader: FileReader= new FileReader();
+      reader.onload = async (e: any) =>{
+      const bstr : string = e.target.result;
+      const wb : XLSX.WorkBook = XLSX.read(bstr, {type:'binary'});
+      const wsname : string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      this.excel = (XLSX.utils.sheet_to_json(ws,{header: 1}));
+
+      try{
+        for (let p=0; p<this.excel.length; p++) {
+         let repetidocliente:any = await this.clienteServicio.clienteRepetido(this.excel[p][0]).toPromise();
+         repetidocliente = repetidocliente.container;
+           try{
+             if(this.excel[p][0] !== undefined  && repetidocliente[0].repetido == 0 || this.excel[p][0] == "" && repetidocliente[0].repetido == 0){    
+               await this.clienteServicio.insertaCliente({empresa:this.excel[p][0], nombre: this.excel[p][1],estatus:+this.excel[p][2]}).subscribe();
+             }
+            }catch(Exception){}
+         }
+         await this.llenarTabla(); 
+      }catch(Exception){
+        alert("Error: Verifique su tabla")
+      }
+
+      };
+      await reader.readAsBinaryString(target.files[0]);
+    }else{
+      alert("Solo se permiten tipos de archivos Excel")
+    }
+  }
+
+  /**Filtro GENERAL */
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+/**Filtro para el estatus */
+  async verEstatus(opcion: number) {
+
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
-      for(let i of resp.container)
-      this.ELEMENT_DATA.push(
-        {id: i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
-      );
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator =  this.paginator;    
-      this.paginator.hidePageSize=  true;
-    });
-   
-  }
-
-  async verEstatus(opcion: number) {
-    this.dataSource = new MatTableDataSource();
-    this.ELEMENT_DATA = [];
 
     if(opcion < 4){
     await this.clienteServicio.clienteEstatus(opcion).subscribe((resp : any) =>{
       for(let i of resp.container)
-      this.ELEMENT_DATA.push(
-        {id:i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
-      );
+      this.ELEMENT_DATA.push({id:i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus)});
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator2;    
+      this.paginator2.firstPage()
     })
   }else{
      await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
       for(let i of resp.container)
       this.ELEMENT_DATA.push(
-        {id:i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+        {id:i.idCliente,empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus)}
       );
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator2;    
+      this.paginator2.firstPage()
+
     });
   }
   }
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  
+  /**Crear cliente, editar y eliminar */
+   nuevoCliente(){
+    let dialogRef  = this.dialog.open(NuevoClienteComponent,
+      {data: {opc : false },
+      animation: { to: "bottom" },
+      height:"auto", width:"350px",
+     });
+
+     this.paginator2.firstPage();
+     dialogRef.afterClosed().subscribe((result:any)=>{
+       try{
+      if(result.mensaje.length > 0  ){
+        this.ELEMENT_DATA.unshift({id: result.idCliente,empresa: result.empresa,nombre:result.nombre,estatus:this.estatus(result.estatus)});
+        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+        this.dataSource.paginator = this.paginator2;    
+        this.dataSource.sort = this.sort;
+
+        setTimeout(()=>{
+        this.notificationService.openSnackBar("Se agrego con exito");
+        })
+       }
+      }catch(Exception){}
+     })
+  }
+  
+  async editar(empresa : string, nombre : string,estatus:string,id:number){
+
+    let dialogRef  = await this.dialog.open(NuevoClienteComponent,
+      {data: {empresa : empresa, nombre : nombre ,estatus:this.estatusNumero(estatus) ,id:id , opc:true},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+      await dialogRef.afterClosed().subscribe((result:any) => {
+        try{
+        if(result.mensaje.length > 0  ){
+          this.ELEMENT_DATA.splice(this.buscandoIndice(id)
+            ,1,{empresa : result.empresa, nombre : result.nombre ,estatus:this.estatus(result.estatus) ,id:id })
+          this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+          this.dataSource.paginator = this.paginator2;  
+          this.dataSource.sort = this.sort;
+
+          setTimeout(()=>{          
+          this.notificationService.openSnackBar("Se actualizo con exito");  
+          })
+        }
+        }catch(Exception){}
+      }); 
+  }
+
+  /**para el loading */
+  hayClientes(){
+    if(this.ELEMENT_DATA != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
+  }
+  /**Ayudante de loading p */
+  hayClientes2(){
+    if(this.cargando !=false){
+      return "table-row";
+    }else{
+      return "none";
+    }
+  }
+  async eliminar(id:number){
+    let dialogRef = await this.dialog.open(DeleteComponent,
+      {data: {idCliente : id},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+      
+      await dialogRef.afterClosed().subscribe((result : any) => {
+        try{
+        if(result.length > 0  ){
+          this.ELEMENT_DATA =  this.arrayRemove(this.ELEMENT_DATA, this.buscandoIndice(id))
+
+          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+          this.dataSource.paginator = this.paginator2;
+          this.dataSource.sort = this.sort;
+
+        setTimeout(()=>{
+          this.notificationService.openSnackBar("Se elimino con exito");
+        })
+      }
+      }catch(Exception){}
+      });
+  }
+
+  /**Funciones extras, para buscar indice del array y para los estatus */
+  buscandoIndice(id:number){
+    let i = 0
+    while (true) {
+      const element = this.ELEMENT_DATA[i]["id"];
+      if(element===id){
+       return i
+      }
+      i++;
+    }
   }
 
   estatus(numero : string) {
@@ -169,109 +306,17 @@ workbook.xlsx.writeBuffer().then((data) => {
         return ""
     }
   }
-  async nuevoCliente(){
-    let dialogRef  = this.dialog.open(NuevoClienteComponent,
-      {data: {opc : false },
-      animation: { to: "bottom" },
-        height:"50%", width:"350px",
-      });
 
-      await dialogRef.afterClosed().subscribe(result => {
-        try{
-        if(result.length > 0  || result != undefined ){
-          setTimeout(() => {
-            this.notificationService.openSnackBar(result);
-            this.llenaTabla()
-          });
-          }
-        }catch(Exception) {}
-      }); 
-  }
-
-  async onFileChange(evt: any){
-    const target : DataTransfer = <DataTransfer>(evt.target);
-     let formato= ""+target.files[0].name.split(".")[target.files[0].name.split(".").length-1];
-
-    if(formato == "xlsm" ||formato == "xlsx" || formato == "xlsb" ||formato == "xlts" ||formato == "xltm" ||formato == "xls" ||formato == "xlam" ||formato == "xla"||formato == "xlw" ){
-      if(target.files.length !==1) 
-      throw  alert('No puedes subir multiples archivos') ;
-      
-      const reader: FileReader= new FileReader();
-      reader.onload = async (e: any) =>{
-      const bstr : string = e.target.result;
-      const wb : XLSX.WorkBook = XLSX.read(bstr, {type:'binary'});
-      const wsname : string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      this.excel = (XLSX.utils.sheet_to_json(ws,{header: 1}));
-      try{
-       //insertar dos tablas juntas 
-       if(this.excel[0].length == 3){ 
-        this.contenedor_carga = await false;
-        this.slider = await false;
-        for (let p=0; p<this.excel.length; p++) {
-         let repetidocliente:any = await this.clienteServicio.clienteRepetido(this.excel[p][0]).toPromise();
-         repetidocliente = repetidocliente.container;
-
-           try{
-             if(this.excel[p][0] !== undefined  && repetidocliente[0].repetido == 0 || this.excel[p][0] == "" && repetidocliente[0].repetido == 0){    
-               await this.clienteServicio.insertaCliente({empresa:this.excel[p][0], nombre: this.excel[p][1],estatus:+this.excel[p][2]}).subscribe();
-             }
-            }catch(Exception){}
-         }
-     await location.reload();
-       }
-      }catch(Exception){
-        this.contenedor_carga = await true;
-        this.slider = await true;
-        alert("No se permiten archivos vacios")
-      }
-
-      };
-      await reader.readAsBinaryString(target.files[0]);
-    }else{
-      alert("Solo se permiten tipos de archivos Excel")
-    }
-  }
-
-
-  async editar(empresa : string, nombre : string,estatus:string,id:number){
-    let dialogRef  = this.dialog.open(NuevoClienteComponent,
-      {data: {empresa : empresa, nombre : nombre ,estatus:this.estatusNumero(estatus) ,id:id , opc:true},
-      animation: { to: "bottom" },
-        height:"auto", width:"300px",
-      });
-      
-      await dialogRef.afterClosed().subscribe(result => {
-        try{
-        if(result.length > 0  ){
-          setTimeout(() => {
-            this.notificationService.openSnackBar(result);
-            this.llenaTabla()
-          });
-          }
-        }catch(Exception) {}
-      }); 
+   arrayRemove(arr : any, index : any) { 
+    for( var i = 0; i < arr.length; i++){ 
     
-  }
-
-  eliminar(id:number){
-    let dialogRef = this.dialog.open(DeleteComponent,
-      {data: {idCliente : id},
-      animation: { to: "bottom" },
-        height:"auto", width:"300px",
-      });
-
-      dialogRef.afterClosed().subscribe((result : any) => {
-        try{
-        if(result.length > 0  ){
-        setTimeout(() => {
-          this.notificationService.openSnackBar(result);
-          this.llenaTabla()
-        });
-        }
-      }catch(Exception){}
-      });
-      
-  }
+      if ( arr[i]["id"] === arr[index]["id"]) { 
   
+          arr.splice(i, 1); 
+      }
+  
+    }
+    return arr;
+  }
+
 }

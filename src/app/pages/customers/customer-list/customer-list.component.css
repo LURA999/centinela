@@ -1,4 +1,33 @@
+/**Loading para componentes*/
+.preloader {
+    width: 60px;
+    height: 60px;
+    border: 10px solid #eee;
+    border-top: 10px solid #0c82ff ;
+    border-radius: 50%;
+    animation-name: girar;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    cursor:wait;
+  }
+  @keyframes girar {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
   
+  /**Mensaje si hay clientes o no*/
+
+  .existe{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    text-align: center;
+   }
+
 /**Datos de tabla*/
 table {
     width: 100%;
@@ -47,7 +76,7 @@ th.mat-sort-header-sorted {
     width: auto;
     border-radius: 100px;
 }
-
+/*
 @media screen and (max-width:999px) {
     .barriba {
         display: block;
@@ -55,6 +84,25 @@ th.mat-sort-header-sorted {
     }
     #nuevoc {
         margin-bottom: 25px;
+    }
+}*/
+
+@media screen and (max-width:624px) {
+    .barriba {
+        display: block;
+        text-align: center;
+    }
+    #nuevoc {
+        margin-top: 20px;
+        margin-bottom: 35px;
+    }
+
+    #nuevoc button{
+        width: 100%;
+        height: 40px;
+    }
+    .mat-form-field {
+        width: 100%;
     }
 }
 

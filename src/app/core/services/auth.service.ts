@@ -41,7 +41,7 @@ export class AuthService {
    getCveRol(){
     let payload = localStorage.getItem('sesion')
     let info = this.parseJwt(payload!!)
-    return info.administrador
+    return info.cveRol
   }
 
    getCveId(){
