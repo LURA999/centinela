@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class DashAdminGuard implements CanActivate {
   constructor(private route:Router, private auth:AuthService){}
+
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1){
       return true
@@ -15,6 +16,7 @@ export class DashAdminGuard implements CanActivate {
         this.route.navigateByUrl('/admin')
       }else{
         this.route.navigateByUrl('/usuario/dashboard')
+        
       }
       return false;
     }

@@ -1,0 +1,73 @@
+
+<div class="container" fxLayout="row" fxLayoutAlign="center none">
+
+    <div fxFlex="95%">
+  
+      <mat-card>
+        <mat-card-content>
+           <h2>Clientes</h2>
+          
+        <div class="barriba">
+          <div id="nuevoc">
+          <button mat-raised-button color="primary" (click)="nuevoSegmento()"> <mat-icon>add</mat-icon> Nuevo</button>
+        </div>
+          <div>
+            <mat-form-field appearance="standard">
+              <mat-label>Filtro</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+            </mat-form-field>
+            </div>
+        </div>
+          <table mat-table [dataSource]="dataSource" >          
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef > Id</th>
+              <td mat-cell *matCellDef="let element"> {{element.id}}</td>
+            </ng-container>
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef >Nombre</th>
+              <td mat-cell *matCellDef="let element">{{element.nombre}}</td>
+            </ng-container>
+            <ng-container matColumnDef="segmento">
+              <th mat-header-cell *matHeaderCellDef >Segmento</th>
+              <td mat-cell *matCellDef="let element">{{element.segmento}}</td>
+            </ng-container>
+            <ng-container matColumnDef="diagonal">
+              <th mat-header-cell *matHeaderCellDef >Diagonal</th>
+              <td mat-cell *matCellDef="let element">{{element.diagonal}}</td>
+            </ng-container>
+            <ng-container matColumnDef="tipo">
+              <th mat-header-cell *matHeaderCellDef >Tipo</th>
+              <td mat-cell *matCellDef="let element">{{element.tipo}}</td>
+            </ng-container>
+            <ng-container matColumnDef="estatus">
+              <th mat-header-cell *matHeaderCellDef >Estatus</th>
+              <td mat-cell *matCellDef="let element">{{element.estatus}}</td>
+            </ng-container>
+            <ng-container matColumnDef="repetidora">
+              <th mat-header-cell *matHeaderCellDef >Repetidora</th>
+              <td mat-cell *matCellDef="let element"> {{element.repetidora}}</td>
+            </ng-container>
+            <ng-container matColumnDef="opciones">
+              <th mat-header-cell *matHeaderCellDef >Opciones</th>
+            <td mat-cell *matCellDef="let element"> 
+                <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="editarSegmento()"><mat-icon>settings</mat-icon>Editar</button>
+                  <button mat-menu-item (click)="info()"><mat-icon>info</mat-icon>Info</button>  
+                  <button mat-menu-item ><mat-icon>lan</mat-icon>Red</button>    
+                  <button mat-menu-item (click)="eliminarSegmento()"><mat-icon>delete</mat-icon>Eliminar</button> 
+                </mat-menu> </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden ></div>
+          <div class="existe" hidden>No se encontraron resultados... </div>
+        
+          <mat-paginator  #paginator
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+      </mat-card-content>
+      </mat-card>
+  </div>
+  </div>

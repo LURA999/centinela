@@ -13,6 +13,7 @@ const appRoutes: Routes = [
   { path: 'admin',canActivate:[InicioGuard], component: LoginContactoComponent },
   { path: 'admin/dashboard',canActivate:[DashAdminGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'usuario/dashboard',canActivate:[DashUsuarioGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
+  { path: 'admin/red', loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },
   { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
   { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 ];

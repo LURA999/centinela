@@ -153,7 +153,7 @@ export class CustomerListComponent implements OnInit {
 
 /**Filtro para el estatus */
   async verEstatus(opcion: number) {
-
+    this.cargando = false;
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
@@ -179,6 +179,7 @@ export class CustomerListComponent implements OnInit {
 
     });
   }
+  this.cargando = true;
   }
   
   /**Crear cliente, editar y eliminar */
