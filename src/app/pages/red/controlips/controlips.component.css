@@ -1,4 +1,4 @@
-/**Loading para componentes*/
+
 .preloader {
     width: 60px;
     height: 60px;
@@ -19,16 +19,15 @@
       transform: rotate(360deg);
     }
   }
-  
-  /**Mensaje si hay clientes o no*/
 
+  
   .existe{
     margin-top: 5%;
     margin-bottom: 5%;
     text-align: center;
    }
 
-/**Datos de tabla*/
+
 table {
     width: 100%;
 }
@@ -77,15 +76,7 @@ th.mat-sort-header-sorted {
     border-radius: 100px;
 }
 
-@media screen and (max-width:999px) {
-    .barriba {
-        display: block;
-        text-align: center;
-    }
-    #nuevoc {
-        margin-bottom: 25px;
-    }
-}
+
 
 @media screen and (max-width:624px) {
     .barriba {
@@ -103,8 +94,9 @@ th.mat-sort-header-sorted {
     }
     .mat-form-field {
         width: 100%;
+       
     }
+   
+  
+  
 }
-
-
-

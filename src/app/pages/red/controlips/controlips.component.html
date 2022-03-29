@@ -1,0 +1,78 @@
+<div class="container" fxLayout="row" fxLayoutAlign="center none">
+
+  <div fxFlex="95%">
+
+    <mat-card>
+      <mat-card-content>
+         <h2>Control de Ips</h2>
+        
+        <div class="barriba">
+        
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Subred</mat-label>
+            <mat-select matNativeControl required>
+              <mat-option value="0" selected disabled>Seleccione un subred</mat-option>
+              <mat-option value="1">10.1.3.0</mat-option>
+              <mat-option value="2">10.1.4.0</mat-option>
+              <mat-option value="3">10.1.5.0</mat-option>
+              <mat-option value="4">10.1.6.0</mat-option>
+            </mat-select>
+          </mat-form-field>
+          </div>
+        <div>
+          <mat-form-field appearance="standard">
+            <mat-label>Buscar</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+          </mat-form-field>
+          </div>
+      </div>
+      
+        <table mat-table [dataSource]="dataSource" >          
+          <ng-container matColumnDef="ip">
+            <th mat-header-cell *matHeaderCellDef > IP</th>
+            <td mat-cell *matCellDef="let element"> 1</td>
+          </ng-container>
+          <ng-container matColumnDef="tipoip">
+            <th mat-header-cell *matHeaderCellDef >TIPO IP</th>
+            <td mat-cell *matCellDef="let element">qwert</td>
+          </ng-container>
+          <ng-container matColumnDef="utilizado">
+            <th mat-header-cell *matHeaderCellDef >UTILIZADO POR</th>
+            <td mat-cell *matCellDef="let element">1234567</td>
+          </ng-container>
+          <ng-container matColumnDef="tipoequipo">
+            <th mat-header-cell *matHeaderCellDef >TIPO DE EQUIPO</th>
+            <td mat-cell *matCellDef="let element">23</td>
+          </ng-container>
+          <ng-container matColumnDef="ping">
+            <th mat-header-cell *matHeaderCellDef >PING</th>
+            <td mat-cell *matCellDef="let element">34 </td>
+          </ng-container>
+          
+          <ng-container matColumnDef="opciones">
+            <th mat-header-cell *matHeaderCellDef >OPCIONES</th>
+          <td mat-cell *matCellDef="let element"> 
+              <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="Configuracion()"><mat-icon>settings</mat-icon>Editar</button>
+                <button mat-menu-item ><mat-icon>info</mat-icon>Info</button>  
+                <button mat-menu-item ><mat-icon>lan</mat-icon>Red</button>    
+                <button mat-menu-item ><mat-icon>delete</mat-icon>Eliminar</button> 
+              </mat-menu> </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden ></div>
+        <div class="existe" hidden>No se encontraron resultados... </div>
+      
+        <mat-paginator  #paginator
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+      
+    
+    </mat-card-content>
+    </mat-card>
+</div>
+</div>

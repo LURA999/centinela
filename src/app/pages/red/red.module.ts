@@ -7,11 +7,18 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { NewSegmentComponent } from './new-segment/new-segment.component';
 import { DeleteComponent } from './delete/delete.component';
 import { InfoComponent } from './info/info.component';
+import { ControlipsComponent } from './controlips/controlips.component';
+import { ConfiguracionComponent } from './configuracion/configuracion.component';
 
 
 @NgModule({
   declarations: [   
-    SegmentsComponent, NewSegmentComponent, DeleteComponent, InfoComponent
+    SegmentsComponent, 
+    NewSegmentComponent, 
+    DeleteComponent, 
+    InfoComponent,
+    ControlipsComponent,
+    ConfiguracionComponent,
   ],
   imports: [
     CommonModule,
