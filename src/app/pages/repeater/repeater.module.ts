@@ -2,26 +2,26 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { RepeaterRoutingModule } from './repeater-routing.module';
-import { RepeaterComponent } from './repeater.component';
 import { RepetidoraComponent } from './repetidora/repetidora.component';
-import { NuevarepetidoraComponent } from './nuevarepetidora/nuevarepetidora.component';
 import { RepetidoraycontactoComponent } from './repetidoraycontacto/repetidoraycontacto.component';
-import { NuevocontactoComponent } from './nuevocontacto/nuevocontacto.component';
-import { NewregisterComponent } from './newregister/newregister.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MatPaginator } from '@angular/material/paginator';
+import { NewRepeaterComponent } from './new-repeater/new-repeater.component';
+import { NewContactComponent } from './new-contact/new-contact.component';
 
 
 @NgModule({
   declarations: [
-    RepeaterComponent,
     RepetidoraComponent,
-    NuevarepetidoraComponent,
     RepetidoraycontactoComponent,
-    NuevocontactoComponent,
-    NewregisterComponent
+    NewRepeaterComponent,
+    NewContactComponent,
   ],
   imports: [
     CommonModule,
-    RepeaterRoutingModule
+    RepeaterRoutingModule,
+    SharedModule,
+    MatPaginator
   ]
 })
 export class RepeaterModule { }
