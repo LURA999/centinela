@@ -4,10 +4,12 @@ import { CommonModule } from '@angular/common';
 import { RepeaterRoutingModule } from './repeater-routing.module';
 import { RepetidoraComponent } from './repetidora/repetidora.component';
 import { RepetidoraycontactoComponent } from './repetidoraycontacto/repetidoraycontacto.component';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { MatPaginator } from '@angular/material/paginator';
 import { NewRepeaterComponent } from './new-repeater/new-repeater.component';
 import { NewContactComponent } from './new-contact/new-contact.component';
+
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -16,12 +18,15 @@ import { NewContactComponent } from './new-contact/new-contact.component';
     RepetidoraycontactoComponent,
     NewRepeaterComponent,
     NewContactComponent,
+   
+    RepetidoraComponent,
+    RepetidoraycontactoComponent,
   ],
   imports: [
     CommonModule,
     RepeaterRoutingModule,
     SharedModule,
-    MatPaginator
+    MatPaginatorModule
   ]
 })
 export class RepeaterModule { }

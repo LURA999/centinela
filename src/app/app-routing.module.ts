@@ -13,8 +13,9 @@ const appRoutes: Routes = [
   { path: 'admin',canActivate:[InicioGuard], component: LoginContactoComponent },
   { path: 'admin/dashboard',canActivate:[DashAdminGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'usuario/dashboard',canActivate:[DashUsuarioGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
-  { path: 'admin/red', loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },
   { path: 'admin/repetidor', loadChildren: () => import('./pages/repeater/repeater.module').then(m => m.RepeaterModule) },
+  { path: 'admin/red',canActivate:[DashAdminGuard], loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },
+  { path: 'admin/repeater', loadChildren: () => import('./pages/repeater/repeater.module').then(m => m.RepeaterModule) },
   { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
   { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 ];
