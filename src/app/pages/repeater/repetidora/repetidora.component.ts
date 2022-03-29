@@ -17,6 +17,7 @@ export class RepetidoraComponent implements OnInit {
     longitud: "ejemplo",
     ciudad:"ejemplo",
     estatus:"ejemplo",
+    
     }
 
 ];
