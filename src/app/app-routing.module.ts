@@ -16,6 +16,7 @@ const appRoutes: Routes = [
   { path: 'admin/red', loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },
   { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
   { path: 'admin/red',canActivate:[DashAdminGuard], loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },
+  { path: 'pages/repeater', loadChildren: () => import('./pages/repeater/repeater.module').then(m => m.RepeaterModule) },
 
   { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 ];
