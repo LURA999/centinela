@@ -1,50 +1,182 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { NGXLogger } from 'ngx-logger';
 import { Title } from '@angular/platform-browser';
+import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MyCustomPaginatorIntl } from './MyCustomPaginatorIntl';
+import { NuevoClienteComponent } from '../nuevo-cliente/nuevo-cliente.component';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import * as XLSX from 'xlsx';
+import { CustomerService } from 'src/app/services/customer.service';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+export interface cliente {
+  empresa: string;
+  nombre: string;
+  estatus: string;
+  opciones: string;
+
 }
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];
 
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
-  styleUrls: ['./customer-list.component.css']
+  styleUrls: ['./customer-list.component.css'],
+  providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
 })
-export class CustomerListComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
 
-  @ViewChild(MatSort, { static: true })
-  sort: MatSort = new MatSort;
+export class CustomerListComponent implements OnInit {
+  title = 'Centinela';
+  fileName= 'Excel_Clientes_Export.Xlsx'; 
+  userList = [
+    
+  ]
+  exportexcel(): void 
+    {
+       /* table id is passed over here */   
+       let element = document.getElementById('excel-table'); 
+       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+
+       /* generate workbook and add the worksheet */
+       const wb: XLSX.WorkBook = XLSX.utils.book_new();
+       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+       /* save to file */
+       XLSX.writeFile(wb, this.fileName);
+			
+    }
+
+  displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
+  ELEMENT_DATA: cliente[] = [];
+  excel : string [][] = [];
+  totalItems: number = 0;
+  page: number = 0; 
+  carga :boolean=false;
+  previousPage: number = 0;
+  showPagination: boolean = true;
+  contenedor_carga : boolean = false;
+  slider : boolean = true;
+  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  @ViewChild ("paginator") paginator:any;
+  childMessage: string = "hola desde el componente customer-list";
 
   constructor(
-    private logger: NGXLogger,
-    private titleService: Title
-  ) { }
+    private titleService: Title,
+    private config: NgbPaginationConfig,
+    private dialog : NgDialogAnimationService,
+    private clienteServicio : CustomerService,
+   ) {
+      this.config.boundaryLinks = true;
+    }
 
-  ngOnInit() {
-    this.titleService.setTitle('angular-material-template - Customers');
-    this.logger.log('Customers loaded');
-    this.dataSource.sort = this.sort;
-
+  
+  ngOnInit() : void {
+    this.titleService.setTitle('Centinela - Customers');
+    this.llenaTabla(); 
   }
+
+  async llenaTabla(){
+    await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
+      for(let i of resp.container)
+      this.ELEMENT_DATA.push(
+        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+      );
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator =  this.paginator;    
+      this.paginator.hidePageSize=  true;
+    });
+   
+  }
+
+  async verEstatus(opcion: number) {
+    this.dataSource = new MatTableDataSource();
+    this.ELEMENT_DATA = [];
+
+    if(opcion < 4){
+    await this.clienteServicio.clienteEstatus(opcion).subscribe((resp : any) =>{
+      for(let i of resp.container)
+      this.ELEMENT_DATA.push(
+        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+      );
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    })
+  }else{
+     await this.clienteServicio.clientesTodos().subscribe((resp : any)=>{
+      for(let i of resp.container)
+      this.ELEMENT_DATA.push(
+        {empresa: i.nombre,nombre:i.nombreCorto,estatus:this.estatus(i.estatus),opciones:'2'}
+      );
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    });
+  }
+  }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  estatus(numero : string) {
+    switch(numero){
+      case '1':
+        return "activo"
+      case '2':
+        return "inactivo"
+      case '3': 
+        return "ausente"
+      default:
+        return ""
+    }
+  }
+  nuevoCliente(){
+    this.dialog.open(NuevoClienteComponent,
+      {data: {opc : "" ,mensaje: ""},
+      animation: { to: "bottom" },
+        height:"50%", width:"350px",
+      });
+  }
+
+  async onFileChange(evt: any){
+    const target : DataTransfer = <DataTransfer>(evt.target);
+     let formato= ""+target.files[0].name.split(".")[target.files[0].name.split(".").length-1];
+
+    if(formato == "xlsm" ||formato == "xlsx" || formato == "xlsb" ||formato == "xlts" ||formato == "xltm" ||formato == "xls" ||formato == "xlam" ||formato == "xla"||formato == "xlw" ){
+      if(target.files.length !==1) 
+      throw  alert('No puedes subir multiples archivos') ;
+      
+      const reader: FileReader= new FileReader();
+      reader.onload = async (e: any) =>{
+      const bstr : string = e.target.result;
+      const wb : XLSX.WorkBook = XLSX.read(bstr, {type:'binary'});
+      const wsname : string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      this.excel = (XLSX.utils.sheet_to_json(ws,{header: 1}));
+      try{
+       //insertar dos tablas juntas 
+       if(this.excel[0].length == 3){ 
+        this.contenedor_carga = await false;
+        this.slider = await false;
+        for (let p=0; p<this.excel.length; p++) {
+         let repetidocliente:any = await this.clienteServicio.clienteRepetido(this.excel[p][0]).toPromise();
+         repetidocliente = repetidocliente.container;
+
+           try{
+             if(this.excel[p][0] !== undefined  && repetidocliente[0].repetido == 0 || this.excel[p][0] == "" && repetidocliente[0].repetido == 0){    
+               await this.clienteServicio.insertaCliente({empresa:this.excel[p][0], nombre: this.excel[p][1],estatus:+this.excel[p][2]}).subscribe();
+             }
+            }catch(Exception){}
+         }
+     await location.reload();
+       }
+      }catch(Exception){
+        this.contenedor_carga = await true;
+        this.slider = await true;
+        alert("No se permiten archivos vacios")
+      }
+
+      };
+      await reader.readAsBinaryString(target.files[0]);
+    }else{
+      alert("Solo se permiten tipos de archivos Excel")
+    }
+  }
+  
 }

@@ -7,7 +7,8 @@ import { DashUsuarioGuard } from './core/guards/dashUsuario.guard';
 import { DashAdminGuard } from './core/guards/dashAdmin.guard';
 
 
-const appRoutes: Routes = [  
+const appRoutes: Routes = [ 
+  { path: 'usuario/clientes', loadChildren: () => import('../app/pages/customers/customers.module').then(m => m.CustomersModule) },
   { path: 'usuario',canActivate:[InicioGuard], component: LoginUsuarioComponent },
   { path: 'admin',canActivate:[InicioGuard], component: LoginContactoComponent },
   { path: 'admin/dashboard',canActivate:[DashAdminGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },

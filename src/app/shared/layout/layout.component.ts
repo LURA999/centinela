@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { timer } from 'rxjs';
 import { Subscription } from 'rxjs';
-
-
+import { AuthService } from 'src/app/core/services/auth.service';
+import { Router } from '@angular/router';
+import { CustomerListComponent } from 'src/app/pages/customers/customer-list/customer-list.component';
 
 @Component({
     selector: 'app-layout',
@@ -12,19 +12,20 @@ import { Subscription } from 'rxjs';
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
-
     private _mobileQueryListener: () => void;
     mobileQuery: MediaQueryList;
     showSpinner: boolean = false;
     userName: string = "";
     isAdmin: boolean = false;
+    @ViewChild(CustomerListComponent) child:any;
 
     private autoLogoutSubscription: Subscription = new Subscription;
 
     constructor( 
-       
+       private auth : AuthService,
         private changeDetectorRef: ChangeDetectorRef,
         private media: MediaMatcher,
+        private router : Router
       ) {
 
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
@@ -35,8 +36,8 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
 
-     
     }
+
 
     ngOnDestroy(): void {
         // tslint:disable-next-line: deprecation
@@ -46,7 +47,19 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
+
+
     }
 
+    salir(){
+        
+        if(this.auth.getTipo()==1){
+            this.auth.cerrarSesion();
+            this.router.navigateByUrl("/admin");
+        }else{
+            this.auth.cerrarSesion();
+            this.router.navigateByUrl("/usuario");
+        }
+    }
    
 }

@@ -1,3 +1,4 @@
+import { noUndefined } from '@angular/compiler/src/util';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -47,6 +48,10 @@ export class AuthService {
     let payload = localStorage.getItem('sesion')
     let info = this.parseJwt(payload!!)
     return info.departamento
+  }
+
+  cerrarSesion(){
+    localStorage.removeItem("sesion");
   }
 
   parseJwt(token:string) {

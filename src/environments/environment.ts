@@ -6,6 +6,6 @@ import { NgxLoggerLevel } from 'ngx-logger';
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  api: "http://localhost/centinela/API",
+  api: "http://localhost/centinela/API/",
   production: true
 };

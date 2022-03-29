@@ -48,7 +48,4 @@ export class LoginContactoComponent implements OnInit {
     });
   }
   
-  imprimir(){
-    console.log("eweweweew")
-  }
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-material-template": {
+    "Centinela": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-material-template",
+            "outputPath": "dist/Centinela",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-material-template:build:production"
+              "browserTarget": "Centinela:build:production"
             },
             "development": {
-              "browserTarget": "angular-material-template:build:development"
+              "browserTarget": "Centinela:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-material-template:build"
+            "browserTarget": "Centinela:build"
           }
         },
         "test": {
@@ -113,7 +113,7 @@
       }
     }
   },
-  "defaultProject": "angular-material-template",
+  "defaultProject": "Centinela",
   "cli": {
     "analytics": "2b3b0ae2-856e-42d7-9f9a-7dc5e8c8f034",
     "defaultCollection": "@angular-eslint/schematics"
