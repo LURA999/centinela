@@ -57,7 +57,9 @@ th.mat-sort-header-sorted {
 }
 
 
-
+.contenedorTablas{
+    margin-top: 40px;
+}
 
 .menu{
     width: auto;
