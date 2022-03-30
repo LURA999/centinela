@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { RepeaterService } from 'src/app/services/repeater.service';
 
 @Component({
   selector: 'app-new-repeater',
@@ -8,13 +9,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class NewRepeaterComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private repidorService : RepeaterService,public dialogRef: MatDialogRef<NewRepeaterComponent>) { }
 
   ngOnInit(): void {
   }
-
-  crearCliente(select : string,empresa : string ,nombre : string){
-
+  crearCliente(nombre : string,latitud : string ,longitd : string, selectEstatus : number, selectCiudad: number){
+    this.repidorService.insertarRepetidor({cveCiudad:selectCiudad,nombre:nombre, latitud: latitud,longitud:longitd,estatus:selectEstatus}).toPromise();
+    this.dialogRef.close({cveCiudad:selectCiudad,nombre:nombre, latitud: latitud,longitud:longitd,estatus:selectEstatus, mensaje:"Se pudo"})
+  
   }
 
 }

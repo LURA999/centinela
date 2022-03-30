@@ -4,25 +4,25 @@
   <div>
   <mat-form-field appearance="standard">
     <mat-label>Nombre</mat-label>
-    <input matInput  [value]="data.repetidora? data.repetidora: '' " placeholder="Nombre del repetidor" #empresa >   
+    <input matInput placeholder="Nombre del repetidor" #nombre >   
   </mat-form-field>
   </div>
   <div>
       <mat-form-field appearance="standard">
         <mat-label>Latitud</mat-label>
-        <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese la latitud" #nombre>   
+        <input matInput  placeholder="Ingrese la latitud" #latitud>   
       </mat-form-field>
   </div>
   <div>
     <mat-form-field appearance="standard">
       <mat-label>Longitud</mat-label>
-      <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese la longitud" #nombre>   
+      <input matInput  placeholder="Ingrese la longitud" #longitud>   
     </mat-form-field>
 </div>
 <div>
   <mat-form-field appearance="fill">
     <mat-label>Estatus</mat-label>
-    <mat-select  matNativeControl [(value)]="data.estatus "required #select>
+    <mat-select  matNativeControl [(value)]="data.estatus "required #selectEstatus>
       <mat-option value="0" disabled>Seleccione un estatus</mat-option>
       <mat-option value="1">activo</mat-option>
       <mat-option value="2">inactivo</mat-option>
@@ -33,7 +33,7 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Ciudad</mat-label>
-      <mat-select  matNativeControl [(value)]="data.estatus "required #select>
+      <mat-select  matNativeControl [(value)]="data.estatus "required #selectCiudad>
         <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
         <mat-option value="1">activo</mat-option>
         <mat-option value="2">inactivo</mat-option>
@@ -43,7 +43,7 @@
     </div>
   <div id="botones">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearCliente(select.value,empresa.value,nombre.value)" cdkFocusInitial>
+    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearCliente(nombre.value,latitud.value,longitud.value,selectEstatus.value,selectCiudad.value)" cdkFocusInitial>
         Crear
       </button>
   </div>
