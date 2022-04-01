@@ -4,20 +4,20 @@
   <div>
   <mat-form-field appearance="standard">
     <mat-label>Nombre</mat-label>
-    <input matInput  [value]="data.empresa? data.empresa: '' " placeholder="Nombre de empresa"  >   
+    <input matInput placeholder="Nombre del repetidor" #nombre >     
   </mat-form-field>
   </div>
   <div>
       <mat-form-field appearance="standard">
         <mat-label>Segmento</mat-label>
-        <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese nombre corto" >   
+        <input matInput placeholder="Segmento del repetidor" #segmento >    
       </mat-form-field>
   </div>
 <div>
   <mat-form-field appearance="fill">
-    <mat-label>Diagonal</mat-label>
-    <mat-select  matNativeControl [(value)]="data.estatus "required >
-      <mat-option value="0" disabled>Seleccione un estatus</mat-option>
+    <mat-label>Tipo</mat-label>
+    <mat-select  matNativeControl [(value)]="data.tipo "required #selectTipo>
+      <mat-option value="0" disabled>Seleccione un tipo</mat-option>
       <mat-option value="1">activo</mat-option>
       <mat-option value="2">inactivo</mat-option>
       <mat-option value="3">ausente</mat-option>
@@ -26,30 +26,31 @@
   </div>
   <div>
     <mat-form-field appearance="standard">
-      <mat-label>Tipo</mat-label>
-      <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese nombre corto" >   
-    </mat-form-field>
+      <mat-label>Diagonal</mat-label>
+      <input matInput placeholder="Segmento del repetidor" #diagonal > 
+       </mat-form-field>
 </div>
 <div>
     <mat-form-field appearance="standard">
-      <mat-label>Estatus</mat-label>
-      <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese nombre corto">   
+      <mat-label>Repetidora</mat-label>
+       <input matInput placeholder="Repetidora" #cveRepetdora >    
     </mat-form-field>
 </div>
   <div>
   <mat-form-field appearance="fill">
-    <mat-label>Repetidora</mat-label>
-    <mat-select  matNativeControl [(value)]="data.estatus">
+    <mat-label>Estatus</mat-label>
+    <mat-select  matNativeControl [(value)]="data.estatus" required #selectEstatus>
       <mat-option value="0" disabled>Seleccione un estatus</mat-option>
       <mat-option value="1">activo</mat-option>
       <mat-option value="2">inactivo</mat-option>
       <mat-option value="3">ausente</mat-option>
     </mat-select>
+    
   </mat-form-field>
   </div>
   <div id="botones">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-    <button mat-button style="background-color:#3f51b5; color: white;" cdkFocusInitial>
+    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearSegment(cveRepetdora.value,nombre.value,diagonal.value,segmento.value,selectEstatus.value,selectTipo.value)" cdkFocusInitial>
       <ng-container *ngIf="this.data.opc == false; else elseTemplate">
         Crear
       </ng-container>
@@ -58,6 +59,7 @@
       </ng-template>
       </button>
   </div>
+  
   </form>
 
 </mat-dialog-content>

@@ -28,7 +28,6 @@ export class CustomerService {
   eliminarFalso(id:String): Observable<any>{
     return this.http.patch<any>(this.local+"Customer/customer.php?id="+id,{responseType: 'text'});
   }
-
   acualizarCliente(input :ClienteModel){
     return this.http.patch(this.local+"Customer/customer.php",input,{responseType: 'text'});
   }
