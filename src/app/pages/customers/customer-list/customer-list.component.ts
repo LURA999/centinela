@@ -75,6 +75,7 @@ export class CustomerListComponent implements OnInit {
       this.cargando = true;
   }
 
+
   /**Las siguientes dos funciones, exportExcel y onfilechange, son para importar y exportar */
   async exportexcel() 
   {
@@ -214,6 +215,7 @@ export class CustomerListComponent implements OnInit {
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
+      
       await dialogRef.afterClosed().subscribe((result:any) => {
         try{
         if(result.mensaje.length > 0  ){
@@ -283,13 +285,13 @@ export class CustomerListComponent implements OnInit {
     }
   }
 
-  estatus(numero : number) {
+  estatus(numero : string) {
     switch(numero){
-      case 1:
+      case '1':
         return "activo"
-      case 2:
+      case '2':
         return "inactivo"
-      case 3: 
+      case '3': 
         return "ausente"
       default:
         return ""

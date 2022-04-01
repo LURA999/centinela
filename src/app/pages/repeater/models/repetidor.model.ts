@@ -4,4 +4,5 @@ export class RepetidorModel {
     latitud:string=""
     longitud:string=""
     estatus:number=0
+    idRepetidora?:number=0
 }

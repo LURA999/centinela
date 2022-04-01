@@ -13,6 +13,7 @@ export class DeleteComponent implements OnInit {
 
   ngOnInit(): void {
 
+    console.log(this.data)
   }
   
 

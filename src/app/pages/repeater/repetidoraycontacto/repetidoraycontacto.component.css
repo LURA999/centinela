@@ -12,6 +12,7 @@
     animation-timing-function: linear;
     cursor:wait;
   }
+  
   @keyframes girar {
     from {
       transform: rotate(0deg);
@@ -69,16 +70,13 @@ th.mat-sort-header-sorted {
 table {
     width: 100%;
 }
-table td{
-    font-size: 13px;
-    text-align: center;
-}
+table td,
 table th{
     font-size: 13px;
     text-align: center;
 }
 table td{
-    border: 5px solid transparent;
+    padding: 2px;
 }
 
 #segmentos table{
@@ -99,18 +97,12 @@ table td{
 }
 
 @media screen and (max-width: 768px) {
-    #lista table td{
-        font-size: 10px !important;
-        text-align: center;
-    }
+    #lista table td,
     #lista table th{
         font-size: 10px !important;
         text-align: center;
     }
-    #segmentos table td{
-        font-size: 15px !important;
-        text-align: center;
-    }
+    #segmentos table td,
     #segmentos table th{
         font-size: 15px !important;
         text-align: center;
@@ -119,7 +111,7 @@ table td{
 
 @media screen and (max-width: 688px) {
 
-table td[data-titulo]{
+    table td[data-titulo]{
     display: flex;
    }
    
@@ -127,7 +119,6 @@ table td[data-titulo]{
        content: attr( data-titulo );
        width: 90px;
        font-weight: bold;
-       font-size: 15px !important;
    }
    
    table tr{
@@ -137,8 +128,14 @@ table td[data-titulo]{
        width: auto;
    }
 
-    table th{
-    font-size: 15px !important;
+    #lista table th,
+    #lista table td{
+        font-size: 15px !important;
+    }
+
+    #segmentos table th, 
+    #segmentos table td{
+        font-size: 15px !important;
     }
 
    tr.mat-header-row.cdk-header-row {

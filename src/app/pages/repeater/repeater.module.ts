@@ -10,6 +10,7 @@ import { NewContactComponent } from './new-contact/new-contact.component';
 
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { DeleteComponent } from './delete/delete.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
    
     RepetidoraComponent,
     RepetidoraycontactoComponent,
+    DeleteComponent,
   ],
   imports: [
     CommonModule,

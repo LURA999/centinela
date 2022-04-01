@@ -14,13 +14,17 @@ export class RepeaterService {
     return this.http.get(this.local+"Repeater/repeater.php");
   }
 
-  deleteRepetidor(){
-    return this.http.get(this.local+"Repeater/repeater.php");
+  deleteRepetidor(id:number){
+    console.log(id)
+    return this.http.patch(this.local+"Repeater/repeater.php?id="+id,{responseType: 'text'});
   }
 
   insertarRepetidor(input :RepetidorModel){
-    console.log(input);
-    return this.http.post(this.local+"Repeater/repeater.php",{input:input}, {responseType:"text"});
+    return this.http.post(this.local+"Repeater/repeater.php",input, {responseType:"text"});
+  }
+
+  updateRepetidor(input :RepetidorModel){
+    return this.http.patch(this.local+"Repeater/repeater.php",input, {responseType:"text"});
   }
 
 }

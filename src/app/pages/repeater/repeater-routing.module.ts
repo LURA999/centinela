@@ -11,7 +11,8 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'repetidora', canActivate:[DashAdminGuard], component: RepetidoraComponent },
-      {path: "repetidor-y-contacto" , component: RepetidoraycontactoComponent},
+      { path: "repetidor-y-contacto" , component: RepetidoraycontactoComponent},
+      { path: "repetidor-y-contacto/:id" , component: RepetidoraycontactoComponent},
     ]
   }
 ];

@@ -5,40 +5,32 @@
       <mat-card>
         <mat-card-content>
            <h2>Repetidores y Contactos</h2>
-
-
-
-           <mat-card>
+        <mat-card>
           <mat-card-content>
-            
             <div class="container">
               <div class="row justify-content-start">
                 <div class="col-4">
-                 Nombre Repetidora:
+                  Nombre Repetidora: 
                 </div>
                 <div class="col-2">
                   Estatus:
                 </div>
                 <div class="col-2">
                   Ciudad:
-                 </div>
+                  </div>
               </div>
               <div class="row align-items-center">
                 <div class="col-4">
                   Latitud:
                 </div>
                 <div class="col-4">
-                 Longitud:
+                  Longitud:
                 </div>
               </div>
             </div>
-      
           </mat-card-content>
-</mat-card>
-        
+        </mat-card>
           <div class="contenedorTablas row">
-
-
             <div id="lista" class="col-md-7" >
                   <h2>Lista de contactos</h2>
                 <div class="botoncontainer">  
@@ -49,23 +41,23 @@
              <table mat-table  [dataSource]="dataSource" >          
                 <ng-container matColumnDef="id">
                   <th mat-header-cell *matHeaderCellDef >Id</th>
-                  <td mat-cell *matCellDef="let element" data-titulo="Id">15</td>
+                  <td mat-cell *matCellDef="let element" data-titulo="Id" >{{element.id}}</td>
                 </ng-container>
                 <ng-container matColumnDef="nombre">
                   <th mat-header-cell *matHeaderCellDef >Nombre</th>
-                  <td mat-cell *matCellDef="let element" data-titulo="Nombre">Juan Ruben Garcia Garcia</td>
+                  <td mat-cell *matCellDef="let element" data-titulo="Nombre">{{element.nombre}}</td>
                 </ng-container>
                 <ng-container matColumnDef="telefono" >
                   <th mat-header-cell *matHeaderCellDef >Telefono</th>
-                  <td mat-cell *matCellDef="let element" data-titulo="Tel.">6861651409</td>
+                  <td mat-cell *matCellDef="let element" data-titulo="Tel.">{{element.telefono}}</td>
                 </ng-container>
                 <ng-container matColumnDef="correo" >
                   <th mat-header-cell *matHeaderCellDef >Correo</th>
-                  <td mat-cell *matCellDef="let element" data-titulo="Correo">a17490454@itmexicali.edu.mx</td>
+                  <td mat-cell *matCellDef="let element" data-titulo="Correo">{{element.correo}}</td>
                 </ng-container>
                 <ng-container matColumnDef="estatus" >
                   <th mat-header-cell *matHeaderCellDef >Estatus</th>
-                  <td mat-cell *matCellDef="let element" data-titulo="Estatus">Activado </td>
+                  <td mat-cell *matCellDef="let element" data-titulo="Estatus">{{element.estatus}} </td>
                 </ng-container>
                 
                 <ng-container matColumnDef="opciones" >
@@ -73,17 +65,18 @@
                 <td mat-cell *matCellDef="let element" data-titulo="Opciones"> 
                     <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
                     <mat-menu #menu="matMenu">
-                      <button mat-menu-item (click)="Newregister()"><mat-icon>settings</mat-icon>Editar</button>
+                      <button mat-menu-item (click)="editar(element.estatus,element.nombre,element.telefono,element.correo,element.cveRepetidora,element.id)"><mat-icon>settings</mat-icon>Editar</button>
                       <button mat-menu-item ><mat-icon>info</mat-icon>Info</button>  
                       <button mat-menu-item ><mat-icon>lan</mat-icon>Red</button>    
-                      <button mat-menu-item ><mat-icon>delete</mat-icon>Eliminar</button> 
+                      <button mat-menu-item (click)="eliminar(element.id)"><mat-icon>delete</mat-icon>Eliminar</button> 
                     </mat-menu> </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
-              <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden ></div>
-              <div class="existe" hidden>No se encontraron resultados... </div>
+              <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" [hidden]="cargando"></div>
+              <div class="existe" [hidden] = "hayClientes()">No se encontraron resultados... </div>
+            
               <mat-paginator  #paginator
               [pageSize]="10"
               [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
@@ -129,10 +122,10 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
               </table> 
-              <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden ></div>
+              <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden></div>
               <div class="existe" hidden>No se encontraron resultados... </div>
             
-              <mat-paginator  #paginator
+              <mat-paginator  #paginator2
               [pageSize]="10"
               [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
             </div>
