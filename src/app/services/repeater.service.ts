@@ -20,7 +20,7 @@ export class RepeaterService {
 
   insertarRepetidor(input :RepetidorModel){
     console.log(input);
-    return this.http.post(this.local+"Repeater/repeater.php",{input:input}, {responseType:"text"});
+    return this.http.post(this.local+"Repeater/repeater.php",input, {responseType:"text"});
   }
 
 }
