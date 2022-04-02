@@ -15,22 +15,21 @@
               <div class="row justify-content-start">
                 <div class="col-md-4">
                
-                Nombre Repetidora:
+                Nombre Repetidora: &nbsp;{{arrayRepetidora.nombre}}
                 </div>
                 <div class="col-md-4">
-                 Estatus: 
+                 Estatus: &nbsp;{{arrayRepetidora.estatus}}
                 </div>
-                <div class="col-md-4">
-                  
-                  Ciudad:
+                <div class="col-md-4"> 
+                  Ciudad: &nbsp;{{arrayRepetidora.ciudad}}
                   </div>
               </div>
               <div class="row align-items-center">
                 <div class="col-md-4">
-                 Latitud:
+                 Latitud: &nbsp;{{arrayRepetidora.latitud}}
                 </div>
                 <div class="col-md-4">
-                Longitud:
+                Longitud:&nbsp; {{arrayRepetidora.longitud}}
                 </div>
               </div>
             </div>
@@ -71,9 +70,7 @@
                 <td mat-cell *matCellDef="let element" data-titulo="Opciones"> 
                     <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
                     <mat-menu #menu="matMenu">
-                      <button mat-menu-item (click)="editar(element.estatus,element.nombre,element.telefono,element.correo,element.cveRepetidora,element.id)"><mat-icon>settings</mat-icon>Editar</button>
-                      <button mat-menu-item ><mat-icon>info</mat-icon>Info</button>  
-                      <button mat-menu-item ><mat-icon>lan</mat-icon>Red</button>    
+                      <button mat-menu-item (click)="editar(element.estatus,element.nombre,element.telefono,element.correo,element.cveRepetidora,element.id)"><mat-icon>settings</mat-icon>Editar</button> 
                       <button mat-menu-item (click)="eliminar(element.id)"><mat-icon>delete</mat-icon>Eliminar</button> 
                     </mat-menu> </td>
                 </ng-container>
@@ -119,9 +116,7 @@
                 <td mat-cell *matCellDef="let element" data-titulo="Opciones"> 
                     <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
                     <mat-menu #menu="matMenu">
-                      <button mat-menu-item (click)="Newregister()"><mat-icon>settings</mat-icon>Editar</button>
-                      <button mat-menu-item ><mat-icon>info</mat-icon>Info</button>  
-                      <button mat-menu-item ><mat-icon>lan</mat-icon>Red</button>    
+                      <button mat-menu-item (click)="Newregister()"><mat-icon>settings</mat-icon>Editar</button>  
                       <button mat-menu-item ><mat-icon>delete</mat-icon>Eliminar</button> 
                     </mat-menu> </td>
                 </ng-container>

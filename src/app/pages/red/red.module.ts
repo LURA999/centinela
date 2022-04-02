@@ -10,7 +10,6 @@ import { InfoComponent } from './info/info.component';
 import { ControlipsComponent } from './controlips/controlips.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 
-
 @NgModule({
   declarations: [   
     SegmentsComponent, 

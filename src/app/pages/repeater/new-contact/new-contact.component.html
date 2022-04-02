@@ -15,13 +15,15 @@
         <div>
             <mat-form-field appearance="standard">
               <mat-label>Telefono</mat-label>
-              <input matInput [value]="data.telefono? data.telefono: '' " placeholder="Ingrese el Telefono" #telefono>   
+              <input matInput type="number" [value]="data.telefono? data.telefono: '' " placeholder="Ingrese el Telefono" #telefono>
+              <mat-icon matSuffix>phone</mat-icon>
             </mat-form-field>
         </div>
         <div>
           <mat-form-field appearance="standard">
             <mat-label>Correo</mat-label>
             <input matInput [value]="data.correo? data.correo: '' " placeholder="Ingrese el Correo" #correo>   
+            <mat-icon matSuffix>mail</mat-icon>
           </mat-form-field>
         </div>
         <div style="display: none;">

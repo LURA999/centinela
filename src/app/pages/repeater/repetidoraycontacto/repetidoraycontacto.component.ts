@@ -18,7 +18,7 @@ export class RepetidoraycontactoComponent implements OnInit {
   
 cargando :boolean= false;
 todosContactos : any;
-todosRepetidoras : any =[];
+arrayRepetidora : any = [];
 mayorNumero : number = 0
 mayorNumero2 : number = 0
 id :number = this.rutaActiva.snapshot.params["id"];
@@ -43,12 +43,10 @@ ELEMENT_DATA: any = [ ];
 @ViewChild(MatSort, { static: true })
   sort2: MatSort  = new MatSort;
 
-
 dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 displayedColumns: string[] = ['id', 'nombre', 'telefono', 'correo', 'estatus','opciones'];
 dataSource2 = new MatTableDataSource(this.ELEMENT_DATA2);
 displayedColumns2: string[] = ['id', 'seg', 'x', 'tipo', 'nom','opciones'];
-
 
 constructor(private dialog:NgDialogAnimationService, private contactService : ContactService, 
   private repeaterService: RepeaterService, private notificationService : NotificationService,
@@ -61,17 +59,19 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
   }
 
   ngAfterViewInit(): void {
-    this.obteniendoRepetidoras();
+    this.obteniendoRepetidor();
   }
 
-  async obteniendoRepetidoras(){
-   await this.repeaterService.llamarRepitdores().toPromise().then((result:any)=>{
-    for(let x=0; x< result.container.length; x++){
-      this.todosRepetidoras.push({ 
-        id : result.container[x].idRepetidora , nombre : result.container[x].nombreRepetidora 
-      });
-      this.numeroMayor(result.container[x].idRepetidora)
-    }
+  async obteniendoRepetidor(){
+   await this.repeaterService.llamarRepitdor(this.id).toPromise().then((result:any)=>{
+      this.arrayRepetidora={
+        id : result.container[0].idRepetidora , 
+        nombre : result.container[0].nombreRepetidora,
+        latitud : result.container[0].latitud,
+        longitud:result.container[0].longitud,
+        ciudad:result.container[0].nombreCiudad,
+        estatus:this.estatus(result.container[0].estatus),
+      };    
    }); 
   }
   async eliminar(id:number){
@@ -150,7 +150,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
 
   Newregister(){
     let dialogRef = this.dialog.open(NewContactComponent,
-      {data: {opc : false, repetidoras: this.todosRepetidoras , cveRepetidora: this.id},
+      {data: {opc : false/*, repetidoras: this.todosRepetidoras*/ , cveRepetidora: this.id},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -226,7 +226,7 @@ arrayRemove(arr : any, index : any) {
   }
   async editar(estatus : string,nombre : string ,telefono : string, correo : string,selectRep : string,id:number){
     let dialogRef  = await this.dialog.open(NewContactComponent,
-      {data: {telefono:+telefono, correo:correo, estatus:this.estatusNumero(estatus),nombre:nombre,repetidora:+selectRep,repetidoras:this.todosRepetidoras, opc:true},
+      {data: {telefono:+telefono, correo:correo, estatus:this.estatusNumero(estatus),nombre:nombre,repetidora:+selectRep, id:id/*,repetidoras:this.todosRepetidoras*/, opc:true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       }); 
@@ -235,7 +235,7 @@ arrayRemove(arr : any, index : any) {
         try{
         if(result.mensaje.length > 0){
           this.ELEMENT_DATA.splice(this.buscandoIndice(id)
-            ,1,{telefono:+telefono, correo:correo, estatus:this.estatus(estatus),nombre:nombre,repetidora:selectRep+"",id:id })
+            ,1,{telefono:result.telefono, correo:result.correo, estatus:this.estatus(result.estatus),nombre:result.nombre,id:id })
           this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
           this.dataSource.paginator = this.paginator2;  
           this.dataSource.sort = this.sort;

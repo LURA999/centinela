@@ -14,7 +14,6 @@ export class NewContactComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data)
   }
 
   async crearContacto(select : number,nombre : string ,telefono : string, correo : string,selectRep : number){
@@ -22,7 +21,8 @@ export class NewContactComponent implements OnInit {
     await this.contactService.insertarContacto({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora}).toPromise()
     this.dialogRef.close({telefono:+telefono, correo:correo, estatus:select,nombre:nombre,repetidora:selectRep, mensaje:"se pudo"});
     }else{
-      await this.contactService.updateContacto({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora}).toPromise()
+      console.log({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora,id:this.data.id})
+      await this.contactService.updateContacto({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora,id:this.data.id}).toPromise()
       this.dialogRef.close({telefono:+telefono, correo:correo, estatus:select,nombre:nombre,repetidora:selectRep, mensaje:"se pudo"});   
     }
   }

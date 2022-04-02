@@ -68,12 +68,9 @@ export class SegmentsComponent implements OnInit {
     this.llenarTabla()
    }
   async llenarTabla(){
-   
-    
     this.cargando = false;
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-   
 
     await this.segmentServicio.llamarSegments().toPromise().then( (result : any) =>{
    console.log(result)

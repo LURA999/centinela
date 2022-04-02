@@ -14,8 +14,11 @@ export class RepeaterService {
     return this.http.get(this.local+"Repeater/repeater.php");
   }
 
+  llamarRepitdor(cve : number){
+    return this.http.get(this.local+"Repeater/repeater.php?id="+cve);
+  }
+
   deleteRepetidor(id:number){
-    console.log(id)
     return this.http.patch(this.local+"Repeater/repeater.php?id="+id,{responseType: 'text'});
   }
 
@@ -24,6 +27,7 @@ export class RepeaterService {
   }
 
   updateRepetidor(input :RepetidorModel){
+    console.log(input)
     return this.http.patch(this.local+"Repeater/repeater.php",input, {responseType:"text"});
   }
 
