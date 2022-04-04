@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Centinela": {
+    "centinela": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/Centinela",
+            "outputPath": "dist/centinela",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -75,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "Centinela:build:production"
+              "browserTarget": "centinela:build:production"
             },
             "development": {
-              "browserTarget": "Centinela:build:development"
+              "browserTarget": "centinela:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Centinela:build"
+            "browserTarget": "centinela:build"
           }
         },
         "test": {
@@ -119,7 +119,7 @@
       }
     }
   },
-  "defaultProject": "Centinela",
+  "defaultProject": "centinela",
   "cli": {
     "analytics": "2b3b0ae2-856e-42d7-9f9a-7dc5e8c8f034",
     "defaultCollection": "@angular-eslint/schematics"

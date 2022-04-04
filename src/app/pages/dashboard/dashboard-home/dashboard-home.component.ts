@@ -16,7 +16,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.titleService.setTitle('Centinela - Inicio');
+    this.titleService.setTitle('centinela - Inicio');
     
   }
 }

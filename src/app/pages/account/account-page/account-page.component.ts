@@ -11,7 +11,7 @@ export class AccountPageComponent implements OnInit {
   constructor(private titleService: Title) { }
 
   ngOnInit() {
-    this.titleService.setTitle('Centinela - Account');
+    this.titleService.setTitle('centinela - Account');
   }
 
 }

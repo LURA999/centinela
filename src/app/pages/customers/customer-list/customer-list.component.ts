@@ -10,12 +10,10 @@ import { CustomerService } from 'src/app/services/customer.service';
 import { DeleteComponent } from '../delete/delete.component';
 import { NotificationService } from 'src/app/services/notification.service';
 import { Subscription } from 'rxjs';
-import { Workbook } from 'exceljs';
+import { Workbook } from 'exceljs'; 
+import { MatSort } from '@angular/material/sort';
 import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import { MatSort } from '@angular/material/sort';
-
-
 
 
 @Component({
@@ -26,7 +24,8 @@ import { MatSort } from '@angular/material/sort';
 })
 
 export class CustomerListComponent implements OnInit {
-  title = 'Centinela';
+  title = 'centinela';
+  subnetting = require("subnet-cidr-calculator")
   userList = []
   displayedColumns: string[] = ['Empresa', 'Nombre Corto', 'Estatus', 'Opciones'];
   ELEMENT_DATA: any = [];
@@ -35,11 +34,11 @@ export class CustomerListComponent implements OnInit {
   page: number = 0; 
   showPagination: boolean = true;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  @ViewChild ("paginator") paginator2:any;
   todosClientes : any;
   autoSelect :number =0;
   sub$ :Subscription | undefined;
   cargando : boolean = false;
+  @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true })
   sort: MatSort = new MatSort;
 
@@ -54,8 +53,11 @@ export class CustomerListComponent implements OnInit {
     }
   
   ngOnInit() : void {
-    this.titleService.setTitle('Centinela - Customers');
+    this.titleService.setTitle('centinela - Customers');
     this.llenarTabla(); 
+    var probabal_subnets = this.subnetting.getIpRangeForSubnet("10.0.32.0/20");
+    
+    console.log(probabal_subnets)
   }
 
   /**Funcion principal */
