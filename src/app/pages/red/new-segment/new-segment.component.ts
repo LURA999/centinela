@@ -19,22 +19,26 @@ export class NewSegmentComponent implements OnInit {
   }
 
   
-  crearSegment( cveRepetdora:string,nombre : string,segmento : string ,diagonal : string, selectEstatus : number, selecTipo: number){
+  crearSegment( SelectRepetidora:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
     
     
     if(this.data.opc == false){
-
-        this.segmentService.insertarSegments({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selecTipo}).toPromise();
-        this.dialogRef.close({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
-      }else{
-     console.log({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selecTipo});
-     
-     
-        this.segmentService.actualizarSegment({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selecTipo}).toPromise();
-        this.dialogRef.close({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+      if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
+        this.segmentService.insertarSegments({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo}).toPromise();
+        this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+      }
+      
+      else{
+     alert ("llene todos los datos")
     }
-    }
-  
-  
-
+  }else{
+      
+    if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
+      this.segmentService.actualizarSegment({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo}).toPromise();
+      this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+    }else{
+    alert("Llene todos los datos")
+  }
+  }
+  }
 }
