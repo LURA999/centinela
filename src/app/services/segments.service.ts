@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { segmentsModel } from '../pages/red/segments/models/segments.model';
+import { segmentsModel } from '../models/segments.model';
 import { Observable } from 'rxjs';
 
 @Injectable({

@@ -4,7 +4,7 @@
   <div>
   <mat-form-field appearance="standard">
     <mat-label>Nombre</mat-label>
-    <input matInput placeholder="Nombre del repetidor" #nombre >     
+    <input matInput [value]="data.nombre" placeholder="Nombre del repetidor" #nombre >     
   </mat-form-field>
   <mat-icon>title</mat-icon>  
   </div>
@@ -12,13 +12,13 @@
       <div>
         <mat-form-field appearance="standard">
           <mat-label>Segmento</mat-label>
-          <input matInput placeholder="Segmento del repetidor" #segmento >    
+          <input matInput [value]="data.segmento" placeholder="Segmento del repetidor" #segmento >    
         </mat-form-field>
       </div>
     <div>
         <mat-form-field appearance="fill">
           <mat-label>Diagonal</mat-label>
-          <mat-select  matNativeControl [(value)]="data.diagonal" required #diagonal>
+          <mat-select  matNativeControl [(value)]="'/'+data.diagonal" required #diagonal>
             <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
             <mat-option value="/8">/8</mat-option>
             <mat-option value="/9">/9</mat-option>

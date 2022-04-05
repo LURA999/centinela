@@ -13,35 +13,44 @@ export class NewSegmentComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,public dialogRef: MatDialogRef<NewSegmentComponent>) { }
 
   ngOnInit(): void {
-    
+    console.log(this.data)
   }
 
   
   async crearSegment( SelectRepetidora:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
     
-    let existe = await this.segmentService.existe(segmento).toPromise()
+    //Obteniendo el ip final, del segmento ingresado 
+    let segmentoFinal = this.subnetting.getIpRangeForSubnet(segmento);
+    segmentoFinal = segmentoFinal["end"]; 
 
-    if(existe == 0)
-    {
-      let segmentoFinal = this.subnetting.getIpRangeForSubnet(segmento+"/"+diagonal) 
-      if(this.data.opc == false){
+    //Verifica si existe el segmento
+    let existe :any = await this.segmentService.existe(segmento).toPromise()
+
+    //si es false, se esta creando un nuevo segmento y true para actualizar
+    if(this.data.opc == false){
+
+      //Antes de insertar se verifica que el segmento no exista
+      if(existe == 0)
+      {
         if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
           await this.segmentService.insertarSegments({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["end"]}).toPromise();
           this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
         }else{
-      alert ("llene todos los datos")
+          alert ("Llene todos los datos")
+        }
+      }else{
+        alert("No se pueden insertar segmentos repetidos y/o activos")
       }
+      
+
     }else{
+      let segmentoFinal = this.subnetting.getIpRangeForSubnet(segmento+"/"+diagonal) 
       if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
       await  this.segmentService.actualizarSegment({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["end"]}).toPromise();
         this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
       }else{
       alert("Llene todos los datos")
       }
-    }
-    }
-    else{
-      alert("El segmento declarado ya eiste")
     }
   }
 }
