@@ -108,14 +108,12 @@ export class CustomerListComponent implements OnInit {
 
   async onFileChange(evt: any){
     this.cargando = false;
-    
+  
     const target : DataTransfer = <DataTransfer>(evt.target);
      let formato= ""+target.files[0].name.split(".")[target.files[0].name.split(".").length-1];
-
     if(formato == "xlsm" ||formato == "xlsx" || formato == "xlsb" ||formato == "xlts" ||formato == "xltm" ||formato == "xls" ||formato == "xlam" ||formato == "xla"||formato == "xlw" ){
       if(target.files.length !==1) 
       throw  alert('No puedes subir multiples archivos') ;
-      
       const reader: FileReader= new FileReader();
       reader.onload = async (e: any) =>{
       const bstr : string = e.target.result;
@@ -273,6 +271,7 @@ export class CustomerListComponent implements OnInit {
       });
   }
 
+  
   /**Funciones extras, para buscar indice del array y para los estatus */
   buscandoIndice(id:number){
     let i = 0
@@ -285,13 +284,13 @@ export class CustomerListComponent implements OnInit {
     }
   }
 
-  estatus(numero : string) {
+  estatus(numero : number) {
     switch(numero){
-      case '1':
+      case 1:
         return "activo"
-      case '2':
+      case 2:
         return "inactivo"
-      case '3': 
+      case 3: 
         return "ausente"
       default:
         return ""

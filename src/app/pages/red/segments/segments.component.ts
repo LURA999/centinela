@@ -6,9 +6,8 @@ import { InfoComponent } from '../info/info.component';
 import { DeleteComponent } from '../delete/delete.component';
 import { MatSort } from '@angular/material/sort';
 import { SegmentsService } from 'src/app/services/segments.service';
-import { animation } from '@angular/animations';
 import { NotificationService } from 'src/app/services/notification.service';
-
+import { RepeaterService } from 'src/app/services/repeater.service';
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
@@ -20,6 +19,8 @@ export class SegmentsComponent implements OnInit {
   ELEMENT_DATA: any = [ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   subnet = require("subnet-cidr-calculator")
+  repetidoraArray : any []= []
+  segmentosArray :any 
 
   displayedColumns: string[] = ['id','nombre', 'segmento', 'diagonal', 'tipo', 'estatus','repetidora','opciones'];
   cargando = false;
@@ -33,12 +34,25 @@ export class SegmentsComponent implements OnInit {
   constructor(
     private dialog : NgDialogAnimationService,
     private segmentServicio : SegmentsService,
-    private notificationService: NotificationService,
+    private notificationService: NotificationService, 
+    private repeaterService : RepeaterService
   ) { }
 
- async nuevoSegmento (){
+
+  
+   ngOnInit(): void {
+    this.procesoInicio()
+   }
+
+   async procesoInicio(){
+    await this.repetidoras()
+    await this.llenarTabla()
+   }
+
+
+   async nuevoSegmento (){
     let dialogRef = await this.dialog.open(NewSegmentComponent,
-      {data: {idCliente : "", opc: false},
+      {data: {idCliente : "", opc: false, repetidoras:this.repetidoraArray},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -46,10 +60,8 @@ export class SegmentsComponent implements OnInit {
       await dialogRef.afterClosed().subscribe((result:any)=>{
         try{
        if(result.mensaje.length > 0  ){
-
-       
          this.ELEMENT_DATA.unshift({id:++this.mayorNumero,nombre:result.nombre,segmento:result.segmento
-          ,diagonal:result.diagonal,tipo:result.tipo, estatus:result.estatus, repetidora:result.cveRepetdora});
+          ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetidora:this.repetidoraArray[result.cveRepetdora]["nombre"]});
           this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
           this.dataSource.paginator = this.paginator2; 
          this.dataSource.sort = this.sort;
@@ -62,18 +74,20 @@ export class SegmentsComponent implements OnInit {
       })
   }
 
-  async editarSegmento (id:number, nombre:string,segmento:string,diagonal:string,repetidora:number,tipo: number,estatus:string){
+  async editarSegmento (id:number, nombre:string,segmento:string,diagonal:string,repetidora:string,tipo: string,estatus:string){    
     let dialogRef  = await this.dialog.open(NewSegmentComponent,
-      {data: {id : id, nombre : nombre ,segmento : segmento, diagonal : diagonal, cveRepetdora:repetidora ,tipo: tipo, estatus:this.estatusNumero(estatus),opc:true},
+      {data: {id : id, nombre : nombre ,segmento : segmento, diagonal : diagonal, cveRepetdora: repetidora,tipo: this.tipoNumero(tipo), estatus:this.estatusNumero(estatus),opc:true, repetidoras:this.repetidoraArray},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       await dialogRef.afterClosed().subscribe((result:any) => {
+        console.log(result);
+        
         try{
         if(result.mensaje.length > 0  ){
           this.ELEMENT_DATA.splice(this.buscandoIndice(id)
             ,1,{id:id,nombre:result.nombre, segmento: result.segmento,diagonal:result.diagonal,
-              repetidora: result.cveRepetdora,tipo: result.tipo,estatus:this.estatus(result.estatus)})
+              repetidora: result.cveRepetdora,tipo:this.tipo(result.tipo),estatus:this.estatus(result.estatus)})
           this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
           this.dataSource.paginator = this.paginator2;  
           this.dataSource.sort = this.sort;
@@ -115,21 +129,19 @@ export class SegmentsComponent implements OnInit {
     height:"auto", width:"300px",
   });
   }
-  
-  ngOnInit(): void {
-    this.llenarTabla()
-   }
+
   async llenarTabla(){
     this.cargando = false;
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
     await this.segmentServicio.llamarSegments().toPromise().then( (result : any) =>{
-      for (let i=0; i<result.container.length; i++){
+      this.segmentosArray = result;
+      for (let i=0; i<result.container.length; i++){       
       this.ELEMENT_DATA.push(
         {id: result.container[i]["idSegmento"],nombre: result.container[i]["nombre"],segmento:result.container[i]["segmento"]
-          ,diagonal:result.container[i]["diagonal"],tipo:result.container[i]["tipo"], estatus:result.container[i]["estatus"], repetidora:result.container[i]["cveRepetdora"]}
-      );
+        ,diagonal:result.container[i]["diagonal"],tipo:this.tipo(result.container[i]["tipo"]), estatus:this.estatus(result.container[i]["estatus"]), repetidora:result.container[i]["repetidora"]}
+        );
       this.numeroMayor(result.container[i]["idSegmento"]);
     }
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
@@ -146,6 +158,14 @@ export class SegmentsComponent implements OnInit {
   }
 
 
+  /**Imprimiendo repetidoras */
+  async repetidoras(){
+    await this.repeaterService.llamarRepitdores().subscribe((resp:any) =>{
+      this.repetidoraArray = resp.container;
+      
+    })    
+  }
+  
   /**para el loading */
 hayClientes(){
   if(this.ELEMENT_DATA != 0 || this.cargando ==false){
@@ -192,27 +212,35 @@ hayClientes2(){
     }
   }
   estatus(numero : string) {
-    switch(numero){
-      case '1':
-        return "activo"
-      case '2':
-        return "inactivo"
-    }
+   if(numero == '1'){
+    return "activo"
+   }else{
+    return "inactivo"
+   }
+  }
+
+  tipo(tipo:string){
+    if(tipo == '1'){
+      return "publico"
+     }else{
+      return "privado"
+     }
+  }
+
+  tipoNumero(tipo:string){
+    if(tipo == 'publico'){
+      return "1"
+     }else{
+      return "2"
+     }
   }
   estatusNumero(numero : string) {
-    switch(numero){
-      case 'activo':
-        return '1'
-      case 'inactivo':
-        return '2'
-      case 'ausente': 
-        return '3'
-      default:
-        return ""
+
+    if(numero =="activo"){
+      return '1'
+    } else{
+      return '2'
+
     }
-
-
-
-}
-
+  }
 }

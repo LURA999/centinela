@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { RepeaterService } from 'src/app/services/repeater.service';
 import { SegmentsService } from 'src/app/services/segments.service';
 
 @Component({
@@ -10,12 +11,15 @@ import { SegmentsService } from 'src/app/services/segments.service';
 export class NewSegmentComponent implements OnInit {
   
   subnetting = require("subnet-cidr-calculator")
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,public dialogRef: MatDialogRef<NewSegmentComponent>) { }
+  repetidoraArray: any []= [];
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,
+  public dialogRef: MatDialogRef<NewSegmentComponent>
+  ) { }
 
   ngOnInit(): void {
-    console.log(this.data)
+      
   }
-
   
   async crearSegment( SelectRepetidora:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
     
@@ -24,8 +28,8 @@ export class NewSegmentComponent implements OnInit {
     segmentoFinal = segmentoFinal["end"]; 
 
     //Verifica si existe el segmento
-    let existe :any = await this.segmentService.existe(segmento).toPromise()
-
+   // let existe :any = await this.segmentService.existe(segmento).toPromise()
+    let existe = 0
     //si es false, se esta creando un nuevo segmento y true para actualizar
     if(this.data.opc == false){
 
@@ -47,7 +51,7 @@ export class NewSegmentComponent implements OnInit {
       let segmentoFinal = this.subnetting.getIpRangeForSubnet(segmento+"/"+diagonal) 
       if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
       await  this.segmentService.actualizarSegment({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["end"]}).toPromise();
-        this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+        this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, tipo: selectTipo, mensaje:"Se pudo"})
       }else{
       alert("Llene todos los datos")
       }

@@ -4,7 +4,7 @@
   <div>
   <mat-form-field appearance="standard">
     <mat-label>Nombre</mat-label>
-    <input matInput [value]="data.nombre" placeholder="Nombre del repetidor" #nombre >     
+    <input matInput [value]="data.nombre? data.nombre : '' " placeholder="Nombre del repetidor" #nombre >     
   </mat-form-field>
   <mat-icon>title</mat-icon>  
   </div>
@@ -12,37 +12,37 @@
       <div>
         <mat-form-field appearance="standard">
           <mat-label>Segmento</mat-label>
-          <input matInput [value]="data.segmento" placeholder="Segmento del repetidor" #segmento >    
+          <input matInput [value]="data.segmento? data.segmento : ''" placeholder="Segmento del repetidor" #segmento >    
         </mat-form-field>
       </div>
     <div>
         <mat-form-field appearance="fill">
           <mat-label>Diagonal</mat-label>
-          <mat-select  matNativeControl [(value)]="'/'+data.diagonal" required #diagonal>
+          <mat-select  matNativeControl [(value)]="data.diagonal" required #diagonal>
             <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
-            <mat-option value="/8">/8</mat-option>
-            <mat-option value="/9">/9</mat-option>
-            <mat-option value="/10">/10</mat-option>
-            <mat-option value="/11">/11</mat-option>
-            <mat-option value="/12">/12</mat-option>
-            <mat-option value="/13">/13</mat-option>
-            <mat-option value="/14">/14</mat-option>
-            <mat-option value="/15">/15</mat-option>
-            <mat-option value="/16">/16</mat-option>
-            <mat-option value="/17">/17</mat-option>
-            <mat-option value="/18">/18</mat-option>
-            <mat-option value="/19">/19</mat-option>
-            <mat-option value="/20">/20</mat-option>
-            <mat-option value="/21">/21</mat-option>
-            <mat-option value="/22">/22</mat-option>
-            <mat-option value="/23">/23</mat-option>
-            <mat-option value="/24">/24</mat-option>
-            <mat-option value="/25">/25</mat-option>
-            <mat-option value="/26">/26</mat-option>
-            <mat-option value="/27">/27</mat-option>
-            <mat-option value="/28">/28</mat-option>
-            <mat-option value="/29">/29</mat-option>
-            <mat-option value="/30">/30</mat-option>
+            <mat-option value="8">/8</mat-option>
+            <mat-option value="9">/9</mat-option>
+            <mat-option value="10">/10</mat-option>
+            <mat-option value="11">/11</mat-option>
+            <mat-option value="12">/12</mat-option>
+            <mat-option value="13">/13</mat-option>
+            <mat-option value="14">/14</mat-option>
+            <mat-option value="15">/15</mat-option>
+            <mat-option value="16">/16</mat-option>
+            <mat-option value="17">/17</mat-option>
+            <mat-option value="18">/18</mat-option>
+            <mat-option value="19">/19</mat-option>
+            <mat-option value="20">/20</mat-option>
+            <mat-option value="21">/21</mat-option>
+            <mat-option value="22">/22</mat-option>
+            <mat-option value="23">/23</mat-option>
+            <mat-option value="24">/24</mat-option>
+            <mat-option value="25">/25</mat-option>
+            <mat-option value="26">/26</mat-option>
+            <mat-option value="27">/27</mat-option>
+            <mat-option value="28">/28</mat-option>
+            <mat-option value="29">/29</mat-option>
+            <mat-option value="30">/30</mat-option>
             <!--<mat-option value="2">inactivo</mat-option>
             <mat-option value="3">ausente</mat-option>-->
           </mat-select>
@@ -54,9 +54,8 @@
     <mat-label>Tipo</mat-label>
     <mat-select  matNativeControl [(value)]="data.tipo "required #selectTipo>
       <mat-option value="0" disabled>Seleccione un tipo</mat-option>
-      <mat-option value="1">activo</mat-option>
-      <mat-option value="2">inactivo</mat-option>
-      <mat-option value="3">ausente</mat-option>
+      <mat-option value="1">publico</mat-option>
+      <mat-option value="2">privado</mat-option>
     </mat-select>
   </mat-form-field>
   </div>
@@ -66,9 +65,7 @@
     <mat-label>Repetidora</mat-label>
     <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #SelectRepetidora>
       <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
-      <mat-option value="1">activo</mat-option>
-      <mat-option value="2">inactivo</mat-option>
-      <mat-option value="3">ausente</mat-option>
+      <mat-option value="{{item.nombreRepetidora}}" *ngFor="let item of this.data.repetidoras; let i = index">{{item.nombreRepetidora}}</mat-option>
     </mat-select>
     
   </mat-form-field>
@@ -80,7 +77,6 @@
       <mat-option value="0" disabled>Seleccione un estatus</mat-option>
       <mat-option value="1">activo</mat-option>
       <mat-option value="2">inactivo</mat-option>
-      <mat-option value="3">ausente</mat-option>
     </mat-select>
     
   </mat-form-field>
