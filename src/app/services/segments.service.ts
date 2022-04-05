@@ -12,7 +12,6 @@ export class SegmentsService {
   constructor(private http : HttpClient) { }
 
   llamarSegments(){
-    
     return this.http.get(this.local+"Repeater/segment.php");
   }
 
@@ -21,19 +20,19 @@ export class SegmentsService {
   }
 
   insertarSegments(input :segmentsModel){
-    console.log(input);
     return this.http.post(this.local+"Repeater/segment.php",input, {responseType:"text"});
   }
   
   actualizarSegment(input :segmentsModel){
-    console.log(input);
     return this.http.patch(this.local+"Repeater/segment.php",input, {responseType:"text"});
   }
 
  updateElimSegment(id:String){    
-    console.log(id);
     return this.http.patch(this.local+"Repeater/segment.php?id="+id,{responseType: 'text'});
    
+  }
+  existe(segmento:string){
+    return this.http.get(this.local+"Repeater/segment.php?segmento="+segmento);
   }
 
 }

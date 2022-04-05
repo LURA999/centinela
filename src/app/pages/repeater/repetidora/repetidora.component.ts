@@ -108,9 +108,11 @@ Newregister(){
     if(result.mensaje.length > 0  ){
       this.ELEMENT_DATA.unshift({id:++this.mayorNumero,nombre:result.nombre, latitud: result.latitud,longitud:result.longitud,
       ciudad: this.ciudades[result.cveCiudad]["nombre"] ,estatus:this.estatus(result.estatus)});
+
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
       this.dataSource.paginator = this.paginator2;    
       this.dataSource.sort = this.sort;
+      
 
       setTimeout(()=>{
       this.notificationService.openSnackBar("Se agrego con exito");

@@ -27,7 +27,7 @@ export class NuevoClienteComponent implements OnInit {
       }
     }else{
       if(empresa.length >0 && nombre.length > 0 && select !=undefined){
-      this.customerService.acualizarCliente({id:this.data.id,empresa:empresa, nombre: nombre,estatus:select, idSegment:+this.data.idSegment}).toPromise();
+      this.customerService.acualizarCliente({id:this.data.id,empresa:empresa, nombre: nombre,estatus:select, idCliente:+this.data.idSegment}).toPromise();
       this.dialogRef.close({empresa:empresa, nombre: nombre,estatus:select, mensaje:"Se pudo"})
     }else{
       alert("Llene todos los datos")

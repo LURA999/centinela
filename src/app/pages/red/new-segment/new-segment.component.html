@@ -6,12 +6,48 @@
     <mat-label>Nombre</mat-label>
     <input matInput placeholder="Nombre del repetidor" #nombre >     
   </mat-form-field>
+  <mat-icon>title</mat-icon>  
   </div>
-  <div>
-      <mat-form-field appearance="standard">
-        <mat-label>Segmento</mat-label>
-        <input matInput placeholder="Segmento del repetidor" #segmento >    
-      </mat-form-field>
+  <div class="row">
+      <div>
+        <mat-form-field appearance="standard">
+          <mat-label>Segmento</mat-label>
+          <input matInput placeholder="Segmento del repetidor" #segmento >    
+        </mat-form-field>
+      </div>
+    <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Diagonal</mat-label>
+          <mat-select  matNativeControl [(value)]="data.diagonal" required #diagonal>
+            <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
+            <mat-option value="/8">/8</mat-option>
+            <mat-option value="/9">/9</mat-option>
+            <mat-option value="/10">/10</mat-option>
+            <mat-option value="/11">/11</mat-option>
+            <mat-option value="/12">/12</mat-option>
+            <mat-option value="/13">/13</mat-option>
+            <mat-option value="/14">/14</mat-option>
+            <mat-option value="/15">/15</mat-option>
+            <mat-option value="/16">/16</mat-option>
+            <mat-option value="/17">/17</mat-option>
+            <mat-option value="/18">/18</mat-option>
+            <mat-option value="/19">/19</mat-option>
+            <mat-option value="/20">/20</mat-option>
+            <mat-option value="/21">/21</mat-option>
+            <mat-option value="/22">/22</mat-option>
+            <mat-option value="/23">/23</mat-option>
+            <mat-option value="/24">/24</mat-option>
+            <mat-option value="/25">/25</mat-option>
+            <mat-option value="/26">/26</mat-option>
+            <mat-option value="/27">/27</mat-option>
+            <mat-option value="/28">/28</mat-option>
+            <mat-option value="/29">/29</mat-option>
+            <mat-option value="/30">/30</mat-option>
+            <!--<mat-option value="2">inactivo</mat-option>
+            <mat-option value="3">ausente</mat-option>-->
+          </mat-select>
+        </mat-form-field>
+      </div>
   </div>
 <div>
   <mat-form-field appearance="fill">
@@ -24,17 +60,18 @@
     </mat-select>
   </mat-form-field>
   </div>
-  <div>
-    <mat-form-field appearance="standard">
-      <mat-label>Diagonal</mat-label>
-      <input matInput placeholder="Segmento del repetidor" #diagonal > 
-       </mat-form-field>
-</div>
+  
 <div>
-    <mat-form-field appearance="standard">
-      <mat-label>Repetidora</mat-label>
-       <input matInput placeholder="Repetidora" #cveRepetdora >    
-    </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Repetidora</mat-label>
+    <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #SelectRepetidora>
+      <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
+      <mat-option value="1">activo</mat-option>
+      <mat-option value="2">inactivo</mat-option>
+      <mat-option value="3">ausente</mat-option>
+    </mat-select>
+    
+  </mat-form-field>
 </div>
   <div>
   <mat-form-field appearance="fill">
@@ -50,7 +87,7 @@
   </div>
   <div id="botones">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearSegment(cveRepetdora.value,nombre.value,diagonal.value,segmento.value,selectEstatus.value,selectTipo.value)" cdkFocusInitial>
+    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearSegment(SelectRepetidora.value,nombre.value,segmento.value,diagonal.value,selectEstatus.value,selectTipo.value)" cdkFocusInitial>
       <ng-container *ngIf="this.data.opc == false; else elseTemplate">
         Crear
       </ng-container>

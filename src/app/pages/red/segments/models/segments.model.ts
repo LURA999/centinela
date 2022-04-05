@@ -1,9 +1,9 @@
 export class segmentsModel {
- 
-    cveRepetdora: string=""
+    cveRepetdora: number=0
     segmento:string=""
-    diagonal:string=""
+    diagonal:number=0
     tipo:number=0
     nombre:string=""
     estatus:number=0
-}
+    segmento2:string= ""
+}   

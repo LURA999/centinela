@@ -9,32 +9,39 @@ import { SegmentsService } from 'src/app/services/segments.service';
 })
 export class NewSegmentComponent implements OnInit {
   
-
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,public dialogRef: MatDialogRef<NewSegmentComponent>) { }
+  subnetting = require("subnet-cidr-calculator")
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,public dialogRef: MatDialogRef<NewSegmentComponent>) { }
 
   ngOnInit(): void {
     
-    console.log("hola");
-    console.log(this.data); 
   }
 
   
-  crearSegment( cveRepetdora:string,nombre : string,segmento : string ,diagonal : string, selectEstatus : number, selecTipo: number){
+  async crearSegment( SelectRepetidora:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
     
-    
-    if(this.data.opc == false){
+    let existe = await this.segmentService.existe(segmento).toPromise()
 
-        this.segmentService.insertarSegments({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selecTipo}).toPromise();
-        this.dialogRef.close({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+    if(existe == 0)
+    {
+      let segmentoFinal = this.subnetting.getIpRangeForSubnet(segmento+"/"+diagonal) 
+      if(this.data.opc == false){
+        if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
+          await this.segmentService.insertarSegments({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["end"]}).toPromise();
+          this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+        }else{
+      alert ("llene todos los datos")
+      }
+    }else{
+      if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
+      await  this.segmentService.actualizarSegment({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["end"]}).toPromise();
+        this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
       }else{
-     console.log({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selecTipo});
-     
-     
-        this.segmentService.actualizarSegment({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selecTipo}).toPromise();
-        this.dialogRef.close({cveRepetdora:cveRepetdora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, mensaje:"Se pudo"})
+      alert("Llene todos los datos")
+      }
     }
     }
-  
-  
-
+    else{
+      alert("El segmento declarado ya eiste")
+    }
+  }
 }

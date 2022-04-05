@@ -55,9 +55,7 @@ export class CustomerListComponent implements OnInit {
   ngOnInit() : void {
     this.titleService.setTitle('centinela - Customers');
     this.llenarTabla(); 
-    var probabal_subnets = this.subnetting.getIpRangeForSubnet("10.0.32.0/20");
     
-    console.log(probabal_subnets)
   }
 
   /**Funcion principal */

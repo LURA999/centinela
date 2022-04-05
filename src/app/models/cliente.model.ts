@@ -3,6 +3,6 @@ export class ClienteModel {
     empresa: string =""
     nombre:string=""
     estatus:number =0
-    idSegment? : number =0
+    idCliente? : number =0
 
 }
