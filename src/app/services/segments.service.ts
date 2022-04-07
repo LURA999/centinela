@@ -32,7 +32,7 @@ export class SegmentsService {
    
   }
   existe(segmento:string){
-    return this.http.get(this.local+"Repeater/segment.php?segmento="+segmento);
+    return this.http.get(this.local+"Repeater/segment.php?segmento="+segmento);    
   }
 
 }

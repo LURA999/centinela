@@ -65,7 +65,7 @@
     <mat-label>Repetidora</mat-label>
     <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #SelectRepetidora>
       <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
-      <mat-option value="{{item.nombreRepetidora}}" *ngFor="let item of this.data.repetidoras; let i = index">{{item.nombreRepetidora}}</mat-option>
+      <mat-option value="{{item.idRepetidora}}" *ngFor="let item of this.data.repetidoras; let i = index">{{item.nombreRepetidora}}</mat-option>
     </mat-select>
     
   </mat-form-field>

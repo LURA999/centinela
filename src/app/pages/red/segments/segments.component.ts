@@ -8,6 +8,7 @@ import { MatSort } from '@angular/material/sort';
 import { SegmentsService } from 'src/app/services/segments.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { RepeaterService } from 'src/app/services/repeater.service';
+import { threadId } from 'worker_threads';
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
@@ -20,7 +21,7 @@ export class SegmentsComponent implements OnInit {
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   subnet = require("subnet-cidr-calculator")
   repetidoraArray : any []= []
-  segmentosArray :any 
+  segmentosArray :any
 
   displayedColumns: string[] = ['id','nombre', 'segmento', 'diagonal', 'tipo', 'estatus','repetidora','opciones'];
   cargando = false;
@@ -52,7 +53,7 @@ export class SegmentsComponent implements OnInit {
 
    async nuevoSegmento (){
     let dialogRef = await this.dialog.open(NewSegmentComponent,
-      {data: {idCliente : "", opc: false, repetidoras:this.repetidoraArray},
+      {data: {id : (this.mayorNumero=this.mayorNumero+1), opc: false, repetidoras:this.repetidoraArray},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -61,11 +62,10 @@ export class SegmentsComponent implements OnInit {
         try{
        if(result.mensaje.length > 0  ){
          this.ELEMENT_DATA.unshift({id:++this.mayorNumero,nombre:result.nombre,segmento:result.segmento
-          ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetidora:this.repetidoraArray[result.cveRepetdora]["nombre"]});
-          this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
-          this.dataSource.paginator = this.paginator2; 
+         ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetidora:this.repetidoraArray[this.mayorNumero]["nombreRepetidora"]});
+         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+         this.dataSource.paginator = this.paginator2; 
          this.dataSource.sort = this.sort;
-
          setTimeout(()=>{
          this.notificationService.openSnackBar("Se agrego con exito");
          })
@@ -81,8 +81,6 @@ export class SegmentsComponent implements OnInit {
         height:"auto", width:"300px",
       });
       await dialogRef.afterClosed().subscribe((result:any) => {
-        console.log(result);
-        
         try{
         if(result.mensaje.length > 0  ){
           this.ELEMENT_DATA.splice(this.buscandoIndice(id)
@@ -161,8 +159,7 @@ export class SegmentsComponent implements OnInit {
   /**Imprimiendo repetidoras */
   async repetidoras(){
     await this.repeaterService.llamarRepitdores().subscribe((resp:any) =>{
-      this.repetidoraArray = resp.container;
-      
+    this.repetidoraArray = resp.container;      
     })    
   }
   
