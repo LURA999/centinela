@@ -8,11 +8,15 @@ import { MatSort } from '@angular/material/sort';
 import { SegmentsService } from 'src/app/services/segments.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { RepeaterService } from 'src/app/services/repeater.service';
-import { threadId } from 'worker_threads';
+import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { rango_ip } from '../new-segment/rango_ip';
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
-  styleUrls: ['./segments.component.css']
+  styleUrls: ['./segments.component.css'],
+  providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
+
 })
 export class SegmentsComponent implements OnInit {
 
@@ -22,6 +26,7 @@ export class SegmentsComponent implements OnInit {
   subnet = require("subnet-cidr-calculator")
   repetidoraArray : any []= []
   segmentosArray :any
+  rango = new rango_ip()
 
   displayedColumns: string[] = ['id','nombre', 'segmento', 'diagonal', 'tipo', 'estatus','repetidora','opciones'];
   cargando = false;
@@ -29,21 +34,23 @@ export class SegmentsComponent implements OnInit {
   @ViewChild(MatSort, { static: true })
   sort: MatSort = new MatSort;
   mayorNumero : number = 0
-  
-
 
   constructor(
     private dialog : NgDialogAnimationService,
     private segmentServicio : SegmentsService,
     private notificationService: NotificationService, 
-    private repeaterService : RepeaterService
-  ) { }
+    private repeaterService : RepeaterService,
+  ) { 
+    
+  }
 
 
   
    ngOnInit(): void {
     this.procesoInicio()
-   }
+   /*let r : string []= this.rango.rango("192.168.0.1", "193.169.255.255");
+    console.log(r);*/
+  }
 
    async procesoInicio(){
     await this.repetidoras()
@@ -53,7 +60,7 @@ export class SegmentsComponent implements OnInit {
 
    async nuevoSegmento (){
     let dialogRef = await this.dialog.open(NewSegmentComponent,
-      {data: {id : (this.mayorNumero=this.mayorNumero+1), opc: false, repetidoras:this.repetidoraArray},
+      {data: {id : (this.mayorNumero=(Number(this.mayorNumero)+1)), opc: false, repetidoras:this.repetidoraArray},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -240,4 +247,6 @@ hayClientes2(){
 
     }
   }
+
+ 
 }

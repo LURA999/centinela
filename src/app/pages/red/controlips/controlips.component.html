@@ -6,17 +6,13 @@
       <mat-card-content>
          <h2>Control de Ips</h2>
         
-        <div class="barriba">
-        
+        <div class="barriba"> 
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Subred</mat-label>
             <mat-select matNativeControl required>
-              <mat-option value="0" selected disabled>Seleccione un subred</mat-option>
-              <mat-option value="1">10.1.3.0</mat-option>
-              <mat-option value="2">10.1.4.0</mat-option>
-              <mat-option value="3">10.1.5.0</mat-option>
-              <mat-option value="4">10.1.6.0</mat-option>
+              <mat-option value="0" selected disabled>Seleccione un IP</mat-option>
+              <mat-option *ngFor="let item of segmentos; let i = index" value="{{item.idSegmento}}" (onSelectionChange)="filtrar(item.segmento,item.segmentoFinal)">{{item.segmento}} - {{item.segmentoFinal}} </mat-option>
             </mat-select>
           </mat-form-field>
           </div>
@@ -31,23 +27,23 @@
         <table mat-table [dataSource]="dataSource" >          
           <ng-container matColumnDef="ip">
             <th mat-header-cell *matHeaderCellDef > IP</th>
-            <td mat-cell *matCellDef="let element"> 1</td>
+            <td mat-cell *matCellDef="let element"> {{element.ip}}</td>
           </ng-container>
           <ng-container matColumnDef="tipoip">
             <th mat-header-cell *matHeaderCellDef >TIPO IP</th>
-            <td mat-cell *matCellDef="let element">qwert</td>
+            <td mat-cell *matCellDef="let element">{{element.tipoip}}</td>
           </ng-container>
           <ng-container matColumnDef="utilizado">
             <th mat-header-cell *matHeaderCellDef >UTILIZADO POR</th>
-            <td mat-cell *matCellDef="let element">1234567</td>
+            <td mat-cell *matCellDef="let element"> ---- </td>
           </ng-container>
           <ng-container matColumnDef="tipoequipo">
             <th mat-header-cell *matHeaderCellDef >TIPO DE EQUIPO</th>
-            <td mat-cell *matCellDef="let element">23</td>
+            <td mat-cell *matCellDef="let element">{{element.tipoequipo}}</td>
           </ng-container>
           <ng-container matColumnDef="ping">
             <th mat-header-cell *matHeaderCellDef >PING</th>
-            <td mat-cell *matCellDef="let element">34 </td>
+            <td mat-cell *matCellDef="let element"> ---- </td>
           </ng-container>
           
           <ng-container matColumnDef="opciones">
@@ -55,9 +51,7 @@
           <td mat-cell *matCellDef="let element"> 
               <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="Configuracion()"><mat-icon>settings</mat-icon>Editar</button>
-                <button mat-menu-item ><mat-icon>info</mat-icon>Info</button>  
-                <button mat-menu-item ><mat-icon>lan</mat-icon>Red</button>    
+                <button mat-menu-item (click)="Configuracion()"><mat-icon>settings</mat-icon>Editar</button>   
                 <button mat-menu-item ><mat-icon>delete</mat-icon>Eliminar</button> 
               </mat-menu> </td>
           </ng-container>
@@ -68,8 +62,8 @@
         <div class="existe" hidden>No se encontraron resultados... </div>
       
         <mat-paginator  #paginator
-        [pageSize]="10"
-        [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+        (page)="pageEvents($event)"
+        [pageSizeOptions]="[5, 10]"></mat-paginator>
       
     
     </mat-card-content>

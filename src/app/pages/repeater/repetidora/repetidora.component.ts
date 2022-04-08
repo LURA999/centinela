@@ -7,11 +7,15 @@ import { RepeaterService } from 'src/app/services/repeater.service';
 import { DeleteComponent } from '../delete/delete.component';
 import { NewRepeaterComponent } from '../new-repeater/new-repeater.component';
 import { CityService } from 'src/app/services/city.service';
+import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-repetidora',
   templateUrl: './repetidora.component.html',
-  styleUrls: ['./repetidora.component.css']
+  styleUrls: ['./repetidora.component.css'],
+  providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
+
 })
 
   export class RepetidoraComponent implements OnInit {

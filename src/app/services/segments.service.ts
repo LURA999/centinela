@@ -23,8 +23,8 @@ export class SegmentsService {
     return this.http.post(this.local+"Repeater/segment.php",input, {responseType:"text"});
   }
   
-  actualizarSegment(input :segmentsModel){
-    return this.http.patch(this.local+"Repeater/segment.php",input, {responseType:"text"});
+  actualizarSegment(id:number, nombre:string,estatus : number,tipo : number){
+    return this.http.patch(this.local+"Repeater/segment.php",{idSegmento:id,nombre:nombre,estatus:estatus,tipo:tipo}, {responseType:"text"});
   }
 
  updateElimSegment(id:String){    

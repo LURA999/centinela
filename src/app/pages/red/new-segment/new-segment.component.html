@@ -8,17 +8,17 @@
   </mat-form-field>
   <mat-icon>title</mat-icon>  
   </div>
-  <div class="row">
+  <div>
       <div>
         <mat-form-field appearance="standard">
           <mat-label>Segmento</mat-label>
-          <input matInput [value]="data.segmento? data.segmento : ''" placeholder="Segmento del repetidor" #segmento >    
+          <input matInput [value]="data.segmento? data.segmento : ''" placeholder="Segmento del repetidor" #segmento [disabled]="this.data.opc != false">    
         </mat-form-field>
       </div>
-    <div>
+    <div >
         <mat-form-field appearance="fill">
           <mat-label>Diagonal</mat-label>
-          <mat-select  matNativeControl [(value)]="data.diagonal" required #diagonal>
+          <mat-select  matNativeControl [(value)]="data.diagonal" required #diagonal [disabled]="this.data.opc != false">
             <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
             <mat-option value="8">/8</mat-option>
             <mat-option value="9">/9</mat-option>
@@ -60,10 +60,10 @@
   </mat-form-field>
   </div>
   
-<div>
+<div >
   <mat-form-field appearance="fill">
     <mat-label>Repetidora</mat-label>
-    <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #SelectRepetidora>
+    <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #SelectRepetidora [disabled]="this.data.opc != false">
       <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
       <mat-option value="{{item.idRepetidora}}" *ngFor="let item of this.data.repetidoras; let i = index">{{item.nombreRepetidora}}</mat-option>
     </mat-select>

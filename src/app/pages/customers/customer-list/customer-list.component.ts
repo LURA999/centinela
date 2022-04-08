@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { MyCustomPaginatorIntl } from './MyCustomPaginatorIntl';
+import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { NuevoClienteComponent } from '../nuevo-cliente/nuevo-cliente.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { CustomerService } from 'src/app/services/customer.service';

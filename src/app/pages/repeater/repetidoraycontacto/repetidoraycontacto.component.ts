@@ -8,11 +8,15 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { RepeaterService } from 'src/app/services/repeater.service';
 import { DeleteComponent } from '../delete/delete.component';
 import { ActivatedRoute, Params } from '@angular/router';
+import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-repetidoraycontacto',
   templateUrl: './repetidoraycontacto.component.html',
-  styleUrls: ['./repetidoraycontacto.component.css']
+  styleUrls: ['./repetidoraycontacto.component.css'],
+  providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
+
 })
 export class RepetidoraycontactoComponent implements OnInit {
   
