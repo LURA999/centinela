@@ -5,12 +5,12 @@ import { RepeaterRoutingModule } from './repeater-routing.module';
 import { RepetidoraComponent } from './repetidora/repetidora.component';
 import { RepetidoraycontactoComponent } from './repetidoraycontacto/repetidoraycontacto.component';
 import { MatPaginator } from '@angular/material/paginator';
-import { NewRepeaterComponent } from './new-repeater/new-repeater.component';
-import { NewContactComponent } from './new-contact/new-contact.component';
+import { NewRepeaterComponent } from './popup/new-repeater/new-repeater.component';
+import { NewContactComponent } from './popup/new-contact/new-contact.component';
 
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { DeleteComponent } from './delete/delete.component';
+import { DeleteComponent } from './popup/delete/delete.component';
 
 
 @NgModule({

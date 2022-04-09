@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { RepeaterService } from 'src/app/services/repeater.service';
+import { RepeaterService } from './../../../../core/services/repeater.service';
 
 @Component({
   selector: 'app-new-repeater',

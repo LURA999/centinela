@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SegmentsService } from 'src/app/services/segments.service';
+import { SegmentsService } from '../../../../core/services/segments.service';
 
 @Component({
   selector: 'app-delete',

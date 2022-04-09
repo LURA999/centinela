@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IpService } from 'src/app/services/ip.service';
-import { SegmentsService } from 'src/app/services/segments.service';
+import { IpService } from '../../../../core/services/ip.service';
+import { SegmentsService } from '../../../../core/services/segments.service';
 import { rango_ip } from './rango_ip';
 
 

@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CustomerService } from 'src/app/services/customer.service';
+import { CustomerService } from '../../../../core/services/customer.service';
 @Component({
   selector: 'app-nuevo-cliente',
   templateUrl: './nuevo-cliente.component.html',

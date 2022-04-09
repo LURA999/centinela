@@ -1,7 +1,6 @@
 import { NgModule, Optional, SkipSelf, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MediaMatcher } from '@angular/cdk/layout';
 import { NGXLogger } from 'ngx-logger';
 
 

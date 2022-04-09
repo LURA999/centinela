@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { RepetidorModel } from '../models/repetidor.model';
+import { RepetidorModel } from '../../models/repetidor.model';
 
 @Injectable({
   providedIn: 'root'

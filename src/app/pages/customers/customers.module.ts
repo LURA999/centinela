@@ -5,8 +5,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { NuevoClienteComponent } from './nuevo-cliente/nuevo-cliente.component';
-import { DeleteComponent } from './delete/delete.component';
+import { NuevoClienteComponent } from './popup/nuevo-cliente/nuevo-cliente.component';
+import { DeleteComponent } from './popup/delete/delete.component';
 
 @NgModule({
   imports: [

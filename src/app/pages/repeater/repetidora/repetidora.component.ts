@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { NotificationService } from 'src/app/services/notification.service';
-import { RepeaterService } from 'src/app/services/repeater.service';
-import { DeleteComponent } from '../delete/delete.component';
-import { NewRepeaterComponent } from '../new-repeater/new-repeater.component';
-import { CityService } from 'src/app/services/city.service';
+import { NotificationService } from './../../../core/services/notification.service';
+import { RepeaterService } from './../../../core/services/repeater.service';
+import { DeleteComponent } from '../popup/delete/delete.component';
+import { NewRepeaterComponent } from '../popup/new-repeater/new-repeater.component';
+import { CityService } from 'src/app/core/services/city.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 

@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ConfiguracionComponent } from '../configuracion/configuracion.component';
+import { ConfiguracionComponent } from '../popup/configuracion/configuracion.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { IpService } from 'src/app/services/ip.service';
-import { MatSort } from '@angular/material/sort';
+import { IpService } from './../../../core/services/ip.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { SegmentsService } from 'src/app/services/segments.service';
+import { SegmentsService } from './../../../core/services/segments.service';
 
 @Component({
   selector: 'app-controlips',
@@ -19,53 +18,40 @@ export class ControlipsComponent implements OnInit {
 
   ELEMENT_DATA: any = [ ];
   segmentos: any = [ ];
-
+  ips :any =[ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping','opciones'];
   inicio : number=0;
   fin : number=10;
+  monitoreo :any ;
   @ViewChild ("paginator") paginator2:any;
 
   constructor(private dialog:NgDialogAnimationService, private ipService : IpService, private segmentoService : SegmentsService) { 
-  this.imprimirIps();
-  this.IPs();
+    this.procedmiento();
+
   }
 
-  ngOnInit(): void {
-   console.log(this.monitoreoPing());
+  ngOnInit(): void {   
     
   }
 
-  async IPs(){
+  async procedmiento(){
+    await this.ipServicios();
+    await this.cargarInicio();
+    await this.segmentosArray();
+  }
+
+  async segmentosArray(){
     this.segmentos  = await this.segmentoService.llamarSegments().toPromise();
     this.segmentos = this.segmentos.container;
     
   }
 
-  async imprimirIps(){
-    let x : any = await this.ipService.select().toPromise();
-    x = x.container;      
-    
-  for (const z of x) {        
-      this.ELEMENT_DATA.push({
-        ip: z.ip,
-        tipoip: z.tipo,
-        utilizado: "------",
-        tipoequipo:"------",
-        ping: "---",
-        opciones:"ejemplo",
-      });    
-    }
+ async ipServicios(){
+  this.ips =await this.ipService.select().toPromise();
+  this.ips = this.ips.container;
+ }
 
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.paginator =  this.paginator2;    
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-  
   Configuracion(){
     let dialogRef  = this.dialog.open(ConfiguracionComponent,
       {data: {opc : false },
@@ -81,51 +67,50 @@ async pageEvents(event: any) {
       this.inicio = 0;
     }
     this.fin =  (this.fin - (this.fin%10)) - 10;
-    this.ELEMENT_DATA=[];
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     await this.cargarInicio();
   } else {
     this.inicio = this.fin;
     this.fin = this.fin + 10;
-    this.ELEMENT_DATA=[];
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     await this.cargarInicio();
   }
 }
 
 async cargarInicio(){
-  console.log(this.segmentos);
-  
- while ( this.inicio <this.fin + 2 && this.inicio < this.segmentos.length) {
+  this.ELEMENT_DATA=[];
+  this.dataSource = new MatTableDataSource();
 
-   
-  if(this.inicio < this.fin){    
-    this.ELEMENT_DATA[this.inicio] =(    
+ while  (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
+  if(this.inicio < this.fin){        
+    this.ELEMENT_DATA[this.inicio] = await (    
         {
-          'ip': this.segmentos[this.inicio].ip,
-          'tipoip': this.segmentos[this.inicio].tipo,
-          'utilizado': "----",
-          'tipoequipo': "-----",
-          'ping': "----",
+          ip: this.ips[this.inicio].ip,
+          tipoip: this.ips[this.inicio].tipo,
+          utilizado: "----",
+          tipoequipo: "-----",
+          ping: "------ ",
          
-        });
-      this.inicio++      
+        });        
   }
+  this.inicio++      
+  }
+  console.log(this.ELEMENT_DATA);
 
-  this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
-  this.dataSource.paginator = await this.paginator2; 
-  this.paginator2.length = await this.segmentos.length;
+  this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  this.dataSource.paginator = this.paginator2;    
+  this.paginator2.length = await this.ips.length;
    
-  }
 }
 
   async filtrar(segmento :string,segmento2 :string){
+    this.paginator2.firstPage();
+
     this.ELEMENT_DATA=[];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    let x : any = await this.ipService.selectIp(segmento, segmento2).toPromise();
-    x = x.container;      
-        
-  for (const z of x) {            
+     this.ips = await this.ipService.selectIp(segmento, segmento2).toPromise();
+    this.ips= await this.ips.container;      
+    
+    
+  for await (const z of this.ips) {            
       this.ELEMENT_DATA.push({
         ip: z.ip,
         tipoip: z.tipo,
@@ -134,12 +119,23 @@ async cargarInicio(){
         ping: "-----",
         opciones:"ejemplo",
       });    
+    
     }
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.paginator =  this.paginator2;    
+
+    this.dataSource =await new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator =  await this.paginator2;  
+    this.inicio =0;
+    this.fin =10;
+    this.paginator2.firstPage();
+    
   }
 
-  async monitoreoPing(){
- return await this.ipService.ping("10.1.5.20").toPromise()
+   async monitoreoPing( s : string){
+    let x : any = await this.ipService.ping(s).toPromise()
+    return x.container.status
+  }
+
+  buscar(clave:string){
+    this.dataSource.filter = clave.trim().toLowerCase();
   }
 }

@@ -4,11 +4,11 @@ import { RedRoutingModule } from './red-routing.module';
 import { SegmentsComponent } from './segments/segments.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { NewSegmentComponent } from './new-segment/new-segment.component';
-import { DeleteComponent } from './delete/delete.component';
-import { InfoComponent } from './info/info.component';
+import { NewSegmentComponent } from './popup/new-segment/new-segment.component';
+import { DeleteComponent } from './popup/delete/delete.component';
+import { InfoComponent } from './popup/info/info.component';
 import { ControlipsComponent } from './controlips/controlips.component';
-import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { ConfiguracionComponent } from './popup/configuracion/configuracion.component';
 
 @NgModule({
   declarations: [   

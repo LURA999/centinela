@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { NewSegmentComponent } from '../new-segment/new-segment.component';
+import { NewSegmentComponent } from '../popup/new-segment/new-segment.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { InfoComponent } from '../info/info.component';
-import { DeleteComponent } from '../delete/delete.component';
+import { InfoComponent } from '../popup/info/info.component';
+import { DeleteComponent } from '../popup/delete/delete.component';
 import { MatSort } from '@angular/material/sort';
-import { SegmentsService } from 'src/app/services/segments.service';
-import { NotificationService } from 'src/app/services/notification.service';
-import { RepeaterService } from 'src/app/services/repeater.service';
+import { SegmentsService } from './../../../core/services/segments.service';
+import { NotificationService } from './../../../core/services/notification.service';
+import { RepeaterService } from './../../../core/services/repeater.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { rango_ip } from '../new-segment/rango_ip';
+import { rango_ip } from '../popup/new-segment/rango_ip';
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
