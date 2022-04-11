@@ -19,7 +19,7 @@
       <form>
       <div class="row">
         <div class="col" style="margin-top: auto; margin-bottom: auto;">
-          <button mat-input (click)="buscar(inputBuscar.value)">Buscar</button>
+          <button mat-raised-button (click)="buscar(inputBuscar.value)" color="primary">Buscar</button>
         </div>
         <div class="col" >
           <mat-form-field appearance="standard" >
@@ -50,7 +50,19 @@
           </ng-container>
           <ng-container matColumnDef="ping">
             <th mat-header-cell *matHeaderCellDef >PING</th>
-            <td mat-cell *matCellDef="let element" [ngModel]="monitoreoPing(element.ip)"> </td>
+            <td mat-cell *matCellDef="let element"> 
+              <ng-container *ngIf=" element.ping  == undefined; else elseTemplate">
+                <mat-icon >sync</mat-icon> Cargando
+              </ng-container>
+              <ng-template #elseTemplate>
+                <ng-container *ngIf="element.ping  == 400; else elseTemplate">
+                  <mat-icon style="color : red ;">wifi</mat-icon> No hay conexion  
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <mat-icon style="color : green ;">wifi</mat-icon> Si hay conexion
+                </ng-template>
+              </ng-template>  
+            </td>
           </ng-container>
           
           <ng-container matColumnDef="opciones">

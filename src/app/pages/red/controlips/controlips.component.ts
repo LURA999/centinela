@@ -6,6 +6,7 @@ import { IpService } from './../../../core/services/ip.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { SegmentsService } from './../../../core/services/segments.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-controlips',
@@ -18,12 +19,14 @@ export class ControlipsComponent implements OnInit {
 
   ELEMENT_DATA: any = [ ];
   segmentos: any = [ ];
+  $sub :  Subscription = new Subscription();
   ips :any =[ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping','opciones'];
   inicio : number=0;
   fin : number=10;
-  monitoreo :any ;
+  monitoreo : any
+  ping : string =""
   @ViewChild ("paginator") paginator2:any;
 
   constructor(private dialog:NgDialogAnimationService, private ipService : IpService, private segmentoService : SegmentsService) { 
@@ -32,13 +35,12 @@ export class ControlipsComponent implements OnInit {
   }
 
   ngOnInit(): void {   
-    
   }
 
   async procedmiento(){
     await this.ipServicios();
-    await this.cargarInicio();
     await this.segmentosArray();
+    await this.cargarInicio();
   }
 
   async segmentosArray(){
@@ -61,7 +63,7 @@ export class ControlipsComponent implements OnInit {
   }
 
 async pageEvents(event: any) {  
-  if(event.previousPageIndex > event.pageIndex) {
+    if(event.previousPageIndex > event.pageIndex) {
     this.inicio = (this.inicio-(this.inicio%10)) - 20;
     if(this.inicio < 0){
       this.inicio = 0;
@@ -75,67 +77,85 @@ async pageEvents(event: any) {
   }
 }
 
+
 async cargarInicio(){
   this.ELEMENT_DATA=[];
   this.dataSource = new MatTableDataSource();
 
- while  (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
+ while (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
   if(this.inicio < this.fin){        
-    this.ELEMENT_DATA[this.inicio] = await (    
-        {
-          ip: this.ips[this.inicio].ip,
-          tipoip: this.ips[this.inicio].tipo,
-          utilizado: "----",
-          tipoequipo: "-----",
-          ping: "------ ",
-         
-        });        
-  }
+    
+    this.monitoreoPing(this.ips[this.inicio].ip, this.inicio)
+
+    this.ELEMENT_DATA[this.inicio] =  (    
+      {
+        ip: this.ips[this.inicio].ip,
+        tipoip: this.ips[this.inicio].tipo,
+        utilizado: "----",
+        tipoequipo: "-----",
+        ping: this.ips[this.inicio].ping,
+      });        
+    }
   this.inicio++      
   }
-  console.log(this.ELEMENT_DATA);
 
   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   this.dataSource.paginator = this.paginator2;    
-  this.paginator2.length = await this.ips.length;
-   
-}
+  this.paginator2.length = await this.ips.length;   
+  }
 
   async filtrar(segmento :string,segmento2 :string){
-    this.paginator2.firstPage();
-
-    this.ELEMENT_DATA=[];
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-     this.ips = await this.ipService.selectIp(segmento, segmento2).toPromise();
-    this.ips= await this.ips.container;      
-    
-    
-  for await (const z of this.ips) {            
-      this.ELEMENT_DATA.push({
-        ip: z.ip,
-        tipoip: z.tipo,
-        utilizado: "----",
-        tipoequipo:"------",
-        ping: "-----",
-        opciones:"ejemplo",
-      });    
-    
-    }
-
-    this.dataSource =await new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.paginator =  await this.paginator2;  
+    this.paginator2.firstPage();  
     this.inicio =0;
     this.fin =10;
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.ips = await this.ipService.selectIp(segmento, segmento2).toPromise();
+    this.ips= await this.ips.container;   
+    
+    while  (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
+      if(this.inicio < this.fin){        
+        this.monitoreoPing(this.ips[this.inicio].ip, this.inicio)
+        this.ELEMENT_DATA[this.inicio] =  (    
+          {
+            ip: this.ips[this.inicio].ip,
+            tipoip: this.ips[this.inicio].tipo,
+            utilizado: "----",
+            tipoequipo: "-----",
+            ping: this.ips[this.inicio].ping,
+          });        
+        }
+      this.inicio++      
+      }
+  
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator2;    
+    this.paginator2.length = await this.ips.length;   
     this.paginator2.firstPage();
+  }
+
+   async monitoreoPing( ip : string, i : number){   
+    this.$sub.add(await this.ipService.ping(ip).subscribe((resp:any) => {
+      this.ping = resp.container.status
+      this.ELEMENT_DATA[i].ping = this.ping;
+    }))
+   
+    
     
   }
 
-   async monitoreoPing( s : string){
-    let x : any = await this.ipService.ping(s).toPromise()
-    return x.container.status
-  }
+  async buscar(clave:string){
+    
+    if(clave.length > 0){
 
-  buscar(clave:string){
-    this.dataSource.filter = clave.trim().toLowerCase();
+    }else{
+      console.log(clave.length);
+
+      this.$sub.unsubscribe();
+      this.inicio = 0;
+      this.fin =10;
+      this.paginator2.firstPage();
+      await this.cargarInicio();
+    }
   }
 }
