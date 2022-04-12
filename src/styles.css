@@ -1,4 +1,65 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+#contenedor_carga{
+  background-color: rgba(88, 88, 88, 60%);
+  height: 100%;
+  width:100%;
+  position: fixed;
+  -webkit-transition: all 1s none;
+  -o-transition: all 1s none;
+  transition: all 1s none;
+  z-index:10000;
+  display: none;
+}
+
+
+
+@keyframes typing {
+from {width: 0 }
+}
+
+
+.slider{
+overflow: hidden;
+position: absolute;
+left: 50%;
+bottom: 50%;
+transform: translate(-50%,-50%);
+text-align: center;
+color: white;
+
+}
+.slider ul{
+  display: flex;
+  animation: cambio 15s infinite alternate linear;
+  width: 400%;
+}
+.slider li{
+  width: 100%;
+  list-style: none;
+}
+
+@keyframes cambio{
+  0%{margin-left: 0;}
+  20%{margin-left: 0;}
+  
+  25%{margin-left: -100%;}
+  45%{margin-left: -100%;}
+  
+  50%{margin-left: -200%;}
+  70%{margin-left: -200%;}
+  
+  75%{margin-left: -300%;}
+  100%{margin-left: -300%;}
+
+}
+
+
+@keyframes girar {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
+}
+
+
 
 body {
   margin: 0;

@@ -20,7 +20,6 @@ import { rango_ip } from '../popup/new-segment/rango_ip';
 })
 export class SegmentsComponent implements OnInit {
 
-
   ELEMENT_DATA: any = [ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   subnet = require("subnet-cidr-calculator")
@@ -47,8 +46,8 @@ export class SegmentsComponent implements OnInit {
 
   
    ngOnInit(): void {
-    this.procesoInicio()
-   /*let r : string []= this.rango.rango("192.168.0.1", "193.169.255.255");
+    this.procesoInicio()/*
+   let r : string []= this.rango.rango("193.168.255.255", "193.169.255.255");
     console.log(r);*/
   }
 

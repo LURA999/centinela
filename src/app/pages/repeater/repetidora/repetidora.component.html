@@ -1,9 +1,9 @@
 <div class="container" fxLayout="row" fxLayoutAlign="center none">
 
     <div fxFlex="95%">
-  
-      <mat-card>
-        <mat-card-content>
+      <div >
+      <mat-card >
+        <mat-card-content style="overflow-x: auto;" >
            <h2>Repetidores</h2>
           
            <div class="barriba">
@@ -18,7 +18,7 @@
               </div>
           </div>
           
-          <table mat-table [dataSource]="dataSource" >          
+          <table mat-table [dataSource]="dataSource"  >          
             <ng-container matColumnDef="id">
               <th mat-header-cell *matHeaderCellDef >Id</th>
               <td mat-cell *matCellDef="let element" [routerLink]="['/admin/repetidor/repetidor-y-contacto/',element.id]">{{element.id}}</td>
@@ -67,5 +67,6 @@
       
       </mat-card-content>
       </mat-card>
+    </div>
   </div>
   </div>

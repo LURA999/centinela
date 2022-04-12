@@ -64,11 +64,13 @@ export class CustomerListComponent implements OnInit {
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     this.todosClientes =  await this.clienteServicio.clientesTodos().toPromise();
-      for (let i=0; i<this.todosClientes.container.length; i++)
+      for (let i=0; i<this.todosClientes.container.length; i++){
+        console.log(this.todosClientes.container[i]["estatus"]);
+        
       this.ELEMENT_DATA.push(
         {id: this.todosClientes.container[i]["idCliente"],empresa: this.todosClientes.container[i]["nombre"],nombre:this.todosClientes.container[i]["nombreCorto"]
           ,estatus:this.estatus(this.todosClientes.container[i]["estatus"])}
-      );
+      );}
       this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator = await this.paginator2;    
       this.dataSource.sort = await this.sort;
@@ -285,16 +287,15 @@ export class CustomerListComponent implements OnInit {
   }
 
   estatus(numero : number) {
-    switch(numero){
-      case 1:
-        return "activo"
-      case 2:
-        return "inactivo"
-      case 3: 
-        return "ausente"
-      default:
-        return ""
+    if(numero == 1){
+      return "activo"
+    }else if(numero==2){
+      return "inactivo"
+    }else{
+      return "ausente"
+
     }
+
   }
   estatusNumero(numero : string) {
     switch(numero){
