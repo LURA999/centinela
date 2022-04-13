@@ -95,6 +95,12 @@ table td{
         text-align: center;
     }
 }
+@media screen and (max-width:950px) {
+    .matGeneral {
+        display: flex;
+        
+    }
+}
 
 @media screen and (max-width: 768px) {
     #lista table td,

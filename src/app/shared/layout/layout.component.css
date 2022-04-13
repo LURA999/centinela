@@ -69,6 +69,7 @@ mat-toolbar{
   background-color: #12344d !important ;
   height: 75px;
 }
+
 .panel {
   border: solid 1px #ddd;
   border-radius: 10px;
@@ -78,19 +79,18 @@ mat-toolbar{
   
 }
 
+/**Alineando las secciones con child */
 mat-expansion-panel {
-background-color: white;
-margin-left: -8.3%;
-
+  background-color: white;
+  margin-left: -12.3%;
 }
-
 
 ::-webkit-scrollbar-thumb
 {
-  background: #2b3779
-    !important;
+  background: #2b3779 !important;
   
 }
+
 ::-webkit-scrollbar {
   height: 4px;
   width: 4px;
@@ -98,7 +98,6 @@ margin-left: -8.3%;
 
 ::-webkit-scrollbar-track {
   background-color: #b6b5b5 !important;
-  
 }
   
 ::ng-deep .mat-drawer-inner-container {
@@ -119,11 +118,20 @@ background-color: #f1f1f1;
 }
 
 .mat-icon-button {
-  transform: scale(1.5);
-  fill:white;
+  margin-right: 15px;
+  transform: scale(1.5);  
+  padding: 0;
+  min-width: 0;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  line-height: 40px;
+  background: none;
+  border-radius: 50%;
+  color: rgb(255, 255, 255);
 }
 
-p{
+p {
 margin-left: 20px;
 }
 

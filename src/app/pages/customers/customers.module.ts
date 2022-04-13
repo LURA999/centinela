@@ -8,6 +8,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NuevoClienteComponent } from './popup/nuevo-cliente/nuevo-cliente.component';
 import { DeleteComponent } from './popup/delete/delete.component';
 import { CustomerCompanyComponent } from './customer-company/customer-company.component';
+import { TableTicketsComponent } from './table-tickets/table-tickets.component';
+import { TableServiceComponent } from './table-service/table-service.component';
+import { TableLogComponent } from './table-log/table-log.component';
+import { TableRsComponent } from './table-rs/table-rs.component';
+import { TableContactComponent } from './table-contact/table-contact.component';
 
 @NgModule({
   imports: [
@@ -22,6 +27,11 @@ import { CustomerCompanyComponent } from './customer-company/customer-company.co
     NuevoClienteComponent,
     DeleteComponent,
     CustomerCompanyComponent,
+    TableTicketsComponent,
+    TableServiceComponent,
+    TableLogComponent,
+    TableRsComponent,
+    TableContactComponent
   ],
   exports: [
     CustomerListComponent,

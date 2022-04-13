@@ -21,11 +21,11 @@
   }
 
   
-  .existe{
+.existe{
     margin-top: 5%;
     margin-bottom: 5%;
     text-align: center;
-   }
+}
 
 
 table {
@@ -96,7 +96,4 @@ th.mat-sort-header-sorted {
         width: 100%;
        
     }
-   
-  
-  
 }

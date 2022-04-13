@@ -7,7 +7,6 @@ import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { SegmentsService } from './../../../core/services/segments.service';
 import { Observable, Subscription } from 'rxjs';
-import { toJSDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-calendar';
 
 @Component({
   selector: 'app-controlips',

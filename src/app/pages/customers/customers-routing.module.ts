@@ -4,6 +4,8 @@ import { LayoutComponent } from 'src/app/shared/layout/layout.component';
 import { CustomerCompanyComponent } from './customer-company/customer-company.component';
 
 import { CustomerListComponent } from './customer-list/customer-list.component';
+import { TableServiceComponent } from './table-service/table-service.component';
+import { TableTicketsComponent } from './table-tickets/table-tickets.component';
 
 const routes: Routes = [
   {
@@ -11,7 +13,10 @@ const routes: Routes = [
     component: LayoutComponent, 
     children: [
       { path: '', component: CustomerListComponent },
-      { path: ':id', component: CustomerCompanyComponent}
+      { path: ':id', component: CustomerCompanyComponent},
+      { path: "service", component: TableServiceComponent},
+      { path: "ticket", component: TableTicketsComponent},
+
     ]
   }
 ];

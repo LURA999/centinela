@@ -25,7 +25,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         private router : Router,
       ) {
 
-        this.mobileQuery = this.media.matchMedia('(max-width: 1150px)');
+        this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         // tslint:disable-next-line: deprecation
         this.mobileQuery.addListener(this._mobileQueryListener);
