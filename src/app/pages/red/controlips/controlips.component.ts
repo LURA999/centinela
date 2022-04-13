@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ConfiguracionComponent } from '../popup/configuracion/configuracion.component';
+import { ConfigurationComponent } from '../popup/configuration/configuration.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { IpService } from './../../../core/services/ip.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
@@ -33,10 +33,14 @@ export class ControlipsComponent implements OnInit {
     this.procedmiento();
 
   }
+  
 
   ngOnInit(): void {   
+
+    
   }
 
+  
   async procedmiento(){
     await this.ipServicios();
     await this.segmentosArray();
@@ -55,7 +59,7 @@ export class ControlipsComponent implements OnInit {
  }
 
   Configuracion(){
-    let dialogRef  = this.dialog.open(ConfiguracionComponent,
+    let dialogRef  = this.dialog.open(ConfigurationComponent,
       {data: {opc : false },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
@@ -105,7 +109,7 @@ async cargarInicio(){
   }
 
   async filtrar(segmento :string,segmento2 :string){
-    this.paginator2.firstPage();  
+    this.paginator2.firstPage(); 
     this.inicio =0;
     this.fin =10;
     this.ELEMENT_DATA=[];
@@ -113,11 +117,13 @@ async cargarInicio(){
     this.ips = await this.ipService.selectIp(segmento, segmento2).toPromise();
     this.ips= await this.ips.container;   
     
+    
     while  (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
       if(this.inicio < this.fin){        
         this.monitoreoPing(this.ips[this.inicio].ip, this.inicio)
         this.ELEMENT_DATA[this.inicio] =  (    
           {
+            
             ip: this.ips[this.inicio].ip,
             tipoip: this.ips[this.inicio].tipo,
             utilizado: "----",
@@ -132,6 +138,7 @@ async cargarInicio(){
     this.dataSource.paginator = this.paginator2;    
     this.paginator2.length = await this.ips.length;   
     this.paginator2.firstPage();
+    
   }
 
    async monitoreoPing( ip : string, i : number){   
