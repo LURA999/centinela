@@ -9,9 +9,10 @@
     "lint": "ng lint",
     "test": "ng test",
     "build-production": "ng build --configuration=production --base-href=/centinela/"
-  },"browser":{
+  },
+  "browser": {
     "child_process": false
-    }  ,
+  },
   "private": false,
   "dependencies": {
     "@angular/animations": "^13.3.1",

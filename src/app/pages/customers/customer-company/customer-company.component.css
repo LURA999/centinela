@@ -1,0 +1,25 @@
+table {
+    width: 100%;
+}
+
+mat-card {
+    margin: 15px;
+}
+
+table {
+    box-shadow: 1px 1px 1px 1px grey;
+}
+
+#tabla-p{
+    margin-top: 11%;
+}
+
+
+@media screen and (max-width:990px) {
+    .tablaC {
+        width: 95% !important;
+    }
+    mat-paginator{
+        width: auto !important;
+    }
+}

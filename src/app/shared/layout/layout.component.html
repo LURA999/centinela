@@ -50,7 +50,7 @@
           <p  > Menu  </p>
         </div>
 
-        <a mat-list-item [routerLink]="['/admin/clientes']" [ngStyle]="{'display': acceso()}">
+        <a mat-list-item [routerLink]="['/admin/client']" [ngStyle]="{'display': acceso()}">
           <mat-icon mat-list-icon >person</mat-icon>
           <p mat-line > Clientes  </p>
         </a>
@@ -64,7 +64,7 @@
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Ping</a>
-  <a mat-list-item [routerLink]="['/admin/repeater/repetidora']" routerLinkActive="active" mat-line>
+  <a mat-list-item [routerLink]="['/admin/repeater/']" routerLinkActive="active" mat-line>
     Repetidores</a>
     <a mat-list-item [routerLink]="['/admin/red/segments']" routerLinkActive="active" mat-line>
       Segmentos</a>
@@ -81,7 +81,7 @@
   <mat-expansion-panel-header>
    
       <mat-icon mat-list-icon>notifications_active</mat-icon> 
-      <p  mat-line> Activacion y cancelacion </p>
+      <p  mat-line>Activacion</p>
     
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>

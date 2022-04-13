@@ -25,9 +25,11 @@ export class IpService {
     selectIpParam(segmento :string,segmento2 :string,segmento3 : string){
         return this.http.get(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2+"&segmentoBuscar="+segmento3)
     }
+
     selectIpTodosSolo(segmento : string){
         return this.http.get(this.local+"Repeater/ip.php?segmentoBuscarSinParam="+segmento)
     }
+    
     ping(ip : string) {
         return this.http.get(this.local+"ping.php?ip="+ip)
     }

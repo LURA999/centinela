@@ -18,6 +18,8 @@ from {width: 0 }
 }
 
 
+
+
 .slider{
 overflow: hidden;
 position: absolute;
@@ -37,6 +39,19 @@ color: white;
   width: 100%;
   list-style: none;
 }
+
+.mat-card2{
+  padding: 0% 0% 3% 0% !important;
+}
+
+.mat-card-header2{
+
+  background-color: #f5f7f9; 
+  padding-top: 2%;
+}
+
+
+
 
 @keyframes cambio{
   0%{margin-left: 0;}

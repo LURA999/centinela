@@ -7,6 +7,7 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NuevoClienteComponent } from './popup/nuevo-cliente/nuevo-cliente.component';
 import { DeleteComponent } from './popup/delete/delete.component';
+import { CustomerCompanyComponent } from './customer-company/customer-company.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { DeleteComponent } from './popup/delete/delete.component';
     CustomerListComponent,
     NuevoClienteComponent,
     DeleteComponent,
+    CustomerCompanyComponent,
   ],
   exports: [
     CustomerListComponent,

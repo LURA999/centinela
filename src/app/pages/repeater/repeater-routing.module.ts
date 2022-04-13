@@ -10,9 +10,8 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'repetidora', canActivate:[DashAdminGuard], component: RepetidoraComponent },
-      { path: "repetidor-y-contacto" , component: RepetidoraycontactoComponent},
-      { path: "repetidor-y-contacto/:id" , component: RepetidoraycontactoComponent},
+      { path: '', canActivate:[DashAdminGuard], component: RepetidoraComponent },
+      { path: ":id" , component: RepetidoraycontactoComponent},
     ]
   }
 ];

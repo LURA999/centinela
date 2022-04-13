@@ -114,6 +114,8 @@ async cargarInicio(){
   }
   if(this.ELEMENT_DATA.length == 0 ){
     this.comentario = false;
+}else {
+  this.comentario = true;
 }
   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   this.dataSource.paginator = this.paginator2;    
@@ -122,7 +124,6 @@ async cargarInicio(){
   }
 
   async filtrar(segmentos : string){
-    this.comentario = true  
     this.segmentoFiltro1 = segmentos.split("-",2)[0]
     this.segmentoFiltro2 = segmentos.split("-",2)[1]
     this.paginator2.firstPage();  

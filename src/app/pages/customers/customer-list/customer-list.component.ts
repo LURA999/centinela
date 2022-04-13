@@ -36,6 +36,7 @@ export class CustomerListComponent implements OnInit {
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   todosClientes : any;
   autoSelect :number =0;
+  mayorNumero : number =0;
   sub$ :Subscription | undefined;
   cargando : boolean = false;
   @ViewChild ("paginator") paginator2:any;
@@ -65,19 +66,23 @@ export class CustomerListComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     this.todosClientes =  await this.clienteServicio.clientesTodos().toPromise();
       for (let i=0; i<this.todosClientes.container.length; i++){
-        console.log(this.todosClientes.container[i]["estatus"]);
-        
       this.ELEMENT_DATA.push(
         {id: this.todosClientes.container[i]["idCliente"],empresa: this.todosClientes.container[i]["nombre"],nombre:this.todosClientes.container[i]["nombreCorto"]
           ,estatus:this.estatus(this.todosClientes.container[i]["estatus"])}
-      );}
+      );
+      this.numeroMayor(this.todosClientes.container[i]["idCliente"]);
+    }
       this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator = await this.paginator2;    
       this.dataSource.sort = await this.sort;
       this.cargando = true;
   }
 
-
+  numeroMayor(numero : number){
+    if (this.mayorNumero <numero){
+      this.mayorNumero = numero
+    }
+  }
   /**Las siguientes dos funciones, exportExcel y onfilechange, son para importar y exportar */
   async exportexcel() 
   {
@@ -130,7 +135,7 @@ export class CustomerListComponent implements OnInit {
          repetidocliente = repetidocliente.container;
            try{
              if(this.excel[p][0] !== undefined  && repetidocliente[0].repetido == 0 || this.excel[p][0] == "" && repetidocliente[0].repetido == 0){    
-               await this.clienteServicio.insertaCliente({empresa:this.excel[p][0], nombre: this.excel[p][1],estatus:+this.excel[p][2]}).subscribe();
+               await this.clienteServicio.insertaCliente({ empresa:this.excel[p][0], nombre: this.excel[p][1],estatus:+this.excel[p][2]}).subscribe();
              }
             }catch(Exception){}
          }
@@ -195,7 +200,7 @@ export class CustomerListComponent implements OnInit {
      dialogRef.afterClosed().subscribe((result:any)=>{
        try{
       if(result.mensaje.length > 0  ){
-        this.ELEMENT_DATA.unshift({id: result.idCliente,empresa: result.empresa,nombre:result.nombre,estatus:this.estatus(result.estatus)});
+        this.ELEMENT_DATA.unshift({id: ++this.mayorNumero,empresa: result.empresa,nombre:result.nombre,estatus:this.estatus(result.estatus)});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
