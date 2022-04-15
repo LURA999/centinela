@@ -15,9 +15,11 @@
             </mat-select>
           </mat-form-field>
           </div>
+        <button style="margin-top: auto; margin-bottom: auto;" mat-raised-button color="primary" (click)="exportar($event)"> Exportar </button>
+        <button style="margin-top: auto; margin-bottom: auto;" mat-raised-button color="primary" (click)="refrescar()"> Refrescar </button>
       <form>
       <div class="row">
-        <div class="col" style="margin-top: auto; margin-bottom: auto;">
+        <div class="col" style="margin-top: auto; margin-bottom: auto;" hidden>
           <button mat-raised-button (click)="buscar(inputBuscar.value)" color="primary">Buscar</button>
         </div>
         <div class="col" >
@@ -28,6 +30,7 @@
           </div>
         </div>
       </form>
+
       </div>
       
         <table mat-table [dataSource]="dataSource" >          

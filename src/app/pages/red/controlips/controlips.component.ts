@@ -7,6 +7,8 @@ import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { SegmentsService } from './../../../core/services/segments.service';
 import { Observable, Subscription } from 'rxjs';
+import * as fs from 'file-saver';
+import { Workbook } from 'exceljs'; 
 
 @Component({
   selector: 'app-controlips',
@@ -16,7 +18,7 @@ import { Observable, Subscription } from 'rxjs';
 
 })
 export class ControlipsComponent implements OnInit {
-
+  contenedor_carga = <HTMLDivElement> document.getElementById("contenedor_carga");
   ELEMENT_DATA: any = [ ];
   segmentos: any = [ ];
   segmentoFiltro1 : string = "";
@@ -74,6 +76,9 @@ export class ControlipsComponent implements OnInit {
   }
 
 async pageEvents(event: any) {  
+  this.$sub.unsubscribe();
+  this.$sub = new Subscription();
+
     if(event.previousPageIndex > event.pageIndex) {
     this.inicio = (this.inicio-(this.inicio%10)) - 20;
     if(this.inicio < 0){
@@ -88,7 +93,34 @@ async pageEvents(event: any) {
   }
 }
 
-
+async refrescar(){
+  this.inicio = this.inicio-12  ;
+  while (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
+    if(this.inicio < this.fin){        
+      
+      this.monitoreoPing(this.ips[this.inicio].ip, this.inicio)
+  
+      this.ELEMENT_DATA[this.inicio] =  (    
+        {
+          ip: this.ips[this.inicio].ip,
+          tipoip: this.ips[this.inicio].tipo,
+          utilizado: "----",
+          tipoequipo: "-----",
+          ping: this.ips[this.inicio].ping,
+        });        
+      }
+    this.inicio++      
+    }
+    if(this.ELEMENT_DATA.length == 0 ){
+      this.comentario = false;
+  }else {
+    this.comentario = true;
+  }
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator2;    
+    this.paginator2.length = await this.ips.length;  
+    this.cargando = true; 
+}
 async cargarInicio(){
   this.comentario = true
   this.cargando = false;
@@ -145,7 +177,10 @@ async cargarInicio(){
       }catch(Exception){}
     })) 
   }
-
+  async monitoreoPingSinIndex( ip : string){ 
+    let ping :any = await this.ipService.ping(ip).toPromise()
+    return ping = ping.container.status
+  }
   async buscar(clave:string){
     this.$sub.unsubscribe();
     this.$sub = new Subscription();
@@ -155,6 +190,11 @@ async cargarInicio(){
        let ipsFake :any = await this.ipService.selectIpParam(this.segmentoFiltro1, this.segmentoFiltro2, clave).toPromise() 
         ipsFake = ipsFake.container;        
         this.mostrarSoloUnaFila(ipsFake);
+        if(ipsFake.length > 0){
+          this.comentario = true;
+        }else{
+          this.comentario=false;
+        }
         ///
       }else{                
         this.inicio = 0;
@@ -166,7 +206,13 @@ async cargarInicio(){
       if(clave.length > 0){
         let ipsFake : any = await this.ipService.selectIpTodosSolo( clave).toPromise()
         ipsFake = ipsFake.container;
+        
         this.mostrarSoloUnaFila(ipsFake);
+        if(ipsFake.length > 0){
+          this.comentario = true;
+        }else{
+          this.comentario=false;
+        }
         
       }else{
         this.inicio=0;
@@ -177,7 +223,9 @@ async cargarInicio(){
   }
 
   mostrarSoloUnaFila(ipsFake :any){
-    if(ipsFake.length >0){
+    console.log(ipsFake.length);
+    
+    if(ipsFake.length > 0){
     this.comentario = true  
     this.cargando = false;
     this.inicio =0;
@@ -199,6 +247,7 @@ async cargarInicio(){
       this.dataSource.paginator = this.paginator2;    
       this.paginator2.length = this.ips.length;  
       this.cargando = true;
+      
     }else{
       this.ELEMENT_DATA =[]
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -208,7 +257,32 @@ async cargarInicio(){
     }
   }
 
-  hayClientes(ipsFake : any){
-   
+  async exportar(event : any){
+    this.contenedor_carga.style.display = "block";
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]= ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping'];
+    worksheet.addRow(header);
+    
+    for  (let x1=0; x1<this.ips.length; x1++ )
+    {
+      let temp : any=[]
+        temp.push(this.ips[x1].ip)
+        temp.push(this.ips[x1].tipo)
+        temp.push("----")
+        temp.push("----")
+        temp.push(await this.monitoreoPingSinIndex(this.ips[x1].ip)) 
+        worksheet.addRow(temp)
+
+    }
+
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data : any) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+    });
+    this.contenedor_carga.style.display = "none";
+
   }
 }
