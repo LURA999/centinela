@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ContactService } from './../../../../core/services/contact.service';
+import { ContactService } from '../../../../core/services/contact.service';
 
 @Component({
   selector: 'app-new-contact',

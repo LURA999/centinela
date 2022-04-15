@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { NewContactComponent } from '../popup/new-contact/new-contact.component';
+import { NewContactComponent } from '../../red/popup/new-contact/new-contact.component';
 import { ContactService } from './../../../core/services/contact.service';
 import { NotificationService } from './../../../core/services/notification.service';
 import { RepeaterService } from './../../../core/services/repeater.service';
@@ -80,7 +80,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
   }
   async eliminar(id:number){
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idContacto : id, opc: true},
+      {data: {idContacto : id, opc: 3},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });

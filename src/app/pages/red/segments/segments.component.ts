@@ -104,7 +104,7 @@ export class SegmentsComponent implements OnInit {
   }
   async eliminarSegmento (id:number){    
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idSegmento : id},
+      {data: {idSegmento : id, opc: 1},
       animation: { to: "bottom" },
       height:"auto", width:"300px",
       });
