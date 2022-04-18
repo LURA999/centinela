@@ -128,6 +128,12 @@
         Altas de ticket</a>
 </mat-expansion-panel>
 
+<a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" >
+  <mat-icon mat-list-icon>
+    folder
+  </mat-icon>
+  <p mat-line> Reportes </p>
+</a>
 
 
 <a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" >
@@ -161,6 +167,7 @@
 <mat-sidenav-content class="sidenav-content">
 
   <router-outlet></router-outlet>
+  <router-outlet name="auxName"></router-outlet>
 
 </mat-sidenav-content>
 

@@ -44,6 +44,10 @@ th.mat-sort-header-sorted {
     display: flex;
     justify-content: space-between;
 }
+.botones {
+    margin: auto;
+}
+
 .babajo {
     margin-top: 20px;
     margin-block: auto ;
@@ -78,22 +82,16 @@ th.mat-sort-header-sorted {
 
 
 
-@media screen and (max-width:624px) {
-    .barriba {
-        display: block;
-        text-align: center;
-    }
-    #nuevoc {
-        margin-top: 20px;
-        margin-bottom: 35px;
-    }
 
-    #nuevoc button{
+@media screen and (max-width:768px) {
+    .barriba{
+        flex-direction: column-reverse;
+    }
+    .botones, button {
         width: 100%;
-        height: 40px;
+        margin-bottom: 2%;
     }
     .mat-form-field {
-        width: 100%;
-       
+        display: block;
     }
 }

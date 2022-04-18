@@ -19,7 +19,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Diagonal</mat-label>
           <mat-select  matNativeControl [(value)]="data.diagonal" required #diagonal [disabled]="this.data.opc != false">
-            <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
+            <mat-option value="0" disabled>Seleccione un repetear</mat-option>
             <mat-option value="8">/8</mat-option>
             <mat-option value="9">/9</mat-option>
             <mat-option value="10">/10</mat-option>
@@ -62,10 +62,10 @@
   
 <div >
   <mat-form-field appearance="fill">
-    <mat-label>Repetidora</mat-label>
-    <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #SelectRepetidora [disabled]="this.data.opc != false">
-      <mat-option value="0" disabled>Seleccione un repetidora</mat-option>
-      <mat-option value="{{item.idRepetidora}}" *ngFor="let item of this.data.repetidoras; let i = index">{{item.nombreRepetidora}}</mat-option>
+    <mat-label>repetear</mat-label>
+    <mat-select  matNativeControl [(value)]="data.cveRepetdora" required #Selectrepetear [disabled]="this.data.opc != false">
+      <mat-option value="0" disabled>Seleccione un repetear</mat-option>
+      <mat-option value="{{item.idrepetear}}" *ngFor="let item of this.data.repetears; let i = index">{{item.nombrerepetear}}</mat-option>
     </mat-select>
     
   </mat-form-field>
@@ -83,7 +83,7 @@
   </div>
   <div id="botones">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearSegment(SelectRepetidora.value,nombre.value,segmento.value,diagonal.value,selectEstatus.value,selectTipo.value)" cdkFocusInitial>
+    <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearSegment(Selectrepetear.value,nombre.value,segmento.value,diagonal.value,selectEstatus.value,selectTipo.value)" cdkFocusInitial>
       <ng-container *ngIf="this.data.opc == false; else elseTemplate">
         Crear
       </ng-container>

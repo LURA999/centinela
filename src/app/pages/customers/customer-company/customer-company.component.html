@@ -1,8 +1,9 @@
-<div fxLayout="row" fxLayoutAlign="center none">
+<div fxLayout="row" style="margin: 1%;" fxLayoutAlign="center none">
+
     <div fxFlex="100%">
-    <mat-card style="overflow-x: auto;" >
+    <mat-card >
         <div class="col row " >
-            <div class="col-md-8" >
+            <div class="col-md-8 " >
                 <mat-card class="mat-card2">
                         <mat-card-header class="mat-card-header2">
                             <mat-card-title>Empresa</mat-card-title>
@@ -38,7 +39,7 @@
             </div>
            <mat-card class="mat-card2 col-md" >
                         <mat-card-header class="mat-card-header2">
-                            <mat-card-title style="margin-top:5%;">Ultimos Tickets</mat-card-title>
+                            <mat-card-title >Ultimos Tickets</mat-card-title>
                           </mat-card-header>
                 <mat-card-content>
                         <table mat-table [dataSource]="dataSourceTickets" class="mat-elevation-z8">
@@ -54,7 +55,7 @@
                          <tr mat-header-row *matHeaderRowDef="displayedColumnsTickets"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsTickets;"></tr>
                           </table>
-                          <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden></div>
+                          <div class="preloader" hidden></div>
                           <div class="existe" hidden>No se encontraron resultados... </div>
                           <mat-paginator  #paginator
                           [pageSize]="10"
@@ -62,19 +63,40 @@
                 </mat-card-content>
             </mat-card>
         </div>
-        
         <div class="col row">
-           <mat-card  class="tablaC col-md-8" style="overflow-x: auto;" >
-            <h1>Cliente</h1>
-            <mat-tab-group  (selectedTabChange)="eventoTab($event)">
+           <mat-card  class="tablaC col-md-8" >
+            <div >
+            <div>
+                <h1>Cliente</h1>
+            </div>
+          
+            <div >
+                <div class="cabecera" >
+                    <div class="botones">
+                        <button  mat-raised-button color="primary" (click)="cambiar1()"><mat-icon>add</mat-icon>Agregar</button>
+                    </div>
+                    <div class="botones">
+                        <button mat-raised-button color="primary" (click)="cambiar2()"><mat-icon>download</mat-icon>Exportar</button>
+                    </div>
+                    <div>
+                        <mat-form-field style="width: auto;" appearance="standard">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+            <mat-tab-group (selectedTabChange)="eventoTab($event)">
                 <mat-tab label="Servicios" >
                     <ng-template matTabContent>
-                        <app-table-service></app-table-service>
+                        <app-table-service [hijo]=padre ></app-table-service>
                     </ng-template>
                 </mat-tab>
                 <mat-tab label="Tickets">
                     <ng-template matTabContent>
-                        <app-table-tickets></app-table-tickets>
+                        <app-table-tickets  [hijo]=padre></app-table-tickets>
                     </ng-template>
                 </mat-tab>
                 <mat-tab label="Log">
@@ -98,7 +120,7 @@
             <div class=" col-md">
             <mat-card class="mat-card2" >
                 <mat-card-header class="mat-card-header2">
-                    <mat-card-title style="margin-top:5%;">Vendedores</mat-card-title>
+                    <mat-card-title >Vendedores</mat-card-title>
                   </mat-card-header>
                     <mat-card-content >
                         <div class="container">
@@ -112,7 +134,7 @@
             
             <mat-card class="mat-card2">
                 <mat-card-header class="mat-card-header2">
-                    <mat-card-title style="margin-top:5%;">Vendedores</mat-card-title>
+                    <mat-card-title >Vendedores</mat-card-title>
                   </mat-card-header>
                     <mat-card-content >
                         <div class="container">

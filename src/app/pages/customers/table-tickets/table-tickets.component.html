@@ -1,4 +1,6 @@
 <mat-card-content>
+
+    <span (change)="mensaje(hijo)"> {{hijo}} </span>
     <table mat-table [dataSource]="dataSource" style="width:100%;">
         <ng-container matColumnDef="num">
         <th mat-header-cell *matHeaderCellDef> Num </th>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
@@ -18,14 +18,18 @@ export class TableServiceComponent implements OnInit {
     estatus:"2",
     opciones:"1"
   }]
+  @Input() hijo :string ="";
 
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id', 'nombre', 'rs', 'ip', 'estado','ciudad','servicio','estatus','opciones'];
 
 
-  constructor() { }
+  constructor() { 
+    
+  }
 
   ngOnInit(): void {
+    
   }
 
 }

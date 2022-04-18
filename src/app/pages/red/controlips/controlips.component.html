@@ -2,7 +2,7 @@
 
   <div fxFlex="95%">
 
-    <mat-card style="overflow-x: auto;">
+    <mat-card>
       <mat-card-content>
          <h2>Control de Ips</h2>
         <div class="barriba"> 
@@ -14,9 +14,13 @@
               <mat-option *ngFor="let item of segmentos; let i = index" value="{{item.segmento}}-{{item.segmentoFinal}}" >{{item.segmento}} - {{item.segmentoFinal}} </mat-option>
             </mat-select>
           </mat-form-field>
-          </div>
-        <button style="margin-top: auto; margin-bottom: auto;" mat-raised-button color="primary" (click)="exportar($event)"> Exportar </button>
-        <button style="margin-top: auto; margin-bottom: auto;" mat-raised-button color="primary" (click)="refrescar()"> Refrescar </button>
+        </div>
+        <div class="botones">
+          <button style="margin-top: auto; margin-bottom: auto;" mat-raised-button color="primary" (click)="exportar($event)"><mat-icon>download</mat-icon>Exportar </button>
+        </div>
+        <div class="botones">
+          <button style="margin-top: auto; margin-bottom: auto;" mat-raised-button color="primary" (click)="refrescar()"><mat-icon>refresh</mat-icon>Refrescar </button>
+        </div>
       <form>
       <div class="row">
         <div class="col" style="margin-top: auto; margin-bottom: auto;" hidden>
@@ -32,7 +36,7 @@
       </form>
 
       </div>
-      
+      <div style="overflow-x: auto;">
         <table mat-table [dataSource]="dataSource" >          
           <ng-container matColumnDef="ip">
             <th mat-header-cell *matHeaderCellDef > IP</th>
@@ -86,6 +90,7 @@
         <mat-paginator  #paginator
         (page)="pageEvents($event)"
         [pageSize]="10"></mat-paginator>
+      </div>
     </mat-card-content>
     </mat-card>
 </div>

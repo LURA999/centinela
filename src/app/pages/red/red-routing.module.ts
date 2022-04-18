@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashAdminGuard } from 'src/app/core/guards/dashAdmin.guard';
 import { LayoutComponent } from 'src/app/shared/layout/layout.component';
 import { ControlipsComponent } from './controlips/controlips.component';
-import { RepetidoraComponent } from './repetidora/repetidora.component';
-import { RepetidoraycontactoComponent } from './repetidoraycontacto/repetidoraycontacto.component';
+import { RepetearComponent } from './repetear/repetear.component';
+import { RepetearContactComponent } from './repetear-contact/repetear-contact.component';
 import { SegmentsComponent } from './segments/segments.component';
 
 const routes: Routes = [
@@ -14,8 +14,8 @@ const routes: Routes = [
     children: [
       { path: 'segments', canActivate:[DashAdminGuard], component: SegmentsComponent },
       { path: 'controlips',canActivate:[DashAdminGuard], component: ControlipsComponent },
-      { path: 'repeater', canActivate:[DashAdminGuard], component: RepetidoraComponent },
-      { path: 'repeater/:id',canActivate:[DashAdminGuard], component: RepetidoraycontactoComponent},
+      { path: 'repeater', canActivate:[DashAdminGuard], component: RepetearComponent },
+      { path: 'repeater/:id',canActivate:[DashAdminGuard], component: RepetearContactComponent},
     ]
   }
 ];

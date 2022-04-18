@@ -11,14 +11,14 @@ import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-repetidora',
-  templateUrl: './repetidora.component.html',
-  styleUrls: ['./repetidora.component.css'],
+  selector: 'app-repetear',
+  templateUrl: './repetear.component.html',
+  styleUrls: ['./repetear.component.css'],
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
 
 })
 
-  export class RepetidoraComponent implements OnInit {
+  export class RepetearComponent implements OnInit {
   ELEMENT_DATA: any = [ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   reptidores : any = [];
@@ -43,7 +43,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
   async imprimirCiudades(){
     this.ciudades = await this.cityService.llamarCiudades().toPromise()
     this.ciudades = this.ciudades.container;
-  console.log(this.ciudades)
   
   }
 
@@ -53,6 +52,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
     await this.repeater.llamarRepitdores().toPromise().then( (result : any) =>{
+      console.log(result)
 
       for (let i=0; i<result.container.length; i++){
       this.ELEMENT_DATA.push(

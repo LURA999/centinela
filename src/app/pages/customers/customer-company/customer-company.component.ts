@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {ThemePalette} from '@angular/material/core';
+import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-customer-company',
@@ -8,7 +9,9 @@ import {ThemePalette} from '@angular/material/core';
   styleUrls: ['./customer-company.component.css']
 })
 export class CustomerCompanyComponent implements OnInit {
-
+  clickDownload: number =0
+  clickAdd : number =0
+  padre : string =""
   ELEMENT_DATA_TICKETS : any = [{
     id:"1",
     nombre:"1",
@@ -45,11 +48,30 @@ export class CustomerCompanyComponent implements OnInit {
   displayedColumnsTickets: string[] = ['id', 'nombre'];
   constructor() { }
 
+  
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceTickets.filter = filterValue.trim().toLowerCase();
+  }
+
   ngOnInit(): void {
+    
   }
 
   eventoTab(event:any){
-    
+    this.padre = ""
+    this.clickAdd = 0
+    this.clickDownload = 0
   }
+
+  cambiar1(){
+      this.padre = "a"+this.clickAdd++
+  }
+
+  cambiar2(){
+    this.padre = "d"+this.clickDownload++
+
+  }
+
 
 }

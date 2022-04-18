@@ -45,14 +45,13 @@ th.mat-sort-header-sorted {
     display: flex;
     justify-content: space-between;
 }
+
 .babajo {
-    margin-top: 20px;
-    margin-block: auto ;
     display: inline-flex;
 }
 
  .boton {
-    margin-right: 5px;
+    margin-right: 20px;
     padding: 9px;
     border-radius: 5px;
     color: white;
@@ -98,21 +97,12 @@ th.mat-sort-header-sorted {
     border-radius: 100px;
 }
 
-@media screen and (max-width:999px) {
+@media screen and (max-width:768px) {
     .barriba {
         display: block;
         text-align: center;
     }
-    #nuevoc {
-        margin-bottom: 25px;
-    }
-}
-
-@media screen and (max-width:624px) {
-    .barriba {
-        display: block;
-        text-align: center;
-    }
+    
     #nuevoc {
         margin-top: 20px;
         margin-bottom: 35px;
@@ -127,6 +117,10 @@ th.mat-sort-header-sorted {
     }
 
 
+}
+
+@media screen and (max-width:624px) {
+    
 
 
     

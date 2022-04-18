@@ -2,27 +2,27 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { NewContactComponent } from '../../red/popup/new-contact/new-contact.component';
-import { ContactService } from './../../../core/services/contact.service';
-import { NotificationService } from './../../../core/services/notification.service';
-import { RepeaterService } from './../../../core/services/repeater.service';
+import { NewContactComponent } from '../popup/new-contact/new-contact.component';
+import { ContactService } from '../../../core/services/contact.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { RepeaterService } from '../../../core/services/repeater.service';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { ActivatedRoute, Params } from '@angular/router';
-import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
+import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-repetidoraycontacto',
-  templateUrl: './repetidoraycontacto.component.html',
-  styleUrls: ['./repetidoraycontacto.component.css'],
+  selector: 'app-repetear-contact',
+  templateUrl: './repetear-contact.component.html',
+  styleUrls: ['./repetear-contact.component.css'],
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
 
 })
-export class RepetidoraycontactoComponent implements OnInit {
+export class RepetearContactComponent implements OnInit {
   
 cargando :boolean= false;
 todosContactos : any;
-arrayRepetidora : any = [];
+arrayrepetear : any = [];
 mayorNumero : number = 0
 mayorNumero2 : number = 0
 id :number = this.rutaActiva.snapshot.params["id"];
@@ -67,8 +67,11 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
   }
 
   async obteniendoRepetidor(){
+
    await this.repeaterService.llamarRepitdor(this.id).toPromise().then((result:any)=>{
-      this.arrayRepetidora={
+     console.log(result);
+     
+      this.arrayrepetear={
         id : result.container[0].idRepetidora , 
         nombre : result.container[0].nombreRepetidora,
         latitud : result.container[0].latitud,
@@ -113,7 +116,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
           nombre:iterator.nombre,
           telefono:iterator.telefono ,
           correo:iterator.correo,
-          cveRepetidora:iterator.cveRepetidora,
+          cverepetear:iterator.cverepetear,
           estatus:this.estatus(iterator.estatus)}
         );   
         this.mayorNumero = iterator.idContacto;
@@ -154,7 +157,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
 
   Newregister(){
     let dialogRef = this.dialog.open(NewContactComponent,
-      {data: {opc : false/*, repetidoras: this.todosRepetidoras*/ , cveRepetidora: this.id},
+      {data: {opc : false/*, repetears: this.todosrepetears*/ , cverepetear: this.id},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -230,7 +233,7 @@ arrayRemove(arr : any, index : any) {
   }
   async editar(estatus : string,nombre : string ,telefono : string, correo : string,selectRep : string,id:number){
     let dialogRef  = await this.dialog.open(NewContactComponent,
-      {data: {telefono:+telefono, correo:correo, estatus:this.estatusNumero(estatus),nombre:nombre,repetidora:+selectRep, id:id/*,repetidoras:this.todosRepetidoras*/, opc:true},
+      {data: {telefono:+telefono, correo:correo, estatus:this.estatusNumero(estatus),nombre:nombre,repetear:+selectRep, id:id/*,repetears:this.todosrepetears*/, opc:true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       }); 

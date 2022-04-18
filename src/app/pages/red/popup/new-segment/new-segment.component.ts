@@ -13,7 +13,7 @@ import { rango_ip } from './rango_ip';
 export class NewSegmentComponent implements OnInit {
   contenedor_carga = <HTMLDivElement> document.getElementById("contenedor_carga");
   subnetting = require('ip-utils')
-  repetidoraArray: any []= [];
+  repetearArray: any []= [];
   arrayPromises : any []=[]
    rango  = new rango_ip()
 
@@ -35,7 +35,7 @@ export class NewSegmentComponent implements OnInit {
     
   }
   
-  async crearSegment( SelectRepetidora:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
+  async crearSegment( Selectrepetear:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
     let existe :any = await this.segmentService.existe(segmento).toPromise()
     existe=existe.container[0].ip;
     
@@ -46,17 +46,17 @@ export class NewSegmentComponent implements OnInit {
       if(existe == 0)
       {
         this.contenedor_carga.style.display = "block";
-        if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && SelectRepetidora !=undefined){
+        if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && Selectrepetear !=undefined){
           // se guarda el rango del segmentos y todos sus subnets          
           let segmentoFinal = await this.subnetting.subnet(segmento+"/"+diagonal).info();
           let r : string []= this.rango.rango(segmentoFinal["networkAddress"], segmentoFinal["broadcastAddress"]);
-          await this.segmentService.insertarSegments({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"]}).toPromise();
+          await this.segmentService.insertarSegments({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"]}).toPromise();
          for (let x=0; x<r.length; x++) {
           await this.ipService.insertarIp({ip:r[x],cveSegmento:this.data.id}).toPromise()
          }
         this.contenedor_carga.style.display = "none";
 
-         await  this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"], mensaje:"Se pudo"})
+         await  this.dialogRef.close({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"], mensaje:"Se pudo"})
           
         }else{
           alert ("Llene todos los datos")
@@ -67,7 +67,7 @@ export class NewSegmentComponent implements OnInit {
     }else{
       if(nombre.length >0  && selectTipo != undefined && selectEstatus !=undefined ){
       await  this.segmentService.actualizarSegment(this.data.id,nombre,selectEstatus,selectTipo).toPromise();
-        this.dialogRef.close({cveRepetdora:SelectRepetidora,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, tipo: selectTipo, mensaje:"Se pudo"})
+        this.dialogRef.close({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, tipo: selectTipo, mensaje:"Se pudo"})
       }else{
       alert("Llene todos los datos")
       }

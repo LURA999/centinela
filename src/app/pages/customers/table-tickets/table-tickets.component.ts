@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { DeleteComponent } from '../popup/delete/delete.component';
 
 @Component({
   selector: 'app-table-tickets',
@@ -7,6 +9,8 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./table-tickets.component.css']
 })
 export class TableTicketsComponent implements OnInit {
+  @Input() hijo :string ="";
+
   ELEMENT_DATA : any = [{
     num:"1",
     departamento:"1",
@@ -22,9 +26,26 @@ export class TableTicketsComponent implements OnInit {
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['num', 'departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente','opciones'];
 
-  constructor() { }
+  ngOnChanges(): void {
+
+    
+    if(this.hijo[0] == "d"){
+     
+    }else if(this.hijo[0] == "a"){
+      
+    }
+    
+    
+  }
+  constructor( private dialog:NgDialogAnimationService) { }
 
   ngOnInit(): void {
+    
+  }
+
+  async mensaje(mensaje : string){
+    await console.log(mensaje);
+    
   }
 
 }
