@@ -15,15 +15,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastrModule } from "ngx-toastr";
 import { LoginContactoComponent } from './auth/login-contacto/login-contacto.component';
 import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.component';
-import { ConfiguracionComponent } from './pages/configuracion/configuracion.component';
-
+import { MatTabsModule } from '@angular/material/tabs';
+MatTabsModule
 @NgModule({
   declarations: [
     AppComponent,
     LoginContactoComponent,
     LoginUsuarioComponent,
-    ConfiguracionComponent,
-    
   ],
   imports: [
     NgbModule,
@@ -41,6 +39,7 @@ import { ConfiguracionComponent } from './pages/configuracion/configuracion.comp
     CustomMaterialModule,
     ToastrModule.forRoot(),
     NgbPaginationModule,
+    MatTabsModule,
   ],
   exports:[
     CustomMaterialModule

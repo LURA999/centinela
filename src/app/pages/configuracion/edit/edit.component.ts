@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { NuevaimagenComponent } from './nuevaimagen/nuevaimagen.component';
+import { NuevaimagenComponent } from '../nuevaimagen/nuevaimagen.component';
 
 @Component({
-  selector: 'app-configuracion',
-  templateUrl: './configuracion.component.html',
-  styleUrls: ['./configuracion.component.css']
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.css']
 })
-export class ConfiguracionComponent implements OnInit {
-  
+export class EditComponent implements OnInit {
 
   constructor(private dialog:NgDialogAnimationService) { }
 
@@ -21,10 +20,9 @@ async nuevaimagen(){
     height:"300px", width:"300px",
     });
 }
-  
+
 
 }
 function nuevaimagenComponent(nuevaimagenComponent: any) {
   throw new Error('Function not implemented.');
 }
-

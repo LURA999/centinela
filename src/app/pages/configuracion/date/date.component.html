@@ -1,0 +1,20 @@
+
+
+<div>
+    <br>
+</div>
+<div class="calendario" >
+<mat-form-field appearance="fill">
+    <mat-label>Elige la fecha</mat-label>
+    <input matInput [matDatepicker]="picker">
+    <mat-hint>Mes/Dia/Año</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</div>
+<div class="time">
+    <br>
+    <mat-form-field  appearance="fill">
+        <input type="time" matInput name="week" min="09:00" max="18:00">
+     </mat-form-field>
+</div>

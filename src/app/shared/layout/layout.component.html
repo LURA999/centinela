@@ -36,6 +36,41 @@
 
     </mat-menu>
 
+
+
+    <button mat-button [matMenuTriggerFor]="adjustMenu">
+      <mat-icon>settings</mat-icon>
+      <span fxShow fxHide.xs>
+      </span>
+    </button>
+    <mat-menu #adjustMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
+
+      <a mat-menu-item [routerLink]="['/admin/configuracion/smtp']">
+        <mat-icon>dns</mat-icon>
+        <span>Servidor SMTP</span>
+
+      </a>
+
+      <a mat-menu-item [routerLink]="['/admin/configuracion/date']">
+        <mat-icon>schedule</mat-icon>
+        <span>Fecha y Hora</span>
+      </a>
+      <a mat-menu-item [routerLink]="['/admin/configuracion/notification']" >
+        <mat-icon>notifications</mat-icon>
+        <span>Notificaciones</span>
+      </a>
+      <a mat-menu-item [routerLink]="['/admin/configuracion/edit']" >
+        <mat-icon>brush</mat-icon>
+        <span>Editar logo</span>
+      </a>
+      <a mat-menu-item [routerLink]="['/admin/configuracion/edit']">
+        <mat-icon>edit</mat-icon>
+        <span>Datos de la empresa</span>
+      </a>
+
+    </mat-menu>
+
+
   </mat-toolbar>
 
   <mat-sidenav-container class="navbar-sidenav-container">
