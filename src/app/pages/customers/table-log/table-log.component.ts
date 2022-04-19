@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { NewLogComponent } from '../popup/new-log/new-log.component';
 
 @Component({
   selector: 'app-table-log',
@@ -16,10 +18,34 @@ export class TableLogComponent implements OnInit {
     opciones:"1"
   }]
 
+  @Input ()hijoLog :string = ""
+
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id', 'tipo', 'descripcion', 'fecha', 'usuario','opciones'];
-  constructor() { }
+  constructor(private dialog:NgDialogAnimationService) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    let c = changes['hijoLog'];
+    if(!c.firstChange && c.currentValue != ""){
+      console.log(c.currentValue);
+
+    if(c.currentValue[0] == "d"){
+     
+    }else if(c.currentValue[0] == "a"){
+      this.dialog.open(NewLogComponent,
+      {data: {empresa : "", opc:true},
+      animation: { to: "bottom" },
+      height:"auto", width:"300px",
+      });
+    }
+  }
+  }
+  eliminar(){
+
+  }
+  editar(){
+    
+  }
   ngOnInit(): void {
   }
 

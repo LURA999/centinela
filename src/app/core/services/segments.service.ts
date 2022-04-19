@@ -12,6 +12,8 @@ export class SegmentsService {
   constructor(private http : HttpClient) { }
 
   llamarSegments(){
+    console.log("22    "+this.local+"Repeater/segment.php");
+    
     return this.http.get(this.local+"Repeater/segment.php");
   }
 

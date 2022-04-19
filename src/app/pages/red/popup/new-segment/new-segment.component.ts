@@ -22,24 +22,17 @@ export class NewSegmentComponent implements OnInit {
   public dialogRef: MatDialogRef<NewSegmentComponent>, private ipService : IpService  ) { }
 
   ngOnInit(): void {
-    //192.168.200.0                                                        
-		 //192.168.201.255
-    /*let r : string []= this.rango.rango("192.168.0.1", "193.169.255.255");
-    //console.log(r);*/
-    console.log(this.data) 
 
   }
   
   pingURL() {
   
-    
   }
   
   async crearSegment( Selectrepetear:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
     let existe :any = await this.segmentService.existe(segmento).toPromise()
     existe=existe.container[0].ip;
     
-
     //true = actualizar false = insertar
     if(this.data.opc == false){
       //antes de insertar se averigua si existe tal segmento

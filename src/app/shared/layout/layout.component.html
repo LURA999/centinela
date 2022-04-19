@@ -55,8 +55,8 @@
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
     
-      <mat-icon mat-list-icon>wifi_tethering </mat-icon> 
-      <p mat-line> Red </p>
+      <mat-icon mat-list-icon style="margin-top: 8px;">wifi_tethering </mat-icon> 
+      <p mat-line style="margin-top: 11px;"> Red </p>
    
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
@@ -77,8 +77,8 @@
 <mat-expansion-panel  >  
   <mat-expansion-panel-header>
    
-      <mat-icon mat-list-icon>notifications_active</mat-icon> 
-      <p  mat-line>Activacion</p>
+      <mat-icon mat-list-icon style="margin-top: 8px;">notifications_active</mat-icon> 
+      <p  mat-line style="margin-top: 11px;">Activacion</p>
     
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
@@ -101,8 +101,8 @@
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
     
-      <mat-icon mat-list-icon>account_tree</mat-icon> 
-      <p mat-line> Incidencias</p>
+      <mat-icon mat-list-icon style="margin-top: 8px;">account_tree</mat-icon> 
+      <p mat-line style="margin-top: 11px;"> Incidencias</p>
     
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
@@ -114,8 +114,8 @@
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
     
-      <mat-icon mat-list-icon>confirmation_number</mat-icon> 
-      <p mat-line> Tickets</p>
+      <mat-icon mat-list-icon style="margin-top: 8px;">confirmation_number</mat-icon> 
+      <p mat-line style="margin-top: 11px;">Tickets</p>
    
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
@@ -128,12 +128,18 @@
         Altas de ticket</a>
 </mat-expansion-panel>
 
-<a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" >
-  <mat-icon mat-list-icon>
-    folder
-  </mat-icon>
-  <p mat-line> Reportes </p>
-</a>
+
+<mat-expansion-panel >  
+  <mat-expansion-panel-header >
+      <mat-icon mat-list-icon style="margin-top: 8px;">folder</mat-icon> 
+      <p mat-line style="margin-top: 11px;"> Reportes</p>
+  </mat-expansion-panel-header>
+
+  <a mat-list-item [routerLink]="['/admin/report/ticket']" routerLinkActive="active" mat-line>
+    Tickets</a>
+  <a mat-list-item [routerLink]="['/admin/report/service']" routerLinkActive="active" mat-line>
+    Servicios</a>
+</mat-expansion-panel>
 
 
 <a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" >
@@ -167,7 +173,7 @@
 <mat-sidenav-content class="sidenav-content">
 
   <router-outlet></router-outlet>
-  <router-outlet name="auxName"></router-outlet>
+ <!-- <router-outlet name="auxName"></router-outlet>-->
 
 </mat-sidenav-content>
 

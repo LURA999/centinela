@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { NewRsComponent } from '../popup/new-rs/new-rs.component';
 
 @Component({
   selector: 'app-table-rs',
@@ -14,10 +16,36 @@ export class TableRsComponent implements OnInit {
     opciones:"1"
   }]
 
+  @Input ()hijoRS :string = ""
+   
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['rs', 'fechaAlta', 'estatus','opciones'];
-  constructor() { }
+  constructor(private dialog:NgDialogAnimationService) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    let c = changes['hijoRS'];
+    if(!c.firstChange && c.currentValue != ""){
+      console.log(c.currentValue);
+
+    if(c.currentValue[0] == "d"){
+     
+    }else if(c.currentValue[0] == "a"){
+     this.dialog.open(NewRsComponent,
+      {data: {empresa : "", opc:true},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+    }
+  }
+}
+  eliminar(){
+
+  }
+
+  editar(){
+    
+  }
+  
   ngOnInit(): void {
   }
 

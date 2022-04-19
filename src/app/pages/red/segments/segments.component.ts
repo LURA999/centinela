@@ -65,10 +65,18 @@ export class SegmentsComponent implements OnInit {
       });
       this.paginator2.firstPage();
       await dialogRef.afterClosed().subscribe((result:any)=>{
+       console.log(result);
+       console.log(this.repetearArray);
+       
+       console.log({id:++this.mayorNumero,nombre:result.nombre,segmento:result.segmento
+        ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear:this.repetearArray[this.mayorNumero]["nombreRepetidora"]});
+ 
         try{
-       if(result.mensaje.length > 0  ){
+       if(result.mensaje.length > 0 ){       
+             
          this.ELEMENT_DATA.unshift({id:++this.mayorNumero,nombre:result.nombre,segmento:result.segmento
-         ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear:this.repetearArray[this.mayorNumero]["nombrerepetear"]});
+         ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear:this.repetearArray[this.mayorNumero]["nombreRepetidora"]});
+         
          this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
          this.dataSource.paginator = this.paginator2; 
          this.dataSource.sort = this.sort;
@@ -141,6 +149,8 @@ export class SegmentsComponent implements OnInit {
 
     await this.segmentServicio.llamarSegments().toPromise().then( (result : any) =>{
       this.segmentosArray = result;
+      console.log(this.segmentosArray);
+      
       for (let i=0; i<result.container.length; i++){       
       this.ELEMENT_DATA.push(
         {id: result.container[i]["idSegmento"],nombre: result.container[i]["nombre"],segmento:result.container[i]["segmento"]

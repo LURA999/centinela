@@ -58,10 +58,10 @@ export class CustomerCompanyComponent implements OnInit {
     
   }
 
-  eventoTab(event:any){
-    this.padre = ""
-    this.clickAdd = 0
-    this.clickDownload = 0
+   eventoTab(){
+    this.padre =  ""
+    this.clickAdd =  0
+    this.clickDownload =  0    
   }
 
   cambiar1(){

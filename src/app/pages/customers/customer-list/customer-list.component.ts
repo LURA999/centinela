@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
-import { NuevoClienteComponent } from '../popup/nuevo-cliente/nuevo-cliente.component';
+import { NewClientComponent } from '../popup/new-client/new-client.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { CustomerService } from './../../../core/services/customer.service';
 import { DeleteComponent } from '../popup/delete/delete.component';
@@ -190,7 +190,7 @@ export class CustomerListComponent implements OnInit {
   
   /**Crear cliente, editar y eliminar */
    nuevoCliente(){
-    let dialogRef  = this.dialog.open(NuevoClienteComponent,
+    let dialogRef  = this.dialog.open(NewClientComponent,
       {data: {opc : false },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
@@ -215,7 +215,7 @@ export class CustomerListComponent implements OnInit {
   
   async editar(empresa : string, nombre : string,estatus:string,id:number){
 
-    let dialogRef  = await this.dialog.open(NuevoClienteComponent,
+    let dialogRef  = await this.dialog.open(NewClientComponent,
       {data: {empresa : empresa, nombre : nombre ,estatus:this.estatusNumero(estatus) ,id:id , opc:true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",

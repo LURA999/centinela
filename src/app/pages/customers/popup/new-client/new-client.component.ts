@@ -3,13 +3,13 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CustomerService } from '../../../../core/services/customer.service';
 @Component({
-  selector: 'app-nuevo-cliente',
-  templateUrl: './nuevo-cliente.component.html',
-  styleUrls: ['./nuevo-cliente.component.css']
+  selector: 'app-new-client',
+  templateUrl: './new-client.component.html',
+  styleUrls: ['./new-client.component.css']
 })
-export class NuevoClienteComponent implements OnInit {
+export class NewClientComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private customerService : CustomerService,public dialogRef: MatDialogRef<NuevoClienteComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private customerService : CustomerService,public dialogRef: MatDialogRef<NewClientComponent>) { }
 
 
   ngOnInit(): void {

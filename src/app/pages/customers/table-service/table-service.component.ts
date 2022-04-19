@@ -1,5 +1,7 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { NewServiceComponent } from '../popup/new-service/new-service.component';
 
 @Component({
   selector: 'app-table-service',
@@ -18,13 +20,36 @@ export class TableServiceComponent implements OnInit {
     estatus:"2",
     opciones:"1"
   }]
-  @Input() hijo :string ="";
+  @Input() hijoService :string ="";
 
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id', 'nombre', 'rs', 'ip', 'estado','ciudad','servicio','estatus','opciones'];
+  
+  constructor(private dialog:NgDialogAnimationService) { 
+    
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    let c = changes['hijoService'];
+    if(!c.firstChange && c.currentValue != ""){
+      console.log(c.currentValue);
 
-  constructor() { 
+    if(c.currentValue[0] == "d"){
+     
+    }else if(c.currentValue[0] == "a"){
+      this.dialog.open(NewServiceComponent,
+        {data: {empresa : "", opc:true},
+        animation: { to: "bottom" },
+          height:"auto", width:"300px",
+        });
+    }
+  }
+  }
+
+  eliminar(){
+
+  }
+  editar(){
     
   }
 

@@ -198,12 +198,9 @@ hayClientes2(){
 }
 arrayRemove(arr : any, index : any) { 
   for( var i = 0; i < arr.length; i++){ 
-  
     if ( arr[i]["id"] === arr[index]["id"]) { 
-
         arr.splice(i, 1); 
     }
-
   }
   return arr;
 }

@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { NewContactComponent } from '../popup/new-contact/new-contact.component';
 
 @Component({
   selector: 'app-table-contact',
@@ -19,11 +21,36 @@ export class TableContactComponent implements OnInit {
     opciones:"1"
   }]
 
+  @Input ()hijoContact :string = ""
+
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id', 'nombre', 'rs', 'ip', 'estado','ciudad','servicio','estatus','opciones'];
-  constructor() { }
+  constructor(private dialog:NgDialogAnimationService) { }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    let c = changes['hijoContact'];
+    
+    if(!c.firstChange && c.currentValue != ""){
+    if(c.currentValue[0] == "d"){
+     
+    }else if(c.currentValue[0] == "a"){
+      this.dialog.open(NewContactComponent,
+      {data: {empresa : "", opc:true},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+    }
+  }
+}
+  eliminar(){
 
+  }
+  editar(){
+    
+  }
+  
   ngOnInit(): void {
   }
 
+  
 }

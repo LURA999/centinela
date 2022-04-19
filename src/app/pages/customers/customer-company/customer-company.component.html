@@ -88,30 +88,30 @@
             </div>
             
             </div>
-            <mat-tab-group (selectedTabChange)="eventoTab($event)">
+            <mat-tab-group (click)="eventoTab()">
                 <mat-tab label="Servicios" >
                     <ng-template matTabContent>
-                        <app-table-service [hijo]=padre ></app-table-service>
+                        <app-table-service [hijoService]=padre></app-table-service>
                     </ng-template>
-                </mat-tab>
+                </mat-tab> 
                 <mat-tab label="Tickets">
                     <ng-template matTabContent>
-                        <app-table-tickets  [hijo]=padre></app-table-tickets>
+                        <app-table-tickets  [hijoTickets]=padre></app-table-tickets>
                     </ng-template>
                 </mat-tab>
                 <mat-tab label="Log">
                     <ng-template matTabContent>
-                        <app-table-log></app-table-log>
+                        <app-table-log [hijoLog]=padre></app-table-log>
                     </ng-template>
                 </mat-tab>
                 <mat-tab label="Contactos">
                     <ng-template matTabContent>
-                        <app-table-contact></app-table-contact>
+                        <app-table-contact [hijoContact]=padre></app-table-contact>
                     </ng-template>
                 </mat-tab>
                 <mat-tab label="R.S.">
                     <ng-template matTabContent>
-                        <app-table-rs></app-table-rs>
+                        <app-table-rs [hijoRS]=padre></app-table-rs>
                     </ng-template>
                 </mat-tab>
               </mat-tab-group>
