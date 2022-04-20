@@ -1,15 +1,15 @@
 <h2 mat-dialog-title> <ng-container *ngIf="data.opc == false; else elseTemplate">
-    Crear cliente
+    Crear contacto
   </ng-container>
   <ng-template #elseTemplate>
-    Actualizar cliente
+    Actualizar contacto
   </ng-template></h2>
   <mat-dialog-content class="mat-typography">
     <form >
     <div>
     <mat-form-field appearance="standard">
       <mat-label>Empresa</mat-label>
-      <input matInput  [value]="data.empresa? data.empresa: '' " placeholder="Nombre de empresa" #empresa > 
+      <input matInput [value]="data.empresa? data.empresa: '' " placeholder="Nombre de empresa" #empresa > 
     </mat-form-field>
     <mat-icon>title</mat-icon>  
     </div>

@@ -15,7 +15,7 @@
           <div>
             <mat-form-field appearance="standard">
               <mat-label>Filtro</mat-label>
-              <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+              <input matInput (keyup)="applyFilter($event)" [(ngModel)]="id" placeholder="Buscar coincidencia..." #input>   
             </mat-form-field>
             </div>
         </div>

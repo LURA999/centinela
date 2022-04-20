@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ReportsRoutingModule } from './report-routing.module';
-import { TicketComponent } from './ticket/ticket.component';
+import { TicketAdviserComponent } from './ticket-adviser/ticket-adviser.component';
 import { ServiceComponent } from './service/service.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TicketSopportComponent } from './ticket-sopport/ticket-sopport.component';
 
 @NgModule({
   declarations: [
-  
-    TicketComponent,
-    ServiceComponent
+    TicketAdviserComponent,
+    ServiceComponent,
+    TicketSopportComponent
   ],
   imports: [
     CommonModule,

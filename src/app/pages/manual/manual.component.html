@@ -1,0 +1,51 @@
+
+<div style="margin: 1%;" fxLayout="row" fxLayoutAlign="center none">
+
+    <div fxFlex="100%">
+    <mat-card>      
+        <mat-card-header>
+            <mat-card-title>Manuales Soporte</mat-card-title>
+        </mat-card-header>      
+        <div class="containerMat">
+        <div class="tabla">
+            <table mat-table [dataSource]="dataSource"  >          
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef > Nombre </th>
+                <td mat-cell *matCellDef="let element" > {{element.nombre}} </td>
+              </ng-container>
+              <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef >Fecha</th>
+                <td mat-cell *matCellDef="let element" >{{element.fecha}} </td>
+              </ng-container>
+              <ng-container matColumnDef="size">
+                <th mat-header-cell *matHeaderCellDef >Size</th>
+                <td mat-cell *matCellDef="let element" > {{element.size}} </td>
+              </ng-container>
+              <ng-container matColumnDef="opciones">
+                <th mat-header-cell *matHeaderCellDef >Opciones</th>
+              <td mat-cell *matCellDef="let element" > 
+                  <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="eliminar()"><mat-icon>delete</mat-icon>Eliminar</button> 
+                    <button mat-menu-item (click)="editar()"><mat-icon>settings</mat-icon>Editar</button>  
+                  </mat-menu> </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden></div>
+            <div class="existe" hidden>No se encontraron resultados... </div>
+          
+            <mat-paginator  #paginator
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+          </div>
+
+          <nav style="border:1px solid black">
+
+          </nav>
+          </div>
+    </mat-card>
+
+    </div>
+</div>

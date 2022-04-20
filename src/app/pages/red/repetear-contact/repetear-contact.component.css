@@ -95,10 +95,20 @@ table td{
         text-align: center;
     }
 }
-@media screen and (max-width:950px) {
-    .matGeneral {
+@media screen and (max-width:1163px) {
+    mat-card-content.mat-card-content {
+        width: 100%;
+    }
+    .contenedorTablas.row {
         display: flex;
-        
+        flex-direction: column;
+        width: 100%;
+    }
+    div#lista {
+        width: 100%;
+    }
+    div#segmentos {
+        width: auto;
     }
 }
 

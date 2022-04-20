@@ -13,6 +13,7 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'segments', canActivate:[DashAdminGuard], component: SegmentsComponent },
+      { path: 'segments/:id', canActivate:[DashAdminGuard], component: SegmentsComponent },
       { path: 'controlips',canActivate:[DashAdminGuard], component: ControlipsComponent },
       { path: 'repeater', canActivate:[DashAdminGuard], component: RepetearComponent },
       { path: 'repeater/:id',canActivate:[DashAdminGuard], component: RepetearContactComponent},

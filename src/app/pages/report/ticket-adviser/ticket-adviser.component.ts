@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-services',
-  templateUrl: './service.component.html',
-  styleUrls: ['./service.component.css']
+  selector: 'app-ticket-adviser',
+  templateUrl: './ticket-adviser.component.html',
+  styleUrls: ['./ticket-adviser.component.css']
 })
-export class ServiceComponent implements OnInit {
+export class TicketAdviserComponent implements OnInit {
   ELEMENT_DATA : any = [{
     id:"1",
     servicio:"1",
@@ -36,3 +36,4 @@ export class ServiceComponent implements OnInit {
     
   }
 }
+

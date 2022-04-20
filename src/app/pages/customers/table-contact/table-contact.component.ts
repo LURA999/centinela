@@ -35,7 +35,7 @@ export class TableContactComponent implements OnInit {
      
     }else if(c.currentValue[0] == "a"){
       this.dialog.open(NewContactComponent,
-      {data: {empresa : "", opc:true},
+      {data: {empresa : "", opc:false},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });

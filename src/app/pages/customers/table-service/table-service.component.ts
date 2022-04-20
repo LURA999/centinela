@@ -9,21 +9,22 @@ import { NewServiceComponent } from '../popup/new-service/new-service.component'
   styleUrls: ['./table-service.component.css']
 })
 export class TableServiceComponent implements OnInit {
+
   ELEMENT_DATA : any = [{
     id:"1",
     nombre:"1",
     rs:"1",
     ip:"1",
-    estado:"1",
     ciudad:"1",
     servicio:"1",
     estatus:"2",
     opciones:"1"
   }]
+
   @Input() hijoService :string ="";
 
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns: string[] = ['id', 'nombre', 'rs', 'ip', 'estado','ciudad','servicio','estatus','opciones'];
+  displayedColumns: string[] = ['id', 'nombre', 'rs', 'ip','ciudad','servicio','estatus','opciones'];
   
   constructor(private dialog:NgDialogAnimationService) { 
     
@@ -38,7 +39,7 @@ export class TableServiceComponent implements OnInit {
      
     }else if(c.currentValue[0] == "a"){
       this.dialog.open(NewServiceComponent,
-        {data: {empresa : "", opc:true},
+        {data: {empresa : "", opc:false},
         animation: { to: "bottom" },
           height:"auto", width:"300px",
         });
@@ -49,6 +50,7 @@ export class TableServiceComponent implements OnInit {
   eliminar(){
 
   }
+  
   editar(){
     
   }

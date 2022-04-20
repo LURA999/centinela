@@ -90,7 +90,7 @@
 
 
 
-<a mat-list-item [routerLink]="['/customers']" routerLinkActive="active" mat-line>
+<a mat-list-item [routerLink]="['/admin/manual']" routerLinkActive="active" mat-line>
   <mat-icon mat-list-icon>
     sticky_note_2
   </mat-icon>
@@ -135,8 +135,10 @@
       <p mat-line style="margin-top: 11px;"> Reportes</p>
   </mat-expansion-panel-header>
 
-  <a mat-list-item [routerLink]="['/admin/report/ticket']" routerLinkActive="active" mat-line>
-    Tickets</a>
+  <a mat-list-item [routerLink]="['/admin/report/ticket-adviser']" routerLinkActive="active" mat-line>
+    Tickets asesor</a>
+    <a mat-list-item [routerLink]="['/admin/report/ticket-support']" routerLinkActive="active" mat-line>
+      Tickets soporte</a>
   <a mat-list-item [routerLink]="['/admin/report/service']" routerLinkActive="active" mat-line>
     Servicios</a>
 </mat-expansion-panel>

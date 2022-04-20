@@ -17,6 +17,7 @@ const appRoutes: Routes = [
   { path: 'admin/configuracion', canActivate:[DashAdminGuard],loadChildren: () => import('../app/pages/configuracion/configuracion.module').then(m => m.ConfiguracionModule) },
   { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
   { path: 'admin/report', loadChildren: () => import('./pages/report/report.module').then(m => m.ReportsModule) },
+  { path: 'admin/manual', loadChildren: () => import('./pages/manual/manual.module').then(m => m.ManualModule) },
   { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 
 ];

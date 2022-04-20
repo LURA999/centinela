@@ -11,6 +11,7 @@ import { RepeaterService } from './../../../core/services/repeater.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { rango_ip } from '../popup/new-segment/rango_ip';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
@@ -23,8 +24,10 @@ export class SegmentsComponent implements OnInit {
   ELEMENT_DATA: any = [ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   subnet = require("subnet-cidr-calculator")
-  repetearArray : any []= []
+  repetearArray : any 
   segmentosArray :any
+  id :number = this.rutaActiva.snapshot.params["id"];
+
   rango = new rango_ip()
 
   displayedColumns: string[] = ['id','nombre', 'segmento', 'diagonal', 'tipo', 'estatus','repetear','opciones'];
@@ -39,44 +42,38 @@ export class SegmentsComponent implements OnInit {
     private segmentServicio : SegmentsService,
     private notificationService: NotificationService, 
     private repeaterService : RepeaterService,
-  ) { 
-    
+    private rutaActiva: ActivatedRoute
+  ) { }
+
+   ngOnInit(): void {
+    this.procesoInicio()
   }
 
-
+  ngAfterViewInit(): void {
   
-   ngOnInit(): void {
-    this.procesoInicio()/*
-   let r : string []= this.rango.rango("193.168.255.255", "193.169.255.255");
-    console.log(r);*/
   }
 
    async procesoInicio(){
     await this.repetears()
     await this.llenarTabla()
+    if(this.id != undefined){      
+      this.dataSource.filter = (this.id+"").trim().toLowerCase();
+    }
    }
 
 
-   async nuevoSegmento (){
+   async nuevoSegmento (){     
     let dialogRef = await this.dialog.open(NewSegmentComponent,
-      {data: {id : (this.mayorNumero=(Number(this.mayorNumero)+1)), opc: false, repetears:this.repetearArray},
+      {data: {id : (Number(this.mayorNumero)+1), opc: false, repetears:this.repetearArray},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       this.paginator2.firstPage();
-      await dialogRef.afterClosed().subscribe((result:any)=>{
-       console.log(result);
-       console.log(this.repetearArray);
-       
-       console.log({id:++this.mayorNumero,nombre:result.nombre,segmento:result.segmento
-        ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear:this.repetearArray[this.mayorNumero]["nombreRepetidora"]});
- 
-        try{
+      await dialogRef.afterClosed().subscribe((result:any)=>{        
+         try{
        if(result.mensaje.length > 0 ){       
-             
-         this.ELEMENT_DATA.unshift({id:++this.mayorNumero,nombre:result.nombre,segmento:result.segmento
-         ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear:this.repetearArray[this.mayorNumero]["nombreRepetidora"]});
-         
+         this.ELEMENT_DATA.unshift({id:this.mayorNumero,nombre:result.nombre,segmento:result.segmento
+         ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear: this.metodoParaVerRepetidoras(result.cveRepetdora)});
          this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
          this.dataSource.paginator = this.paginator2; 
          this.dataSource.sort = this.sort;
@@ -86,6 +83,14 @@ export class SegmentsComponent implements OnInit {
         }
        }catch(Exception){}
       })
+  }
+
+  metodoParaVerRepetidoras(idRepetidora : string){
+    for (let i = 0; i < this.repetearArray.length; i++) {
+      if(this.repetearArray[i].idRepetidora == idRepetidora){
+        return this.repetearArray[i].nombreRepetidora;
+      }          
+    } 
   }
 
   async editarSegmento (id:number, nombre:string,segmento:string,diagonal:string,repetear:string,tipo: string,estatus:string){    
@@ -148,15 +153,13 @@ export class SegmentsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
     await this.segmentServicio.llamarSegments().toPromise().then( (result : any) =>{
-      this.segmentosArray = result;
-      console.log(this.segmentosArray);
-      
+      this.segmentosArray = result;      
+      this.mayorNumero = Number(result.container[0]["idSegmento"])+1;
       for (let i=0; i<result.container.length; i++){       
       this.ELEMENT_DATA.push(
         {id: result.container[i]["idSegmento"],nombre: result.container[i]["nombre"],segmento:result.container[i]["segmento"]
-        ,diagonal:result.container[i]["diagonal"],tipo:this.tipo(result.container[i]["tipo"]), estatus:this.estatus(result.container[i]["estatus"]), repetear:result.container[i]["repetear"]}
+        ,diagonal:result.container[i]["diagonal"],tipo:this.tipo(result.container[i]["tipo"]), estatus:this.estatus(result.container[i]["estatus"]), repetear:result.container[i]["repetidora"]}
         );
-      this.numeroMayor(result.container[i]["idSegmento"]);
     }
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
@@ -175,7 +178,8 @@ export class SegmentsComponent implements OnInit {
   /**Imprimiendo repetears */
   async repetears(){
     await this.repeaterService.llamarRepitdores().subscribe((resp:any) =>{
-    this.repetearArray = resp.container;      
+    this.repetearArray = resp.container;   
+       
     })    
   }
   
@@ -196,21 +200,16 @@ hayClientes2(){
   }
 }
 
-
+buscarRuta(event : any){
+  event.value = this.id==0? "" : this.id;
+}
   /**Guardando numero mayor */
-   numeroMayor(numero : number){
-    if (this.mayorNumero <numero){
-      this.mayorNumero = numero
-    }
-  }
+
   arrayRemove(arr : any, index : any) { 
     for( var i = 0; i < arr.length; i++){ 
-    
       if ( arr[i]["id"] === arr[index]["id"]) { 
-  
           arr.splice(i, 1); 
       }
-  
     }
     return arr;
   }

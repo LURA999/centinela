@@ -33,7 +33,7 @@ export class TableLogComponent implements OnInit {
      
     }else if(c.currentValue[0] == "a"){
       this.dialog.open(NewLogComponent,
-      {data: {empresa : "", opc:true},
+      {data: {empresa : "", opc:false},
       animation: { to: "bottom" },
       height:"auto", width:"300px",
       });

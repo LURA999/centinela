@@ -10,6 +10,8 @@ import { DeleteComponent } from '../popup/delete/delete.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { firstValueFrom } from 'rxjs';
+import { NewSegmentComponent } from '../popup/new-segment/new-segment.component';
 
 @Component({
   selector: 'app-repetear-contact',
@@ -21,23 +23,16 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 export class RepetearContactComponent implements OnInit {
   
 cargando :boolean= false;
+cargando2 :boolean= false;
 todosContactos : any;
+todosSegmentos : any;
+
 arrayrepetear : any = [];
 mayorNumero : number = 0
-mayorNumero2 : number = 0
 id :number = this.rutaActiva.snapshot.params["id"];
-
-ELEMENT_DATA2: any = [
-  {
-    id:"ejemplo",
-    seg: "ejemplo",
-    x: "ejemplo",
-    tipo:"ejemplo",
-    nom:"ejemplo",
-  }
-];
-
+ELEMENT_DATA_SEGMENTOS: any = [ ];
 ELEMENT_DATA: any = [ ];
+repetearArray : any 
 
 
 @ViewChild ("paginator") paginator:any;
@@ -48,8 +43,8 @@ ELEMENT_DATA: any = [ ];
   sort2: MatSort  = new MatSort;
 
 dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-displayedColumns: string[] = ['id', 'nombre', 'telefono', 'correo', 'estatus','opciones'];
-dataSource2 = new MatTableDataSource(this.ELEMENT_DATA2);
+displayedColumns: string[] = [/*'id',*/ 'nombre', 'telefono', 'correo', 'estatus','opciones'];
+dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
 displayedColumns2: string[] = ['id', 'seg', 'x', 'tipo', 'nom','opciones'];
 
 constructor(private dialog:NgDialogAnimationService, private contactService : ContactService, 
@@ -60,6 +55,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
 
   ngOnInit(): void {
     this.llenarTabla1(this.id); 
+    this.llenarTab2(this.id);
   }
 
   ngAfterViewInit(): void {
@@ -68,8 +64,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
 
   async obteniendoRepetidor(){
 
-   await this.repeaterService.llamarRepitdor(this.id).toPromise().then((result:any)=>{
-     console.log(result);
+  await firstValueFrom(this.repeaterService.llamarRepitdor(this.id)).then((result:any)=>{
      
       this.arrayrepetear={
         id : result.container[0].idRepetidora , 
@@ -91,7 +86,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
       await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.arrayRemove(this.ELEMENT_DATA, this.buscandoIndice(id))
+          this.ELEMENT_DATA =  this.arrayRemove(this.ELEMENT_DATA, this.buscandoIndice(id,this.ELEMENT_DATA))
 
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
@@ -110,6 +105,13 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     this.todosContactos =  await this.contactService.llamarContacto(cve).toPromise();
+    
+    if(this.todosContactos.container.length == 0){
+      this.mayorNumero = 0;
+    }else{
+      this.mayorNumero = Number(this.todosContactos.container[0].idContacto) +1;
+    }
+    
       for (const iterator of this.todosContactos.container) {
         this.ELEMENT_DATA.push(
           {id:iterator.idContacto,
@@ -119,7 +121,6 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
           cverepetear:iterator.cverepetear,
           estatus:this.estatus(iterator.estatus)}
         );   
-        this.mayorNumero = iterator.idContacto;
       }
      
       this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
@@ -127,17 +128,107 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
       this.dataSource.sort = await this.sort;
       this.cargando = true;
   }
+
+  async llenarTab2(cve:number){
+    this.cargando2 = false;
+    this.ELEMENT_DATA_SEGMENTOS = [];
+    this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
+    this.todosSegmentos =  await this.repeaterService.segmentosRepetidores(cve).toPromise();
+    
+      for (const iterator of this.todosSegmentos.container) {
+        this.ELEMENT_DATA_SEGMENTOS.push(
+          {id:iterator.idSegmento,
+          seg:iterator.segmento,
+          x:iterator.diagonal ,
+          tipo:this.tipo(iterator.tipo),
+          nom:iterator.nombre,
+          estatus:this.estatus(iterator.estatus)}
+        );   
+      }
+     
+      this.dataSource2 = await new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
+      this.dataSource2.paginator = await this.paginator2;    
+      this.dataSource2.sort = await this.sort2;
+      this.cargando2 = true;
+  }
+
+  async editarSegmento (id:number, nombre:string,segmento:string,diagonal:string,repetear:string,tipo: string,estatus:string){    
+    let dialogRef  = await this.dialog.open(NewSegmentComponent,
+      {data: {id : id, nombre : nombre ,segmento : segmento, diagonal : diagonal, cveRepetdora: repetear,tipo: this.tipoNumero(tipo), estatus:this.estatusNumero(estatus),opc:true  },
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+      await dialogRef.afterClosed().subscribe((result:any) => {
+        
+        try{
+        if(result.mensaje.length > 0  ){
+
+
+          this.ELEMENT_DATA_SEGMENTOS.splice(this.buscandoIndice(id,this.ELEMENT_DATA_SEGMENTOS)
+            ,1,{id:id,nom:result.nombre, seg: result.segmento,x:result.diagonal,
+              tipo:this.tipo(result.tipo),estatus:this.estatus(result.estatus)})
+              console.log("ENTRO");
+              
+          this.dataSource2 =  new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS)
+          this.dataSource2.paginator = this.paginator2;  
+          this.dataSource2.sort = this.sort2;
+          setTimeout(()=>{          
+          this.notificationService.openSnackBar("Se actualizo con exito");  
+          })
+        }
+        }catch(Exception){}
+      }); 
+  }
+
+  async eliminarSegmento (id:number){    
+    let dialogRef = await this.dialog.open(DeleteComponent,
+      {data: {idSegmento : id, opc: 1},
+      animation: { to: "bottom" },
+      height:"auto", width:"300px",
+      });
+      await dialogRef.afterClosed().subscribe((result : any) => {
+        try{
+        if(result.length > 0  ){
+          this.ELEMENT_DATA_SEGMENTOS =  this.arrayRemove(this.ELEMENT_DATA_SEGMENTOS, this.buscandoIndice(id,this.ELEMENT_DATA_SEGMENTOS)) 
+          this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
+          this.dataSource2.paginator = this.paginator2;
+          this.dataSource2.sort = this.sort2;
+
+        setTimeout(()=>{
+          this.notificationService.openSnackBar("Se elimino con exito");
+        })
+      }
+      }catch(Exception){}
+      });
+  }
+  tipoNumero(tipo:string){
+    if(tipo == 'publico'){
+      return "1"
+     }else{
+      return "2"
+     }
+  }
+
+  tipo(tipo:string){
+    if(tipo == '1'){
+      return "publico"
+     }else{
+      return "privado"
+     }
+  }
  /**Funciones extras, para buscar indice del array y para los estatus */
- buscandoIndice(id:number){
+ buscandoIndice(id:number, ELEMENT_DATA:any){
   let i = 0
   while (true) {
-    const element = this.ELEMENT_DATA[i]["id"];
+    const element = ELEMENT_DATA[i]["id"];
     if(element===id){
      return i
     }
     i++;
   }
 }
+
+
   estatus(numero : string) {
     switch(numero){
       case '1':
@@ -157,7 +248,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
 
   Newregister(){
     let dialogRef = this.dialog.open(NewContactComponent,
-      {data: {opc : false/*, repetears: this.todosrepetears*/ , cverepetear: this.id},
+      {data: {opc : false/*, repetears: this.todosrepetears*/ , cveRepetidora: this.id},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -166,7 +257,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
      dialogRef.afterClosed().subscribe((result:any)=>{
        try{
       if(result.mensaje.length > 0  ){
-        this.ELEMENT_DATA.unshift({id: ++this.mayorNumero,telefono: result.telefono,correo:result.correo,estatus:this.estatus(result.estatus), nombre: result.nombre});
+        this.ELEMENT_DATA.unshift({id: this.mayorNumero,telefono: result.telefono,correo:result.correo,estatus:this.estatus(result.estatus), nombre: result.nombre});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
@@ -180,40 +271,29 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
   }
 
   
-/**para el loading */
-hayClientes(){
-  if(this.ELEMENT_DATA != 0 || this.cargando ==false){
-    return true;
-  }else{
-    return false;
-  }
-}
-/**Ayudante de loading p */
-hayClientes2(){
-  if(this.cargando !=false){
-    return "table-row";
-  }else{
-    return "none";
-  }
-}
-arrayRemove(arr : any, index : any) { 
-  for( var i = 0; i < arr.length; i++){ 
-    if ( arr[i]["id"] === arr[index]["id"]) { 
-        arr.splice(i, 1); 
+  /**para el loading */
+  hayClientes(){
+    if(this.ELEMENT_DATA != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
     }
   }
-  return arr;
-}
-
-  numeroMayor(numero : number){
-    if(this.mayorNumero <numero){
-      this.mayorNumero = numero
+  /**Ayudante de loading p */
+  hayClientes2(){
+    if(this.ELEMENT_DATA_SEGMENTOS != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
     }
   }
-  numeroMayor2(numero : number){
-    if(this.mayorNumero2 <numero){
-      this.mayorNumero2 = numero
+  arrayRemove(arr : any, index : any) { 
+    for( var i = 0; i < arr.length; i++){ 
+      if ( arr[i]["id"] === arr[index]["id"]) { 
+          arr.splice(i, 1); 
+      }
     }
+    return arr;
   }
 
   estatusNumero(numero : string) {
@@ -238,7 +318,7 @@ arrayRemove(arr : any, index : any) {
       await dialogRef.afterClosed().subscribe((result:any) => {
         try{
         if(result.mensaje.length > 0){
-          this.ELEMENT_DATA.splice(this.buscandoIndice(id)
+          this.ELEMENT_DATA.splice(this.buscandoIndice(id,this.ELEMENT_DATA)
             ,1,{telefono:result.telefono, correo:result.correo, estatus:this.estatus(result.estatus),nombre:result.nombre,id:id })
           this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
           this.dataSource.paginator = this.paginator2;  

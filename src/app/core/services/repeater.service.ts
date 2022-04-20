@@ -27,8 +27,11 @@ export class RepeaterService {
   }
 
   updateRepetidor(input :RepetidorModel){
-    console.log(input)
     return this.http.patch(this.local+"Repeater/repeater.php",input, {responseType:"text"});
+  }
+  
+  segmentosRepetidores(cve:number){
+    return this.http.get(this.local+"Repeater/repeater.php?cve="+cve);    
   }
 
 }

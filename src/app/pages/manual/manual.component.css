@@ -1,0 +1,14 @@
+.containerMat{
+    display: flex;
+    width: auto;
+}
+
+table, .tabla {
+    width: 100%;
+    overflow: auto;
+}
+
+nav{
+    margin-left:20px;
+    width: 30%;
+}
