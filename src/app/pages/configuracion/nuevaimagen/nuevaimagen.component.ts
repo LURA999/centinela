@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from "@angular/forms";
 @Component({
@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
   styleUrls: ['./nuevaimagen.component.css']
 })
 export class  NuevaimagenComponent implements OnInit {
+
   imageURL: string="";
   uploadForm: FormGroup ;
 

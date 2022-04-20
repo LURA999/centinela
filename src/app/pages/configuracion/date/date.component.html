@@ -11,10 +11,31 @@
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-</div>
+</div>  
 <div class="time">
     <br>
     <mat-form-field  appearance="fill">
         <input type="time" matInput name="week" min="09:00" max="18:00">
+        <mat-hint>Hora/Minutos/Segundos</mat-hint>
      </mat-form-field>
+</div>
+<div class="timezone">
+    <br>
+
+
+
+    
+    <mat-form-field appearance="fill">
+      <mat-label>Zona Horaria</mat-label>
+      <mat-select [(ngModel)]="selectedValue" name="Zona Horaria">
+        <mat-option *ngFor="let Zone of Zones" [value]="Zone.value">
+          {{Zone.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+
+  
+
+    
 </div>

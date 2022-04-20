@@ -11,9 +11,13 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { NuevaimagenComponent } from './nuevaimagen/nuevaimagen.component';
 import { NotifierModule } from 'angular-notifier';
 import { right } from '@popperjs/core';
+import { EditComponent } from './edit/edit.component';
+import { EditLogoComponent } from './edit-logo/edit-logo.component';
+import {NgxPhotoEditorModule} from "ngx-photo-editor";
 
 @NgModule({
   imports: [
+    NgxPhotoEditorModule,
     NgbPaginationModule,
     CommonModule,
     ConfiguracionRoutingModule,
@@ -68,15 +72,16 @@ import { right } from '@popperjs/core';
   declarations: [
 
 
-
+              EditComponent,
                DateComponent,
                SmtpComponent,
                NotificationComponent,
-               NuevaimagenComponent
+               NuevaimagenComponent,
+               EditLogoComponent,
+             
   ],
   exports: [
-    MatTabsModule,
-    
+    MatTabsModule
     
   ]
 })

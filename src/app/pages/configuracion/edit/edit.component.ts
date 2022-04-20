@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { CroppedEvent } from 'ngx-photo-editor';
 import { NuevaimagenComponent } from '../nuevaimagen/nuevaimagen.component';
 
 @Component({
@@ -8,21 +10,47 @@ import { NuevaimagenComponent } from '../nuevaimagen/nuevaimagen.component';
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit {
-
-  constructor(private dialog:NgDialogAnimationService) { }
+ 
+  imageURL: string="";
+  uploadForm: FormGroup ;
+  constructor(private dialog:NgDialogAnimationService,public fb: FormBuilder) {
+    this.uploadForm = this.fb.group({
+      avatar: [null],
+      name: ['']
+    })
+  
+   }
 
   ngOnInit(): void {
+    
   }
-async nuevaimagen(){
-  let dialogRef = await this.dialog.open(NuevaimagenComponent,
-    {
-    animation: { to: "bottom" },
-    height:"300px", width:"300px",
+
+
+  // Image Preview
+  showPreview(event:any) {
+    let file = (event.target as HTMLInputElement).files![0];
+
+  this.uploadForm.patchValue({
+      avatar: file
     });
+    this.uploadForm.get('avatar')?.updateValueAndValidity()
+
+    // File Preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageURL = reader.result as string;
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Submit Form
+  submit() {
+    console.log(this.uploadForm.value)
+  }
+
 }
+  
 
 
-}
-function nuevaimagenComponent(nuevaimagenComponent: any) {
-  throw new Error('Function not implemented.');
-}
+
+
