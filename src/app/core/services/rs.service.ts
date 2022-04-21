@@ -9,7 +9,19 @@ export class RsService {
     local = environment.api;
     constructor(private http:HttpClient){}
 
-    llamarTodo(){
-        return this.http.get(this.local+"RazonSocial/rs.php");
+    llamarTodo(cve:number){
+        return this.http.get(this.local+"Services/rs.php?cve="+cve);
+    }
+
+    deleteRS(){
+
+    }
+
+    updateRS(){
+
+    }
+
+    insertRS() {
+    
     }
 } 

@@ -9,7 +9,19 @@ export class ServiceService {
     local = environment.api;
     constructor(private http:HttpClient){}
 
-    llamarTodo(){
-        return this.http.get(this.local+"Services/contact.php");
+    llamarTodo(cve : number){
+        return this.http.get(this.local+"Services/services.php?cve="+cve);
+    }
+
+    deleteService(){
+
+    }
+
+    updateService(){
+
+    }
+
+    insertService() {
+    
     }
 } 

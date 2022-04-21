@@ -9,7 +9,19 @@ export class TicketService {
     local = environment.api;
     constructor(private http:HttpClient){}
 
-    llamarTodo(){
-        return this.http.get(this.local+"Tickets/contact.php");
+    llamarTodo(cve : number){
+        return this.http.get(this.local+"Tickets/tickets.php?cve="+cve);
+    }
+
+    deleteTickets(){
+
+    }
+
+    updateTickets(){
+
+    }
+
+    insertTickets() {
+    
     }
 } 

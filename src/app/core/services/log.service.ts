@@ -9,7 +9,19 @@ export class LogService {
     local = environment.api;
     constructor(private http:HttpClient){}
 
-    llamarTodo(){
-        return this.http.get(this.local+"Log/log.php");
+    llamarTodo(cve:number){
+        return this.http.get(this.local+"UseLog/log.php?cve="+cve);
+    }
+
+    deleteLog(){
+
+    }
+
+    updateLog(){
+
+    }
+
+    insertLog() {
+    
     }
 } 
