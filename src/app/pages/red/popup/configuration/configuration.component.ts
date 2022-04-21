@@ -3,13 +3,13 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CustomerService } from '../../../../core/services/customer.service';
 @Component({
-  selector: 'app-configuracion',
-  templateUrl: './configuracion.component.html',
-  styleUrls: ['./configuracion.component.css']
+  selector: 'app-configuration',
+  templateUrl: './configuration.component.html',
+  styleUrls: ['./configuration.component.css']
 })
-export class ConfiguracionComponent implements OnInit {
+export class ConfigurationComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private customerService : CustomerService,public dialogRef: MatDialogRef<ConfiguracionComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private customerService : CustomerService,public dialogRef: MatDialogRef<ConfigurationComponent>) { }
   nombre? : FormControl
   empresa? : FormControl
 

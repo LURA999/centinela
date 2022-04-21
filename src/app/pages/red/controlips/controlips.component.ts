@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ConfiguracionComponent } from '../popup/configuracion/configuracion.component';
+import { ConfigurationComponent } from '../popup/configuration/configuration.component';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { IpService } from './../../../core/services/ip.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
@@ -40,6 +40,7 @@ export class ControlipsComponent implements OnInit {
     this.procedmiento();
 
   }
+  
 
   ngOnInit(): void {   
     
@@ -49,6 +50,7 @@ export class ControlipsComponent implements OnInit {
     this.$sub.unsubscribe();
   }
 
+  
   async procedmiento(){
     await this.ipServicios(); 
     await this.segmentosArray();
@@ -68,7 +70,7 @@ export class ControlipsComponent implements OnInit {
  }
 
   Configuracion(){
-    let dialogRef  = this.dialog.open(ConfiguracionComponent,
+    let dialogRef  = this.dialog.open(ConfigurationComponent,
       {data: {opc : false },
       animation: { to: "bottom" },
       height:"auto", width:"350px",

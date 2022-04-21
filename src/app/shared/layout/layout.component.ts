@@ -66,5 +66,9 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
             this.router.navigateByUrl("/usuario");
         }
     }
+    
+    cambiarimagen(){
+        return sessionStorage.getItem("src")
+    }
    
 }

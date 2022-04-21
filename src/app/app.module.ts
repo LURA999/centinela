@@ -15,15 +15,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastrModule } from "ngx-toastr";
 import { LoginContactoComponent } from './auth/login-contacto/login-contacto.component';
 import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import {NgxPhotoEditorModule} from "ngx-photo-editor";
 
+MatTabsModule
 @NgModule({
   declarations: [
     AppComponent,
     LoginContactoComponent,
     LoginUsuarioComponent,
-    
   ],
   imports: [
+    NgxPhotoEditorModule,
     NgbModule,
     CommonModule,
     BrowserModule,
@@ -39,6 +42,7 @@ import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.compon
     CustomMaterialModule,
     ToastrModule.forRoot(),
     NgbPaginationModule,
+    MatTabsModule,
   ],
   exports:[
     CustomMaterialModule

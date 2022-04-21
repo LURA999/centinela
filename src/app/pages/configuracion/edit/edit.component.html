@@ -1,0 +1,125 @@
+
+<div class="container-xl px-4 mt-4">
+    <!-- Account page navigation-->
+    <mat-tab-group mat-align-tabs="start" animationDuration="0ms">
+        <mat-tab label="Datos de la empresa">
+    <hr class="mt-0 mb-4">
+    <div class="row">
+        <div class="col-xl-4">
+            <!-- Profile picture card-->
+            <div class="card mb-4 mb-xl-0">
+                <div class="card-header">Imagen de perfil</div>
+                <div class="card-body text-center">
+                    <!-- Profile picture image-->
+                   
+                  
+                    <img class="img-account-profile rounded-circle mb-2" [src]="imageURL" [alt]="uploadForm.value.name">
+                 
+                    
+                  
+                   
+                    <!-- Profile picture upload button-->
+                    
+                        <label class="boton" > 
+                          Subir nueva imagen
+                        <input (change)= "showPreview($event)" style="display: none !important" type="file" multiple="false"/>
+                        </label>
+                                      
+
+
+
+
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <!-- Account details card-->
+            <div class="card mb-4">
+                <div class="card-header">Detalles de la empresa</div>
+                <div class="card-body">
+                    <form>
+                        <!-- Form Group (username)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputUsername">Nombre</label>
+                            <input class="form-control" id="inputUsername" type="text" placeholder="Enter your username" value="username">
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                           
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputFirstName">R.F.C</label>
+                                <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="Valerie">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLastName">Razon social</label>
+                                <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="Luna">
+                            </div>
+                        </div>
+                        <!-- Form Row        -->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (organization name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputOrgName">Ciudad</label>
+                                <input class="form-control" id="inputOrgName" type="text" placeholder="Enter your organization name" value="Start Bootstrap">
+                            </div>
+                            <!-- Form Group (location)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLocation">Direccion</label>
+                                <input class="form-control" id="inputLocation" type="text" placeholder="Enter your location" value="San Francisco, CA">
+                            </div>
+                        </div>
+                        <!-- Form Group (email address)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputEmailAddress">Correo electronico</label>
+                            <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="name@example.com">
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (phone number)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputPhone">Telefono</label>
+                                <input class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number" value="555-123-4567">
+                            </div>
+                            
+                        </div>
+                        <!-- Save changes button-->
+                        <button mat-raised-button	 class="btn btn-primary" >Guardar cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-tab>
+<mat-tab label="Hora y Fecha">
+    <ng-template matTabContent>
+        <app-date></app-date>
+    </ng-template>
+</mat-tab>
+
+<mat-tab label="Notificaciones">
+    <ng-template matTabContent>
+        <app-notification></app-notification>
+    </ng-template>
+</mat-tab>
+
+<mat-tab label="Smtp">
+    <ng-template matTabContent>
+        <app-smtp></app-smtp>
+    </ng-template>
+</mat-tab>
+
+<mat-tab label="Editar logo">
+    <ng-template matTabContent>
+        <app-edit-logo></app-edit-logo>
+    </ng-template>
+</mat-tab>
+
+</mat-tab-group>
+
+
+
+
+
+</div>

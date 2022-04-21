@@ -8,7 +8,7 @@ import { NewSegmentComponent } from './popup/new-segment/new-segment.component';
 import { DeleteComponent } from './popup/delete/delete.component';
 import { InfoComponent } from './popup/info/info.component';
 import { ControlipsComponent } from './controlips/controlips.component';
-import { ConfiguracionComponent } from './popup/configuracion/configuracion.component';
+import { ConfigurationComponent } from './popup/configuration/configuration.component';
 import { RepetearContactComponent } from './repetear-contact/repetear-contact.component';
 import { RepetearComponent } from './repetear/repetear.component';
 import { NewRepeaterComponent } from './popup/new-repeater/new-repeater.component';
@@ -20,7 +20,7 @@ import { NewContactComponent } from './popup/new-contact/new-contact.component';
     DeleteComponent, 
     InfoComponent,
     ControlipsComponent,
-    ConfiguracionComponent,
+    ConfigurationComponent,
     RepetearContactComponent,
     RepetearComponent,
     NewRepeaterComponent,
