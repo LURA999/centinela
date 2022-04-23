@@ -1,5 +1,6 @@
 @import "~angular-notifier/styles.css";
 
+/**Para cargar la pagina completa*/
 #contenedor_carga{
   background-color: rgba(88, 88, 88, 60%);
   height: 100%;
@@ -47,8 +48,6 @@ color: white;
 }
 
 
-
-
 @keyframes cambio{
   0%{margin-left: 0;}
   20%{margin-left: 0;}
@@ -64,13 +63,32 @@ color: white;
 
 }
 
-
 @keyframes girar {
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
 }
 
-
+/**Loading para componentes*/
+.preloader {
+  width: 60px;
+  height: 60px;
+  border: 10px solid #eee;
+  border-top: 10px solid #0c82ff ;
+  border-radius: 50%;
+  animation-name: girar;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  cursor:wait;
+}
+@keyframes girar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 body {
   margin: 0;

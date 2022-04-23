@@ -11,12 +11,10 @@ import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { ToastrModule } from "ngx-toastr";
+import { MatIconModule } from '@angular/material/icon'; 
 import { LoginContactoComponent } from './auth/login-contacto/login-contacto.component';
 import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import {NgxPhotoEditorModule} from "ngx-photo-editor";
 
 MatTabsModule
 @NgModule({
@@ -26,7 +24,6 @@ MatTabsModule
     LoginUsuarioComponent,
   ],
   imports: [
-    NgxPhotoEditorModule,
     NgbModule,
     CommonModule,
     BrowserModule,
@@ -34,13 +31,11 @@ MatTabsModule
     CoreModule,
     SharedModule,
     AppRoutingModule,
-    ToastrModule,
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
     CustomMaterialModule,
-    ToastrModule.forRoot(),
     NgbPaginationModule,
     MatTabsModule,
   ],

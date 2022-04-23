@@ -10,14 +10,11 @@ import { NotificationComponent } from './notification/notification.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { NuevaimagenComponent } from './nuevaimagen/nuevaimagen.component';
 import { NotifierModule } from 'angular-notifier';
-import { right } from '@popperjs/core';
 import { EditComponent } from './edit/edit.component';
 import { EditLogoComponent } from './edit-logo/edit-logo.component';
-import {NgxPhotoEditorModule} from "ngx-photo-editor";
 
 @NgModule({
   imports: [
-    NgxPhotoEditorModule,
     NgbPaginationModule,
     CommonModule,
     ConfiguracionRoutingModule,
@@ -25,11 +22,8 @@ import {NgxPhotoEditorModule} from "ngx-photo-editor";
     MatPaginatorModule,
     MatTabsModule, 
     NotifierModule.withConfig({
-      
       position: {
-
         horizontal: {
-      
           /**
            * Defines the horizontal position on the screen
            * @type {'left' | 'middle' | 'right'}
@@ -41,11 +35,8 @@ import {NgxPhotoEditorModule} from "ngx-photo-editor";
            * @type {number}
            */
           distance: 12
-      
         },
-      
         vertical: {
-      
           /**
            * Defines the vertical position on the screen
            * @type {'top' | 'bottom'}
@@ -57,28 +48,18 @@ import {NgxPhotoEditorModule} from "ngx-photo-editor";
            * @type {number}
            */
           distance: 12
-      
-          
-      
         }
-      
-      }
-
-
-      
+      } 
     }),
    
   ],
   declarations: [
-
-
-              EditComponent,
-               DateComponent,
-               SmtpComponent,
-               NotificationComponent,
-               NuevaimagenComponent,
-               EditLogoComponent,
-             
+    EditComponent,
+    DateComponent,
+    SmtpComponent,
+    NotificationComponent,
+    NuevaimagenComponent,
+    EditLogoComponent,    
   ],
   exports: [
     MatTabsModule

@@ -256,7 +256,7 @@ export class CustomerListComponent implements OnInit {
   }
   async eliminar(id:number){
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : id},
+      {data: {idCliente : id, opc: 0},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });

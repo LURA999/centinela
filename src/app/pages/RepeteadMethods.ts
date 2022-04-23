@@ -1,5 +1,5 @@
 
-export class rango_ip {
+export class RepeteadMethods {
 
 	constructor(){ }
 

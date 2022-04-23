@@ -104,15 +104,11 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
     this.cargando = false;
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.todosContactos =  await this.contactService.llamarContacto(cve).toPromise();
-    
-    if(this.todosContactos.container.length == 0){
-      this.mayorNumero = 0;
-    }else{
-      this.mayorNumero = Number(this.todosContactos.container[0].idContacto) +1;
-    }
-    
-      for (const iterator of this.todosContactos.container) {
+    await this.contactService.llamarContacto(cve).subscribe((resp:any) =>{
+      this.mayorNumero = resp.container[resp.container.length-1].idContacto;
+      
+      this.todosContactos =  resp.container;
+      for (const iterator of this.todosContactos) {
         this.ELEMENT_DATA.push(
           {id:iterator.idContacto,
           nombre:iterator.nombre,
@@ -123,19 +119,20 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
         );   
       }
      
-      this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator = await this.paginator;    
-      this.dataSource.sort = await this.sort;
+      this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator =  this.paginator;    
+      this.dataSource.sort =  this.sort;
       this.cargando = true;
+    });
   }
 
   async llenarTab2(cve:number){
     this.cargando2 = false;
     this.ELEMENT_DATA_SEGMENTOS = [];
     this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
-    this.todosSegmentos =  await this.repeaterService.segmentosRepetidores(cve).toPromise();
-    
-      for (const iterator of this.todosSegmentos.container) {
+    await this.repeaterService.segmentosRepetidores(cve).subscribe( (resp:any) =>{
+      this.todosSegmentos = resp.container;
+      for (const iterator of this.todosSegmentos) {
         this.ELEMENT_DATA_SEGMENTOS.push(
           {id:iterator.idSegmento,
           seg:iterator.segmento,
@@ -146,10 +143,11 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
         );   
       }
      
-      this.dataSource2 = await new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
-      this.dataSource2.paginator = await this.paginator2;    
-      this.dataSource2.sort = await this.sort2;
+      this.dataSource2 =  new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
+      this.dataSource2.paginator =  this.paginator2;    
+      this.dataSource2.sort =  this.sort2;
       this.cargando2 = true;
+    });
   }
 
   async editarSegmento (id:number, nombre:string,segmento:string,diagonal:string,repetear:string,tipo: string,estatus:string){    
@@ -257,7 +255,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
      dialogRef.afterClosed().subscribe((result:any)=>{
        try{
       if(result.mensaje.length > 0  ){
-        this.ELEMENT_DATA.unshift({id: this.mayorNumero,telefono: result.telefono,correo:result.correo,estatus:this.estatus(result.estatus), nombre: result.nombre});
+        this.ELEMENT_DATA.unshift({id: ++this.mayorNumero,telefono: result.telefono,correo:result.correo,estatus:this.estatus(result.estatus), nombre: result.nombre});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;

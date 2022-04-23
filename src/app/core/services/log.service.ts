@@ -10,7 +10,7 @@ export class LogService {
     constructor(private http:HttpClient){}
 
     llamarTodo(cve:number){
-        return this.http.get(this.local+"UseLog/log.php?cve="+cve);
+        return this.http.get(this.local+"Users/log.php?cve="+cve);
     }
 
     deleteLog(){
