@@ -1,7 +1,10 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {ThemePalette} from '@angular/material/core';
-import { EventEmitter } from 'stream';
+import { CustomerService } from 'src/app/core/services/customer.service';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { responseService } from 'src/app/models/responseService.model';
 
 @Component({
   selector: 'app-customer-company',
@@ -9,13 +12,17 @@ import { EventEmitter } from 'stream';
   styleUrls: ['./customer-company.component.css']
 })
 export class CustomerCompanyComponent implements OnInit {
-  clickDownload: number =0
-  clickAdd : number =0
-  padre : string =""
-  ELEMENT_DATA_TICKETS : any = [{
+  clickDownload: number = 0
+  clickAdd : number = 0
+  padre : string = ""
+  datos : Observable<responseService> | undefined;
+  
+  ELEMENT_DATA_TICKETS : any = [
+    {
     id:"1",
     nombre:"1",
-  }]
+    }
+  ];
 
   links = [
     {
@@ -34,11 +41,13 @@ export class CustomerCompanyComponent implements OnInit {
       label: 'R.S.',
       link: './rs',
       index: 3
-  }, 
-];
+    }, 
+  ];
   
   activeLink = this.links[0];
+
   background: ThemePalette = undefined;
+  id :number = this.rutaActiva.snapshot.params["id"];
 
   toggleBackground() {
     this.background = this.background ? undefined : 'primary';
@@ -46,7 +55,7 @@ export class CustomerCompanyComponent implements OnInit {
 
   dataSourceTickets = new MatTableDataSource(this.ELEMENT_DATA_TICKETS);
   displayedColumnsTickets: string[] = ['id', 'nombre'];
-  constructor() { }
+  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute) { }
 
   
   applyFilter(event: Event) {
@@ -55,10 +64,14 @@ export class CustomerCompanyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    this.datosCliente()
   }
 
-   eventoTab(){
+  datosCliente() {
+    this.datos = this.serviceCustomer.buscarCliente(this.id)
+  }
+
+  eventoTab(){
     this.padre =  ""
     this.clickAdd =  0
     this.clickDownload =  0    
@@ -72,6 +85,4 @@ export class CustomerCompanyComponent implements OnInit {
     this.padre = "d"+this.clickDownload++
 
   }
-
-
 }

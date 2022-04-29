@@ -79,9 +79,14 @@
 
       <mat-nav-list>
         <div  id="header-nav">
-          <p  > Menu  </p>
+          <p> Menu  </p>
         </div>
-
+        <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+          <mat-icon mat-list-icon>
+            dashboard
+          </mat-icon>
+          <p mat-line> Dashboard </p>
+        </a>p
         <a mat-list-item [routerLink]="['/admin/client']" [ngStyle]="{'display': acceso()}">
           <mat-icon mat-list-icon >person</mat-icon>
           <p mat-line > Clientes  </p>
@@ -107,32 +112,12 @@
 
 
 
-
-
-<mat-expansion-panel  >  
-  <mat-expansion-panel-header>
-   
-      <mat-icon mat-list-icon style="margin-top: 8px;">notifications_active</mat-icon> 
-      <p  mat-line style="margin-top: 11px;">Activacion</p>
-    
-  </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-    Servicios</a>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-    Clientes</a>
-</mat-expansion-panel>
-
-
-
-
 <a mat-list-item [routerLink]="['/admin/manual']" routerLinkActive="active" mat-line>
   <mat-icon mat-list-icon>
     sticky_note_2
   </mat-icon>
   <p mat-line> Manuales </p>
 </a>
-
-
 <mat-expansion-panel >  
   <mat-expansion-panel-header>
     
@@ -186,12 +171,7 @@
   <p mat-line> Ordenes </p>
 </a>
 
-<a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-  <mat-icon mat-list-icon>
-    dashboard
-  </mat-icon>
-  <p mat-line> Dashboard </p>
-</a>
+
 
 <a mat-list-item (click)="salir()" routerLinkActive="active">
   <mat-icon mat-list-icon>

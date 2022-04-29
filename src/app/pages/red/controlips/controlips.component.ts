@@ -179,7 +179,7 @@ async cargarInicio(){
       }catch(Exception){}
     })) 
   }
-  async monitoreoPingSinIndex( ip : string){ 
+  async monitoreoPingSinIndex( ip : string) : Promise<string>{ 
     let ping :any = await this.ipService.ping(ip).toPromise()
     return ping = ping.container.status
   }

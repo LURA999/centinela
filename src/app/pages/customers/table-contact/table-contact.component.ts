@@ -3,9 +3,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { lastValueFrom, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ContactService } from 'src/app/core/services/contact.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { RolService } from 'src/app/core/services/rol.service';
+import { ContactServiceModel } from 'src/app/models/contactService.model';
+import { responseService } from 'src/app/models/responseService.model';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewContactComponent } from '../popup/new-contact/new-contact.component';
 import { RepeteadMethods } from './../../RepeteadMethods';
@@ -27,12 +30,17 @@ export class TableContactComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   mayorNumero : number = 0
+  mayorNumeroAux : number = 0
+  mayorNumeroUltimo : number = 0
+
+  arrayRol : string [] = []
+  arrayServicios : string [] = []
+
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
-    private notificationService: NotificationService) { }
+    private notificationService: NotificationService,  private rol :RolService) { }
   
   ngOnChanges(changes: SimpleChanges): void {
     let c = changes['hijoContact'];
-    
     if(!c.firstChange && c.currentValue != ""){
     if(c.currentValue[0] == "a"){
       this.insertar();
@@ -45,7 +53,7 @@ export class TableContactComponent implements OnInit {
 }
 
   ngOnInit(): void {    
-    this.llenarTabla()
+    this.inicio();
   }
 
   descargar(){
@@ -53,16 +61,43 @@ export class TableContactComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.$sub.unsubscribe();
   }
 
+  async inicio(){
+    await this.ultimoID()
+    await this.todoRol()
+    await this.buscarServicios()
+    await this.llenarTabla()
+  }
+  async ultimoID(){
+    await  this.$sub.add(this.serviceContact.llamarContactos_maxId().subscribe((resp:responseService) => {
+      this.mayorNumeroUltimo = resp.container[0].idContacto;
+
+      console.log(this.mayorNumeroUltimo);
+      
+    }))
+  }
+
+  async todoRol(){
+    await  this.$sub.add(this.rol.llamarTodo().subscribe((resp:responseService) => {
+      this.arrayRol = resp.container;
+    }))
+  }
+
+  async buscarServicios(){
+    await  this.$sub.add(this.serviceContact.llamarContactos_tServicos_servicios(this.id).subscribe((resp:responseService) => {
+      this.arrayServicios = resp.container;
+    }))
+  }
+
   async llenarTabla(){
-    this.cargando = false;             
-     await this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{
+    this.cargando = false;
+  
+     await this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{       
+       
       if(resp.container.length !=0){
-      this.mayorNumero = resp.container[resp.container.length-1].idContacto;
+        this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ id:resp.container[i].idContacto,
         nombre:resp.container[i].nombre,
@@ -77,23 +112,24 @@ export class TableContactComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
+    }else{
+      this.mayorNumero = this.mayorNumeroUltimo;
     }
     })
     this.cargando = true;
   }
 
 
-  async eliminar(){
+  async eliminar(id : number){  
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : this.id, opc: 1},
+      {data: {idCliente : id, opc: 1},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       
       await dialogRef.afterClosed().subscribe((result : any) => {
         try{
-        if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -101,7 +137,6 @@ export class TableContactComponent implements OnInit {
         setTimeout(()=>{
           this.notificationService.openSnackBar("Se elimino con exito");
         })
-      }
       }catch(Exception){}
       });
   }
@@ -140,18 +175,17 @@ export class TableContactComponent implements OnInit {
 
   insertar(){
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : false },
+      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, proximoID: ++this.mayorNumero },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
 
      this.paginator2.firstPage();
-     dialogRef.afterClosed().subscribe((result:any)=>{
+     dialogRef.afterClosed().subscribe((result:ContactServiceModel)=>{
        try{
-      if(result.mensaje.length > 0  ){
         this.ELEMENT_DATA.unshift({id: ++this.mayorNumero,nombre:result.nombre,
-        apPaterno:result.apPaterno,
-        apMaterno:result.apMaterno,
+        apPaterno:result.paterno,
+        apMaterno:result.materno,
         correo:result.correo,
         estatus:result.estatus,
         celular:result.celular,
@@ -164,7 +198,6 @@ export class TableContactComponent implements OnInit {
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-       }
       }catch(Exception){}
      })
   }

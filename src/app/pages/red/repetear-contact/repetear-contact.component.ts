@@ -10,7 +10,7 @@ import { DeleteComponent } from '../popup/delete/delete.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { NewSegmentComponent } from '../popup/new-segment/new-segment.component';
 
 @Component({
@@ -64,7 +64,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
 
   async obteniendoRepetidor(){
 
-  await firstValueFrom(this.repeaterService.llamarRepitdor(this.id)).then((result:any)=>{
+  await lastValueFrom(this.repeaterService.llamarRepitdor(this.id)).then((result:any)=>{
      
       this.arrayrepetear={
         id : result.container[0].idRepetidora , 

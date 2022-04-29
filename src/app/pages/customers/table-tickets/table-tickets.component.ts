@@ -35,14 +35,9 @@ export class TableTicketsComponent implements OnInit {
     
     if(!c.firstChange && c.currentValue != ""){      
     if(c.currentValue[0] == "d"){
-      
+      this.descargar()
     }else if(c.currentValue[0] == "a"){
-      this.hijoTickets = ""
-      this.dialog.open(NewTicketComponent,
-        {data: {empresa : "", opc:false},
-        animation: { to: "bottom" },
-          height:"auto", width:"300px",
-        });
+      this.insertar()
     }    
   }
 }
@@ -51,6 +46,10 @@ export class TableTicketsComponent implements OnInit {
     this.llenarTabla();
   }
 
+  descargar(){
+
+  }
+  
   async llenarTabla(){
     this.cargando = false;             
      await this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
@@ -59,13 +58,13 @@ export class TableTicketsComponent implements OnInit {
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({
           num:resp.container[i].idTicket,
-          departamento: "----",
+          departamento: resp.container[i].departamento,
           asunto:resp.container[i].asunto,
           servicio:resp.container[i].nombre,
           fechaCerrada:resp.container[i].fechaCerrada,
           fechaAbierta:resp.container[i].fechaAbierta,
           estado:resp.container[i].estado,
-          agente: "----",
+          agente: resp.container[i].agente,
         })   
       }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);

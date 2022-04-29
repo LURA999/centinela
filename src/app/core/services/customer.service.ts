@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { responseService } from 'src/app/models/responseService.model';
 import { environment } from 'src/environments/environment';
 import { ClienteModel } from '../../models/cliente.model';
 
@@ -30,5 +31,8 @@ export class CustomerService {
   }
   acualizarCliente(input :ClienteModel){
     return this.http.patch(this.local+"Customer/customer.php",input,{responseType: 'text'});
+  }
+  buscarCliente(cve : number) : Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Customer/customer.php?cve="+cve);
   }
 }

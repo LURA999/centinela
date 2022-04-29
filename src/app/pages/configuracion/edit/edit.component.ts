@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { CroppedEvent } from 'ngx-photo-editor';
 import { NuevaimagenComponent } from '../nuevaimagen/nuevaimagen.component';
 
 @Component({
@@ -10,9 +9,9 @@ import { NuevaimagenComponent } from '../nuevaimagen/nuevaimagen.component';
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit {
- 
+
   imageURL: string="";
-  uploadForm: FormGroup ;
+  uploadForm: FormGroup;
   constructor(private dialog:NgDialogAnimationService,public fb: FormBuilder) {
     this.uploadForm = this.fb.group({
       avatar: [null],

@@ -27,7 +27,7 @@ export class NewContactComponent implements OnInit {
     }
   }
 
-  ver(){
+  ver() : string{
     return this.data.repetidora;
   }
 }

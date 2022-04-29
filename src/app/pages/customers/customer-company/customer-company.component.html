@@ -15,10 +15,10 @@
                         <div >
                             <img src="https://png.pngtree.com/png-vector/20190704/ourlarge/pngtree-businessman-user-avatar-free-vector-png-image_1538405.jpg" style="width: 90px;" >
                         </div>
-                        <div style="align-self: flex-end; margin-left: 15px;">
-                            <div class=""><b>Empresa:</b> Redes y asesorias</div>
-                            <div class=""><b>Estatus:</b> Activo</div>
-                            <div class=""><b>Cliente:</b> Red7</div>
+                        <div style="align-self: flex-end; margin-left: 15px;" *ngIf="datos | async as dato">
+                            <div class=""><b>Empresa:</b> {{dato.container[0].nombre}}</div>
+                            <div class=""><b>Estatus:</b> {{dato.container[0].estatus}}</div>
+                            <div class=""><b>Nombre corto:</b> {{dato.container[0].nombreCorto}}</div>
                         </div>
                            
                         </div>

@@ -5,25 +5,36 @@
     Actualizar contacto
   </ng-template></h2>
   <mat-dialog-content class="mat-typography">
-    <form >
-    <div>
-    <mat-form-field appearance="standard">
-      <mat-label>Empresa</mat-label>
-      <input matInput [value]="data.empresa? data.empresa: '' " placeholder="Nombre de empresa" #empresa > 
-    </mat-form-field>
-    <mat-icon>title</mat-icon>  
-    </div>
-    <div>
+    <form>
+      <div>
         <mat-form-field appearance="standard">
-          <mat-label>Nombre corto</mat-label>
-          <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese nombre corto" #nombre>   
+          <mat-label>Nombre</mat-label>
+          <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese nombre" #nombre>   
         </mat-form-field>
         <mat-icon>title</mat-icon> 
     </div>
+    <div>
+        <mat-form-field appearance="standard">
+          <mat-label>Apellido Paterno</mat-label>
+          <input matInput  [value]="data.paterno? data.paterno: '' " placeholder="Ingrese apellido paterno" #paterno>   
+        </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Apellido Materno</mat-label>
+        <input matInput  [value]="data.materno? data.materno: '' " placeholder="Ingrese apellido materno" #materno>   
+      </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Correo</mat-label>
+      <input matInput  [value]="data.correo? data.correo: '' " placeholder="Ingrese correo electronico" #correo>   
+    </mat-form-field>
+  </div>
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
-      <mat-select  matNativeControl [(value)]="data.estatus "required #select>
+      <mat-select  matNativeControl [(value)]="data.estatus "required #selectEstatus>
         <mat-option value="0" disabled>Seleccione un estatus</mat-option>
         <mat-option value="1">activo</mat-option>
         <mat-option value="2">inactivo</mat-option>
@@ -31,9 +42,45 @@
       </mat-select>
     </mat-form-field>
     </div>
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Celular</mat-label>
+        <input matInput  [value]="data.celular? data.celular: '' " placeholder="Ingrese numero de celular" #celular>   
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Telefono</mat-label>
+        <input matInput  [value]="data.telefono? data.telefono: '' " placeholder="Ingrese numero de telefono" #telefono>   
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Rol</mat-label>
+        <mat-select  matNativeControl [(value)]="data.rol" required #selectRol>
+          <mat-option value="0" disabled>Seleccione un Rol</mat-option>
+          <mat-option *ngFor="let dato of data.arrayRol" [value]="dato.idRol"> {{dato.nombre}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="standard">
+          <mat-label>Puesto</mat-label>
+          <input matInput  [value]="data.puesto? data.puesto: '' " placeholder="Ingrese un puesto" #puesto>   
+        </mat-form-field>
+      </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Servicio</mat-label>
+        <mat-select  matNativeControl [(value)]="data.servicio" required #selectServicio>
+          <mat-option value="0" disabled>Asigne un servicio</mat-option>
+          <mat-option *ngFor="let dato of data.arrayServicios" [value]="dato.idServicio"> {{dato.nombre}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      </div>
     <div id="botones">
       <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-      <button mat-button style="background-color:#3f51b5; color: white;"  cdkFocusInitial>
+      <button mat-button style="background-color:#3f51b5; color: white;"  cdkFocusInitial (click)="crearContacto(nombre.value, materno.value,paterno.value,correo.value,selectEstatus.value,celular.value,telefono.value,selectRol.value, selectServicio.value, puesto.value)">
         <ng-container *ngIf="data.opc == false; else elseTemplate">
           Crear
         </ng-container>

@@ -9,37 +9,66 @@
     <div>
     <mat-form-field appearance="standard">
       <mat-label>Nombre</mat-label>
-      <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Nombre de empresa" #empresa > 
+      <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Nombre de empresa" #nombre > 
     </mat-form-field>
     </div>
     <div>
-        <mat-form-field appearance="standard">
-          <mat-label>R.S.</mat-label>
-          <input matInput  [value]="data.rs? data.rs: '' " placeholder="Ingrese nombre corto" #nombre>   
-        </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>R.S.</mat-label>
+        <mat-select  matNativeControl [(value)]="data.rs" required #selectRS>
+          <mat-option value="0" disabled>Seleccione una razon social</mat-option>
+          <mat-option *ngFor="let dato of data.arrayRs" [value]="dato.idRazonSocial"> {{dato.razonSocial}}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Ciudad</mat-label>
+        <mat-select  matNativeControl [(value)]="data.ciudad" required #selectCiudad>
+          <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
+          <mat-option *ngFor="let dato of data.arrayCiudad" [value]="dato.idCiudad"> {{dato.nombre}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="standard">
+          <mat-label>Latitud</mat-label>
+          <input matInput  [value]="data.latitud? data.latitud: '' " placeholder="Ingrese nombre corto" #latitud>   
+        </mat-form-field>
+      </div>
     <div>
       <mat-form-field appearance="standard">
-        <mat-label>Ip</mat-label>
-        <input matInput  [value]="data.ip? data.ip: '' " placeholder="Ingrese nombre corto" #nombre>   
+        <mat-label>Longitud</mat-label>
+        <input matInput  [value]="data.longitud? data.longitud: '' " placeholder="Ingrese nombre corto" #longitud>   
       </mat-form-field>
-  </div>
+    </div> 
   <div>
     <mat-form-field appearance="standard">
-      <mat-label>Ciudad</mat-label>
-      <input matInput  [value]="data.ciudad? data.ciudad: '' " placeholder="Ingrese nombre corto" #nombre>   
-    </mat-form-field>
-  </div>
-  <div>
-    <mat-form-field appearance="standard">
-      <mat-label>Servicio</mat-label>
-      <input matInput  [value]="data.servicio? data.servicio: '' " placeholder="Ingrese nombre corto" #nombre>   
+      <mat-label>Direccion</mat-label>
+      <input matInput  [value]="data.direccion? data.direccion: '' " placeholder="Ingrese nombre corto" #direccion>   
     </mat-form-field>
   </div>
   <div>
     <mat-form-field appearance="fill">
+      <mat-label>Plan</mat-label>
+      <mat-select  matNativeControl [(value)]="data.plan"required #selectPlan>
+        <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
+        <mat-option *ngFor="let dato of data.arrayPlan" [value]="dato.idPlan"> {{dato.nombre}}</mat-option>
+
+      </mat-select>
+    </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Dominio</mat-label>
+        <input matInput  [value]="data.dominio? data.dominio: '' " placeholder="Ingrese nombre corto" #dominio>   
+      </mat-form-field>
+    </div>
+   
+  <div>
+    <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
-      <mat-select  matNativeControl [(value)]="data.estatus "required #select>
+      <mat-select  matNativeControl [(value)]="data.estatus "required #selectEstatus>
         <mat-option value="0" disabled>Seleccione un estatus</mat-option>
         <mat-option value="1">activo</mat-option>
         <mat-option value="2">inactivo</mat-option>
@@ -49,7 +78,7 @@
     </div>
     <div id="botones">
       <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-      <button mat-button style="background-color:#3f51b5; color: white;"  cdkFocusInitial>
+      <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearServicio(nombre.value,selectRS.value,selectCiudad.value,latitud.value, longitud.value,direccion.value, dominio.value, selectEstatus.value,selectPlan.value)" cdkFocusInitial>
         <ng-container *ngIf="data.opc == false; else elseTemplate">
           Crear
         </ng-container>

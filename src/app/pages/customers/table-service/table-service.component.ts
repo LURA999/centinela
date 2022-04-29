@@ -9,6 +9,11 @@ import { ServiceService } from 'src/app/core/services/services.service';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewServiceComponent } from '../popup/new-service/new-service.component';
+import { CityService } from 'src/app/core/services/city.service';
+import { RsService } from 'src/app/core/services/rs.service';
+import { planService } from 'src/app/core/services/plan.service';
+import { responseService } from 'src/app/models/responseService.model';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-table-service',
@@ -25,13 +30,19 @@ export class TableServiceComponent implements OnInit {
   @Input() hijoService :string ="";
   id :number = this.rutaActiva.snapshot.params["id"];
   mayorNumero : number = 0
+  ultimoId : number = 0
+
+  arrayCiudades : string[] = []
+  arrayRS : string [] = []
+  arrayPlan : string [] = []
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns: string[] = ['id','servicio', 'rs', 'ip', 'nombre','ciudad','estatus','opciones'];
+  displayedColumns: string[] = [ 'identificador','nombre', 'rs','ciudad','estatus','opciones'];
   
   constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute
-    ,  private notificationService: NotificationService, private serviceService : ServiceService) { 
-    
-  }
+    ,  private notificationService: NotificationService, private serviceService : ServiceService,
+    private city : CityService, private rs : RsService, private plan : planService) {
+      this.inicio()
+    }
 
   ngOnChanges(changes: SimpleChanges): void {
     let c = changes['hijoService'];
@@ -50,19 +61,48 @@ export class TableServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.llenarTabla();
+
   }
+
+  async inicio(){
+    await this.ultimoID()
+    await this.todasCiudades();
+    await this.todasRS();
+    await this.todosPlan();
+    await this.llenarTabla()
+  }
+  async todasCiudades(){
+    await this.city.llamarCiudades().subscribe((resp:any) =>{
+      this.arrayCiudades = resp.container
+    });
+  }
+  async todasRS(){
+    await this.rs.llamarTodo(this.id).subscribe((resp:any) =>{
+      this.arrayRS = resp.container
+    });
+  }
+  async todosPlan(){
+    await this.plan.llamarTodo().subscribe((resp:any) =>{
+      this.arrayPlan = resp.container
+    });
+  }
+  async ultimoID() {
+    await this.serviceService.llamarService_maxId().subscribe((resp:responseService)=>{
+      this.ultimoId = resp.container[0].idServicio
+    })
+  }
+
   async llenarTabla(){
     this.cargando = false;             
-     await this.serviceService.llamarTodo(this.id).subscribe((resp:any) =>{
+     await this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{            
       if(resp.container.length !=0){
-      this.mayorNumero = resp.container[resp.container.length-1].idServicio;
+      this.mayorNumero = resp.container[0].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({
           id:resp.container[i].idServicio,
-          nombre:resp.container[i].nombre,
+          nombre:resp.container[i].servicio,
           rs:resp.container[i].razonSocial,
-          ip:"----",
+          identificador:resp.container[i].identificador,
           ciudad:resp.container[i].ciudad,
           servicio:resp.container[i].servicio,
           estatus:resp.container[i].estatus  
@@ -71,16 +111,17 @@ export class TableServiceComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
+    }else{
+      this.mayorNumero = this.ultimoId;      
     }
     })
     this.cargando = true;
-
   }
 
 
-  async eliminar(){
+  async eliminar(id : number){
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : this.id, opc: 4},
+      {data: {idCliente : id, opc: 4},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -88,7 +129,7 @@ export class TableServiceComponent implements OnInit {
       await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -124,19 +165,20 @@ export class TableServiceComponent implements OnInit {
      })
   }
 
-  insertar(){
+  insertar(){   
     let dialogRef  = this.dialog.open(NewServiceComponent,
-      {data: {opc : false },
+      {data: {opc: false, idNuevo: ++this.mayorNumero, arrayCiudad: this.arrayCiudades, arrayRs: this.arrayRS, arrayPlan:this.arrayPlan},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
 
      this.paginator2.firstPage();
+
      dialogRef.afterClosed().subscribe((result:any)=>{
        try{
-      if(result.mensaje.length > 0  ){
-        this.ELEMENT_DATA.unshift({id: ++this.mayorNumero,nombre:result.nombre,
-          rs:result.rs, ip:result.ip, ciudad:result.ciudad, servicio:result.servicio,  estatus: this.metodo.estatus(result.estatus)});
+      if(result.idServicio > 0  ){
+        this.ELEMENT_DATA.unshift({id: result.idServicio,nombre:result.nombre,
+          rs:result.rs, ip:result.ip, ciudad:result.ciudad, servicio:result.servicio, identificador: result.identificador, estatus: this.metodo.estatus(result.estatus)});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;

@@ -5,10 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { LogService } from 'src/app/core/services/log.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { UsuarioService } from 'src/app/core/services/usuario.service';
+import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
-import { NewLogComponent } from '../popup/new-log/new-log.component';
 
 @Component({
   selector: 'app-table-log',
@@ -27,9 +26,10 @@ export class TableLogComponent implements OnInit {
   id :number = this.rutaActiva.snapshot.params["id"];
   mayorNumero : number = 0
   metodo = new RepeteadMethods();
-
+  
   constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,  
-    private notificationService: NotificationService, private servicioLog : LogService) { }
+    private notificationService: NotificationService, private servicioLog : LogService
+   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     let c = changes['hijoLog'];
@@ -52,17 +52,16 @@ export class TableLogComponent implements OnInit {
 
   }
 
+  
   async llenarTabla(){
     this.cargando = false;             
-     await this.servicioLog.llamarTodo(this.id).subscribe((resp:any) =>{
-
+     await this.servicioLog.llamarTodo(this.id).subscribe((resp:responseService) =>{
       if(resp.container.length !=0){
-      this.mayorNumero = resp.container[resp.container.length-1].idLog;
+      this.mayorNumero = resp.container[0].idLog;
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({num: resp.container[i].idLog,
           tipo: resp.container[i].tipo,
           descripcion: resp.container[i].descripcion,
-          fecha:resp.container[i].fecha,
           usuario:resp.container[i].usuario
         })   
       }      

@@ -7,19 +7,20 @@
   <mat-dialog-content class="mat-typography">
     <form >
     <div>
-    <mat-form-field appearance="standard">
-      <mat-label>Empresa</mat-label>
-      <input matInput  [value]="data.empresa? data.empresa: '' " placeholder="Nombre de empresa" #empresa > 
-    </mat-form-field>
-    <mat-icon>title</mat-icon>  
-    </div>
-    <div>
         <mat-form-field appearance="standard">
-          <mat-label>Nombre corto</mat-label>
-          <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Ingrese nombre corto" #nombre>   
+          <mat-label>Razon social</mat-label>
+          <input matInput  [value]="data.razonSocial? data.razonSocial: '' " placeholder="Ingrese nombre corto" #nombre>   
         </mat-form-field>
         <mat-icon>title</mat-icon> 
     </div>
+    <mat-form-field floatLabel="always" appearance="legacy">
+      <mat-label>Ingrese una fecha</mat-label>
+      <input #fechaValue matInput 
+      [matDatepicker]="picker" (dateChange)="dateChange($event,fechaValue.value)"
+       autocomplete="new-text" placeholder="DD-MM-AAAA" >
+      <mat-datepicker-toggle matSuffix [for]="picker" ></mat-datepicker-toggle>
+      <mat-datepicker #picker ></mat-datepicker>
+    </mat-form-field>
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
@@ -33,8 +34,8 @@
     </div>
     <div id="botones">
       <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-      <button mat-button style="background-color:#3f51b5; color: white;"  cdkFocusInitial>
-        <ng-container *ngIf="data.opc == false; else elseTemplate">
+      <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearRs(nombre.value, fechaValue.value, select.value)" cdkFocusInitial>
+        <ng-container *ngIf="data.opc == false; else elseTemplate" >
           Crear
         </ng-container>
         <ng-template #elseTemplate>

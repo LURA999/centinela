@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ContactModel } from '../../models/contact.model';
 import { Observable } from 'rxjs';
+import { responseService } from 'src/app/models/responseService.model';
+import { ContactServiceModel } from 'src/app/models/contactService.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -28,19 +30,27 @@ export class ContactService {
   }
 
   /**Carpeta de servicios */
-  llamarContactos_tServicos(cve : number){        
-    return this.http.get(this.local+"Services/contacts.php?cve="+cve);
+  llamarContactos_tServicos(cve : number): Observable<responseService>{        
+    return this.http.get<responseService>(this.local+"Services/contacts.php?cve="+cve);
+  }
+  llamarContactos_tServicos_servicios(cve : number) : Observable<responseService>{        
+    return this.http.get<responseService>(this.local+"Services/contacts.php?cveCliente="+cve);
+  }
+  llamarContactos_maxId(): Observable<responseService>{        
+    return this.http.get<responseService>(this.local+"Services/contacts.php");
   }
 
-  deleteContactos_tServicos(){
-
+  deleteContactos_tServicos(cve : number): Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')
+    return this.http.patch<responseService>(this.local+"Services/contacts.php?cve="+cve, {headers});
   }
 
   updateServicios_tServicos(){
 
   }
 
-  insertServicios_tServicos() {
-  
+  insertServicios_tServicos(input :ContactServiceModel):Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')
+    return this.http.post<responseService>(this.local+"Services/contacts.php",input, {headers});
   }
 }

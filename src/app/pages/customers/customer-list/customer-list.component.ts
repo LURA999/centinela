@@ -239,7 +239,7 @@ export class CustomerListComponent implements OnInit {
   }
 
   /**para el loading */
-  hayClientes(){
+  hayClientes() : boolean{
     if(this.ELEMENT_DATA != 0 || this.cargando ==false){
       return true;
     }else{
@@ -247,14 +247,14 @@ export class CustomerListComponent implements OnInit {
     }
   }
   /**Ayudante de loading p */
-  hayClientes2(){
+  hayClientes2() : string{
     if(this.cargando !=false){
       return "table-row";
     }else{
       return "none";
     }
   }
-  async eliminar(id:number){
+  async eliminar(id:number) {
     let dialogRef = await this.dialog.open(DeleteComponent,
       {data: {idCliente : id, opc: 0},
       animation: { to: "bottom" },
@@ -280,7 +280,7 @@ export class CustomerListComponent implements OnInit {
 
   
   /**Funciones extras, para buscar indice del array y para los estatus */
-  buscandoIndice(id:number){
+  buscandoIndice(id:number) : number{
     let i = 0
     while (true) {
       const element = this.ELEMENT_DATA[i]["id"];
@@ -291,7 +291,7 @@ export class CustomerListComponent implements OnInit {
     }
   }
 
-  estatus(numero : number) {
+  estatus(numero : number) :string {
     if(numero == 1){
       return "activo"
     }else if(numero==2){
@@ -302,7 +302,7 @@ export class CustomerListComponent implements OnInit {
     }
 
   }
-  estatusNumero(numero : string) {
+  estatusNumero(numero : string) : string {
     switch(numero){
       case 'activo':
         return '1'
@@ -315,7 +315,7 @@ export class CustomerListComponent implements OnInit {
     }
   }
 
-   arrayRemove(arr : any, index : any) { 
+   arrayRemove(arr : any, index : number) : [] { 
     for( var i = 0; i < arr.length; i++){ 
     
       if ( arr[i]["id"] === arr[index]["id"]) { 

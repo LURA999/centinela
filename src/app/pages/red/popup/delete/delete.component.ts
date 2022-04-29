@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SegmentsService } from '../../../../core/services/segments.service';
 import { RepeaterService } from '../../../../core/services/repeater.service';
 import { ContactService } from '../../../../core/services/contact.service';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-delete',
@@ -23,15 +23,15 @@ export class DeleteComponent implements OnInit {
 
     switch(this.data.opc){
       case 1:       
-        await firstValueFrom(this.segmentsService.updateElimSegment(this.data.idSegmento)); 
+        await lastValueFrom(this.segmentsService.updateElimSegment(this.data.idSegmento)); 
         this.dialogRef.close('Se ha eliminado con exito');
         break;
       case 2:
-        await firstValueFrom(this.repeaterCliente.deleteRepetidor(this.data.idCliente));
+        await lastValueFrom(this.repeaterCliente.deleteRepetidor(this.data.idCliente));
         this.dialogRef.close('Se ha eliminado con exito');
         break;
       case 3:
-        await firstValueFrom(this.contactService.deleteContacto(this.data.idContacto));
+        await lastValueFrom(this.contactService.deleteContacto(this.data.idContacto));
         this.dialogRef.close('Se ha eliminado con exito');
         break;
     }
