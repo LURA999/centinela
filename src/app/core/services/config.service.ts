@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ConfigModel } from '../../models/config.model';
+import { ImageModel } from 'src/app/models/image.model';
+import { LogoModel } from 'src/app/models/logo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +15,25 @@ export class ConfigService {
   llamarEmpresa(){
     return this.http.get(this.local+"config.php");
   }
-
-  llamarRepitdor(cve : number){
-    return this.http.get(this.local+"config.php?id="+cve);
+  llamarImagen(){
+    return this.http.get(this.local+"config.php");
   }
 
-  deleteRepetidor(id:number){
-    return this.http.patch(this.local+"config.php?id="+id,{responseType: 'text'});
+
+  updateImage(input:ImageModel){
+    return this.http.patch(this.local+"config.php",input,{responseType: 'text'});
+  
+  }
+  updateLogo(input:LogoModel){
+    return this.http.patch(this.local+"config.php",input,{responseType: 'text'});
+  
   }
 
-  insertarRepetidor(input :ConfigModel){
+  insertarEmpresa(input :ConfigModel){
     return this.http.post(this.local+"config.php",input, {responseType:"text"});
   }
 
-  updateRepetidor(input :ConfigModel){
-    console.log(input)
+  updateEmpresa(input :ConfigModel){
     return this.http.patch(this.local+"config.php",input, {responseType:"text"});
   }
 

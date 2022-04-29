@@ -1,3 +1,10 @@
 export class ConfigModel {
-    img:string="";
+    nombre:string="";
+    direccion: string="";
+    telefono:string="";
+    rfc:string="";
+    rs:string="";
+    ciudad:string="";
+    correo:string="";
+    
 }

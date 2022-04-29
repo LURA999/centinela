@@ -14,6 +14,7 @@ import { right } from '@popperjs/core';
 import { EditComponent } from './edit/edit.component';
 import { EditLogoComponent } from './edit-logo/edit-logo.component';
 import {NgxPhotoEditorModule} from "ngx-photo-editor";
+import { NotifyConfigComponent } from './notify-config/notify-config.component';
 
 @NgModule({
   imports: [
@@ -78,6 +79,7 @@ import {NgxPhotoEditorModule} from "ngx-photo-editor";
                NotificationComponent,
                NuevaimagenComponent,
                EditLogoComponent,
+               NotifyConfigComponent,
              
   ],
   exports: [
