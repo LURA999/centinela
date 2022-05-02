@@ -13,11 +13,11 @@ import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewRsComponent } from '../popup/new-rs/new-rs.component';
 
 @Component({
-  selector: 'app-table-rs',
-  templateUrl: './table-rs.component.html',
-  styleUrls: ['./table-rs.component.css']
+  selector: 'app-table-equipment',
+  templateUrl: './table-equipment.component.html',
+  styleUrls: ['./table-equipment.component.css']
 })
-export class TableRsComponent implements OnInit {
+export class TableEquipmentComponent implements OnInit {
   ELEMENT_DATA : any = [ ]
   cargando : boolean = false;
   $sub = new Subscription()
@@ -149,3 +149,5 @@ export class TableRsComponent implements OnInit {
      }))
   }
 }
+
+

@@ -1,15 +1,17 @@
 
 export class  serviceModel  {
+    id:number=0
     nombre:string=""
-    rs:number=0
-    ciudad:number=0
+    idRazonSocial:number=0
+    rs : string = ""
+    cveCiudad:number=0
+    ciudadNombre: string = ""
     latitud: string=""
     longitud: string=""
     direccion: string=""
     dominio:string=""
-    idServicio:number=0
-    estatus:number=0
-    plan:number=0
+    cveEstatus:number=0
+    cvePlan:number=0
     identificador : string = ""
 
 }

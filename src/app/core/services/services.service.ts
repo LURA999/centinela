@@ -20,7 +20,9 @@ export class ServiceService {
         return this.http.patch(this.local+"Services/services.php?cve="+cve,cve);
     }
 
-    updateService(){
+    updateService(input : serviceModel): Observable<responseService>{
+        let headers = new HttpHeaders().set('Content-type','Application/json');
+        return this.http.patch<responseService>(this.local+"Services/services.php", input, {headers});
 
     }
 
@@ -31,6 +33,10 @@ export class ServiceService {
 
     llamarService_maxId(): Observable<responseService>{        
         return this.http.get<responseService>(this.local+"Services/services.php");
-      }
+    }
+
+    selectVistaServicio(identificador : string): Observable<responseService> {
+        return this.http.get<responseService>(this.local+"Services/services.php?identificador="+identificador);
+    }
     
 } 

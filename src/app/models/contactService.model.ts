@@ -7,7 +7,7 @@ export class ContactServiceModel {
     celular : string = ""
     telefono : string = ""
     puesto : string = ""
-    rol : number = 0
+    cveRol : number = 0
     cveContacto : number = 0
     cveServicio : number = 0
 

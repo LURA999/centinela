@@ -5,6 +5,8 @@ import { CustomerService } from 'src/app/core/services/customer.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
+import { RepeteadMethods } from '../../RepeteadMethods';
+
 
 @Component({
   selector: 'app-customer-company',
@@ -15,8 +17,10 @@ export class CustomerCompanyComponent implements OnInit {
   clickDownload: number = 0
   clickAdd : number = 0
   padre : string = ""
+  cargando : boolean = false;
   datos : Observable<responseService> | undefined;
-  
+   metodo  = new RepeteadMethods()
+   
   ELEMENT_DATA_TICKETS : any = [
     {
     id:"1",
@@ -55,7 +59,7 @@ export class CustomerCompanyComponent implements OnInit {
 
   dataSourceTickets = new MatTableDataSource(this.ELEMENT_DATA_TICKETS);
   displayedColumnsTickets: string[] = ['id', 'nombre'];
-  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute) { }
+  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute ) { }
 
   
   applyFilter(event: Event) {

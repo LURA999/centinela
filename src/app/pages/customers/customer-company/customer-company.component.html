@@ -16,21 +16,19 @@
                             <img src="https://png.pngtree.com/png-vector/20190704/ourlarge/pngtree-businessman-user-avatar-free-vector-png-image_1538405.jpg" style="width: 90px;" >
                         </div>
                         <div style="align-self: flex-end; margin-left: 15px;" *ngIf="datos | async as dato">
-                            <div class=""><b>Empresa:</b> {{dato.container[0].nombre}}</div>
-                            <div class=""><b>Estatus:</b> {{dato.container[0].estatus}}</div>
-                            <div class=""><b>Nombre corto:</b> {{dato.container[0].nombreCorto}}</div>
+                            <div class=""><b>Empresa:</b> {{dato.container[0].nombre ?  dato.container[0].nombre : 'No existe'}} </div>
+                            <div class=""><b>Estatus:</b> {{dato.container[0].estatus ?  this.metodo.estatus(dato.container[0].estatus) : 'No existe'}}</div>
                         </div>
                            
                         </div>
                     </mat-card-content>
                 </mat-card>
-                <mat-card>
+                <mat-card *ngIf="datos | async as dato">
                     <mat-card-content>
                         <div class="container">
                             <div class="row">
-                                <div class="col-md">Nombre corto: </div>
-                                <div class="col-md">Servicio estatus: </div>
-                                <div class="col-md">Telefono: </div>
+                                <div class="col-md">Nombre corto: {{dato.container[0].nombreCorto ?  dato.container[0].nombreCorto : 'No existe'}}</div>
+                                <div class="col-md">Telefono: ------ </div>
                             </div>
                         
                         </div>
@@ -56,7 +54,7 @@
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsTickets;"></tr>
                           </table>
                           <div class="preloader" hidden></div>
-                          <div class="existe" hidden>No se encontraron resultados... </div>
+                          <div class="existe" [hidden]="metodo.hayClientes(ELEMENT_DATA_TICKETS, cargando)">No se encontraron resultados... </div>
                           <mat-paginator  #paginator
                           [pageSize]="10"
                           [pageSizeOptions]="[5, 10, 20]"></mat-paginator>

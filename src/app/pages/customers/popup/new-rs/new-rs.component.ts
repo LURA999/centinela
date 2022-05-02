@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { lastValueFrom } from 'rxjs';
 import { RsService } from 'src/app/core/services/rs.service';
@@ -14,20 +15,22 @@ export class NewRsComponent implements OnInit {
 
   rsModel = new RsModel()
   metodo = new RepeteadMethods()
+ // fechaAlta : FormControl = this.data.fechaAlta 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private rs: RsService, public dialogRef: MatDialogRef<NewRsComponent>) { }
 
   ngOnInit(): void {
+    console.log(this.data);
+
   }
 
   async crearRs(nombre : string, fechaValue : string, select : number){  
+    
     this.rsModel.rs = nombre
-    
     this.rsModel.fecha = this.metodo.formatoFechaMysql(fechaValue)
+    this.rsModel.fechaEspanol = this.metodo.cambiarSeparadoresFecha(fechaValue,"/","-")
     this.rsModel.estatus = select
-    this.rsModel.cveCliente = this.data.idCliente 
-    console.log(this.rsModel);
-    
+    this.rsModel.cveCliente = this.data.idCliente     
     await lastValueFrom(this.rs.insertRS(this.rsModel));
     this.dialogRef.close(this.rsModel)
     

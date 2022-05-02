@@ -3,6 +3,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { RepeteadMethods } from '../../RepeteadMethods';
@@ -21,6 +22,7 @@ export class TableTicketsComponent implements OnInit {
   metodo = new RepeteadMethods()
   displayedColumns: string[] = ['num', 'departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente','opciones'];
   cargando : boolean = false;
+  $sub = new Subscription()
   @Input ()hijoRS :string = ""
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
@@ -49,10 +51,15 @@ export class TableTicketsComponent implements OnInit {
   descargar(){
 
   }
-  
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.$sub.unsubscribe()
+  }
   async llenarTabla(){
     this.cargando = false;             
-     await this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
+    this.$sub.add(await this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
       if(resp.container.length !=0){
       this.mayorNumero = resp.container[resp.container.length-1].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
@@ -71,7 +78,7 @@ export class TableTicketsComponent implements OnInit {
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
     }
-    })
+    }))
     this.cargando = true;
 
   }
@@ -83,7 +90,7 @@ export class TableTicketsComponent implements OnInit {
         height:"auto", width:"300px",
       });
       
-      await dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
           this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA))
@@ -95,7 +102,7 @@ export class TableTicketsComponent implements OnInit {
         })
       }
       }catch(Exception){}
-      });
+      }));
   }
   
   editar(){
@@ -106,7 +113,7 @@ export class TableTicketsComponent implements OnInit {
      });
 
      this.paginator2.firstPage();
-     dialogRef.afterClosed().subscribe((result:any)=>{
+     this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
        try{
       if(result.mensaje.length > 0  ){
         this.ELEMENT_DATA.unshift({num: ++this.mayorNumero, departamento:result.departamento, asunto:result.asunto,
@@ -122,7 +129,7 @@ export class TableTicketsComponent implements OnInit {
         })
        }
       }catch(Exception){}
-     })
+     }))
 
   }
 
@@ -134,7 +141,7 @@ export class TableTicketsComponent implements OnInit {
      });
 
      this.paginator2.firstPage();
-     dialogRef.afterClosed().subscribe((result:any)=>{
+     this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
        try{
       if(result.mensaje.length > 0  ){
         this.ELEMENT_DATA.unshift({num: ++this.mayorNumero, departamento:result.departamento, asunto:result.asunto,
@@ -149,7 +156,7 @@ export class TableTicketsComponent implements OnInit {
         })
        }
       }catch(Exception){}
-     })
+     }))
   }
 
   

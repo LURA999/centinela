@@ -1,5 +1,12 @@
 @import "~angular-notifier/styles.css";
 
+/**Estilo para el mensaje de todas las tablas, de si hay resultados o no*/
+.existe{
+  margin-top: 5%;
+  margin-bottom: 5%;
+  text-align: center;
+ }
+
 /**Para cargar la pagina completa*/
 #contenedor_carga{
   background-color: rgba(88, 88, 88, 60%);
@@ -42,11 +49,21 @@ color: white;
 }
 
 .mat-card-header2{
-
-  background-color: #f5f7f9; 
+  background: #f5f7f9; 
   padding-top: 2%;
 }
 
+mat-card-content{
+  padding: 15px;
+  padding-bottom: 0;
+}
+mat-expansion-panel-header {
+  padding-top: 20%;
+}
+mat-card-title{
+  margin-top: 10%;
+  text-align: justify;
+}
 
 @keyframes cambio{
   0%{margin-left: 0;}

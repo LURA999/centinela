@@ -16,13 +16,13 @@
     <div>
         <mat-form-field appearance="standard">
           <mat-label>Apellido Paterno</mat-label>
-          <input matInput  [value]="data.paterno? data.paterno: '' " placeholder="Ingrese apellido paterno" #paterno>   
+          <input matInput  [value]="data.apPaterno? data.apPaterno: '' " placeholder="Ingrese apellido paterno" #paterno>   
         </mat-form-field>
     </div>
     <div>
       <mat-form-field appearance="standard">
         <mat-label>Apellido Materno</mat-label>
-        <input matInput  [value]="data.materno? data.materno: '' " placeholder="Ingrese apellido materno" #materno>   
+        <input matInput  [value]="data.apMaterno? data.apMaterno: '' " placeholder="Ingrese apellido materno" #materno>   
       </mat-form-field>
   </div>
   <div>
@@ -45,19 +45,19 @@
     <div>
       <mat-form-field appearance="standard">
         <mat-label>Celular</mat-label>
-        <input matInput  [value]="data.celular? data.celular: '' " placeholder="Ingrese numero de celular" #celular>   
+        <input matInput  [value]="data.celular? data.celular: '' " placeholder="Ingrese numero de celular"  type="number" #celular>   
       </mat-form-field>
     </div>
     <div>
       <mat-form-field appearance="standard">
         <mat-label>Telefono</mat-label>
-        <input matInput  [value]="data.telefono? data.telefono: '' " placeholder="Ingrese numero de telefono" #telefono>   
+        <input matInput  [value]="data.telefono? data.telefono: '' " placeholder="Ingrese numero de telefono"  type="number" #telefono>   
       </mat-form-field>
     </div>
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Rol</mat-label>
-        <mat-select  matNativeControl [(value)]="data.rol" required #selectRol>
+        <mat-select  matNativeControl [(value)]="data.idRol" required #selectRol>
           <mat-option value="0" disabled>Seleccione un Rol</mat-option>
           <mat-option *ngFor="let dato of data.arrayRol" [value]="dato.idRol"> {{dato.nombre}}</mat-option>
         </mat-select>
@@ -72,7 +72,7 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Servicio</mat-label>
-        <mat-select  matNativeControl [(value)]="data.servicio" required #selectServicio>
+        <mat-select  matNativeControl [(value)]="data.idServicio" required #selectServicio>
           <mat-option value="0" disabled>Asigne un servicio</mat-option>
           <mat-option *ngFor="let dato of data.arrayServicios" [value]="dato.idServicio"> {{dato.nombre}}</mat-option>
         </mat-select>

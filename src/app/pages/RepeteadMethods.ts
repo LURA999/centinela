@@ -1,6 +1,7 @@
 import { formatDate } from "@angular/common";
 import { format } from "util";
 
+
 export class RepeteadMethods {
 
 	constructor(){ }
@@ -17,7 +18,9 @@ export class RepeteadMethods {
     }
   }
 
-  /**Sirve para mostrar o no el loading individual de cada tabla*/
+  /**Sirve para mostrar o no el loading individual de cada tabla
+   * INCLUYENDO EL MENSAJE de si hay resultados o no
+  */
   hayClientes( ELEMENT_DATA : any, cargando : any) : boolean{
     if(ELEMENT_DATA != 0 || cargando ==false){
       return true;
@@ -53,11 +56,15 @@ export class RepeteadMethods {
   }
 
   /**Transforma la representacion de del estatus de numero a letras, es muy usado, en esta proyecto */
-  estatus(numero : string) : string {
-   if(numero == '1'){
+  estatus(numero : number) : string {
+   if(numero == 1){
     return "activo"
    }else{
+     if(numero == 2){
     return "inactivo"
+     }else{
+       return "ausente"
+     }
    }
   }
 
@@ -83,11 +90,25 @@ export class RepeteadMethods {
     }
   }
 
-  /**es para insertar en el mysql fechas, con el formato correcto */
-  formatoFechaMysql(fecha: String) : string{
+
+  /**Sirve para insertar la fecha al mysql, datepicker en español al ingles */
+  formatoFechaMysql(fecha: string) : string{
     let splitted : string [] =  fecha.split("/");
     let fecha2 : Date=  new Date(splitted[1]+"-"+splitted[0]+"-"+splitted[2])
   return formatDate(fecha2,'yyyy-MM-dd','en-US');
   }
 
+  /**Sirve para representar la fecha que se trae del mysql a la pantalla */
+  formatoFechaEspanolMysql(fecha: string) : string{
+    let splitted : string [] =  fecha.split("-");
+    let fecha2 : Date=  new Date(splitted[0]+"-"+splitted[1]+"-"+splitted[2])    
+  return formatDate(fecha2,'dd-MM-yyyy','en-US');
+  }
+
+  /**Solo cambia la estetica, como es la diagonal y el guion*/
+  cambiarSeparadoresFecha(fecha: string,separador : string, remplazar : string) : string{
+    let splitted : string [] =  fecha.split(separador);
+    let fecha2 :string = (splitted[1]+remplazar+splitted[0]+remplazar+splitted[2])  
+  return formatDate(fecha2,'dd-MM-yyyy','en-US');
+  }
 }

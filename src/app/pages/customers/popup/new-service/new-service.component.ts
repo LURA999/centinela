@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { lastValueFrom } from 'rxjs';
-import { planService } from 'src/app/core/services/plan.service';
 import { ServiceService } from 'src/app/core/services/services.service';
 import { serviceModel } from '../../../../models/service.model';
 
@@ -14,29 +13,35 @@ import { serviceModel } from '../../../../models/service.model';
 export class NewServiceComponent implements OnInit {
 
   serviceM =  new serviceModel();
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private service : ServiceService,public dialogRef: MatDialogRef<NewServiceComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private service : ServiceService,
+  public dialogRef: MatDialogRef<NewServiceComponent>) { }
 
   ngOnInit(): void {
+      console.log(this.data);
       
   }
 
+
   crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string,direccion :string , dominio : string, selectEstatus : number, selectPlan : number){  
     this.serviceM.nombre = nombre;
-    this.serviceM.ciudad = selectCiudad;
+    this.serviceM.cveCiudad = selectCiudad;
+    this.serviceM.ciudadNombre = document.getElementById("selectCiudad")?.innerText+"";
     this.serviceM.latitud = latitud;
     this.serviceM.longitud = longitud;
     this.serviceM.direccion = direccion;
     this.serviceM.dominio = dominio;
-    this.serviceM.idServicio = this.data.idNuevo;
-    this.serviceM.estatus = selectEstatus;
-    this.serviceM.plan = selectPlan;
-    this.serviceM.rs = selectRS;
-    this.serviceM.identificador = (this.data.idNuevo+nombre[0]).padEnd(7,"0");
+    this.serviceM.cveEstatus = selectEstatus;
+    this.serviceM.cvePlan = selectPlan;
+    this.serviceM.idRazonSocial = selectRS;
+    this.serviceM.rs = document.getElementById("selectRs")?.innerText+"";
     
     if(this.data.opc == false){
       
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 && longitud.length > 0 && direccion.length > 0 && dominio.length > 0 
         && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){
+          this.serviceM.identificador = (this.data.idNuevo+nombre[0]).padEnd(7,"0");
+          this.serviceM.id = Number(this.data.idNuevo)+1;
+          
       lastValueFrom(this.service.insertService(this.serviceM));
       this.dialogRef.close(this.serviceM)
         }else{
@@ -44,7 +49,12 @@ export class NewServiceComponent implements OnInit {
         }
 
     }else{
-
+      this.serviceM.identificador = this.data.identificador;
+      this.serviceM.id = this.data.idServicio
+      console.log(this.serviceM);
+      
+      lastValueFrom(this.service.updateService(this.serviceM));
+      this.dialogRef.close(this.serviceM)
     }
   }
 

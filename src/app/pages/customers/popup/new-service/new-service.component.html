@@ -9,22 +9,22 @@
     <div>
     <mat-form-field appearance="standard">
       <mat-label>Nombre</mat-label>
-      <input matInput  [value]="data.nombre? data.nombre: '' " placeholder="Nombre de empresa" #nombre > 
+      <input matInput  [value]="data.servicio? data.servicio: '' " placeholder="Nombre de empresa" #nombre > 
     </mat-form-field>
     </div>
     <div>
       <mat-form-field appearance="fill">
         <mat-label>R.S.</mat-label>
-        <mat-select  matNativeControl [(value)]="data.rs" required #selectRS>
+        <mat-select  id="selectRs" matNativeControl [(value)]="data.idRazonSocial" required #selectRS>
           <mat-option value="0" disabled>Seleccione una razon social</mat-option>
-          <mat-option *ngFor="let dato of data.arrayRs" [value]="dato.idRazonSocial"> {{dato.razonSocial}}</mat-option>
+          <mat-option *ngFor="let dato of data.arrayRS" [value]="dato.idRazonSocial"> {{dato.razonSocial}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Ciudad</mat-label>
-        <mat-select  matNativeControl [(value)]="data.ciudad" required #selectCiudad>
+        <mat-select id="selectCiudad" matNativeControl [(value)]="data.cveCiudad"  required #selectCiudad>
           <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
           <mat-option *ngFor="let dato of data.arrayCiudad" [value]="dato.idCiudad"> {{dato.nombre}}</mat-option>
         </mat-select>
@@ -51,7 +51,7 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Plan</mat-label>
-      <mat-select  matNativeControl [(value)]="data.plan"required #selectPlan>
+      <mat-select  matNativeControl [(value)]="data.cvePlan"required #selectPlan>
         <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
         <mat-option *ngFor="let dato of data.arrayPlan" [value]="dato.idPlan"> {{dato.nombre}}</mat-option>
 
@@ -68,7 +68,7 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
-      <mat-select  matNativeControl [(value)]="data.estatus "required #selectEstatus>
+      <mat-select  matNativeControl [(value)]="data.cveEstatus "required #selectEstatus>
         <mat-option value="0" disabled>Seleccione un estatus</mat-option>
         <mat-option value="1">activo</mat-option>
         <mat-option value="2">inactivo</mat-option>

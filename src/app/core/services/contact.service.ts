@@ -45,12 +45,17 @@ export class ContactService {
     return this.http.patch<responseService>(this.local+"Services/contacts.php?cve="+cve, {headers});
   }
 
-  updateServicios_tServicos(){
-
+  llamarContactos_tContactos_cliente(cve : number, identificador : string) : Observable<responseService>{ 
+    return this.http.get<responseService>(this.local+"Services/contacts.php?cveCliente="+cve+"&identificador="+identificador);
   }
 
   insertServicios_tServicos(input :ContactServiceModel):Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')
     return this.http.post<responseService>(this.local+"Services/contacts.php",input, {headers});
+  }
+
+  updateContacto_tServicio(input :ContactServiceModel):Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')
+    return this.http.patch<responseService>(this.local+"Services/contacts.php",input, {headers});
   }
 }

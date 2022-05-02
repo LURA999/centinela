@@ -18,7 +18,8 @@ import { NewLogComponent } from './popup/new-log/new-log.component';
 import { NewContactComponent } from './popup/new-contact/new-contact.component';
 import { NewRsComponent } from './popup/new-rs/new-rs.component';
 import { NewServiceComponent } from './popup/new-service/new-service.component';
-import { VistaServicioComponent } from './vista-servicio/vista-servicio.component';
+import { ViewServiceComponent } from './view-service/view-service.component';
+import { TableEquipmentComponent } from './table-equipment/table-equipment.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import { VistaServicioComponent } from './vista-servicio/vista-servicio.componen
     NewContactComponent,
     NewRsComponent,
     NewServiceComponent,
-    VistaServicioComponent
+    ViewServiceComponent,
+    TableEquipmentComponent
   ],
   exports: [
     CustomerListComponent,

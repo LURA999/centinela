@@ -21,7 +21,7 @@ export class RsService {
         return this.http.patch<responseService>(this.local+"Services/rs.php?cve="+cve, {headers});
     }
 
-    updateRS(input : RsModel){
+    updateRS(input : RsModel):Observable<responseService>{
         let headers = new HttpHeaders().set('Content-type','Application/json');
         return this.http.patch<responseService>(this.local+"Services/rs.php",input, {headers});
     }
@@ -30,4 +30,8 @@ export class RsService {
         let headers = new HttpHeaders().set('Content-type','Application/json');
         return this.http.post<responseService>(this.local+"Services/rs.php",input, {headers});
     }
+
+    llamarSoloUno(cve : number):Observable<responseService>{
+        return this.http.get<responseService>(this.local+"city.php?cve2="+cve);
+      }
 } 
