@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { Observable, Observer, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Router } from '@angular/router';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
     selector: 'app-layout',
@@ -10,21 +11,28 @@ import { Router } from '@angular/router';
     styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
-
+    time = new Observable<string>((observer: Observer<string>) => {
+        setInterval(() => observer.next(
+            new Date().toTimeString().split(" ")[0]), 1000);
+    });    
+    
     private _mobileQueryListener: () => void;
     mobileQuery: MediaQueryList;
     showSpinner: boolean = false;
     userName: string = "";
     isAdmin: boolean = false;
     private autoLogoutSubscription: Subscription = new Subscription;
+logo:any
+
 
     constructor( 
        private auth : AuthService,
         private changeDetectorRef: ChangeDetectorRef,
         private media: MediaMatcher,
         private router : Router,
+        private configservice:ConfigService,
       ) {
-
+Image
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         // tslint:disable-next-line: deprecation
@@ -33,7 +41,15 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit(): void {
+       
+  
+    
+        this.configservice.llamarEmpresa().toPromise().then( (result : any) =>{
             
+            this.logo=result.container[0]["logo"]
+             })
+             ;     
+
     }
 
     acceso(){
@@ -67,8 +83,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
     
-    cambiarimagen(){
-        return sessionStorage.getItem("src")
-    }
+   
+    
    
 }

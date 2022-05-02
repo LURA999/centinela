@@ -13,7 +13,7 @@ export class NotifyService {
   llamarNotify(){
     
     
-    return this.http.get(this.local+"notify.php");
+    return this.http.get(this.local+"Config/notify.php");
   }
 
   
@@ -23,7 +23,7 @@ export class NotifyService {
   }
 
   insertarNotify(input :NotifyModel){
-    return this.http.post(this.local+"notify.php",input, {responseType:"text"});
+    return this.http.post(this.local+"Config/notify.php",input, {responseType:"text"});
   }
 
   

@@ -65,18 +65,7 @@ export class NotificationComponent implements OnInit {
     });
       
   }
-  
-  
 
-  
-   elimnotify(){
-
-
-    
-  
-
-
-  }
           
     
   

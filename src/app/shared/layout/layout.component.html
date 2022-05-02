@@ -6,12 +6,27 @@
     </button>
 
     <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
-    <img [src]="cambiarimagen()">
+    <img  [src]="logo">
     </a>
-
     <span class="navbar-spacer"></span>
 
-
+    <!--
+ <mat-form-field class="search" >
+      <input type="text" matInput placeholder="Buscar">
+      <mat-icon >search</mat-icon>
+      </mat-form-field>
+    <div class="time-date">      
+      <div nz-col nzSpan="4">
+        <div  nz-row>
+             <p style="margin-top:20px;color: #fff;font-size: 19px;font-weight: 500;">    
+              <mat-icon class="clock">schedule</mat-icon>
+              {{time | async}}</p>
+        </div>
+        <div nz-row>
+        </div>
+    </div>
+    </div>
+   -->
     <button mat-button [matMenuTriggerFor]="userMenu">
       <mat-icon>person</mat-icon>
       <span fxShow fxHide.xs>
@@ -26,7 +41,13 @@
 
       </a>
 
-      <a mat-menu-item (click)="salir()"  routerLinkActive="active" >
+      <a mat-menu-item [routerLink]="['/admin/configuracion/notification']">
+        <mat-icon>notifications</mat-icon>
+        <span>Notificaciones</span>
+
+      </a>
+
+      <a mat-menu-item (click)="salir()"  >
         <mat-icon>exit_to_app</mat-icon>
         <span>Cerrar sesion</span>
       </a>
@@ -35,37 +56,10 @@
 
 
 
-    <button mat-button [matMenuTriggerFor]="adjustMenu">
+    <button mat-button [routerLink]="['/admin/configuracion/edit']">
       <mat-icon>settings</mat-icon>
-      <span fxShow fxHide.xs>
-      </span>
     </button>
-    <mat-menu #adjustMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
-
-      <a mat-menu-item [routerLink]="['/admin/configuracion/smtp']">
-        <mat-icon>dns</mat-icon>
-        <span>Servidor SMTP</span>
-
-      </a>
-
-      <a mat-menu-item [routerLink]="['/admin/configuracion/date']">
-        <mat-icon>schedule</mat-icon>
-        <span>Fecha y Hora</span>
-      </a>
-      <a mat-menu-item [routerLink]="['/admin/configuracion/notification']" >
-        <mat-icon>notifications</mat-icon>
-        <span>Notificaciones</span>
-      </a>
-      <a mat-menu-item [routerLink]="['/admin/configuracion/edit']" >
-        <mat-icon>brush</mat-icon>
-        <span>Editar logo</span>
-      </a>
-      <a mat-menu-item [routerLink]="['/admin/configuracion/edit']">
-        <mat-icon>edit</mat-icon>
-        <span>Datos de la empresa</span>
-      </a>
-
-    </mat-menu>
+    
 
 
   </mat-toolbar>

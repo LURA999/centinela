@@ -31,7 +31,7 @@ export class IpService {
     }
     
     ping(ip : string) {
-        return this.http.get(this.local+"ping.php?ip="+ip)
+        return this.http.get(this.local+"Config/ping.php?ip="+ip)
     }
 
 }

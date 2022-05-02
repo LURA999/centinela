@@ -48,6 +48,7 @@
     "net": "^1.0.2",
     "ng-dialog-animation": "^9.0.4",
     "ngx-logger": "^5.0.9",
+    "ngx-photo-editor": "^0.3.8",
     "ngx-toastr": "^14.2.2",
     "os": "^0.1.2",
     "ping-wrapper": "^0.0.3",

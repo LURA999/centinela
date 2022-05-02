@@ -144,6 +144,17 @@ img{
   height: 3vw;
 }
 
+.clock{
+  font-size: 1.7vw;
+}
+.time-date{
+margin-left: 2vw;
+}
+.search{
+margin-left: 20%; 
+
+}
+
 
 
 
