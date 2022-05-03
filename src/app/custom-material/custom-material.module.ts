@@ -36,7 +36,7 @@ import { SelectCheckAllComponent } from './select-check-all/select-check-all.com
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 
-export const MY_FORMATS = {
+/*export const MY_FORMATS = {
   parse: {
     dateInput: 'DD MMM YYYY',
   },
@@ -44,9 +44,9 @@ export const MY_FORMATS = {
     dateInput: 'DD MMM YYYY',
     monthYearLabel: 'MMM YYYY',
     dateA11yLabel: 'LL',
-   monthYearA11yLabel: 'MMMM YYYY'
-  }*/
-};
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
+};*/
 
 @NgModule({
   imports: [
@@ -70,13 +70,13 @@ export const MY_FORMATS = {
     MatButtonToggleModule, MatSlideToggleModule, MatBadgeModule, MatCheckboxModule,
     MatExpansionModule, SelectCheckAllComponent, DragDropModule, MatSortModule
   ],
-  providers: [
-  /*  {
+  /*providers: [
+    {
       provide: MAT_DATE_FORMATS,
       useValue: MY_FORMATS
-    },*/
+    },
     { provide: LOCALE_ID, useValue: 'es-MX' }
-  ],
+  ],*/
   declarations: [SelectCheckAllComponent]
 })
 export class CustomMaterialModule {

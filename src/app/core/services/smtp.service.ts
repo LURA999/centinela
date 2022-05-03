@@ -19,7 +19,7 @@ export class SmtpService {
   
 
   updateSmtp(input:SmtpModel){
-    return this.http.patch(this.local+"Config/smtp.php?",input,{responseType: 'text'});
+    return this.http.patch(this.local+"smtp.php",input,{responseType: 'text'});
   }
 
   insertarNotify(input :SmtpModel){

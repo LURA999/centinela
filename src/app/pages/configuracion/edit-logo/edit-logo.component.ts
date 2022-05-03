@@ -15,6 +15,7 @@ import { NotifierService } from 'angular-notifier';
   styleUrls: ['./edit-logo.component.css']
 })
 export class EditLogoComponent implements OnInit {
+
   private readonly notifier: NotifierService;
 
   [x: string]: any;
@@ -52,6 +53,9 @@ export class EditLogoComponent implements OnInit {
     this.notifier.notify('success', 'Logo actualizado');
 
   }
+  
+
+  
 
   
 }
