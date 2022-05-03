@@ -9,6 +9,8 @@ import { TicketService } from 'src/app/core/services/tickets.service';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewTicketComponent } from '../popup/new-ticket/new-ticket.component';
+import { Workbook } from 'exceljs'; 
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-table-tickets',
@@ -49,7 +51,34 @@ export class TableTicketsComponent implements OnInit {
   }
 
   descargar(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Id","Departamento","Asunto","Servicio","Fecha cerrada", "Fecha abierta", "Estado", "Agente"]
+    worksheet.addRow(header);
+  
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
 
+        temp.push(this.ELEMENT_DATA[x1]["num" ])
+        temp.push(this.ELEMENT_DATA[x1]["departamento"])
+        temp.push(this.ELEMENT_DATA[x1]["asunto"])
+        temp.push(this.ELEMENT_DATA[x1]["servicio"])
+        temp.push(this.ELEMENT_DATA[x1]["fechaCerrada"])
+        temp.push(this.ELEMENT_DATA[x1]["fechaAbierta"])
+        temp.push(this.ELEMENT_DATA[x1]["estado"])
+        temp.push(this.ELEMENT_DATA[x1]["agente"])
+      worksheet.addRow(temp)
+    }
+
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
 
   ngOnDestroy(): void {

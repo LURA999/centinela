@@ -11,6 +11,8 @@ import { RsModel } from 'src/app/models/rs.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewRsComponent } from '../popup/new-rs/new-rs.component';
+import { Workbook } from 'exceljs'; 
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-table-rs',
@@ -52,7 +54,31 @@ export class TableRsComponent implements OnInit {
   }
 
   async descargar(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Id","Razon Social","Fecha alta","Estatus"]
+    worksheet.addRow(header);
+  
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
 
+        temp.push(this.ELEMENT_DATA[x1]["id" ])
+        temp.push(this.ELEMENT_DATA[x1]["rs"])
+        temp.push(this.ELEMENT_DATA[x1]["fechaAlta"])
+        temp.push(this.ELEMENT_DATA[x1]["estatus"])
+      
+      worksheet.addRow(temp)
+    }
+
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
   async llenarTabla(){
     this.cargando = false;             
@@ -101,26 +127,30 @@ export class TableRsComponent implements OnInit {
     }));
   }
 
-  editar(rs:string,fechaAlta:string,estatus:number){
+  editar(id:number,rs:string,fechaAlta:string,estatus:number){  
     let dialogRef  = this.dialog.open(NewRsComponent,
-      {data: {opc : true, rs:rs,fechaAlta:fechaAlta,cveEstatus:estatus },
+      {data: {opc : true,id : id ,rs:rs,fechaAlta:this.metodo.formatoFechaMysql(fechaAlta),cveEstatus:estatus },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
 
      this.paginator2.firstPage();
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
+     this.$sub.add(dialogRef.afterClosed().subscribe((result:RsModel)=>{
        try{
-      if(result.mensaje.length > 0  ){
-        this.ELEMENT_DATA.unshift({id: ++this.mayorNumero,rs:result.rs, fechaAlta:result.fechaAlta, estatus:this.metodo.estatus(result.estatus)});
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.cveCliente,this.ELEMENT_DATA)
+        ,1,{id:result.cveCliente,
+          rs:result.rs,
+          fechaAlta:this.metodo.formatoFechaEspanolMysql(result.fecha),
+          cveEstatus :result.estatus,
+          estatus:this.metodo.estatus(result.estatus)
+        });
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-       }
+       
       }catch(Exception){}
      }))
   }

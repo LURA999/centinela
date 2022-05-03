@@ -9,9 +9,9 @@ import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { CustomerService } from './../../../core/services/customer.service';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NotificationService } from './../../../core/services/notification.service';
+import { MatSort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
 import { Workbook } from 'exceljs'; 
-import { MatSort } from '@angular/material/sort';
 import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
 

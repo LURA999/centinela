@@ -19,7 +19,7 @@
                 <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item (click)="eliminar(element.id)"><mat-icon>delete</mat-icon>Eliminar</button> 
-                    <button mat-menu-item (click)="editar(element.rs,element.fechaAlta,element.cveEstatus)"><mat-icon>settings</mat-icon>Editar</button>  
+                    <button mat-menu-item (click)="editar(element.id,element.rs,element.fechaAlta,element.cveEstatus)"><mat-icon>settings</mat-icon>Editar</button>  
                 </mat-menu>
             </td>
         </ng-container>

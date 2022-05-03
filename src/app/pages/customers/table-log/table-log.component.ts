@@ -8,6 +8,8 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
+import { Workbook } from 'exceljs'; 
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-table-log',
@@ -49,7 +51,30 @@ export class TableLogComponent implements OnInit {
   }
 
   descargar(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Id","Tipo","Descripcion","Usuario"]
+    worksheet.addRow(header);
+  
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
+        temp.push(this.ELEMENT_DATA[x1]["num" ])
+        temp.push(this.ELEMENT_DATA[x1]["tipo" ])
+        temp.push(this.ELEMENT_DATA[x1]["descripcion"])
+        temp.push(this.ELEMENT_DATA[x1]["usuario"])
+      
+      worksheet.addRow(temp)
+    }
 
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
 
   

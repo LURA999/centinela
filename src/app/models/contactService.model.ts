@@ -10,5 +10,7 @@ export class ContactServiceModel {
     cveRol : number = 0
     cveContacto : number = 0
     cveServicio : number = 0
+    rol : string = ""
+    servicio : string =""
 
 }

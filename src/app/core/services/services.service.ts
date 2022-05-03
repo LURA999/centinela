@@ -35,6 +35,10 @@ export class ServiceService {
         return this.http.get<responseService>(this.local+"Services/services.php");
     }
 
+    llamarService_maxIdFalso(identificador : string): Observable<responseService>{        
+        return this.http.get<responseService>(this.local+"Services/services.php?identificadorUltimo="+identificador);
+    }
+    
     selectVistaServicio(identificador : string): Observable<responseService> {
         return this.http.get<responseService>(this.local+"Services/services.php?identificador="+identificador);
     }

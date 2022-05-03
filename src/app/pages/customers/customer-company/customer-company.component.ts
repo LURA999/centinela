@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import {ThemePalette} from '@angular/material/core';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 
@@ -17,9 +17,11 @@ export class CustomerCompanyComponent implements OnInit {
   clickDownload: number = 0
   clickAdd : number = 0
   padre : string = ""
+  nombreEmpresa : string  = ""
   cargando : boolean = false;
-  datos : Observable<responseService> | undefined;
-   metodo  = new RepeteadMethods()
+  datos : any;
+  metodo  = new RepeteadMethods()
+  load : boolean = false
    
   ELEMENT_DATA_TICKETS : any = [
     {
@@ -59,9 +61,11 @@ export class CustomerCompanyComponent implements OnInit {
 
   dataSourceTickets = new MatTableDataSource(this.ELEMENT_DATA_TICKETS);
   displayedColumnsTickets: string[] = ['id', 'nombre'];
-  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute ) { }
 
+  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute ) { 
+  }
   
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceTickets.filter = filterValue.trim().toLowerCase();
@@ -69,10 +73,16 @@ export class CustomerCompanyComponent implements OnInit {
 
   ngOnInit(): void {
     this.datosCliente()
+
   }
 
-  datosCliente() {
-    this.datos = this.serviceCustomer.buscarCliente(this.id)
+  async datosCliente() {
+    try{
+     await this.serviceCustomer.buscarCliente(this.id).subscribe((resp : responseService) =>{
+      this.datos = resp.container[0];
+      this.load = true;
+    })
+  }catch(Exception){}
   }
 
   eventoTab(){

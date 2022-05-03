@@ -14,6 +14,8 @@ import { planService } from 'src/app/core/services/plan.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { Subscription } from 'rxjs';
 import { serviceModel } from 'src/app/models/service.model';
+import { Workbook } from 'exceljs'; 
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-table-service',
@@ -29,6 +31,8 @@ export class TableServiceComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;  
   @Input() hijoService :string ="";
+  @Input() nombreEmpresa :string ="";
+
   id :number = this.rutaActiva.snapshot.params["id"];
   mayorNumero : number = 0
   ultimoId : number = 0
@@ -36,14 +40,14 @@ export class TableServiceComponent implements OnInit {
   nombreCi : string = ""
   arrayCiudades : any[] = []
   arrayRS : string [] = []
-  arrayPlan : string [] = []
+  arrayPlan : any [] = []
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = [ 'identificador','nombre', 'rs','ciudad','estatus','opciones'];
   
   constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute
     ,  private notificationService: NotificationService, private serviceService : ServiceService,
     private city : CityService, private rs : RsService, private plan : planService) {
-      this.inicio()
+      this.inicio();
     }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -56,10 +60,42 @@ export class TableServiceComponent implements OnInit {
       this.insertar()
     }
   }
+    
   }
 
   descargar(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Id","Nombre","Razon Social","Latitud", "Longitud", "Dominio","Direccion","Ciudad","Identificador","Servicio","Plan", "Estatus"]
+    worksheet.addRow(header);
+  
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
 
+        temp.push(this.ELEMENT_DATA[x1]["id" ])
+        temp.push(this.ELEMENT_DATA[x1]["nombre"])
+        temp.push(this.ELEMENT_DATA[x1]["rs"])
+        temp.push(this.ELEMENT_DATA[x1]["latitud"])
+        temp.push(this.ELEMENT_DATA[x1]["longitud"])
+        temp.push(this.ELEMENT_DATA[x1]["dominio"])
+        temp.push(this.ELEMENT_DATA[x1]["direccion"])
+        temp.push(this.ELEMENT_DATA[x1]["ciudad"])
+        temp.push(this.ELEMENT_DATA[x1]["identificador"])
+        temp.push(this.ELEMENT_DATA[x1]["servicio"])
+        temp.push(this.ELEMENT_DATA[x1]["plan"])
+        temp.push(this.ELEMENT_DATA[x1]["estatus"])
+      worksheet.addRow(temp)
+    }
+
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
 
   ngOnDestroy(): void {
@@ -67,16 +103,19 @@ export class TableServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+//    console.log(this.ultimoIdFalso);
+    
   }
 
   async inicio(){
+  //  await this.ultimoIDFalso();
     await this.ultimoID()
     await this.todasCiudades();
     await this.todasRS();
     await this.todosPlan();
-    await this.llenarTabla()
+    await this.llenarTabla()    
   }
+
   async todasCiudades(){
     this.$sub.add(await this.city.llamarCiudades().subscribe((resp:any) =>{
       this.arrayCiudades = resp.container      
@@ -106,7 +145,6 @@ export class TableServiceComponent implements OnInit {
     this.cargando = false;             
     this.$sub.add(await this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{               
       if(resp.container.length !=0){
-        
       this.mayorNumero = resp.container[0].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({
@@ -121,9 +159,10 @@ export class TableServiceComponent implements OnInit {
           cveEstatus :  resp.container[i].estatus,
           cvePlan :  resp.container[i].cvePlan,
           cveCiudad :  resp.container[i].cveCiudad,
-          identificador:resp.container[i].identificador,
+          identificador:((resp.container[i].identificador)+""+(resp.container[i].contador.padStart(5,"0"))),
           ciudad:resp.container[i].ciudad,
           servicio:resp.container[i].servicio,
+          plan:resp.container[i].plan,
           estatus:this.metodo.estatus(resp.container[i].estatus)  
 
         })   
@@ -166,17 +205,30 @@ export class TableServiceComponent implements OnInit {
     servicio : string){
  
     let dialogRef  = this.dialog.open(NewServiceComponent,
-      {data: {opc : true,idServicio: idServicio, arrayCiudad:this.arrayCiudades, arrayPlan:this.arrayPlan, arrayRS:this.arrayRS, 
-        servicio : servicio, idRazonSocial:idRazonSocial, latitud:latitud, 
-        longitud:longitud,direccion:direccion,cvePlan:cvePlan,dominio:dominio, cveCiudad:cveCiudad,cveEstatus : cveEstatus
-      ,identificador : identificador, nombre:nombre, rs:rs },
+      {data: {opc : true,
+        idEmpresa: this.id,
+        Empresa: this.nombreEmpresa[0],
+        idServicio: idServicio, 
+        arrayCiudad:this.arrayCiudades, 
+        arrayPlan:this.arrayPlan,
+        arrayRS:this.arrayRS, 
+        servicio : servicio, 
+        idRazonSocial:idRazonSocial, 
+        latitud:latitud, 
+        longitud:longitud,
+        direccion:direccion,
+        cvePlan:cvePlan,
+        dominio:dominio,
+        cveCiudad:cveCiudad,
+        cveEstatus : cveEstatus
+        ,identificador : identificador, 
+        nombre:nombre, 
+        rs:rs },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
      this.paginator2.firstPage();
-     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{
-       console.log(result);
-       
+     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{       
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA)
         ,1,{
@@ -194,6 +246,7 @@ export class TableServiceComponent implements OnInit {
           identificador:result.identificador,
           ciudad:result.ciudadNombre,
           servicio:result.servicio,
+          plan:result.plan,
           estatus:this.metodo.estatus(result.cveEstatus)  
         });
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
@@ -209,7 +262,8 @@ export class TableServiceComponent implements OnInit {
 
  async insertar(){   
     let dialogRef  = this.dialog.open(NewServiceComponent,
-      {data: {opc: false, idNuevo: this.mayorNumero, arrayCiudad: this.arrayCiudades, arrayRS: this.arrayRS, arrayPlan:this.arrayPlan},
+      {data: {opc: false,idEmpresa: this.id,
+        Empresa: this.nombreEmpresa[0] ,idNuevo: this.mayorNumero, arrayCiudad: this.arrayCiudades, arrayRS: this.arrayRS, arrayPlan:this.arrayPlan},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -220,6 +274,7 @@ export class TableServiceComponent implements OnInit {
        try{
       if(result.id > 0  ){
         this.ELEMENT_DATA.unshift({
+          
           id: result.id,
           nombre:result.nombre,
           servicio:result.nombre,
@@ -235,6 +290,7 @@ export class TableServiceComponent implements OnInit {
           direccion :  result.direccion,
           cvePlan : result.cvePlan,
           cveCiudad : result.cveCiudad,
+          plan:result.plan
         });
           
         this.mayorNumero = result.id;

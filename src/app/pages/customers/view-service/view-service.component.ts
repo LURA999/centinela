@@ -21,11 +21,7 @@ export class ViewServiceComponent implements OnInit {
   
 
   ngOnInit(): void {
-    console.log(this.idCliente);
-    console.log(this.identificador);
-    this.servicio = this.service.selectVistaServicio(this.identificador)
-    
-    
+    this.servicio = this.service.selectVistaServicio(this.identificador.slice(0,2))    
   }
 
 }

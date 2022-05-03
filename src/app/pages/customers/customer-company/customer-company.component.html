@@ -1,7 +1,7 @@
 <div fxLayout="row" style="margin: 1%;" fxLayoutAlign="center none">
 
     <div fxFlex="100%">
-    <mat-card >
+    <mat-card *ngIf="load">
         <div class="col row " >
             <div class="col-md-8 " >
                 <mat-card class="mat-card2">
@@ -15,19 +15,19 @@
                         <div >
                             <img src="https://png.pngtree.com/png-vector/20190704/ourlarge/pngtree-businessman-user-avatar-free-vector-png-image_1538405.jpg" style="width: 90px;" >
                         </div>
-                        <div style="align-self: flex-end; margin-left: 15px;" *ngIf="datos | async as dato">
-                            <div class=""><b>Empresa:</b> {{dato.container[0].nombre ?  dato.container[0].nombre : 'No existe'}} </div>
-                            <div class=""><b>Estatus:</b> {{dato.container[0].estatus ?  this.metodo.estatus(dato.container[0].estatus) : 'No existe'}}</div>
+                        <div style="align-self: flex-end; margin-left: 15px;" >
+                            <div class=""><b>Empresa:</b> {{datos.nombre }}  </div>
+                            <div class=""><b>Estatus:</b> {{metodo.estatus(datos.estatus)}}</div>
                         </div>
                            
                         </div>
                     </mat-card-content>
                 </mat-card>
-                <mat-card *ngIf="datos | async as dato">
+                <mat-card >
                     <mat-card-content>
                         <div class="container">
                             <div class="row">
-                                <div class="col-md">Nombre corto: {{dato.container[0].nombreCorto ?  dato.container[0].nombreCorto : 'No existe'}}</div>
+                                <div class="col-md">Nombre corto: {{datos.nombreCorto}}</div>
                                 <div class="col-md">Telefono: ------ </div>
                             </div>
                         
@@ -89,7 +89,7 @@
             <mat-tab-group (click)="eventoTab()">
                 <mat-tab label="Servicios" >
                     <ng-template matTabContent>
-                        <app-table-service [hijoService]=padre></app-table-service>
+                        <app-table-service [hijoService]=padre [nombreEmpresa]=datos.nombre  ></app-table-service>
                     </ng-template>
                 </mat-tab> 
                 <mat-tab label="Tickets">

@@ -17,14 +17,14 @@
       <mat-label>Ingrese una fecha</mat-label>
       <input #fechaValue matInput 
       [matDatepicker]="picker" 
-       autocomplete="new-text" placeholder="DD-MM-AAAA" [value]="data.fechaAlta">
+       autocomplete="new-text" placeholder="DD-MM-AAAA" [value]="data.fechaAlta? data.fechaAlta: ''">
       <mat-datepicker-toggle matSuffix [for]="picker" ></mat-datepicker-toggle>
       <mat-datepicker #picker ></mat-datepicker>
     </mat-form-field>
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
-      <mat-select  matNativeControl [(value)]="data.cveEstatus "required #select>
+      <mat-select  matNativeControl [value]="data.cveEstatus? data.cveEstatus: '' "required #select>
         <mat-option value="0" disabled>Seleccione un estatus</mat-option>
         <mat-option value="1">activo</mat-option>
         <mat-option value="2">inactivo</mat-option>

@@ -20,19 +20,24 @@ export class NewRsComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private rs: RsService, public dialogRef: MatDialogRef<NewRsComponent>) { }
 
   ngOnInit(): void {
-    console.log(this.data);
 
   }
 
   async crearRs(nombre : string, fechaValue : string, select : number){  
-    
     this.rsModel.rs = nombre
     this.rsModel.fecha = this.metodo.formatoFechaMysql(fechaValue)
     this.rsModel.fechaEspanol = this.metodo.cambiarSeparadoresFecha(fechaValue,"/","-")
     this.rsModel.estatus = select
-    this.rsModel.cveCliente = this.data.idCliente     
-    await lastValueFrom(this.rs.insertRS(this.rsModel));
-    this.dialogRef.close(this.rsModel)
+    
+    if(this.data.opc ==false){
+      this.rsModel.cveCliente = this.data.idCliente     
+      await lastValueFrom(this.rs.insertRS(this.rsModel));
+      this.dialogRef.close(this.rsModel)    
+    }else{
+      this.rsModel.cveCliente = this.data.id           
+      await lastValueFrom(this.rs.updateRS(this.rsModel));
+      this.dialogRef.close(this.rsModel)    
+    }
     
   }
 

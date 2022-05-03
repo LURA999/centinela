@@ -93,7 +93,10 @@ export class RepeteadMethods {
 
   /**Sirve para insertar la fecha al mysql, datepicker en español al ingles */
   formatoFechaMysql(fecha: string) : string{
-    let splitted : string [] =  fecha.split("/");
+    let splitted : string [] =  fecha.split("/",3);
+    if(splitted.length == 1){
+      splitted = fecha.split("-",3);
+    }
     let fecha2 : Date=  new Date(splitted[1]+"-"+splitted[0]+"-"+splitted[2])
   return formatDate(fecha2,'yyyy-MM-dd','en-US');
   }
@@ -101,14 +104,15 @@ export class RepeteadMethods {
   /**Sirve para representar la fecha que se trae del mysql a la pantalla */
   formatoFechaEspanolMysql(fecha: string) : string{
     let splitted : string [] =  fecha.split("-");
-    let fecha2 : Date=  new Date(splitted[0]+"-"+splitted[1]+"-"+splitted[2])    
+    let fecha2 : Date=  new Date(splitted[0]+"-"+splitted[1]+"-"+(Number(splitted[2]))) 
+    fecha2.setDate(fecha2.getDate() + 1); 
   return formatDate(fecha2,'dd-MM-yyyy','en-US');
   }
 
   /**Solo cambia la estetica, como es la diagonal y el guion*/
   cambiarSeparadoresFecha(fecha: string,separador : string, remplazar : string) : string{
     let splitted : string [] =  fecha.split(separador);
-    let fecha2 :string = (splitted[1]+remplazar+splitted[0]+remplazar+splitted[2])  
-  return formatDate(fecha2,'dd-MM-yyyy','en-US');
+    let fecha2 :string = (splitted[0]+remplazar+splitted[1]+remplazar+splitted[2])
+  return fecha2 ;
   }
 }

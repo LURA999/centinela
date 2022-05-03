@@ -13,5 +13,7 @@ export class  serviceModel  {
     cveEstatus:number=0
     cvePlan:number=0
     identificador : string = ""
-
+    identificador2 : string= ""
+    contador : number = 0
+    plan:string=""
 }

@@ -11,6 +11,8 @@ import { RsModel } from 'src/app/models/rs.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewRsComponent } from '../popup/new-rs/new-rs.component';
+import { Workbook } from 'exceljs'; 
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-table-equipment',
@@ -52,7 +54,31 @@ export class TableEquipmentComponent implements OnInit {
   }
 
   async descargar(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Id","Razon social","Fecha Alta","Estatus"]
+    worksheet.addRow(header);
+  
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
 
+        temp.push(this.ELEMENT_DATA[x1]["id" ])
+        temp.push(this.ELEMENT_DATA[x1]["rs"])
+        temp.push(this.ELEMENT_DATA[x1]["fechaAlta"])
+        temp.push(this.ELEMENT_DATA[x1]["estatus"])
+      
+      worksheet.addRow(temp)
+    }
+
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
   async llenarTabla(){
     this.cargando = false;             

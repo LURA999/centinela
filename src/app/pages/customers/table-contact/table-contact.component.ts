@@ -13,6 +13,9 @@ import { responseService } from 'src/app/models/responseService.model';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewContactComponent } from '../popup/new-contact/new-contact.component';
 import { RepeteadMethods } from './../../RepeteadMethods';
+import { Workbook } from 'exceljs'; 
+import * as fs from 'file-saver';
+
 @Component({
   selector: 'app-table-contact',
   templateUrl: './table-contact.component.html',
@@ -25,6 +28,8 @@ export class TableContactComponent implements OnInit {
   @Input ()hijoContact :string = ""
   id :number = this.rutaActiva.snapshot.params["id"];
   identificador :string = this.rutaActiva.snapshot.params["identificador"];
+
+  
 
   contactos : Observable<any> | undefined;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -59,7 +64,34 @@ export class TableContactComponent implements OnInit {
   }
 
   descargar(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Employee Data");
+    let header : string[]=["Nombre","Apellido Materno","Apellido paterno","Celular", "Telefono", "Servicio", "Rol", "Estatus"]
+    worksheet.addRow(header);
   
+    for  (let x1 in this.ELEMENT_DATA)
+    {
+      let x2=Object.keys(x1);
+      let temp : any=[]
+
+        temp.push(this.ELEMENT_DATA[x1]["nombre" ])
+        temp.push(this.ELEMENT_DATA[x1]["apMaterno"])
+        temp.push(this.ELEMENT_DATA[x1]["apPaterno"])
+        temp.push(this.ELEMENT_DATA[x1]["celular"])
+        temp.push(this.ELEMENT_DATA[x1]["telefono"])
+        temp.push(this.ELEMENT_DATA[x1]["servicio"])
+        temp.push(this.ELEMENT_DATA[x1]["rol"])
+        temp.push(this.ELEMENT_DATA[x1]["estatus"])
+      worksheet.addRow(temp)
+    }
+
+    let fname="ExcelClientes"
+
+    workbook.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
+
+    });
   }
 
   ngOnDestroy(): void {
@@ -113,6 +145,8 @@ export class TableContactComponent implements OnInit {
         puesto:resp.container[i].puesto,
         idServicio:resp.container[i].idServicio,
         idRol:resp.container[i].cveRol,
+        servicio : resp.container[i].servicio,
+        rol : resp.container[i].rol
         })   
       }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -127,7 +161,9 @@ export class TableContactComponent implements OnInit {
 
   async llenarTablaContactoServicio(){
     this.cargando = false;
-    await this.$sub.add( this.serviceContact.llamarContactos_tContactos_cliente(this.id,this.identificador).subscribe((resp:any) =>{       
+    await this.$sub.add( this.serviceContact.llamarContactos_tContactos_cliente(this.id,this.identificador.slice(0,2)).subscribe((resp:any) =>{       
+     console.log(resp);
+     
       if(resp.container.length !=0){
         this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
@@ -143,6 +179,8 @@ export class TableContactComponent implements OnInit {
         puesto:resp.container[i].puesto,
         idServicio:resp.container[i].idServicio,
         idRol:resp.container[i].cveRol,
+        servicio : resp.container[i].servicio,
+        rol : resp.container[i].rol
         })   
       }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -186,6 +224,7 @@ export class TableContactComponent implements OnInit {
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
+       
        try{
           this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idContacto,this.ELEMENT_DATA)
         ,1,{id:idContacto,
@@ -199,7 +238,10 @@ export class TableContactComponent implements OnInit {
           telefono:result.telefono,
           puesto:result.puesto,
           idServicio:result.cveServicio,
-          idRol:result.cveRol});
+          idRol:result.cveRol,
+          servicio : result.servicio,
+          rol : result.rol
+          });  
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
@@ -221,14 +263,25 @@ export class TableContactComponent implements OnInit {
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:ContactServiceModel)=>{
+       
        try{
-        this.ELEMENT_DATA.unshift({id: result.cveContacto,nombre:result.nombre,
+        this.ELEMENT_DATA.unshift(
+        {id: result.cveContacto,
+        nombre:result.nombre,
         apPaterno:result.paterno,
         apMaterno:result.materno,
         correo:result.correo,
         estatus:this.metodo.estatus(result.estatus),
+        cveEstatus:result.estatus,
         celular:result.celular,
-        puesto:result.puesto});
+        puesto:result.puesto,
+        telefono:result.telefono,
+        idServicio:result.cveServicio,
+        idRol:result.cveRol,
+        servicio : result.servicio,
+        rol : result.rol
+      });
+
         this.mayorNumero = result.cveContacto;
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    

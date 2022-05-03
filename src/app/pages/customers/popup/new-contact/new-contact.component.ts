@@ -31,6 +31,9 @@ export class NewContactComponent implements OnInit {
     this.contactoModel.cveRol = selectRol;
     this.contactoModel.puesto = puesto;
     this.contactoModel.cveServicio = selectServicio;
+    this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";;
+    this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";;
+
     if(this.data.opc == false){
       if(nombre.length > 0 && materno.length >0  && paterno.length > 0  && correo.length > 0 && selectEstatus != undefined  
         && celular.length>0  &&  selectRol != undefined && selectServicio != undefined){

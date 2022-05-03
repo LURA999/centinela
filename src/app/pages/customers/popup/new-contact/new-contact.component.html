@@ -57,7 +57,7 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Rol</mat-label>
-        <mat-select  matNativeControl [(value)]="data.idRol" required #selectRol>
+        <mat-select id="selectRol" matNativeControl [(value)]="data.idRol" required #selectRol>
           <mat-option value="0" disabled>Seleccione un Rol</mat-option>
           <mat-option *ngFor="let dato of data.arrayRol" [value]="dato.idRol"> {{dato.nombre}}</mat-option>
         </mat-select>
@@ -72,7 +72,7 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Servicio</mat-label>
-        <mat-select  matNativeControl [(value)]="data.idServicio" required #selectServicio>
+        <mat-select id="selectServicio" matNativeControl [(value)]="data.idServicio" required #selectServicio>
           <mat-option value="0" disabled>Asigne un servicio</mat-option>
           <mat-option *ngFor="let dato of data.arrayServicios" [value]="dato.idServicio"> {{dato.nombre}}</mat-option>
         </mat-select>

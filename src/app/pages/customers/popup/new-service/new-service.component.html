@@ -51,7 +51,7 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Plan</mat-label>
-      <mat-select  matNativeControl [(value)]="data.cvePlan"required #selectPlan>
+      <mat-select id="selectPlan" matNativeControl [(value)]="data.cvePlan"required #selectPlan>
         <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
         <mat-option *ngFor="let dato of data.arrayPlan" [value]="dato.idPlan"> {{dato.nombre}}</mat-option>
 
