@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { DateService } from 'src/app/core/services/date.service';
 import { DateModel } from 'src/app/models/date.model';
+import { responseService } from 'src/app/models/responseService.model';
 interface TimeZone {
   value: number;
   viewValue: string;
@@ -18,6 +19,7 @@ export class DateComponent implements OnInit {
 fecha:string =""
 hora:string=""
 zona_horaria=""
+llamarDatos :  Observable<responseService> | undefined
   selectedValue: string | undefined;
   Zones: TimeZone[] = [
 
@@ -33,14 +35,17 @@ zona_horaria=""
   constructor(private dateservice :DateService) { }
 
   ngOnInit(): void {
-    this.dateservice.llamarDate().toPromise().then( (result : any) =>{
+   this.llamarDatos =  this.dateservice.llamarDate()
+   
+   /*.toPromise().then( (result : any) =>{
       this.hora=result.container[0]["hora"]
       this.fecha=result.container[0]["fecha"]
       this.zona_horaria=result.container[0]["zona_horaria"]
+      
 console.log(result.container);
 
 
-  });
+  });*/
 }
   async editarDate (hora:string,fecha:string,zona_horaria:number){    
     this.dateModel.hora=hora

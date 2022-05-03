@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DateModel } from 'src/app/models/date.model';
+import { Observable } from 'rxjs';
+import { responseService } from 'src/app/models/responseService.model';
 
 
 @Injectable({
@@ -11,18 +13,19 @@ export class DateService {
   local = environment.api; 
   constructor(private http : HttpClient) { }
 
-  llamarDate(){
+  llamarDate(): Observable<responseService>{
     
     
-    return this.http.get(this.local+"date.php");
+    return this.http.get<responseService>(this.local+"Config/date.php");
   }
-  insertarDate(input :DateModel){
-    return this.http.post(this.local+"date.php",input, {responseType:"text"});
+  insertarDate(input :DateModel) : Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')
+    return this.http.post<responseService>(this.local+"Config/date.php",input,{headers});
   }
   updateDate(input:DateModel){
     console.log(input);
     
-    return this.http.patch(this.local+"date.php",input,{responseType: 'text'});
+    return this.http.patch(this.local+"Config/date.php",input,{responseType: 'text'});
 
   }
 

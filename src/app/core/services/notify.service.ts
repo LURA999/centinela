@@ -23,7 +23,7 @@ export class NotifyService {
   updateNotify(input:NotificationModel){
     console.log(input);
     
-    return this.http.patch(this.local+"notify.php",input,{responseType: 'text'});
+    return this.http.patch(this.local+"Config/notify.php",input,{responseType: 'text'});
 
   }
 

@@ -25,7 +25,7 @@ export class ConfigService {
   
   }
   updateLogo(input:LogoModel){
-    return this.http.patch(this.local+"Config/Config/config.php",input,{responseType: 'text'});
+    return this.http.patch(this.local+"Config/config.php",input,{responseType: 'text'});
   
   }
 

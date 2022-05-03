@@ -44,11 +44,11 @@ Image
        
   
     
-      /*  this.configservice.llamarEmpresa().toPromise().then( (result : any) =>{
+       this.configservice.llamarEmpresa().toPromise().then( (result : any) =>{
             
             this.logo=result.container[0]["logo"]
              })
-             ;     */
+             ;    
 
     }
 
