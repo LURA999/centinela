@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
+import { DateService } from 'src/app/core/services/date.service';
+import { DateModel } from 'src/app/models/date.model';
 interface TimeZone {
-  value: string;
+  value: number;
   viewValue: string;
 }
 @Component({
@@ -10,21 +13,45 @@ interface TimeZone {
   styleUrls: ['./date.component.css']
 })
 export class DateComponent implements OnInit {
+  
+  dateModel = new DateModel
+fecha:string =""
+hora:string=""
+zona_horaria=""
   selectedValue: string | undefined;
   Zones: TimeZone[] = [
 
-    {value: 'Alpha Time Zone', viewValue: 'Alpha Time Zone : UTC +1'},
-    {value: 'Central Standard Time', viewValue: 'Central Standard Time :UTC -6'},
-    {value: 'Central Standard Time', viewValue: 'Central Standard Time :UTC -6'},
-    {value: 'Central Standard Time', viewValue: 'Central Standard Time :UTC -6'},
-    {value: 'Central Standard Time', viewValue: 'Central Standard Time :UTC -6'},
+    {value: 1, viewValue: 'Alpha Time Zone : UTC +1'},
+    {value: 2, viewValue: 'Central Standard Time :UTC -6'},
+    {value: 3, viewValue: 'Central Standard Time :UTC -6'},
+    {value: 4, viewValue: 'Central Standard Time :UTC -6'},
+    {value: 5, viewValue: 'Central Standard Time :UTC -6'},
     
   ];
   todayDate : Date = new Date();
   selectFormControl = new FormControl('', Validators.required);
-  constructor() { }
+  constructor(private dateservice :DateService) { }
 
   ngOnInit(): void {
+    this.dateservice.llamarDate().toPromise().then( (result : any) =>{
+      this.hora=result.container[0]["hora"]
+      this.fecha=result.container[0]["fecha"]
+      this.zona_horaria=result.container[0]["zona_horaria"]
+console.log(result.container);
+
+
+  });
+}
+  async editarDate (hora:string,fecha:string,zona_horaria:number){    
+    this.dateModel.hora=hora
+    var fechas =fecha.split("/",3)
+    this.dateModel.fecha=fechas[2]+"-"+fechas[0]+"-"+fechas[1]
+    console.log(this.dateModel);
+    this.dateModel.zona_horaria=zona_horaria
+
+    lastValueFrom(this.dateservice.updateDate(this.dateModel));  
+            
   }
+
 
 }
