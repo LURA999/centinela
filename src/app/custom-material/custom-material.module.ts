@@ -70,13 +70,13 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
     MatButtonToggleModule, MatSlideToggleModule, MatBadgeModule, MatCheckboxModule,
     MatExpansionModule, SelectCheckAllComponent, DragDropModule, MatSortModule
   ],
-  /*providers: [
-    {
-      provide: MAT_DATE_FORMATS,
-      useValue: MY_FORMATS
-    },
+  providers: [
+   // {
+     // provide: MAT_DATE_FORMATS,
+   //   useValue: MY_FORMATS
+   // },
     { provide: LOCALE_ID, useValue: 'es-MX' }
-  ],*/
+  ],
   declarations: [SelectCheckAllComponent]
 })
 export class CustomMaterialModule {

@@ -39,8 +39,8 @@ export class ServiceService {
         return this.http.get<responseService>(this.local+"Services/services.php?identificadorUltimo="+identificador);
     }
     
-    selectVistaServicio(identificador : string): Observable<responseService> {
-        return this.http.get<responseService>(this.local+"Services/services.php?identificador="+identificador);
+    selectVistaServicio(identificador : string, contador : number): Observable<responseService> {
+        return this.http.get<responseService>(this.local+"Services/services.php?identificador="+identificador+"&contador= "+contador);
     }
     
 } 

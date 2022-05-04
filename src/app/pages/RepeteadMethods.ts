@@ -105,8 +105,13 @@ export class RepeteadMethods {
   formatoFechaEspanolMysql(fecha: string) : string{
     let splitted : string [] =  fecha.split("-");
     let fecha2 : Date=  new Date(splitted[0]+"-"+splitted[1]+"-"+(Number(splitted[2]))) 
-    fecha2.setDate(fecha2.getDate() + 1); 
-  return formatDate(fecha2,'dd-MM-yyyy','en-US');
+    if(Number(splitted[2]) < 10){
+      return formatDate(fecha2,'dd-MM-yyyy','en-US');
+    }else{
+      fecha2.setDate(fecha2.getDate() + 1); 
+      return formatDate(fecha2,'dd-MM-yyyy','en-US');
+
+    }    
   }
 
   /**Solo cambia la estetica, como es la diagonal y el guion*/

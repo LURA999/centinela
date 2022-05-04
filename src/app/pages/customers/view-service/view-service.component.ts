@@ -21,7 +21,13 @@ export class ViewServiceComponent implements OnInit {
   
 
   ngOnInit(): void {
-    this.servicio = this.service.selectVistaServicio(this.identificador.slice(0,2))    
+    console.log(this.identificador.slice(2,7));
+    
+    this.servicio = this.service.selectVistaServicio(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)))    
   }
 
+  
+  abrirMapa(direccion : string, ciudad : string,coordenadas : string){
+    window.open("https://www.google.com/maps/place/"+direccion+"+"+ciudad+"/@"+coordenadas, "_blank");
+  }
 }

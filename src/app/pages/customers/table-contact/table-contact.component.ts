@@ -2,7 +2,6 @@ import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/cor
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { NgbPaginationNumber } from '@ng-bootstrap/ng-bootstrap';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { Observable, Subscription } from 'rxjs';
 import { ContactService } from 'src/app/core/services/contact.service';
@@ -135,7 +134,7 @@ export class TableContactComponent implements OnInit {
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ id:resp.container[i].idContacto,
         nombre:resp.container[i].nombre,
-        apPaterno:resp.container[i].apellidoMaterno,
+        apPaterno:resp.container[i].apellidoPaterno,
         apMaterno:resp.container[i].apellidoMaterno,
         correo:resp.container[i].correo,
         cveEstatus:resp.container[i].estatus,
@@ -169,8 +168,8 @@ export class TableContactComponent implements OnInit {
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ id:resp.container[i].idContacto,
         nombre:resp.container[i].nombre,
-        apPaterno:resp.container[i].apellidoMaterno,
         apMaterno:resp.container[i].apellidoMaterno,
+        apPaterno:resp.container[i].apellidoPaterno,
         correo:resp.container[i].correo,
         cveEstatus:resp.container[i].estatus,
         estatus:this.metodo.estatus(resp.container[i].estatus),
@@ -293,7 +292,6 @@ export class TableContactComponent implements OnInit {
       }catch(Exception){}
      }))
   }
-  
  
   
 }

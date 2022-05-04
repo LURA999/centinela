@@ -168,7 +168,8 @@ export class TableRsComponent implements OnInit {
      this.$sub.add(dialogRef.afterClosed().subscribe((result:RsModel)=>{
 
        try{
-        this.ELEMENT_DATA.unshift({id: this.mayorNumeroAux,rs:result.rs, fechaAlta:result.fechaEspanol, estatus:this.metodo.estatus(result.estatus)});
+        this.ELEMENT_DATA.unshift({id: this.mayorNumeroAux,
+          rs:result.rs, fechaAlta:result.fechaEspanol, estatus:this.metodo.estatus(result.estatus),cveEstatus:result.estatus});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;

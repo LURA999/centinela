@@ -63,3 +63,16 @@ mat-card {
 .nivel1Container .col{
     margin-bottom: 10px;
 }
+
+
+/**Seccion de direccion*/
+
+.mapa{
+    align-self: center;
+}
+
+.contenidoDireccion{
+    display: flex; 
+    justify-content: space-between;
+    padding-right: 10%;
+}
