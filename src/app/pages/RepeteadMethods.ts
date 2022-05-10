@@ -7,10 +7,10 @@ export class RepeteadMethods {
 	constructor(){ }
 
   /**Este es un ayudante para poder insertar datos y que este pueda reflejarse segun su id respectivo */
-  buscandoIndice(id:number,ELEMENT_DATA :any) : number{
+  buscandoIndice(id:number,ELEMENT_DATA :any, nombreId : string) : number{
     let i = 0
     while (true) {
-      const element = ELEMENT_DATA[i]["id"];
+      const element = ELEMENT_DATA[i][nombreId];
       if(element===id){
        return i
       }

@@ -54,7 +54,7 @@
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsTickets;"></tr>
                           </table>
                           <div class="preloader" hidden></div>
-                          <div class="existe" [hidden]="metodo.hayClientes(ELEMENT_DATA_TICKETS, cargando)">No se encontraron resultados... </div>
+                          <div class="existe" [hidden]="metodo.hayClientes(ELEMENT_DATA_TICKETS, cargando)">No se encontraron Tickets... </div>
                           <mat-paginator  #paginator
                           [pageSize]="10"
                           [pageSizeOptions]="[5, 10, 20]"></mat-paginator>

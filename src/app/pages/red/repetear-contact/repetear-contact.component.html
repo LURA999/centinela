@@ -75,7 +75,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
               <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" [hidden]="cargando"></div>
-              <div class="existe" [hidden] = "hayClientes()">No se encontraron resultados... </div>
+              <div class="existe" [hidden] = "hayClientes()">No se encontraron Contactos... </div>
             
               <mat-paginator  #paginator
               [pageSize]="10"
@@ -122,7 +122,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
               </table> 
               <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" [hidden]="cargando2"></div>
-              <div class="existe" [hidden] = "hayClientes2()">No se encontraron resultados... </div>
+              <div class="existe" [hidden] = "hayClientes2()">No se encontraron segmentos... </div>
             
               <mat-paginator  #paginator2
               [pageSize]="5"

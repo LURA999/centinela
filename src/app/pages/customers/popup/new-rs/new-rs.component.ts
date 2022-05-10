@@ -24,6 +24,7 @@ export class NewRsComponent implements OnInit {
   }
 
   async crearRs(nombre : string, fechaValue : string, select : number){  
+    this.data.salir = true
     this.rsModel.rs = nombre
     this.rsModel.fecha = this.metodo.formatoFechaMysql(fechaValue)
     this.rsModel.fechaEspanol = this.metodo.cambiarSeparadoresFecha(fechaValue,"/","-")

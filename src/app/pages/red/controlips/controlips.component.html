@@ -86,7 +86,7 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
         <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" [hidden]="cargando"></div>
-        <div class="existe" [hidden] = "comentario">No se encontraron resultados... </div>
+        <div class="existe" [hidden] = "comentario">No se encontraron ips registradas... </div>
         <mat-paginator  #paginator
         (page)="pageEvents($event)"
         [pageSize]="10"></mat-paginator>

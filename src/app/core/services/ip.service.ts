@@ -1,5 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { responseService } from "src/app/models/responseService.model";
 import { environment } from "src/environments/environment";
 
 
@@ -18,8 +20,8 @@ export class IpService {
         return this.http.get(this.local+"Repeater/ip.php")
     }
     
-    selectIp(segmento :string,segmento2 :string){
-        return this.http.get(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2)
+    selectIp(segmento :string,segmento2 :string) : Observable<responseService>{        
+        return this.http.get<responseService>(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2)
     }
 
     selectIpParam(segmento :string,segmento2 :string,segmento3 : string){
@@ -33,5 +35,6 @@ export class IpService {
     ping(ip : string) {
         return this.http.get(this.local+"Config/ping.php?ip="+ip)
     }
+    
 
 }

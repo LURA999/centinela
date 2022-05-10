@@ -1,0 +1,13 @@
+import { HttpClient } from "@angular/common/http";
+import {Injectable, EventEmitter, Output} from "@angular/core";    
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class DataService {
+  constructor (private http : HttpClient){}
+  @Output() open : EventEmitter<any> = new EventEmitter();
+
+ 
+}

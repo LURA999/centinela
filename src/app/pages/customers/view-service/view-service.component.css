@@ -76,3 +76,12 @@ mat-card {
     justify-content: space-between;
     padding-right: 10%;
 }
+
+/** quitar efectos del nav**/
+a:active, a:hover {
+    color: black;
+}
+
+.matTab{
+    margin-top: 45px;
+} 

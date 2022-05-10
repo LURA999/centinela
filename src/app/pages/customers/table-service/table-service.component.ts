@@ -180,7 +180,7 @@ export class TableServiceComponent implements OnInit {
 
   async eliminar(id : number){
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : id, opc: 4},
+      {data: {idCliente : id, opc: 4, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -188,7 +188,7 @@ export class TableServiceComponent implements OnInit {
       this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -230,7 +230,7 @@ export class TableServiceComponent implements OnInit {
      this.paginator2.firstPage();
      this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{       
        try{
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA)
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
         ,1,{
           id:result.id, 
           nombre:result.nombre,
@@ -263,7 +263,8 @@ export class TableServiceComponent implements OnInit {
  async insertar(){   
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc: false,idEmpresa: this.id,
-        Empresa: this.nombreEmpresa[0] ,idNuevo: this.mayorNumero, arrayCiudad: this.arrayCiudades, arrayRS: this.arrayRS, arrayPlan:this.arrayPlan},
+        Empresa: this.nombreEmpresa[0] ,idNuevo: this.mayorNumero, arrayCiudad: 
+        this.arrayCiudades, arrayRS: this.arrayRS, arrayPlan:this.arrayPlan, salir : true},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });

@@ -21,6 +21,7 @@ export class NewContactComponent implements OnInit {
   }
   async crearContacto(nombre : string, materno : string,paterno : string,correo : string,selectEstatus : number,celular :string,telefono :string
     ,selectRol : number,selectServicio : number, puesto : string){
+    this.data.salir = false
     this.contactoModel.nombre = nombre;
     this.contactoModel.materno = materno;
     this.contactoModel.paterno = paterno;

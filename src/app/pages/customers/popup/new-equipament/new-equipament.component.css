@@ -1,0 +1,25 @@
+mat-dialog-content{
+    text-align: justify;
+}
+
+
+#botones{
+    display:flex; 
+    justify-content: center;
+}
+
+#botones button{
+    margin-top: 10%;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.textarea{
+    width:320px;
+}
+
+@media screen and (max-width: 670px){
+    .textarea{
+        width: 100%;
+    }
+}

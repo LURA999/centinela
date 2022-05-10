@@ -18,14 +18,14 @@
                             </div>
                             <div>
                                 Empresa:&nbsp;{{dato.container[0].nombreCliente}}<br>
-                                Estatus:&nbsp;{{dato.container[0].estatusCliente}}<br>
+                                Estatus:&nbsp;{{ metodo.estatus(dato.container[0].estatusCliente)}}<br>
                                 Cliente:&nbsp;{{dato.container[0].nombreCorto}}
                             </div>
                         </div>
                         <div class="col">
                             Servicio:&nbsp;{{dato.container[0].servicio}}<br>
                             Razon social:&nbsp;{{dato.container[0].razonSocial}}<br>
-                            Estatus:&nbsp;{{dato.container[0].estatusRS}}<br>
+                            Estatus:&nbsp;{{metodo.estatus(dato.container[0].estatusRS)}}<br>
                             Dominio:&nbsp;{{dato.container[0].dominio}}
                         </div >
                         <div class="id col">
@@ -57,24 +57,19 @@
                 </mat-card-header>
                 <mat-card-content >
                     <div>
-                        <button mat-raised-button color="primary" class="agregar">Agregar</button>
+                        <button mat-raised-button color="primary" class="agregar" (click)="abrir(true)">Agregar</button>
                     </div>
-                    <div>
-                    <mat-tab-group>
-                        <mat-tab label="Routers">
-
-                        </mat-tab>
-                        <mat-tab label="Radios">
-
-                        </mat-tab>
-                        <mat-tab label="Otros dispositivos">
-                            
-                        </mat-tab>
-                    </mat-tab-group>
+ 
+                     <div class = "matTab" >
+                        <nav mat-tab-nav-bar >
+                            <a mat-tab-link *ngFor="let link of navLinks"
+                               (click)="activeLink = link.link"
+                               [routerLink]="link.link"
+                               [active]="activeLink == link.link"> {{link.label}} </a>
+                          </nav>
+                          <router-outlet></router-outlet>
                     </div>
-                    <div class="component">
-                        <app-table-equipment></app-table-equipment>
-                    </div>
+                    
                 </mat-card-content>
             </mat-card>
             <mat-card class="ticket mat-card2">
@@ -111,7 +106,6 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-
             <mat-card class="direccion mat-card2">
                 <mat-card-header class="mat-card-header2">
                     <mat-card-title>
@@ -123,7 +117,7 @@
                         <button mat-raised-button color="primary" class="agregar">Agregar</button>
                     </div>
                     <div class="component">
-                        <app-table-contact> </app-table-contact>
+                        <app-table-contact [tamanoTabla]="5"> </app-table-contact>
                     </div>
                 </mat-card-content>
             </mat-card>

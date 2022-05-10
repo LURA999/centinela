@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { Observable, Subscription } from 'rxjs';
 import { ContactService } from 'src/app/core/services/contact.service';
@@ -25,7 +25,8 @@ export class TableContactComponent implements OnInit {
   $sub = new Subscription();
   metodo = new RepeteadMethods();
   @Input ()hijoContact :string = ""
-  id :number = this.rutaActiva.snapshot.params["id"];
+  @Input ()tamanoTabla : number = 0
+  id :number = Number(this.ruta.url.split("/")[3]);
   identificador :string = this.rutaActiva.snapshot.params["identificador"];
 
   
@@ -43,9 +44,10 @@ export class TableContactComponent implements OnInit {
   arrayServicios : string [] = []
 
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
-    private notificationService: NotificationService,  private rol :RolService) { }
-  
-  ngOnChanges(changes: SimpleChanges): void {
+    private notificationService: NotificationService,  private rol :RolService, private ruta : Router) { }
+ 
+  ngOnChanges(changes: SimpleChanges): void { 
+    try{
     let c = changes['hijoContact'];
     if(!c.firstChange && c.currentValue != ""){
     if(c.currentValue[0] == "a"){
@@ -56,10 +58,14 @@ export class TableContactComponent implements OnInit {
       this.descargar();
     }
   }
+  }catch(Exception){
+    
+  }
 }
 
   ngOnInit(): void {    
     this.inicio();    
+    
   }
 
   descargar(){
@@ -160,9 +166,7 @@ export class TableContactComponent implements OnInit {
 
   async llenarTablaContactoServicio(){
     this.cargando = false;
-    await this.$sub.add( this.serviceContact.llamarContactos_tContactos_cliente(this.id,this.identificador.slice(0,2)).subscribe((resp:any) =>{       
-     console.log(resp);
-     
+    await this.$sub.add( this.serviceContact.llamarContactos_tContactos_cliente(this.id,this.identificador.slice(0,2)).subscribe((resp:any) =>{            
       if(resp.container.length !=0){
         this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
@@ -195,14 +199,14 @@ export class TableContactComponent implements OnInit {
 
   async eliminar(id : number){  
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : id, opc: 1},
+      {data: {idCliente : id, opc: 1, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       
       await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
         try{
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -211,21 +215,21 @@ export class TableContactComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }catch(Exception){}
+      
       }));
   }
   editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number){
     let dialogRef  = this.dialog.open(NewContactComponent,
       {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno, 
-        correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol },
+        correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol, salir : true },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
-       
        try{
-          this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idContacto,this.ELEMENT_DATA)
+          this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idContacto,this.ELEMENT_DATA, "id")
         ,1,{id:idContacto,
           nombre:result.nombre,
           apPaterno:result.paterno,
@@ -249,20 +253,20 @@ export class TableContactComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
+    
      }))
 
   }
 
   insertar(){
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, proximoID: this.mayorNumero },
+      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, proximoID: this.mayorNumero, salir : true },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:ContactServiceModel)=>{
-       
        try{
         this.ELEMENT_DATA.unshift(
         {id: result.cveContacto,
@@ -290,6 +294,7 @@ export class TableContactComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
+    
      }))
   }
  

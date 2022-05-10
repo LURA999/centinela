@@ -130,7 +130,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
     this.cargando2 = false;
     this.ELEMENT_DATA_SEGMENTOS = [];
     this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
-    await this.repeaterService.segmentosRepetidores(cve).subscribe( (resp:any) =>{
+    await this.repeaterService.segmentosTodoRepetidor(cve).subscribe( (resp:any) =>{
       this.todosSegmentos = resp.container;
       for (const iterator of this.todosSegmentos) {
         this.ELEMENT_DATA_SEGMENTOS.push(

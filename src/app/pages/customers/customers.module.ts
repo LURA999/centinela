@@ -19,7 +19,12 @@ import { NewContactComponent } from './popup/new-contact/new-contact.component';
 import { NewRsComponent } from './popup/new-rs/new-rs.component';
 import { NewServiceComponent } from './popup/new-service/new-service.component';
 import { ViewServiceComponent } from './view-service/view-service.component';
-import { TableEquipmentComponent } from './table-equipment/table-equipment.component';
+import { TableEquipamentComponent } from './table-equipment/table-equipment.component';
+import { NewEquipamentComponent } from './popup/new-equipament/new-equipament.component';
+import { NewRadioComponent } from './popup/new-radio/new-radio.component';
+import { NewRouterComponent } from './popup/new-router/new-router.component';
+import { TableRadioComponent } from './table-radio/table-radio.component';
+import { TableRouterComponent } from './table-router/table-router.component';
 
 @NgModule({
   imports: [
@@ -45,7 +50,12 @@ import { TableEquipmentComponent } from './table-equipment/table-equipment.compo
     NewRsComponent,
     NewServiceComponent,
     ViewServiceComponent,
-    TableEquipmentComponent
+    TableEquipamentComponent,
+    NewEquipamentComponent,
+    NewRadioComponent,
+    NewRouterComponent,
+    TableRadioComponent,
+    TableRouterComponent
   ],
   exports: [
     CustomerListComponent,

@@ -13,8 +13,6 @@ export class NotifyService {
   constructor(private http : HttpClient) { }
 
   llamarNotify(){
-    
-    
     return this.http.get(this.local+"Config/notify.php");
   }
   insertarNotify(input :NotifyModel){

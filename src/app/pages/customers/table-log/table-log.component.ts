@@ -109,7 +109,7 @@ export class TableLogComponent implements OnInit {
       await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;

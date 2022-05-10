@@ -19,11 +19,11 @@ export class DeleteComponent implements OnInit {
   $sub = new Subscription();
   ngOnInit(): void {
 
-    console.log(this.data)
   }
   
 
   async confirmar(){
+    this.data.salir = false;
   if(this.data.opc == 0){
     lastValueFrom(await this.servicioCliente.eliminarFalso(this.data.idCliente));
   }else if(this.data.opc == 1){

@@ -107,7 +107,7 @@ export class TableRsComponent implements OnInit {
 
   eliminar(id : number){
     let dialogRef  = this.dialog.open(DeleteComponent,
-      {data: {idCliente: id, opc : 3 },
+      {data: {idCliente: id, opc : 3, salir : true },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -115,7 +115,7 @@ export class TableRsComponent implements OnInit {
      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
       try{
       if(result.length > 0  ){
-        this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA))
+        this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"))
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator2;
         this.dataSource.sort = this.sort;
@@ -129,7 +129,7 @@ export class TableRsComponent implements OnInit {
 
   editar(id:number,rs:string,fechaAlta:string,estatus:number){  
     let dialogRef  = this.dialog.open(NewRsComponent,
-      {data: {opc : true,id : id ,rs:rs,fechaAlta:this.metodo.formatoFechaMysql(fechaAlta),cveEstatus:estatus },
+      {data: {opc : true,id : id ,rs:rs,fechaAlta:this.metodo.formatoFechaMysql(fechaAlta),cveEstatus:estatus , salir : true },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -137,7 +137,7 @@ export class TableRsComponent implements OnInit {
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:RsModel)=>{
        try{
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.cveCliente,this.ELEMENT_DATA)
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.cveCliente,this.ELEMENT_DATA,"id")
         ,1,{id:result.cveCliente,
           rs:result.rs,
           fechaAlta:this.metodo.formatoFechaEspanolMysql(result.fecha),
@@ -158,7 +158,7 @@ export class TableRsComponent implements OnInit {
   insertar(){
     this.mayorNumeroAux = Number(this.mayorNumeroAux) + 1;
     let dialogRef  = this.dialog.open(NewRsComponent,
-      {data: {opc : false, idCliente : this.id },
+      {data: {opc : false, idCliente : this.id , salir : true},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });

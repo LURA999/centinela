@@ -82,10 +82,9 @@ export class TableTicketsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.$sub.unsubscribe()
   }
+  
   async llenarTabla(){
     this.cargando = false;             
     this.$sub.add(await this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
@@ -114,7 +113,7 @@ export class TableTicketsComponent implements OnInit {
 
   async eliminar(){
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : this.id, opc: 5},
+      {data: {idCliente : this.id, opc: 5, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -122,7 +121,7 @@ export class TableTicketsComponent implements OnInit {
       this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -136,7 +135,7 @@ export class TableTicketsComponent implements OnInit {
   
   editar(){
     let dialogRef  = this.dialog.open(NewTicketComponent,
-      {data: {opc : true },
+      {data: {opc : true , salir : true},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -164,7 +163,7 @@ export class TableTicketsComponent implements OnInit {
 
   insertar(){
     let dialogRef  = this.dialog.open(NewTicketComponent,
-      {data: {opc : false },
+      {data: {opc : false , salir : true},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
