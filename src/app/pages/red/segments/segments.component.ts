@@ -64,15 +64,16 @@ export class SegmentsComponent implements OnInit {
 
    async nuevoSegmento (){     
     let dialogRef = await this.dialog.open(NewSegmentComponent,
-      {data: {id : (Number(this.mayorNumero)+1), opc: false, repetears:this.repetearArray},
+      {data: {id : this.mayorNumero, opc: false, repetears:this.repetearArray},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       this.paginator2.firstPage();
       await dialogRef.afterClosed().subscribe((result:any)=>{        
          try{
-       if(result.mensaje.length > 0 ){       
-         this.ELEMENT_DATA.unshift({id:this.mayorNumero,nombre:result.nombre,segmento:result.segmento
+       if(result.mensaje.length > 0 ){      
+         this.mayorNumero = result.id 
+         this.ELEMENT_DATA.unshift({id:result.id,nombre:result.nombre,segmento:result.segmento
          ,diagonal:result.diagonal,tipo:this.tipo(result.tipo), estatus:this.estatus(result.estatus), repetear: this.metodoParaVerRepetidoras(result.cveRepetdora)});
          this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
          this.dataSource.paginator = this.paginator2; 
@@ -153,6 +154,7 @@ export class SegmentsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
     await this.segmentServicio.llamarSegments().toPromise().then( (result : any) =>{
+      if(result.container.length !=0){
       this.segmentosArray = result;      
       this.mayorNumero = Number(result.container[0]["idSegmento"])+1;
       for (let i=0; i<result.container.length; i++){       
@@ -164,6 +166,9 @@ export class SegmentsComponent implements OnInit {
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
+      }else{
+
+      }
       this.cargando = true;
     });
       

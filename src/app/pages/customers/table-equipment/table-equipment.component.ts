@@ -63,7 +63,7 @@ export class TableEquipamentComponent implements OnInit {
     this.cargando = false;       
 
     this.$sub.add(this.deviceService.todosOtros(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
-
+      
       if(resp.container.length !=0){
         this.mayorNumero = Number(resp.container[0].idOtro);    
            
@@ -83,13 +83,15 @@ export class TableEquipamentComponent implements OnInit {
           idIp : resp.container[i].ip1.split("-")[0],
           ip : resp.container[i].ip1.split("-")[1],
           idIp2 : resp.container[i].ip2.split("-")[0],
-          ip2 : resp.container[i].ip1.split("-")[1],
+          ip2 : resp.container[i].ip2.split("-")[1],
           idUsuario : resp.container[i].idUsuario,
           usuario : resp.container[i].usuario,
           contrasena : resp.container[i].contrasena, 
           snmp : resp.container[i].snmp,
           comentario : resp.container[i].comentario
         })
+        console.log(this.ELEMENT_DATA);
+
       }
       
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -122,31 +124,9 @@ export class TableEquipamentComponent implements OnInit {
       }catch(Exception){}
       }));
   }
-  editar(idOtro : number,  otro : string,  cveEstatus : number, estatus : string,
-    tipo : string, cveTipo : number, idRepetidora  : number,  repetidora : string,  modelo : string,  idSegmento : number,
-    segmento : string, idIp : number, ip : string,idIp2 : number, ip2 : string,  idUsuario : number,  usuario : string, contrasena : string, snmp : string,
-    comentario : string){
-    this.modelOtro.idDevice= idOtro;
-    this.modelOtro.device = otro;
-    this.modelOtro.estatus = estatus;
-    this.modelOtro.idEstatus = cveEstatus;
-    this.modelOtro.idTipo = cveTipo;
-    this.modelOtro.tipo = tipo;
-    this.modelOtro.idRepetidora = idRepetidora;
-    this.modelOtro.repetidora = repetidora;
-    this.modelOtro.modelo = modelo;
-    this.modelOtro.idSegmento = idSegmento;
-    this.modelOtro.segmento = segmento;
-    this.modelOtro.idIp = idIp;
-    this.modelOtro.ip = ip;
-    this.modelOtro.idIp2 = idIp2;
-    this.modelOtro.ip2 = ip2;
-    this.modelOtro.idUsuario = idUsuario;
-    this.modelOtro.usuario = usuario;
-    this.modelOtro.contrasena = contrasena;
-    this.modelOtro.snmp = snmp;
-    this.modelOtro.comentario = comentario;
-   
+  editar(model : DeviceModel){
+    this.modelOtro = model;
+  
     let dialogRef  = this.dialog.open(NewEquipamentComponent,
       {data: {opc : true, model : this.modelOtro, salir: true },
       animation: { to: "bottom" },
@@ -158,28 +138,7 @@ export class TableEquipamentComponent implements OnInit {
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
        
       try{
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idOtro,this.ELEMENT_DATA, "idDevice")
-
-      ,1,{idDevice:result.idDevice,
-        device : result.device,
-        estatus : result.estatus,
-        idEstatus : result.idEstatus,
-        tipo : result.tipo,
-        idTipo : result.idTipo,
-        idRepetidora : result.idRepetidora,
-        repetidora : result.repetidora,
-        modelo : result.modelo,
-        idSegmento : result.idSegmento,
-        segmento : result.segmento,
-        idIp : result.idIp,
-        ip : result.ip,
-        idIp2 : result.idIp2,
-        ip2 : result.ip2,
-        idUsuario : result.idUsuario,
-        usuario : result.usuario,
-        contrasena :result.contrasena ,
-        snmp : result.snmp,
-        comentario : result.comentario});
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice"),1,result);
                 
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
       this.dataSource.paginator = this.paginator2;    
@@ -204,27 +163,10 @@ export class TableEquipamentComponent implements OnInit {
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
        try{
-        this.ELEMENT_DATA.unshift({ 
-          idDevice:result.idDevice,
-        device : result.device,
-        estatus : result.estatus,
-        idEstatus : result.idEstatus,
-        tipo : result.tipo,
-        idTipo : result.idTipo,
-        idRepetidora : result.idRepetidora,
-        repetidora : result.repetidora,
-        modelo : result.modelo,
-        idSegmento : result.idSegmento,
-        segmento : result.segmento,
-        idIp : result.idIp,
-        ip : result.ip,
-        idIp2 : result.idIp2,
-        ip2 : result.ip2,
-        idUsuario : result.idUsuario,
-        usuario : result.usuario,
-        contrasena :result.contrasena ,
-        snmp : result.snmp,
-        comentario : result.comentario});
+         result.contador = Number(this.identificador.slice(2,7))
+         result.identificador = this.identificador.slice(0,2)
+        this.ELEMENT_DATA.unshift(result);
+        console.log(result);
         
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    

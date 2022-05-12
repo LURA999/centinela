@@ -19,4 +19,6 @@ export class DeviceModel{
     contrasena :string  = "" 
     snmp :string  = ""
     comentario : string = ""
+    contador : number = 0
+    identificador : string = ""
 }

@@ -12,6 +12,7 @@ import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { lastValueFrom } from 'rxjs';
 import { NewSegmentComponent } from '../popup/new-segment/new-segment.component';
+import { RepeteadMethods } from '../../RepeteadMethods';
 
 @Component({
   selector: 'app-repetear-contact',
@@ -46,7 +47,7 @@ dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 displayedColumns: string[] = [/*'id',*/ 'nombre', 'telefono', 'correo', 'estatus','opciones'];
 dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
 displayedColumns2: string[] = ['id', 'seg', 'x', 'tipo', 'nom','opciones'];
-
+metodo = new RepeteadMethods()
 constructor(private dialog:NgDialogAnimationService, private contactService : ContactService, 
   private repeaterService: RepeaterService, private notificationService : NotificationService,
   private rutaActiva: ActivatedRoute ) { 
@@ -105,6 +106,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     await this.contactService.llamarContacto(cve).subscribe((resp:any) =>{
+      if(resp.container.length !=0){
       this.mayorNumero = resp.container[resp.container.length-1].idContacto;
       
       this.todosContactos =  resp.container;
@@ -122,7 +124,11 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator;    
       this.dataSource.sort =  this.sort;
-      this.cargando = true;
+    }else{
+      this.ELEMENT_DATA = []
+    }
+    this.cargando = true;
+
     });
   }
 
@@ -131,6 +137,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
     this.ELEMENT_DATA_SEGMENTOS = [];
     this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
     await this.repeaterService.segmentosTodoRepetidor(cve).subscribe( (resp:any) =>{
+      if(resp.container.length !=0){
       this.todosSegmentos = resp.container;
       for (const iterator of this.todosSegmentos) {
         this.ELEMENT_DATA_SEGMENTOS.push(
@@ -146,8 +153,13 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
       this.dataSource2 =  new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS);
       this.dataSource2.paginator =  this.paginator2;    
       this.dataSource2.sort =  this.sort2;
-      this.cargando2 = true;
+    }else{
+      this.ELEMENT_DATA_SEGMENTOS = [];
+    }
+    this.cargando2 = true;
+
     });
+    
   }
 
   async editarSegmento (id:number, nombre:string,segmento:string,diagonal:string,repetear:string,tipo: string,estatus:string){    
@@ -271,7 +283,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
   
   /**para el loading */
   hayClientes(){
-    if(this.ELEMENT_DATA != 0 || this.cargando ==false){
+    if(this.ELEMENT_DATA.length != 0 || this.cargando ==false){
       return true;
     }else{
       return false;
@@ -279,7 +291,7 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
   }
   /**Ayudante de loading p */
   hayClientes2(){
-    if(this.ELEMENT_DATA_SEGMENTOS != 0 || this.cargando ==false){
+    if(this.ELEMENT_DATA_SEGMENTOS.length != 0 || this.cargando ==false){
       return true;
     }else{
       return false;

@@ -84,6 +84,7 @@ export class TableRadioComponent implements OnInit {
           idUsuario : resp.container[i].idUsuario,
           usuario : resp.container[i].usuario,
           contrasena : resp.container[i].contrasena, 
+          comentario : resp.container[i].comentario, 
           snmp : resp.container[i].snmp
         })
       }
@@ -106,7 +107,7 @@ export class TableRadioComponent implements OnInit {
       
       await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
 
-        if(result.salir == false ){
+        
         try{
           this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"))
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -117,31 +118,15 @@ export class TableRadioComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }catch(Exception){}
-      }
+      
       }));
     
   }
 
-  editar(idRadio : number,  radio : string,  cveEstatus : number, estatus : string,
-    tipo : string, cveTipo : number, idRepetidora  : number,  repetidora : string,  modelo : string,  idSegmento : number,
-    segmento : string, idIp : number, ip : string,  idUsuario : number,  usuario : string, contrasena : string, snmp : string){
-    this.modelRadio.idDevice= idRadio;
-    this.modelRadio.device = radio;
-    this.modelRadio.estatus = estatus;
-    this.modelRadio.idEstatus = cveEstatus;
-    this.modelRadio.idTipo = cveTipo;
-    this.modelRadio.tipo = tipo;
-    this.modelRadio.idRepetidora = idRepetidora;
-    this.modelRadio.repetidora = repetidora;
-    this.modelRadio.modelo = modelo;
-    this.modelRadio.idSegmento = idSegmento;
-    this.modelRadio.segmento = segmento;
-    this.modelRadio.idIp = idIp;
-    this.modelRadio.ip = ip;
-    this.modelRadio.idUsuario = idUsuario;
-    this.modelRadio.usuario = usuario;
-    this.modelRadio.contrasena = contrasena;
-    this.modelRadio.snmp = snmp;
+  editar(modal : DeviceModel){
+
+    this.modelRadio = modal;
+   
       
     let dialogRef  = this.dialog.open(NewRadioComponent,
       {data: {opc : true, model : this.modelRadio, salir : true },
@@ -152,27 +137,9 @@ export class TableRadioComponent implements OnInit {
      this.paginator2.firstPage();
      this.$sub.add (dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
       try{
-        console.log(result);
         
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idRadio,this.ELEMENT_DATA, "idDevice")
-      ,1,{idDevice:result.idDevice,
-        device : result.device,
-        estatus : result.estatus,
-        idEstatus : result.idEstatus,
-        tipo : result.tipo,
-        idTipo : result.idTipo,
-        idRepetidora : result.idRepetidora,
-        repetidora : result.repetidora,
-        modelo : result.modelo,
-        idSegmento : result.idSegmento,
-        segmento : result.segmento,
-        idIp : result.idIp,
-        ip : result.ip,
-        idUsuario : result.idUsuario,
-        usuario : result.usuario,
-        contrasena :result.contrasena ,
-        snmp : result.snmp});
-        console.log(this.ELEMENT_DATA);
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice")
+      ,1,result);
         
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
       this.dataSource.paginator = this.paginator2;    
@@ -187,8 +154,6 @@ export class TableRadioComponent implements OnInit {
   
   insertar(){
     this.modelRadio.idDevice= this.mayorNumero;    
-    console.log(this.modelRadio);
-    
     let dialogRef  = this.dialog.open(NewRadioComponent,
       {data: {opc : false , model : this.modelRadio, salir : true},
       animation: { to: "bottom" },
@@ -199,24 +164,7 @@ export class TableRadioComponent implements OnInit {
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
        try{
-        this.ELEMENT_DATA.unshift({ 
-          idDevice : result.idDevice,
-          device : result.device,
-          estatus : result.estatus,
-          idEstatus : result.idEstatus,
-          tipo : result.tipo,
-          idTipo : result.idTipo,
-          idRepetidora : result.idRepetidora,
-          repetidora : result.repetidora,
-          modelo : result.modelo,
-          idSegmento : result.idSegmento,
-          segmento : result.segmento,
-          idIp : result.idIp,
-          ip : result.ip,
-          idUsuario : result.idUsuario,
-          usuario : result.usuario,
-          contrasena :result.contrasena ,
-          snmp : result.snmp});
+        this.ELEMENT_DATA.unshift(result);
         
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    

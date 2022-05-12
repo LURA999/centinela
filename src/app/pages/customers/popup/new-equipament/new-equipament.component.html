@@ -9,12 +9,12 @@
         <h2>ID:&nbsp; {{data.model.idDevice}}</h2> 
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
-        <input matInput type="text" formControlName="nombre" #nombre>
+        <input matInput type="text" formControlName="device">
         </mat-form-field>
          <br> 
         <mat-form-field appearance="fill">
         <mat-label>Estatus</mat-label>
-        <mat-select id="estatus" formControlName="estatus">
+        <mat-select id="estatus" formControlName="idEstatus">
             <mat-option selected disabled #estatus>Seleccione un estatus</mat-option>
             <mat-option value="1" >Activo</mat-option>
             <mat-option value="2">Inactivo</mat-option>
@@ -55,7 +55,7 @@
             <mat-label>Segmento</mat-label>
             <mat-select id="segmento" (closed)="tabChangeSegmento()" [disabled]="segmentos.length ==0" formControlName="idSegmento" >
                 <mat-option  selected disabled>Seleccione una segmento</mat-option>
-                <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento">{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
+                <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento"  >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
             </mat-form-field>
         <br>

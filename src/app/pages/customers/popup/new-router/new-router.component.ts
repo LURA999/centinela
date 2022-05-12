@@ -1,7 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { lastValueFrom, Subscription } from 'rxjs';
+import { DeviceService } from 'src/app/core/services/device.service';
 import { IpService } from 'src/app/core/services/ip.service';
 import { RepeaterService } from 'src/app/core/services/repeater.service';
 import { UsuarioService } from 'src/app/core/services/user.service';
@@ -18,6 +20,7 @@ export class NewRouterComponent implements OnInit {
   newModel = new DeviceModel()
   $sub = new Subscription()
   usuarios : any [] = [];
+  identificador :string = this.ruta.url.split("/")[4];
   repetidoras : any [] =[];
   ips : any [] = [];
   cveRepetidor : number =0
@@ -39,7 +42,8 @@ export class NewRouterComponent implements OnInit {
   
     
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
-  ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService, public dialogRef: MatDialogRef<NewRouterComponent>) {
+  ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService,
+   public dialogRef: MatDialogRef<NewRouterComponent>, private deviceServicio : DeviceService,private ruta : Router) {
     
    }
   
@@ -93,8 +97,6 @@ export class NewRouterComponent implements OnInit {
 }
 
 tabChangeRepetidora(rep : number){   
-  console.log(rep);
-  
   this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
       this.segmentos = resp.container;
   }));
@@ -124,16 +126,19 @@ enviar(){
   this.newModel.tipo =  document.getElementById("tipo")?.innerText+""
   this.newModel.usuario = document.getElementById("usuario")?.innerText+""
   this.newModel.comentario = this.routerForm.value.comentario
-
+  this.newModel.identificador = this.identificador.slice(0,2)
+  this.newModel.contador = Number(this.identificador.slice(2,7))
   if(this.routerForm.valid == false){
     alert("Por favor llene todos los campos")
   }else{
     if(this.data.opc == false){
       this.newModel.idDevice =  (Number(this.saveId) +1);
       this.dialogRef.close(this.newModel)
+      lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
     }else{        
       this.newModel.idDevice = this.data.model.idDevice;
       this.dialogRef.close(this.newModel)
+      lastValueFrom(this.deviceServicio.actualizarRouter(this.newModel));
     }
   }
 }

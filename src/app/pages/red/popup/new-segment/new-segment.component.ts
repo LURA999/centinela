@@ -44,12 +44,14 @@ export class NewSegmentComponent implements OnInit {
           let segmentoFinal = await this.subnetting.subnet(segmento+"/"+diagonal).info();
           let r : string []= this.rango.rango(segmentoFinal["networkAddress"], segmentoFinal["broadcastAddress"]);
           await this.segmentService.insertarSegments({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"]}).toPromise();
-         for (let x=0; x<r.length; x++) {
-          await this.ipService.insertarIp({ip:r[x],cveSegmento:this.data.id}).toPromise()
+         
+          this.data.id = (Number(this.data.id)+1)
+          for (let x=0; x<r.length; x++) {
+          await this.ipService.insertarIp({ip:r[x],cveSegmento:Number(this.data.id)}).toPromise()
          }
         this.contenedor_carga.style.display = "none";
 
-         await  this.dialogRef.close({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"], mensaje:"Se pudo"})
+         await  this.dialogRef.close({id: this.data.id,cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"], mensaje:"Se pudo"})
           
         }else{
           alert ("Llene todos los datos")

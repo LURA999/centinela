@@ -10,7 +10,7 @@
         
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
-        <input matInput  type="text" formControlName="nombre" >
+        <input matInput  type="text" formControlName="device" >
         </mat-form-field>
         <br> 
         <mat-form-field appearance="fill">
@@ -40,6 +40,10 @@
         </mat-select>
         </mat-form-field>
         <br>
+        <mat-form-field class="textarea"  appearance="outline">
+            <mat-label>Ingrese un comentario</mat-label>
+            <textarea rows="8" matInput formControlName="comentario" ></textarea>
+          </mat-form-field>
     </div>
     <div class="col">
         <h2>Equipo</h2>
@@ -52,7 +56,7 @@
             <mat-label>Segmento</mat-label>
             <mat-select id="segmento" (closed)="tabChangeSegmento()" [disabled]="segmentos.length ==0" formControlName="idSegmento" >
                 <mat-option  selected disabled>Seleccione una segmento</mat-option>
-                <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento">{{segmento.segmento}} - {{segmento.segmentoFinal}}</mat-option>
+                <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento" >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
             </mat-form-field>
         <br>

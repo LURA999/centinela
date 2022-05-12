@@ -8,6 +8,10 @@ mat-dialog-content{
     justify-content: center;
 }
 
+.textarea{
+    width:320px;
+}
+
 #botones button{
     margin-top: 10%;
     margin-right: 5px;
