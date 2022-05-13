@@ -1,4 +1,3 @@
-import { HttpClient } from "@angular/common/http";
 import {Injectable, EventEmitter, Output} from "@angular/core";    
 
 @Injectable({
@@ -6,8 +5,10 @@ import {Injectable, EventEmitter, Output} from "@angular/core";
 })
 
 export class DataService {
-  constructor (private http : HttpClient){}
+  constructor (){}
   @Output() open : EventEmitter<any> = new EventEmitter();
 
+   despejarEvent(){
+  }
  
 }

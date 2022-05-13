@@ -46,11 +46,13 @@ export class DeleteComponent implements OnInit {
           lastValueFrom(await this.servicioCliente.eliminarFalso(this.data.idCliente));
         break;
       case 6:
+        lastValueFrom(await this.deviceService.eliminarRouter(this.data.idCliente));
         break;  
       case 7:        
           lastValueFrom(await this.deviceService.eliminarRadio(this.data.idCliente));
         break;
       case 8:
+        lastValueFrom(await this.deviceService.eliminarOtros(this.data.idCliente));
         break;
     }
     this.dialogRef.close('Se ha eliminado con exito');
@@ -58,6 +60,9 @@ export class DeleteComponent implements OnInit {
 
   ngOnDestroy(): void {
     
+  }
+  salir(){
+    this.dialogRef.close()
   }
   closeDialog(){
     this.$sub.unsubscribe();

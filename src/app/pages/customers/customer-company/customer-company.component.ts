@@ -3,9 +3,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import {ThemePalette} from '@angular/material/core';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { ActivatedRoute } from '@angular/router';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom, Observable, Subscription } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
+import { DataService } from 'src/app/core/services/data.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class CustomerCompanyComponent implements OnInit {
   cargando : boolean = false;
   datos : any;
   metodo  = new RepeteadMethods()
+  $sub = new Subscription()
   load : boolean = false
    
   ELEMENT_DATA_TICKETS : any = [
@@ -30,27 +32,31 @@ export class CustomerCompanyComponent implements OnInit {
     }
   ];
 
-  links = [
+  navLinks = [
     {
-        label: 'Servicios',
-        link: './service',
-        index: 0
+      label: 'Servicios',
+      link: './',
+      index: 0
     }, {
-        label: 'Tickets',
-        link: './ticket',
-        index: 1
+      label: 'Tickets',
+      link: './ticket',
+      index: 1
     }, {
-        label: 'Contactos',
-        link: './contact',
-        index: 2
+      label: 'Contactos',
+      link: './contact',
+      index: 2
     }, {
       label: 'R.S.',
       link: './rs',
       index: 3
-    }, 
+    }, {
+      label: 'Log',
+      link: './log',
+      index: 4
+    }
   ];
   
-  activeLink = this.links[0];
+  activeLink = this.navLinks[0].link;
 
   background: ThemePalette = undefined;
   id :number = this.rutaActiva.snapshot.params["id"];
@@ -62,7 +68,7 @@ export class CustomerCompanyComponent implements OnInit {
   dataSourceTickets = new MatTableDataSource(this.ELEMENT_DATA_TICKETS);
   displayedColumnsTickets: string[] = ['id', 'nombre'];
 
-  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute ) { 
+  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute,private DataService : DataService ) { 
   }
   
 
@@ -78,25 +84,22 @@ export class CustomerCompanyComponent implements OnInit {
 
   async datosCliente() {
     try{
-     await this.serviceCustomer.buscarCliente(this.id).subscribe((resp : responseService) =>{
+    this.$sub.add(await this.serviceCustomer.buscarCliente(this.id).subscribe((resp : responseService) =>{
       this.datos = resp.container[0];
       this.load = true;
-    })
+    }))
   }catch(Exception){}
   }
 
-  eventoTab(){
-    this.padre =  ""
-    this.clickAdd =  0
-    this.clickDownload =  0    
+  agregar(form : Boolean){
+    this.DataService.open.emit(form);
   }
 
-  cambiar1(){
-      this.padre = "a"+this.clickAdd++
+  descargar(form : Boolean){
+    this.DataService.open.emit(form);
   }
 
-  cambiar2(){
-    this.padre = "d"+this.clickDownload++
+  ngOnDestroy(): void {
 
   }
 }

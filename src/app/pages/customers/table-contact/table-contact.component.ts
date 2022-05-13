@@ -14,6 +14,7 @@ import { NewContactComponent } from '../popup/new-contact/new-contact.component'
 import { RepeteadMethods } from './../../RepeteadMethods';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
+import { DataService } from 'src/app/core/services/data.service';
 
 @Component({
   selector: 'app-table-contact',
@@ -25,16 +26,22 @@ export class TableContactComponent implements OnInit {
   $sub = new Subscription();
   metodo = new RepeteadMethods();
   @Input ()hijoContact :string = ""
-  @Input ()tamanoTabla : number = 0
   id :number = Number(this.ruta.url.split("/")[3]);
   identificador :string = this.rutaActiva.snapshot.params["identificador"];
-
-  
-
   contactos : Observable<any> | undefined;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id',  'nombre',  'apPaterno',  'apMaterno',  'correo',  'estatus',  'celular',  'puesto',  'opciones'];
   cargando : boolean = false;
+
+  @Input () idContacto : boolean  = false;
+  @Input ()nombre : boolean = false;
+  @Input () apPaterno : boolean = false;
+  @Input () apMaterno : boolean = false;
+  @Input () correo : boolean = false;
+  @Input ()estatus : boolean = false;
+  @Input ()celular : boolean = false;
+  @Input () puesto : boolean = false;
+
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   mayorNumero : number = 0
@@ -44,29 +51,27 @@ export class TableContactComponent implements OnInit {
   arrayServicios : string [] = []
 
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
-    private notificationService: NotificationService,  private rol :RolService, private ruta : Router) { }
- 
-  ngOnChanges(changes: SimpleChanges): void { 
-    try{
-    let c = changes['hijoContact'];
-    if(!c.firstChange && c.currentValue != ""){
-    if(c.currentValue[0] == "a"){
-      this.insertar();
+    private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService) { 
 
-    }else if(c.currentValue[0] == "d"){
-      this.hijoContact = ""
-      this.descargar();
     }
-  }
-  }catch(Exception){
-    
-  }
-}
+ 
+
 
   ngOnInit(): void {    
     this.inicio();    
+
+
+    this.$sub.add(this.DataService.open.subscribe(res => {
+      if(res ==true || res == "contactoAgregar"){
+        this.insertar()
+      }else if(res == false){
+        this.descargar()
+      }
+      }))
     
   }
+
+
 
   descargar(){
     let workbook = new Workbook();
@@ -206,8 +211,9 @@ export class TableContactComponent implements OnInit {
       });
       
       await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+        if(result !=undefined){
         try{
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -216,7 +222,7 @@ export class TableContactComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }catch(Exception){}
-      
+    }
       }));
   }
   editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number){
@@ -229,6 +235,7 @@ export class TableContactComponent implements OnInit {
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
+      if(result !=undefined){
        try{
           this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idContacto,this.ELEMENT_DATA, "id")
         ,1,{id:idContacto,
@@ -254,7 +261,7 @@ export class TableContactComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
-    
+      }
      }))
 
   }
@@ -268,6 +275,7 @@ export class TableContactComponent implements OnInit {
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:ContactServiceModel)=>{
+      if(result !=undefined){
        try{
         this.ELEMENT_DATA.unshift(
         {id: result.cveContacto,
@@ -295,7 +303,7 @@ export class TableContactComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
-    
+      }
      }))
   }
  

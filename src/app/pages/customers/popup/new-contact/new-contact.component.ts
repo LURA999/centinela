@@ -14,9 +14,10 @@ export class NewContactComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>, private rol : RolService
   ,private contacto : ContactService) { }
+  
   contactoModel = new ContactServiceModel();
+
   ngOnInit(): void {
-    console.log(this.data);
     
   }
   async crearContacto(nombre : string, materno : string,paterno : string,correo : string,selectEstatus : number,celular :string,telefono :string

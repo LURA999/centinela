@@ -27,25 +27,23 @@ export class TableRouterComponent implements OnInit {
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   identificador :string = this.ruta.url.split("/")[4];
-  mayorNumero : number = 0
-  mayorNumeroAux : number = 0
   modelRouter = new DeviceModel();
-
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['IdDevice', 'Nombre', 'Tipo', "Modelo","Ip","Estatus",'opciones'];
   metodo = new RepeteadMethods();
 
   constructor(private dialog:NgDialogAnimationService,private ruta : Router, private rutaActiva:ActivatedRoute,
     private notificationService: NotificationService,private DataService : DataService, private deviceService : DeviceService
-    ) { }
+    ) { 
+
+    }
 
   ngOnInit(): void {
    this.llenarTabla()
-
+    
    this.$sub.add(this.DataService.open.subscribe(res => {
-    if(res ==true){
+    if(res =="equipoAgregar"){
       this.insertar()
-  
     }else{
       
     }
@@ -65,9 +63,6 @@ export class TableRouterComponent implements OnInit {
 
     this.$sub.add(this.deviceService.todosRouter(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
       if(resp.container.length !=0){
-        
-        this.mayorNumero = Number(resp.container[0].idRouter); 
-
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
           idDevice : resp.container[i].idRouter,
@@ -111,8 +106,10 @@ export class TableRouterComponent implements OnInit {
       });
       
       await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+        if(result !=undefined){
+
         try{
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"),"idDevice")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -121,33 +118,12 @@ export class TableRouterComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }catch(Exception){}
+    }
       }));
   }
 
-  editar(idRadio : number,  radio : string,  cveEstatus : number, estatus : string,
-    tipo : string, cveTipo : number, idRepetidora  : number,  repetidora : string,  modelo : string,  idSegmento : number,
-    segmento : string, idIp : number, ip : string,idIp2 : number, ip2 : string,  idUsuario : number,  usuario : string, contrasena : string, snmp : string,
-    comentario : string){
-    this.modelRouter.idDevice= idRadio;
-    this.modelRouter.device = radio;
-    this.modelRouter.estatus = estatus;
-    this.modelRouter.idEstatus = cveEstatus;
-    this.modelRouter.idTipo = cveTipo;
-    this.modelRouter.tipo = tipo;
-    this.modelRouter.idRepetidora = idRepetidora;
-    this.modelRouter.repetidora = repetidora;
-    this.modelRouter.modelo = modelo;
-    this.modelRouter.idSegmento = idSegmento;
-    this.modelRouter.segmento = segmento;
-    this.modelRouter.idIp = idIp;
-    this.modelRouter.ip = ip;
-    this.modelRouter.idIp2 = idIp2;
-    this.modelRouter.ip2 = ip2;
-    this.modelRouter.idUsuario = idUsuario;
-    this.modelRouter.usuario = usuario;
-    this.modelRouter.contrasena = contrasena;
-    this.modelRouter.snmp = snmp;
-    this.modelRouter.comentario = comentario;
+  editar(model : DeviceModel){
+    this.modelRouter = model;
     
     let dialogRef  = this.dialog.open(NewRouterComponent,
       {data: {opc : true, model : this.modelRouter, salir : true },
@@ -159,29 +135,11 @@ export class TableRouterComponent implements OnInit {
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
        
-      
+      if(result !=undefined){
+
       try{
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idRadio,this.ELEMENT_DATA, "idDevice")
-      ,1,{idDevice:result.idDevice,
-        device : result.device,
-        estatus : result.estatus,
-        idEstatus : result.idEstatus,
-        tipo : result.tipo,
-        idTipo : result.idTipo,
-        idRepetidora : result.idRepetidora,
-        repetidora : result.repetidora,
-        modelo : result.modelo,
-        idSegmento : result.idSegmento,
-        segmento : result.segmento,
-        idIp : result.idIp,
-        ip : result.ip,
-        idIp2 : result.idIp2,
-        ip2 : result.ip2,
-        idUsuario : result.idUsuario,
-        usuario : result.usuario,
-        contrasena :result.contrasena ,
-        snmp : result.snmp,
-        comentario : result.comentario});        
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice")
+      ,1,result);        
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
       this.dataSource.paginator = this.paginator2;    
       this.dataSource.sort = this.sort;
@@ -190,15 +148,13 @@ export class TableRouterComponent implements OnInit {
      })
     
     }catch(Exception){ }
+  }
      }))
   }
 
 
 
-  insertar(){
-
-    this.modelRouter.idDevice= this.mayorNumero;    
-    
+  insertar(){    
     let dialogRef  = this.dialog.open(NewRouterComponent,
       {data: {opc : false , model : this.modelRouter, salir : true},
       animation: { to: "bottom" },
@@ -208,38 +164,20 @@ export class TableRouterComponent implements OnInit {
      this.paginator2.firstPage();
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+      if(result !=undefined){
+
        try{
-        this.ELEMENT_DATA.unshift({ 
-          idDevice:result.idDevice,
-        device : result.device,
-        estatus : result.estatus,
-        idEstatus : result.idEstatus,
-        tipo : result.tipo,
-        idTipo : result.idTipo,
-        idRepetidora : result.idRepetidora,
-        repetidora : result.repetidora,
-        modelo : result.modelo,
-        idSegmento : result.idSegmento,
-        segmento : result.segmento,
-        idIp : result.idIp,
-        ip : result.ip,
-        idIp2 : result.idIp2,
-        ip2 : result.ip2,
-        idUsuario : result.idUsuario,
-        usuario : result.usuario,
-        contrasena :result.contrasena ,
-        snmp : result.snmp,
-        comentario : result.comentario});
+        this.ELEMENT_DATA.unshift(result);
         
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-        this.mayorNumero = result.idDevice
 
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
+    }
      }))
   }
 }

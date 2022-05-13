@@ -37,18 +37,23 @@ export class NewEquipamentComponent implements OnInit {
   ips : any [] = [];
   cveRepetidor : number =0
   segmentos : any []= [] ;
-    
+  idAuto : number =0;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
   ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService, public dialogRef: MatDialogRef<NewEquipamentComponent>,
-  private deviceservice : DeviceService) { 
+  private deviceService : DeviceService) { 
 
   }
   
   ngOnInit(): void {
     this.inicio();
-  
+    this.idMax();  
   }
-
+  async idMax(){
+    this.deviceService.idMaxOther().subscribe((resp:responseService)=>{
+      this.idAuto=  resp.container[0].max;
+    })
+  }
   async inicio(){
     await  this.todasRepetidoras();
     await this.todosUsuarios();
@@ -67,7 +72,6 @@ export class NewEquipamentComponent implements OnInit {
          
        }))
      }else{
-       this.saveId = this.data.model.idDevice;
        this.routerForm = this.fb.group({
         device: [ '', Validators.required],
         idEstatus: ['' , Validators.required],
@@ -82,7 +86,6 @@ export class NewEquipamentComponent implements OnInit {
         contrasena: ['', Validators.required],
         snmp: ['', Validators.required]
        });
-       this.data.model.idDevice = (Number(this.saveId) +1)
  
      }
    }
@@ -90,11 +93,9 @@ export class NewEquipamentComponent implements OnInit {
  tabChangeSegmento(){  
   let segmento : string= document.getElementById("segmento")?.innerText+""; 
   let arraySegmento :string[] =segmento.split("-")
-  console.log(arraySegmento);
   
   this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
     this.ips = resp.container
-    console.log(this.ips);
     
   }))
 
@@ -125,15 +126,13 @@ enviar(){
     alert("Por favor llene todos los campos")
   }else{
     if(this.data.opc == false){
-      this.newModel.idDevice =  (Number(this.saveId) +1);
+      this.newModel.idDevice =  this.idAuto;
       this.dialogRef.close(this.newModel)
-      lastValueFrom(this.deviceservice.insertarOtros(this.newModel))
+      lastValueFrom(this.deviceService.insertarOtros(this.newModel))
     }else{        
-      this.newModel.idDevice = this.data.model.idDevice;      
-      console.log(this.newModel);
-      
+      this.newModel.idDevice = this.data.model.idDevice;            
       this.dialogRef.close(this.newModel)
-      lastValueFrom(this.deviceservice.actualizarotros(this.newModel))
+      lastValueFrom(this.deviceService.actualizarotros(this.newModel))
     }
   }
   

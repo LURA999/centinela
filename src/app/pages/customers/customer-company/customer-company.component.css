@@ -1,3 +1,4 @@
+/**Valores por default*/
 table {
     width: 100%;
 }
@@ -9,6 +10,16 @@ mat-card {
 mat-card-title{
     margin-top: 10%;
 }
+
+/** quitar efectos del nav**/
+a:active, a:hover {
+    color: black;
+}
+
+.matTab{
+    margin-top: 45px;
+} 
+
 
 .cabecera {
     display: flex; 

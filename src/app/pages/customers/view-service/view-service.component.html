@@ -57,7 +57,7 @@
                 </mat-card-header>
                 <mat-card-content >
                     <div>
-                        <button mat-raised-button color="primary" class="agregar" (click)="abrir(true)">Agregar</button>
+                        <button mat-raised-button color="primary" class="agregar" (click)="agregar('equipoAgregar')">Agregar</button>
                     </div>
  
                      <div class = "matTab" >
@@ -67,7 +67,7 @@
                                [routerLink]="link.link"
                                [active]="activeLink == link.link"> {{link.label}} </a>
                           </nav>
-                          <router-outlet></router-outlet>
+                        <router-outlet></router-outlet>
                     </div>
                     
                 </mat-card-content>
@@ -80,10 +80,10 @@
                 </mat-card-header>
                 <mat-card-content >
                     <div>
-                        <button mat-raised-button color="primary" class="agregar">Agregar</button>
+                        <button mat-raised-button color="primary" class="agregar" (click)="agregar('ticketAgregar')">Agregar</button>
                     </div>
                     <div class="component">
-                        <app-table-tickets ></app-table-tickets>
+                      <app-table-tickets ></app-table-tickets>
                     </div>
                 </mat-card-content>
             </mat-card>
@@ -114,10 +114,10 @@
                 </mat-card-header>
                 <mat-card-content >
                     <div>
-                        <button mat-raised-button color="primary" class="agregar">Agregar</button>
+                        <button mat-raised-button color="primary" class="agregar" (click)="agregar('contactoAgregar')">Agregar</button>
                     </div>
                     <div class="component">
-                        <app-table-contact [tamanoTabla]="5"> </app-table-contact>
+                        <app-table-contact [idContacto]="true" [apMaterno]="true" [puesto]="true" [correo]="true"> </app-table-contact>
                     </div>
                 </mat-card-content>
             </mat-card>

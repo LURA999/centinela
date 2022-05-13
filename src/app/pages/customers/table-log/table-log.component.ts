@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,8 @@ import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
+import { DataService } from 'src/app/core/services/data.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-table-log',
@@ -22,6 +24,7 @@ export class TableLogComponent implements OnInit {
   @Input ()hijoLog :string = ""
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
+  $sub = new Subscription()
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id', 'tipo', 'descripcion', 'fecha', 'usuario','opciones'];
   cargando : boolean = false;
@@ -30,24 +33,21 @@ export class TableLogComponent implements OnInit {
   metodo = new RepeteadMethods();
   
   constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,  
-    private notificationService: NotificationService, private servicioLog : LogService
-   ) { }
+    private notificationService: NotificationService, private servicioLog : LogService,private DataService : DataService
+   ) { 
+     
+   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    let c = changes['hijoLog'];
-    if(!c.firstChange && c.currentValue != ""){
-      console.log(c.currentValue);
-
-    if(c.currentValue[0] == "d"){
-      this.descargar();
-    }else if(c.currentValue[0] == "a"){
-     // this.insertar();
-    }
-  }
-  }
 
   ngOnInit(): void {
     this.llenarTabla();
+    this.$sub.add(this.DataService.open.subscribe(res => {
+      if(res ==true){
+     //   this.insertar()
+      }else{
+        this.descargar();
+      }
+      }))
   }
 
   descargar(){
@@ -80,7 +80,7 @@ export class TableLogComponent implements OnInit {
   
   async llenarTabla(){
     this.cargando = false;             
-     await this.servicioLog.llamarTodo(this.id).subscribe((resp:responseService) =>{
+    this.$sub.add(await this.servicioLog.llamarTodo(this.id).subscribe((resp:responseService) =>{
       if(resp.container.length !=0){
       this.mayorNumero = resp.container[0].idLog;
       for (let i = 0; i < resp.container.length; i++) {
@@ -94,7 +94,7 @@ export class TableLogComponent implements OnInit {
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
       }
-    })
+    }))
     this.cargando = true;
 
   }
@@ -106,10 +106,10 @@ export class TableLogComponent implements OnInit {
         height:"auto", width:"300px",
       });
       
-      await dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"),"id")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -118,7 +118,11 @@ export class TableLogComponent implements OnInit {
         })
       }
       }catch(Exception){}
-      });
+      }))
+  }
+
+  ngOnDestroy(): void {
+    this.$sub.unsubscribe();
   }
   /*editar(){
     let dialogRef  = this.dialog.open(NewLogComponent,

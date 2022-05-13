@@ -27,8 +27,6 @@ export class TableEquipamentComponent implements OnInit {
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   identificador :string = this.ruta.url.split("/")[4];
-  mayorNumero : number = 0
-  mayorNumeroAux : number = 0
   modelOtro = new DeviceModel();
 
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -37,13 +35,15 @@ export class TableEquipamentComponent implements OnInit {
 
   constructor(private dialog:NgDialogAnimationService,private ruta : Router, private rutaActiva:ActivatedRoute,
     private notificationService: NotificationService,private DataService : DataService, private deviceService : DeviceService
-    ) { }
+    ) { 
+
+    }
 
   ngOnInit(): void {
    this.llenarTabla()
 
    this.$sub.add(this.DataService.open.subscribe(res => {
-    if(res ==true){
+    if(res =="equipoAgregar"){
       this.insertar()
   
     }else{
@@ -64,9 +64,7 @@ export class TableEquipamentComponent implements OnInit {
 
     this.$sub.add(this.deviceService.todosOtros(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
       
-      if(resp.container.length !=0){
-        this.mayorNumero = Number(resp.container[0].idOtro);    
-           
+      if(resp.container.length !=0){           
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
           idDevice : resp.container[i].idOtro,
@@ -90,7 +88,6 @@ export class TableEquipamentComponent implements OnInit {
           snmp : resp.container[i].snmp,
           comentario : resp.container[i].comentario
         })
-        console.log(this.ELEMENT_DATA);
 
       }
       
@@ -112,8 +109,9 @@ export class TableEquipamentComponent implements OnInit {
       });
       
       await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+        if(result !=undefined){
         try{
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"),"idDevice")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -122,6 +120,7 @@ export class TableEquipamentComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }catch(Exception){}
+      }
       }));
   }
   editar(model : DeviceModel){
@@ -136,7 +135,7 @@ export class TableEquipamentComponent implements OnInit {
      this.paginator2.firstPage();
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
-       
+      if(result !=undefined){
       try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice"),1,result);
                 
@@ -148,11 +147,11 @@ export class TableEquipamentComponent implements OnInit {
      })
     
     }catch(Exception){ }
+    }
      }))
   }
 
   insertar(){
-    this.modelOtro.idDevice= this.mayorNumero;    
     let dialogRef  = this.dialog.open(NewEquipamentComponent,
       {data: {opc : false , model : this.modelOtro, salir : true},
       animation: { to: "bottom" },
@@ -162,21 +161,24 @@ export class TableEquipamentComponent implements OnInit {
      this.paginator2.firstPage();
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+      if(result !=undefined){
+
        try{
          result.contador = Number(this.identificador.slice(2,7))
          result.identificador = this.identificador.slice(0,2)
-        this.ELEMENT_DATA.unshift(result);
         console.log(result);
         
+        this.ELEMENT_DATA.unshift(result);        
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-        this.mayorNumero = result.idDevice
 
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
+    }
      }))
+
   }
 }

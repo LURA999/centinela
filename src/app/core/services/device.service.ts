@@ -25,7 +25,7 @@ export class DeviceService {
 
   eliminarRadio(input: number) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
-    return this.http.patch<responseService>(this.local+"Devices/radio.php?id="+input,{headers});
+    return this.http.delete<responseService>(this.local+"Devices/radio.php?id="+input,{headers});
   }
 
   insertarRadio(input : DeviceModel) : Observable<responseService>{
@@ -33,6 +33,9 @@ export class DeviceService {
     return this.http.post<responseService>(this.local+"Devices/radio.php",input,{headers});
   }
 
+  idMaxRadio(): Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Devices/radio.php");
+  }
 /////////////////////////////////////
   todosRouter(identificador : string,contador: number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/router.php?identificador="+identificador+"&contador="+contador);
@@ -44,12 +47,16 @@ export class DeviceService {
 
   eliminarRouter(input: number) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
-    return this.http.patch<responseService>(this.local+"Devices/router.php?id="+input,{headers});
+    return this.http.delete<responseService>(this.local+"Devices/router.php?id="+input,{headers});
   }
 
   insertarRouter(input : DeviceModel) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
     return this.http.post<responseService>(this.local+"Devices/router.php",input,{headers});
+  }
+  
+  idMaxRotuer(): Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Devices/router.php");
   }
 ////////////////////////////////////////////
   todosOtros(identificador : string,contador: number) : Observable<responseService>{
@@ -63,7 +70,7 @@ export class DeviceService {
 
   eliminarOtros(input: number) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
-    return this.http.patch<responseService>(this.local+"Devices/radio.php?id="+input,{headers});
+    return this.http.delete<responseService>(this.local+"Devices/others.php?id="+input,{headers});
   }
 
   insertarOtros(input : DeviceModel) : Observable<responseService>{
@@ -71,8 +78,7 @@ export class DeviceService {
     return this.http.post<responseService>(this.local+"Devices/others.php",input,{headers});
   }
 
-
-
-
-
+  idMaxOther(): Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Devices/others.php");
+  }
 }

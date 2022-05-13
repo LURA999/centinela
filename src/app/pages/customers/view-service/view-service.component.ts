@@ -46,7 +46,8 @@ export class ViewServiceComponent implements OnInit {
 
 
   ngOnInit(): void {
-   
+
+
   }
 
   abrirMapa(direccion : string, ciudad : string,coordenadas : string){
@@ -57,8 +58,8 @@ export class ViewServiceComponent implements OnInit {
   }
 
 
-  abrir(form : boolean) {
-    this.DataService.open.emit(form );
+  agregar(form : string){
+    this.DataService.open.emit(form)
   }
 
 }

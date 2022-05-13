@@ -16,7 +16,6 @@ import { responseService } from 'src/app/models/responseService.model';
   styleUrls: ['./new-router.component.css']
 })
 export class NewRouterComponent implements OnInit {
-  saveId : number =0;
   newModel = new DeviceModel()
   $sub = new Subscription()
   usuarios : any [] = [];
@@ -24,6 +23,7 @@ export class NewRouterComponent implements OnInit {
   repetidoras : any [] =[];
   ips : any [] = [];
   cveRepetidor : number =0
+  idAuto : number =0;
   segmentos : any []= [] ;
   routerForm : FormGroup  = this.fb.group({
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
@@ -43,13 +43,19 @@ export class NewRouterComponent implements OnInit {
     
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
   ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService,
-   public dialogRef: MatDialogRef<NewRouterComponent>, private deviceServicio : DeviceService,private ruta : Router) {
+   public dialogRef: MatDialogRef<NewRouterComponent>, private deviceServicio : DeviceService,private ruta : Router, private deviceService : DeviceService) {
     
    }
   
   ngOnInit(): void {
     this.inicio();
-    
+    this.idMax();
+  }
+
+  async idMax(){
+    this.deviceService.idMaxRotuer().subscribe((resp:responseService)=>{
+      this.idAuto=  resp.container[0].max;
+    })
   }
 
   async inicio(){
@@ -61,11 +67,10 @@ export class NewRouterComponent implements OnInit {
          this.segmentos = resp.container;
      }));
        let arraySegmento :string[] = this.data.model.segmento.split("-")       
-       this.$sub.add (await this.ipService.selectIp(arraySegmento[0].trim(), arraySegmento[1].trim()).subscribe((resp:responseService)=>{
+       this.$sub.add (await this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
          this.ips = resp.container
        }))
      }else{
-       this.saveId = this.data.model.idDevice;
        this.data.model = this.newModel
        this.routerForm = this.fb.group({
          device: ['', Validators.required],
@@ -81,7 +86,6 @@ export class NewRouterComponent implements OnInit {
          contrasena: ['', Validators.required],
          snmp: ['', Validators.required]
        });
-       this.data.model.idDevice = (Number(this.saveId) +1)
  
      }
    }
@@ -132,7 +136,7 @@ enviar(){
     alert("Por favor llene todos los campos")
   }else{
     if(this.data.opc == false){
-      this.newModel.idDevice =  (Number(this.saveId) +1);
+      this.newModel.idDevice =  this.idAuto;
       this.dialogRef.close(this.newModel)
       lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
     }else{        

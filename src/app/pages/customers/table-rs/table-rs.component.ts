@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -13,6 +13,7 @@ import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewRsComponent } from '../popup/new-rs/new-rs.component';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
+import { DataService } from 'src/app/core/services/data.service';
 
 @Component({
   selector: 'app-table-rs',
@@ -34,25 +35,26 @@ export class TableRsComponent implements OnInit {
   metodo = new RepeteadMethods();
 
   constructor(private dialog:NgDialogAnimationService,private serviceRs : RsService, private rutaActiva:ActivatedRoute,
-    private notificationService: NotificationService,
-    ) { }
+    private notificationService: NotificationService,private DataService : DataService
+    ) { 
 
-  ngOnChanges(changes: SimpleChanges): void {
-    let c = changes['hijoRS'];
-    if(!c.firstChange && c.currentValue != ""){
-    if(c.currentValue[0] == "d"){
-      this.descargar();
-    }else if(c.currentValue[0] == "a"){
-      this.hijoRS = ""
-      this.insertar();
     }
-  }
-}
+
 
   ngOnInit(): void {
    this.llenarTabla()
+   this.$sub.add(this.DataService.open.subscribe(res => {
+    if(res ==true){
+      this.insertar()
+    }else{
+      this.descargar()
+    }
+    }))
   }
 
+  ngOnDestroy(): void {
+    this.$sub.unsubscribe()
+  }
   async descargar(){
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet("Employee Data");
@@ -113,9 +115,10 @@ export class TableRsComponent implements OnInit {
      });
 
      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+      if(result !=undefined){
       try{
       if(result.length > 0  ){
-        this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"))
+        this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator2;
         this.dataSource.sort = this.sort;
@@ -124,6 +127,7 @@ export class TableRsComponent implements OnInit {
       })
     }
     }catch(Exception){}
+  }
     }));
   }
 
@@ -136,6 +140,7 @@ export class TableRsComponent implements OnInit {
 
      this.paginator2.firstPage();
      this.$sub.add(dialogRef.afterClosed().subscribe((result:RsModel)=>{
+      if(result !=undefined){
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.cveCliente,this.ELEMENT_DATA,"id")
         ,1,{id:result.cveCliente,
@@ -152,6 +157,7 @@ export class TableRsComponent implements OnInit {
         })
        
       }catch(Exception){}
+    }
      }))
   }
   
@@ -166,7 +172,7 @@ export class TableRsComponent implements OnInit {
      this.paginator2.firstPage();
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:RsModel)=>{
-
+      if(result !=undefined){
        try{
         this.ELEMENT_DATA.unshift({id: this.mayorNumeroAux,
           rs:result.rs, fechaAlta:result.fechaEspanol, estatus:this.metodo.estatus(result.estatus),cveEstatus:result.estatus});
@@ -177,6 +183,7 @@ export class TableRsComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
+    }
      }))
   }
 }

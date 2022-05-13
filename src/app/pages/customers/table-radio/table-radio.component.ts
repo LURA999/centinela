@@ -28,8 +28,6 @@ export class TableRadioComponent implements OnInit {
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   identificador :string = this.ruta.url.split("/")[4];
-  mayorNumero : number = 0
-  mayorNumeroAux : number = 0
   metodo  = new RepeteadMethods();
   modelRadio = new DeviceModel();
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -37,13 +35,15 @@ export class TableRadioComponent implements OnInit {
   constructor(private dialog:NgDialogAnimationService,
     private notificationService: NotificationService, private DataService : DataService,
     private deviceService : DeviceService, private ruta : Router
-    ) { }
+    ) { 
+
+    }
 
   ngOnInit(): void {
    this.llenarTabla()
     
    this.$sub.add(this.DataService.open.subscribe(res => {
-    if(res ==true){
+    if(res =="equipoAgregar"){
       this.insertar()
   
     }else{
@@ -64,7 +64,6 @@ export class TableRadioComponent implements OnInit {
     this.cargando = false;             
     this.$sub.add (this.deviceService.todosRadios(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
       if(resp.container.length !=0){
-        this.mayorNumero = resp.container[0].idRadio;
                 
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -107,9 +106,9 @@ export class TableRadioComponent implements OnInit {
       
       await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
 
-        
+        if(result != undefined){          
         try{
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"),"idDevice")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -118,7 +117,9 @@ export class TableRadioComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }catch(Exception){}
-      
+      }else{
+
+      }
       }));
     
   }
@@ -137,7 +138,7 @@ export class TableRadioComponent implements OnInit {
      this.paginator2.firstPage();
      this.$sub.add (dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
       try{
-        
+      if(result !=undefined){
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice")
       ,1,result);
         
@@ -147,13 +148,13 @@ export class TableRadioComponent implements OnInit {
       setTimeout(()=>{
         this.notificationService.openSnackBar("Se edito con exito");
      })
-    
+      }
     }catch(Exception){ }
+
      }))
   }
   
   insertar(){
-    this.modelRadio.idDevice= this.mayorNumero;    
     let dialogRef  = this.dialog.open(NewRadioComponent,
       {data: {opc : false , model : this.modelRadio, salir : true},
       animation: { to: "bottom" },
@@ -163,18 +164,19 @@ export class TableRadioComponent implements OnInit {
      this.paginator2.firstPage();
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+      if(result !=undefined){
        try{
         this.ELEMENT_DATA.unshift(result);
-        
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-        this.mayorNumero = result.idDevice
 
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
+        
       }catch(Exception){}
+    }
      }))
   }
 }

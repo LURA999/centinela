@@ -46,9 +46,9 @@ export class RepeteadMethods {
   }
 
   /**Sirve para remover de forma visible una fila de la tabla */
-  arrayRemove(arr : any, index : any) { 
+  arrayRemove(arr : any, index : any, id : string) { 
     for( var i = 0; i < arr.length; i++){ 
-      if ( arr[i]["id"] === arr[index]["id"]) { 
+      if ( arr[i][id] === arr[index][id]) { 
           arr.splice(i, 1); 
       }
     }

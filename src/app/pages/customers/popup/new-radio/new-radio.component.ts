@@ -20,11 +20,12 @@ export class NewRadioComponent implements OnInit {
   segmentos : any []= [] ;
   usuarios : any [] = [];
   repetidoras : any [] =[];
+  idAuto : number =0;
+
   ips : any [] = [];
   newModel = new DeviceModel()
   identificador :string = this.ruta.url.split("/")[4];
   $sub = new Subscription()
-  saveId : number =0;
   radioForm : FormGroup  = this.fb.group({
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
     idEstatus: [this.data.model.idEstatus !=0 ? this.data.model.idEstatus : '' , Validators.required],
@@ -42,14 +43,19 @@ export class NewRadioComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService,
   private segmentoService : RepeaterService, private userService : UsuarioService,private fb:FormBuilder, public dialogRef: MatDialogRef<NewRadioComponent>
   ,private deviceService : DeviceService, private ruta : Router) {
-    this.inicio();
+  
     
    }
 
   ngOnInit(): void {   
-      
+    this.inicio();
+    this.idMax();
   }
-
+  async idMax(){
+    this.deviceService.idMaxRadio().subscribe((resp:responseService)=>{
+      this.idAuto=  resp.container[0].max;
+    })
+  }
   //cargando insertar o editar async
   async inicio(){
    await  this.todasRepetidoras();
@@ -67,7 +73,6 @@ export class NewRadioComponent implements OnInit {
         
       }))
     }else{
-      this.saveId = this.data.model.idDevice;
       this.radioForm = this.fb.group({
         device: ['', Validators.required],
         idEstatus: ['' , Validators.required],
@@ -81,7 +86,6 @@ export class NewRadioComponent implements OnInit {
         snmp:  ['', Validators.required],
         comentario : ['', Validators.required]
       });
-      this.data.model.idDevice = (Number(this.saveId) +1)
 
     }
   }
@@ -125,7 +129,7 @@ export class NewRadioComponent implements OnInit {
       alert("Por favor llene todos los campos")
     }else{
       if(this.data.opc == false){
-        this.newModel.idDevice =  (Number(this.saveId) +1);
+        this.newModel.idDevice =  this.idAuto;
         this.dialogRef.close(this.newModel)
         
         lastValueFrom(this.deviceService.insertarRadio(this.newModel))

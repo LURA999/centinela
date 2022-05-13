@@ -3,36 +3,36 @@
 <mat-card-content>
     <table mat-table [dataSource]="dataSource" style="width:100%;">
         <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef > id </th>
-        <td mat-cell *matCellDef="let element"> {{element.id}}</td>
+        <th mat-header-cell *matHeaderCellDef [hidden]="idContacto"> id </th>
+        <td mat-cell *matCellDef="let element" [hidden]="idContacto"> {{element.id}}</td>
         </ng-container>
         <ng-container matColumnDef="nombre">
-        <th mat-header-cell *matHeaderCellDef> Nombre </th>
-        <td mat-cell *matCellDef="let element">{{element.nombre}}</td>
+        <th mat-header-cell *matHeaderCellDef [hidden]="nombre"> Nombre </th>
+        <td mat-cell *matCellDef="let element" [hidden]="nombre">{{element.nombre}}</td>
         </ng-container>
-        <ng-container matColumnDef="apPaterno">
-        <th mat-header-cell *matHeaderCellDef> Apellido Pat. </th>
-        <td mat-cell *matCellDef="let element"> {{element.apPaterno}} </td>
+        <ng-container matColumnDef="apPaterno" >
+        <th mat-header-cell *matHeaderCellDef [hidden]="apPaterno"> Apellido Pat. </th>
+        <td mat-cell *matCellDef="let element" [hidden]="apPaterno"> {{element.apPaterno}} </td>
         </ng-container>
         <ng-container matColumnDef="apMaterno">
-        <th mat-header-cell *matHeaderCellDef> Apellido Mat. </th>
-        <td mat-cell *matCellDef="let element"> {{element.apMaterno}} </td>
+        <th mat-header-cell *matHeaderCellDef [hidden]="apMaterno"> Apellido Mat. </th>
+        <td mat-cell *matCellDef="let element" [hidden]="apMaterno"> {{element.apMaterno}} </td>
         </ng-container>
         <ng-container matColumnDef="correo">
-            <th mat-header-cell *matHeaderCellDef> Correo </th>
-            <td mat-cell *matCellDef="let element"> {{element.correo}} </td>
+            <th mat-header-cell *matHeaderCellDef [hidden]="correo"> Correo </th>
+            <td mat-cell *matCellDef="let element" [hidden]="correo"> {{element.correo}} </td>
         </ng-container>
         <ng-container matColumnDef="estatus">
-            <th mat-header-cell *matHeaderCellDef> Estatus</th>
-            <td mat-cell *matCellDef="let element"> {{element.estatus}} </td>
+            <th mat-header-cell *matHeaderCellDef [hidden]="estatus"> Estatus</th>
+            <td mat-cell *matCellDef="let element" [hidden]="estatus"> {{element.estatus}} </td>
         </ng-container>
         <ng-container matColumnDef="celular">
-            <th mat-header-cell *matHeaderCellDef> Celular </th>
-            <td mat-cell *matCellDef="let element" > {{element.celular}} </td>
+            <th mat-header-cell *matHeaderCellDef [hidden]="celular"> Celular </th>
+            <td mat-cell *matCellDef="let element" [hidden]="celular"> {{element.celular}} </td>
         </ng-container>
         <ng-container matColumnDef="puesto">
-            <th mat-header-cell *matHeaderCellDef> Puesto </th>
-            <td mat-cell *matCellDef="let element"> {{element.puesto}} </td>
+            <th mat-header-cell *matHeaderCellDef [hidden]="puesto"> Puesto </th>
+            <td mat-cell *matCellDef="let element" [hidden]="puesto"> {{element.puesto}} </td>
         </ng-container>
         <ng-container matColumnDef="opciones">
             <th mat-header-cell *matHeaderCellDef> Opciones </th>
@@ -52,5 +52,5 @@
     </mat-card-content>
 </div>
     <mat-paginator  #paginator
-    [pageSize]="tamanoTabla"
+    [pageSize]="5"
     [pageSizeOptions]="[5, 10, 20]"></mat-paginator>

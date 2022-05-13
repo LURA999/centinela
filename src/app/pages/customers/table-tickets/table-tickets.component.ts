@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -11,6 +11,7 @@ import { DeleteComponent } from '../popup/delete/delete.component';
 import { NewTicketComponent } from '../popup/new-ticket/new-ticket.component';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
+import { DataService } from 'src/app/core/services/data.service';
 
 @Component({
   selector: 'app-table-tickets',
@@ -19,7 +20,7 @@ import * as fs from 'file-saver';
 })
 export class TableTicketsComponent implements OnInit {
   @Input() hijoTickets :string ="";
-
+  activar : string = this.ruta.url.split("/")[4];
   ELEMENT_DATA : any = []
   metodo = new RepeteadMethods()
   displayedColumns: string[] = ['num', 'departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente','opciones'];
@@ -29,25 +30,27 @@ export class TableTicketsComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   id :number = this.rutaActiva.snapshot.params["id"];
+  
   mayorNumero : number = 0
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   constructor( private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,
-    private notificationService: NotificationService, private servicioTickets : TicketService ) { }
+    private notificationService: NotificationService, private servicioTickets : TicketService
+    ,private DataService : DataService, private ruta : Router ) {
+      
+      }
+     
 
-  ngOnChanges(changes: SimpleChanges): void {
-    let c = changes['hijoTickets'];
-    
-    if(!c.firstChange && c.currentValue != ""){      
-    if(c.currentValue[0] == "d"){
-      this.descargar()
-    }else if(c.currentValue[0] == "a"){
-      this.insertar()
-    }    
-  }
-}
 
   ngOnInit(): void {
     this.llenarTabla();
+    
+    this.$sub.add(this.DataService.open.subscribe(res => {
+      if(res ==true || res == "ticketAgregar"){
+        this.insertar()
+      }else if (res == false){
+        this.descargar()
+      }
+      })) 
   }
 
   descargar(){
@@ -121,7 +124,7 @@ export class TableTicketsComponent implements OnInit {
       this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"),"id")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;

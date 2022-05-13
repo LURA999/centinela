@@ -31,9 +31,7 @@
                     <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
                     <mat-menu #menu="matMenu">
                         <button mat-menu-item (click)="eliminar(element.idDevice)"><mat-icon>delete</mat-icon>Eliminar</button> 
-                        <button mat-menu-item (click)="editar(element.idDevice,  element.device,  element.idEstatus,  element.estatus,
-                        element.tipo, element.idTipo,  element.idRepetidora,  element.repetidora,  element.modelo,  element.idSegmento,
-                        element.segmento, element.idIp, element.ip,element.idIp2, element.ip2,  element.idUsuario,  element.usuario, element.contrasena, element.snmp, element.comentario)"
+                        <button mat-menu-item (click)="editar(element)"
                         ><mat-icon>settings</mat-icon>Editar</button>  
                     </mat-menu>
                 </td>

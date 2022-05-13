@@ -71,10 +71,10 @@
             <div >
                 <div class="cabecera" >
                     <div class="botones">
-                        <button  mat-raised-button color="primary" (click)="cambiar1()"><mat-icon>add</mat-icon>Agregar</button>
+                        <button  mat-raised-button color="primary" (click)="agregar(true)"><mat-icon>add</mat-icon>Agregar</button>
                     </div>
                     <div class="botones">
-                        <button mat-raised-button color="primary" (click)="cambiar2()"><mat-icon>download</mat-icon>Exportar</button>
+                        <button mat-raised-button color="primary" (click)="descargar(false)"><mat-icon>download</mat-icon>Exportar</button>
                     </div>
                     <div>
                         <mat-form-field style="width: auto;" appearance="standard">
@@ -86,33 +86,18 @@
             </div>
             
             </div>
-            <mat-tab-group (click)="eventoTab()">
-                <mat-tab label="Servicios" >
-                    <ng-template matTabContent>
-                        <app-table-service [hijoService]=padre [nombreEmpresa]=datos.nombre  ></app-table-service>
-                    </ng-template>
-                </mat-tab> 
-                <mat-tab label="Tickets">
-                    <ng-template matTabContent>
-                        <app-table-tickets  [hijoTickets]=padre></app-table-tickets>
-                    </ng-template>
-                </mat-tab>
-                <mat-tab label="Log">
-                    <ng-template matTabContent>
-                        <app-table-log [hijoLog]=padre></app-table-log>
-                    </ng-template>
-                </mat-tab>
-                <mat-tab label="Contactos">
-                    <ng-template matTabContent>
-                        <app-table-contact [hijoContact]=padre></app-table-contact>
-                    </ng-template>
-                </mat-tab>
-                <mat-tab label="R.S.">
-                    <ng-template matTabContent>
-                        <app-table-rs [hijoRS]=padre></app-table-rs>
-                    </ng-template>
-                </mat-tab>
-              </mat-tab-group>
+
+
+            <div class = "matTab" >
+                <nav mat-tab-nav-bar >
+                    <a mat-tab-link *ngFor="let link of navLinks"
+                       (click)="activeLink = link.link"
+                       [routerLink]="link.link"
+                       [active]="activeLink == link.link"> {{link.label}} </a>
+                  </nav>
+                  <router-outlet></router-outlet>
+            </div>
+
             </mat-card>
 
             <div class=" col-md">

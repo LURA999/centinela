@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
 import { serviceModel } from 'src/app/models/service.model';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
+import { DataService } from 'src/app/core/services/data.service';
 
 @Component({
   selector: 'app-table-service',
@@ -46,22 +47,10 @@ export class TableServiceComponent implements OnInit {
   
   constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute
     ,  private notificationService: NotificationService, private serviceService : ServiceService,
-    private city : CityService, private rs : RsService, private plan : planService) {
-      this.inicio();
+    private city : CityService, private rs : RsService, private plan : planService,private DataService : DataService) {
+
     }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    let c = changes['hijoService'];
-    if(!c.firstChange && c.currentValue != ""){
-    if(c.currentValue[0] == "d"){
-      this.descargar()
-    }else if(c.currentValue[0] == "a"){
-      this.hijoService = ""
-      this.insertar()
-    }
-  }
-    
-  }
 
   descargar(){
     let workbook = new Workbook();
@@ -103,7 +92,14 @@ export class TableServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-//    console.log(this.ultimoIdFalso);
+    this.inicio();
+    this.$sub.add(this.DataService.open.subscribe(res => {
+      if(res ==true){
+        this.insertar()
+      }else{
+        this.descargar()
+      }
+      }))
     
   }
 
@@ -186,9 +182,10 @@ export class TableServiceComponent implements OnInit {
       });
       
       this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
+        if(result !=undefined){
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"))
+          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -197,6 +194,7 @@ export class TableServiceComponent implements OnInit {
         })
       }
       }catch(Exception){}
+    }
       }));
   }
   
@@ -228,7 +226,8 @@ export class TableServiceComponent implements OnInit {
       height:"auto", width:"350px",
      });
      this.paginator2.firstPage();
-     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{       
+     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{   
+      if(result !=undefined){    
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
         ,1,{
@@ -257,6 +256,7 @@ export class TableServiceComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
+    }
      }))
   }
 
@@ -271,6 +271,7 @@ export class TableServiceComponent implements OnInit {
 
      this.paginator2.firstPage();
      this.$sub.add(await dialogRef.afterClosed().subscribe((result:serviceModel)=>{
+      if(result !=undefined){
 
        try{
       if(result.id > 0  ){
@@ -304,6 +305,7 @@ export class TableServiceComponent implements OnInit {
         })
        }
       }catch(Exception){}
+    }
      }))
   }
 
