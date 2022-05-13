@@ -145,6 +145,8 @@ export class TableServiceComponent implements OnInit {
     this.cargando = false;             
     this.$sub.add(await this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{               
       if(resp.container.length !=0){
+        console.log(resp.container);
+        
       this.mayorNumero = resp.container[0].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({
@@ -159,7 +161,7 @@ export class TableServiceComponent implements OnInit {
           cveEstatus :  resp.container[i].estatus,
           cvePlan :  resp.container[i].cvePlan,
           cveCiudad :  resp.container[i].cveCiudad,
-          identificador:((resp.container[i].identificador)+""+(resp.container[i].contador.padStart(5,"0"))),
+          identificador:((resp.container[i].identificador)+""+(resp.container[i].contador.toString().padStart(5,"0"))),
           ciudad:resp.container[i].ciudad,
           servicio:resp.container[i].servicio,
           plan:resp.container[i].plan,

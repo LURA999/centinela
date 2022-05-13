@@ -3,7 +3,7 @@
 }
 
 .navbar {
-  z-index: 2;
+  z-index: 1;
 }
 
 .navbar-brand {
@@ -145,17 +145,64 @@ img{
 }
 
 .clock{
-  font-size: 1.7vw;
+  font-size: 20px;
 }
 .time-date{
 margin-left: 2vw;
+font-size: 1.7vw;
 }
 .search{
-margin-left: 20%; 
+margin-left: 1.7vw; 
 font-family: Arial, Helvetica, sans-serif;
-font-size: 20px;
+font-size: 1vw;
+}
+
+.rigth{
+  
+  display: flex;
+  float: right;
+}
+
+.top{
+  align-self: center;
+}
+
+.left{
+  display: flex;
+  float: left;
+
+}
+
+@media screen and (max-width:610px) {
+
+mat-form-field{
+  width: 80%;
+}
+.time-date{
+display: none;
 }
 
 
+}
+
+
+
+@media screen and (max-width:500px) {
+  .time-date{
+    display: none;
+    }
+ 
+  
+  }
+  
+
+@media screen and (max-width:390px) {
+  .time-date{
+    display: none;
+    }
+    .search{
+width: 30%;      }
+  
+  }
 
 

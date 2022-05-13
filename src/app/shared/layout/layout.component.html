@@ -1,39 +1,68 @@
-<div class="navbar-container" [class.example-is-mobile]="mobileQuery.matches">
+<div class="navbar-container " [class.example-is-mobile]="mobileQuery.matches">
   <mat-toolbar class="navbar" color="primary">
 
+<div  style=" padding: 0px; margin: 0px; width: 100%;  display: inline-flex; justify-content: space-between; align-self: center; ">
+  <div class="left">
+  <div class="top">
     <button mat-icon-button (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
-
-    <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
+  </div>
+<div class="top">
+  <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
     <img  [src]="logo">
     </a>
-    <span class="navbar-spacer"></span>
+  </div>
 
-    <!--
- <mat-form-field class="search" >
-      <input class="find" type="text" matInput>
-      <mat-icon class="lupa" >search</mat-icon>
-      </mat-form-field>
-    <div class="time-date">      
-      <div nz-col nzSpan="4">
-        <div  nz-row>
-             <p style="margin-top:20px;color: #fff;font-size: 19px;font-weight: 500;">    
-              <mat-icon class="clock">schedule</mat-icon>
-              {{time | async}}</p>
-        </div>
-        <div nz-row>
-        </div>
+</div>
+<div class="search">
+
+  <mat-form-field  >
+    <input class="find" type="text" matInput>
+    <mat-icon class="lupa" >search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="rigth">
+<div class="top"> 
+    
+
+<div class="time-date">      
+  <div nz-col nzSpan="4">
+    <div  nz-row>
+         <p style="margin-top:20px;color: #fff;font-size: 19px;font-weight: 500;">    
+          <mat-icon class="clock">schedule</mat-icon>
+          {{time | async}}</p>
     </div>
+    <div nz-row>
     </div>
-   -->
+</div>
+</div>
+</div>
+
+
+   
+ 
+  <div class="top" >
+  <div class="person">
     <button mat-button [matMenuTriggerFor]="userMenu">
       <mat-icon>person</mat-icon>
       <span fxShow fxHide.xs>
         {{userName}}
       </span>
     </button>
-    <mat-menu #userMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
+  </div>
+</div>
+<div class="top">
+<button mat-button [routerLink]="['/admin/configuracion/edit']">
+  <mat-icon>settings</mat-icon>
+</button>
+</div>
+</div>
+</div>
+
+
+    <mat-menu class="menu" #userMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
 
       <a mat-menu-item [routerLink]="['/admin/configuracion']">
         <mat-icon>edit</mat-icon>
@@ -56,9 +85,7 @@
 
 
 
-    <button mat-button [routerLink]="['/admin/configuracion/edit']">
-      <mat-icon>settings</mat-icon>
-    </button>
+    
     
 
 

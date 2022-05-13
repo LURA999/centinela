@@ -45,7 +45,7 @@ import { TableEquipmentComponent } from './table-equipment/table-equipment.compo
     NewRsComponent,
     NewServiceComponent,
     ViewServiceComponent,
-    TableEquipmentComponent
+    TableEquipmentComponent,
   ],
   exports: [
     CustomerListComponent,

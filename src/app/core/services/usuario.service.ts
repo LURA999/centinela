@@ -13,6 +13,8 @@ export class UsuarioService {
   constructor(private http:HttpClient) { }
 
   login(contrasena:String, usuario:String, tipo : number)  {
+    console.log(this.local+'/Users/userLogin.php?usuario='+usuario+'&contrasena='+contrasena+'&tipo='+tipo);
+    
     return this.http.get(this.local+'/Users/userLogin.php?usuario='+usuario+'&contrasena='+contrasena+'&tipo='+tipo);
   }
 }

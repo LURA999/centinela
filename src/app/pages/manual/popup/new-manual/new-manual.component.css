@@ -1,0 +1,67 @@
+.boton {
+    margin-right: 5px;
+    background-color: #3f51b5;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    box-shadow:1px 1px 4px #b6b6b6;
+    cursor: pointer;
+}
+
+.import {
+    text-align: center;
+    margin-block: auto;
+}
+.tittle{
+    background-color:darkgrey;   
+}
+
+mat-card-header{
+      
+    font-size: 2vw 
+}
+button{
+    background-color: #3f51b5;
+    color: white;
+}
+
+h3,h4,p{
+    font-family: Roboto, Arial, sans-serif;
+  }
+  
+  .uploadzone {
+    min-height: 4vw;
+    min-width: 4vw;
+    display: table;
+    width: 100%;
+    height: 100px;
+    background-color:   #eee;
+    border: grove 1px #111;
+  }
+  
+  .text-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .centered {
+    font-family: sans-serif;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align:center;
+  }
+  mat-icon{
+display: flex; 
+
+margin-left: 200px;}
+
+.justify-content-around{
+    margin-top: 10px;
+}
+h2{
+    text-align: center;
+}
+mat-select{
+  width: 200%;
+}

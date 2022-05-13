@@ -41,8 +41,9 @@ export class LoginUsuarioComponent implements OnInit {
     if(this.formSesion.valid){
     this.usuarioServicio.login(btoa(this.formSesion.controls['correo'].value),btoa(this.formSesion.controls['contrasena'].value),0).subscribe((response:any) =>{
       if(response.status === "ok"){
+        
         this.auth.crearSesion( response.container);
-        location.reload();
+       location.reload(); 
       }else{
         alert(response.info)
       }
