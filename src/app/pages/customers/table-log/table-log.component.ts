@@ -42,7 +42,7 @@ export class TableLogComponent implements OnInit {
   ngOnInit(): void {
     this.llenarTabla();
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res ==true){
+      if(res.abrir ==true){
      //   this.insertar()
       }else{
         this.descargar();

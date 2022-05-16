@@ -13,7 +13,7 @@ export class ContactService {
   constructor(private http : HttpClient) { }
 
   /**Carpeta de repetidores */
-  llamarContacto(cve : number){        
+  llamarContacto(cve : number) {        
     return this.http.get(this.local+"Repeater/contact.php?id="+cve);
   }
 
@@ -30,12 +30,18 @@ export class ContactService {
   }
 
   /**Carpeta de servicios */
+  llamarTodosContactos() : Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Services/contacts.php?todos=true");  
+  }
+
   llamarContactos_tServicos(cve : number): Observable<responseService>{        
     return this.http.get<responseService>(this.local+"Services/contacts.php?cve="+cve);
   }
+
   llamarContactos_tServicos_servicios(cve : number) : Observable<responseService>{        
     return this.http.get<responseService>(this.local+"Services/contacts.php?cveCliente="+cve);
   }
+  
   llamarContactos_maxId(): Observable<responseService>{        
     return this.http.get<responseService>(this.local+"Services/contacts.php");
   }
@@ -45,8 +51,13 @@ export class ContactService {
     return this.http.patch<responseService>(this.local+"Services/contacts.php?cve="+cve, {headers});
   }
 
+  /**Este trae todos los servicios del cliente */
   llamarContactos_tContactos_cliente(cve : number, identificador : string) : Observable<responseService>{ 
     return this.http.get<responseService>(this.local+"Services/contacts.php?cveCliente="+cve+"&identificador="+identificador);
+  }
+
+  llamar_Contactos_OnlyServicio(cve : number, identificador : number, condicion:number){
+    return this.http.get<responseService>(this.local+"Services/contacts.php?cve="+cve+"&contador="+identificador+"&condicion="+condicion);
   }
 
   insertServicios_tServicos(input :ContactServiceModel):Observable<responseService>{
@@ -57,5 +68,11 @@ export class ContactService {
   updateContacto_tServicio(input :ContactServiceModel):Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')
     return this.http.patch<responseService>(this.local+"Services/contacts.php",input, {headers});
+  }
+
+  /**Insertar servicio y contacto */
+  insertarContacto_Servicio(input :ContactServiceModel){
+    let headers = new HttpHeaders().set('Content-type','Application/json')
+    return this.http.post<responseService>(this.local+"Services/contacts.php",input, {headers});
   }
 }

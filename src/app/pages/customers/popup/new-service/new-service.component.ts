@@ -24,9 +24,11 @@ export class NewServiceComponent implements OnInit {
   }
 
   async ultimoIDFalso() {
+    
+    
     this.$sub.add(await this.service.llamarService_maxIdFalso(this.data.idEmpresa+""+this.data.Empresa[0]).subscribe((resp:responseService)=>{
       try{
-      this.ultimoIdFalso = resp.container[0].contador
+      this.ultimoIdFalso = resp.container[0].contador      
       }catch(Exception){}
     }))
   }
@@ -47,7 +49,7 @@ export class NewServiceComponent implements OnInit {
     
     if(this.data.opc == false){
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 && longitud.length > 0 && direccion.length > 0 && dominio.length > 0 
-        && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){
+        && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){          
           this.serviceM.identificador = ((this.data.idEmpresa+""+this.data.Empresa)+""+((Number(this.ultimoIdFalso)+1).toString().padStart(5,"0")))
           this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
           this.serviceM.id = Number(this.data.idNuevo)+1;
@@ -62,10 +64,11 @@ export class NewServiceComponent implements OnInit {
     }else{
       this.serviceM.identificador = this.data.identificador;
       this.serviceM.id = this.data.idServicio
-      console.log(this.serviceM);
 
       lastValueFrom(this.service.updateService(this.serviceM));
       this.dialogRef.close(this.serviceM)
     }
   }
+
+ 
 }

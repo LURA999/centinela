@@ -24,6 +24,8 @@ export class NewRouterComponent implements OnInit {
   ips : any [] = [];
   cveRepetidor : number =0
   idAuto : number =0;
+  gIp : number =0
+  gIp2 : number =0 
   segmentos : any []= [] ;
   routerForm : FormGroup  = this.fb.group({
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
@@ -158,6 +160,13 @@ async todosUsuarios(){
     this.usuarios = resp.container
     
   }))
+}
+guardarIp(ip : number){
+  this.gIp = ip
+}
+
+guardarIp2(ip : number){
+  this.gIp2 = ip
 }
 
 ngOnDestroy(): void {

@@ -45,9 +45,9 @@ export class TableTicketsComponent implements OnInit {
     this.llenarTabla();
     
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res ==true || res == "ticketAgregar"){
+      if(res.abrir ==true || res == "ticketAgregar"){
         this.insertar()
-      }else if (res == false){
+      }else if (res.abrir == false){
         this.descargar()
       }
       })) 

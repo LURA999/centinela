@@ -117,7 +117,7 @@
                         <button mat-raised-button color="primary" class="agregar" (click)="agregar('contactoAgregar')">Agregar</button>
                     </div>
                     <div class="component">
-                        <app-table-contact [idContacto]="true" [apMaterno]="true" [puesto]="true" [correo]="true"> </app-table-contact>
+                        <app-table-contact [idContacto]="true" [apMaterno]="true" [puesto]="true" [correo]="true" [idServicioDefault]="dato.container[0].idServicio"> </app-table-contact>
                     </div>
                 </mat-card-content>
             </mat-card>

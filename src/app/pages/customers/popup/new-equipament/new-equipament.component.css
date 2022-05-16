@@ -1,7 +1,12 @@
+/**Acomodando inputs*/
+
 mat-dialog-content{
     text-align: justify;
 }
 
+.mat-form-field{
+    width: 80%;
+}
 
 #botones{
     display:flex; 
@@ -12,14 +17,4 @@ mat-dialog-content{
     margin-top: 10%;
     margin-right: 5px;
     margin-left: 5px;
-}
-
-.textarea{
-    width:320px;
-}
-
-@media screen and (max-width: 670px){
-    .textarea{
-        width: 100%;
-    }
 }

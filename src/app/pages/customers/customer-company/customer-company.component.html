@@ -71,10 +71,10 @@
             <div >
                 <div class="cabecera" >
                     <div class="botones">
-                        <button  mat-raised-button color="primary" (click)="agregar(true)"><mat-icon>add</mat-icon>Agregar</button>
+                        <button  mat-raised-button color="primary" (click)="agregar(true,datos.nombre)"><mat-icon>add</mat-icon>Agregar</button>
                     </div>
                     <div class="botones">
-                        <button mat-raised-button color="primary" (click)="descargar(false)"><mat-icon>download</mat-icon>Exportar</button>
+                        <button mat-raised-button color="primary" (click)="descargar(false,datos.nombre)"><mat-icon>download</mat-icon>Exportar</button>
                     </div>
                     <div>
                         <mat-form-field style="width: auto;" appearance="standard">

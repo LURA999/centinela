@@ -38,6 +38,8 @@ export class NewEquipamentComponent implements OnInit {
   cveRepetidor : number =0
   segmentos : any []= [] ;
   idAuto : number =0;
+  gIp : number =0
+  gIp2 : number =0  
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
   ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService, public dialogRef: MatDialogRef<NewEquipamentComponent>,
@@ -138,20 +140,30 @@ enviar(){
   
 }
 
-//Peticiones
-async todasRepetidoras() {
-  this.$sub.add (await this.servicioRepetidora.llamarRepitdores().subscribe((resp:responseService)=>{
-    this.repetidoras = resp.container
-  }));
-}
-async todosUsuarios(){
-  this.$sub.add ( await this.userService.todosUsuarios().subscribe((resp:responseService)=>{
-    this.usuarios = resp.container
-    
-  }))
-}
+  //Peticiones
+  async todasRepetidoras() {
+    this.$sub.add (await this.servicioRepetidora.llamarRepitdores().subscribe((resp:responseService)=>{
+      this.repetidoras = resp.container
+    }));
+  }
+  async todosUsuarios(){
+    this.$sub.add ( await this.userService.todosUsuarios().subscribe((resp:responseService)=>{
+      this.usuarios = resp.container
+      
+    }))
+  }
 
-ngOnDestroy(): void {
-  this.$sub.unsubscribe();
-}
+  ngOnDestroy(): void {
+    this.$sub.unsubscribe();
+  }
+
+  guardarIp(ip : number){
+    this.gIp = ip
+  }
+
+  guardarIp2(ip : number){
+    this.gIp2 = ip
+  }
+
+
 }

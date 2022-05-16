@@ -25,6 +25,7 @@ import { NewRadioComponent } from './popup/new-radio/new-radio.component';
 import { NewRouterComponent } from './popup/new-router/new-router.component';
 import { TableRadioComponent } from './table-radio/table-radio.component';
 import { TableRouterComponent } from './table-router/table-router.component';
+import { MAT_TABS_CONFIG } from '@angular/material/tabs';
 
 @NgModule({
   imports: [
@@ -60,6 +61,9 @@ import { TableRouterComponent } from './table-router/table-router.component';
   exports: [
     CustomerListComponent,
     NewClientComponent
+  ],
+  providers: [
+    { provide: MAT_TABS_CONFIG, useValue: { animationDuration: '0ms' } }
   ]
 })
 export class CustomersModule { }

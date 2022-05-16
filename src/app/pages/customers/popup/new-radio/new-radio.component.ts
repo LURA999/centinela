@@ -21,7 +21,6 @@ export class NewRadioComponent implements OnInit {
   usuarios : any [] = [];
   repetidoras : any [] =[];
   idAuto : number =0;
-
   ips : any [] = [];
   newModel = new DeviceModel()
   identificador :string = this.ruta.url.split("/")[4];
@@ -157,5 +156,7 @@ export class NewRadioComponent implements OnInit {
   ngOnDestroy(): void {
     this.$sub.unsubscribe();
   }
+
+
 
 }

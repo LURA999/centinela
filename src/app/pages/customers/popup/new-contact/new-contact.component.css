@@ -1,24 +1,23 @@
-.container {
-    text-align: center;
-}
+
+/**Ajustando el orden de los input*/
+
 mat-dialog-content{
-    text-align: center;
-}
-h2{
-    text-align: center;
+    text-align: justify;
 }
 
-#botones{
+
+.mat-form-field{
+    width: 80%;
+}
+
+#botones , button{
     display:flex; 
     justify-content: center;
-}
-
-#botones button{
     margin-right: 5px;
     margin-left: 5px;
 }
 
-
+/***Quitando peculiaridad del input (flechitas)*/
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 

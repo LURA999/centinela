@@ -32,7 +32,7 @@ export class TableServiceComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;  
   @Input() hijoService :string ="";
-  @Input() nombreEmpresa :string ="";
+  nombreEmpresa :string ="";
 
   id :number = this.rutaActiva.snapshot.params["id"];
   mayorNumero : number = 0
@@ -94,7 +94,9 @@ export class TableServiceComponent implements OnInit {
   ngOnInit(): void {
     this.inicio();
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res ==true){
+      if(res.abrir ==true){
+        
+        this.nombreEmpresa = res.nombreEmpresa
         this.insertar()
       }else{
         this.descargar()
@@ -201,11 +203,12 @@ export class TableServiceComponent implements OnInit {
   editar(idServicio : number, nombre : string, rs :string, idRazonSocial : number, latitud : string, longitud : string,
     dominio :string, direccion : string, cvePlan :number, cveEstatus : number,cveCiudad : number, identificador : string, ciudad :number, 
     servicio : string){
- 
+      console.log();
+      
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc : true,
         idEmpresa: this.id,
-        Empresa: this.nombreEmpresa[0],
+       //Empresa: this.nombreEmpresa[0],
         idServicio: idServicio, 
         arrayCiudad:this.arrayCiudades, 
         arrayPlan:this.arrayPlan,
@@ -227,7 +230,9 @@ export class TableServiceComponent implements OnInit {
      });
      this.paginator2.firstPage();
      this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{   
-      if(result !=undefined){    
+      console.log(result);
+      
+      if(result !=undefined || result != ""){    
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
         ,1,{
@@ -256,11 +261,13 @@ export class TableServiceComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}
-    }
+      }
      }))
   }
 
  async insertar(){   
+   console.log(this.nombreEmpresa);
+   
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc: false,idEmpresa: this.id,
         Empresa: this.nombreEmpresa[0] ,idNuevo: this.mayorNumero, arrayCiudad: 
@@ -276,7 +283,6 @@ export class TableServiceComponent implements OnInit {
        try{
       if(result.id > 0  ){
         this.ELEMENT_DATA.unshift({
-          
           id: result.id,
           nombre:result.nombre,
           servicio:result.nombre,

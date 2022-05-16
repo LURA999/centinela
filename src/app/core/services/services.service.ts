@@ -27,7 +27,7 @@ export class ServiceService {
     }
 
     insertService(input : serviceModel) : Observable<responseService> {
-        let headers = new HttpHeaders().set('Content-type','Application/json');
+        let headers = new HttpHeaders().set('Content-type','Application/json');        
         return this.http.post<responseService>(this.local+"Services/services.php", input, {headers});
     }
 

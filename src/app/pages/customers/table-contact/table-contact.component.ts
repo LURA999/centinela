@@ -15,6 +15,7 @@ import { RepeteadMethods } from './../../RepeteadMethods';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
 import { DataService } from 'src/app/core/services/data.service';
+import { ServiceService } from 'src/app/core/services/services.service';
 
 @Component({
   selector: 'app-table-contact',
@@ -42,6 +43,9 @@ export class TableContactComponent implements OnInit {
   @Input ()celular : boolean = false;
   @Input () puesto : boolean = false;
 
+
+  @Input() idServicioDefault : number = 0;
+
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   mayorNumero : number = 0
@@ -49,22 +53,23 @@ export class TableContactComponent implements OnInit {
 
   arrayRol : string [] = []
   arrayServicios : string [] = []
+  arrayContactos : string [] = []
+  arrayContactos2 : string [] = []
 
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
-    private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService) { 
-
+    private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
+    , private services : ServiceService) { 
+      
     }
  
 
 
   ngOnInit(): void {    
     this.inicio();    
-
-
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res ==true || res == "contactoAgregar"){
+      if(res.abrir ==true || res == "contactoAgregar"){
         this.insertar()
-      }else if(res == false){
+      }else if(res.abrir == false){
         this.descargar()
       }
       }))
@@ -112,10 +117,11 @@ export class TableContactComponent implements OnInit {
     await this.ultimoID()
     await this.todoRol()
     await this.buscarServicios()
-    if(this.id != undefined && this.identificador == undefined)
+    if(this.id != undefined && this.identificador == undefined){
       await this.llenarTablaContactoEmpresa()
-    else
+    }else{
       await this.llenarTablaContactoServicio()
+    }
   }
   async ultimoID(){
     await  this.$sub.add(this.serviceContact.llamarContactos_maxId().subscribe((resp:responseService) => {
@@ -132,18 +138,23 @@ export class TableContactComponent implements OnInit {
   }
 
   async buscarServicios(){
-    await  this.$sub.add(this.serviceContact.llamarContactos_tServicos_servicios(this.id).subscribe((resp:responseService) => {
+    await  this.$sub.add(this.services.llamarTodo(this.id).subscribe((resp:responseService) => {
       this.arrayServicios = resp.container;
+      console.log(resp);
+      
     }))
   }
 
   async llenarTablaContactoEmpresa(){
+    console.log("vista empresa");
+
     this.cargando = false;
-    await this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{       
-      if(resp.container.length !=0){
-        this.mayorNumero = resp.container[0].idContacto;
+    await this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{  
+      if(resp.container.length !=0){        
+      this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
-        this.ELEMENT_DATA.push({ id:resp.container[i].idContacto,
+        this.ELEMENT_DATA.push({ 
+        id:resp.container[i].idContacto,
         nombre:resp.container[i].nombre,
         apPaterno:resp.container[i].apellidoPaterno,
         apMaterno:resp.container[i].apellidoMaterno,
@@ -156,7 +167,8 @@ export class TableContactComponent implements OnInit {
         idServicio:resp.container[i].idServicio,
         idRol:resp.container[i].cveRol,
         servicio : resp.container[i].servicio,
-        rol : resp.container[i].rol
+        rol : resp.container[i].rol,
+        contrasena: resp.container[i].contrasena
         })   
       }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -166,16 +178,21 @@ export class TableContactComponent implements OnInit {
       this.mayorNumero = this.mayorNumeroUltimo;
     }
     }));
+    await this.llamarContactos2()
+
     this.cargando = true;
   }
 
   async llenarTablaContactoServicio(){
-    this.cargando = false;
-    await this.$sub.add( this.serviceContact.llamarContactos_tContactos_cliente(this.id,this.identificador.slice(0,2)).subscribe((resp:any) =>{            
-      if(resp.container.length !=0){
+    console.log("vista servicio");
+    
+    this.cargando = false;        
+    await this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),2).subscribe((resp:any) =>{   
+      if(resp.container.length !=0){        
         this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
-        this.ELEMENT_DATA.push({ id:resp.container[i].idContacto,
+        this.ELEMENT_DATA.push({ 
+        id:resp.container[i].idContacto,
         nombre:resp.container[i].nombre,
         apMaterno:resp.container[i].apellidoMaterno,
         apPaterno:resp.container[i].apellidoPaterno,
@@ -188,8 +205,8 @@ export class TableContactComponent implements OnInit {
         idServicio:resp.container[i].idServicio,
         idRol:resp.container[i].cveRol,
         servicio : resp.container[i].servicio,
-        rol : resp.container[i].rol
-
+        rol : resp.container[i].rol,
+        contrasena: resp.container[i].contrasena
         })   
       }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -199,6 +216,9 @@ export class TableContactComponent implements OnInit {
       this.mayorNumero = this.mayorNumeroUltimo;
     }
     }));
+
+    await this.llamarContactosSelect_detalles()
+
     this.cargando = true;
   }
 
@@ -225,12 +245,12 @@ export class TableContactComponent implements OnInit {
     }
       }));
   }
-  editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number){
+  editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number, contrasena:string){
     let dialogRef  = this.dialog.open(NewContactComponent,
       {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno, 
-        correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol, salir : true },
+        correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol, contrasena : contrasena, opcTab : true },
       animation: { to: "bottom" },
-      height:"auto", width:"350px",
+      height:"auto", width:"70%",
      });
 
      this.paginator2.firstPage();
@@ -266,11 +286,12 @@ export class TableContactComponent implements OnInit {
 
   }
 
-  insertar(){
+  insertar(){    
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, proximoID: this.mayorNumero, salir : true },
+      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, 
+        idCliente: this.id, salir : true, arrayContactos: this.arrayContactos, idServicioDefault:this.idServicioDefault },
       animation: { to: "bottom" },
-      height:"auto", width:"350px",
+      height:"auto", width:"70%"
      });
 
      this.paginator2.firstPage();
@@ -306,6 +327,34 @@ export class TableContactComponent implements OnInit {
       }
      }))
   }
+
+  //Este lo que hace es traer los contactos que no estan en la vista-servicio 
+  llamarContactosSelect_detalles(){       
+    this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),1).subscribe((resp : responseService)=>{
+      this.arrayContactos = resp.container            
+    }))
+  }
+
+  //Este lo que hace es traer los contactos que unicamente los contactos de un servicio 
+  llamarContactos2(){    
+   this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,-1,3).subscribe((resp : responseService)=>{
+      this.arrayContactos = resp.container            
+    }))
+  }
+
+  mensajeFila(objeto : any) : string {
+      let mensaje : string = 
+      "Nombre: "+objeto.nombre+
+      "\nAp. Materno: "+objeto.apPaterno+
+      "\nAp. Paterno: "+objeto.apMaterno+
+      "\nCorreo: "+objeto.correo+
+      "\nEstatus: "+this.metodo.estatus(objeto.cveEstatus)+
+      "\nCelular: "+objeto.celular+
+      "\nPuesto: "+objeto.puesto+
+      "\nTelefono: "+objeto.telefono+
+      "\nServicio: " + objeto.servicio+
+      "\nRol: " + objeto.rol;
+      return mensaje
+  }
  
-  
 }

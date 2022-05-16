@@ -5,7 +5,6 @@
 <mat-dialog-content>
     <div class="container row" >  
     <div class="col">
-        <br>
         <h2 >ID:&nbsp; {{idAuto}}</h2> 
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
@@ -61,17 +60,33 @@
         <br>
         <mat-form-field appearance="fill">
         <mat-label>Ip</mat-label>
-        <mat-select id="ip"  [disabled]="ips.length == 0" formControlName="idIp">
+        <mat-select id="ip"  [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value)" formControlName="idIp">
             <mat-option selected disabled>Seleccione una ip</mat-option>
-            <mat-option *ngFor="let p of ips" [value]="p.idIp">{{p.ip}}</mat-option>
+            <mat-option *ngFor="let p of ips" [disabled]="p.idIp == gIp2" [value]="p.idIp">
+                <ng-container *ngIf="p.idIp !=gIp2; then thenTemplate; else elseTemplate"></ng-container>
+                <ng-template #thenTemplate>
+                    {{p.ip}}
+                </ng-template>
+                <ng-template #elseTemplate>
+                    <span style="color: red;">{{p.ip}}</span>
+                </ng-template>
+            </mat-option>
         </mat-select>
         </mat-form-field>
         <br>
         <mat-form-field appearance="fill">
             <mat-label> Ip publica</mat-label>
-            <mat-select id="ip2" [disabled]="ips.length == 0" formControlName="idIp2" >
+            <mat-select id="ip2" [disabled]="ips.length == 0" (selectionChange)="guardarIp2($event.value)" formControlName="idIp2" >
                 <mat-option selected disabled>Seleccione otra Ip</mat-option>
-                <mat-option *ngFor="let p of ips" [value]="p.idIp">{{p.ip}}</mat-option>
+                <mat-option *ngFor="let p of ips" [value]="p.idIp" [disabled]="p.idIp == gIp">
+                    <ng-container *ngIf="p.idIp !=gIp; then thenTemplate; else elseTemplate"></ng-container>
+                    <ng-template #thenTemplate>
+                        {{p.ip}}
+                    </ng-template>
+                    <ng-template #elseTemplate>
+                        <span style="color: red;">{{p.ip}}</span>
+                    </ng-template>
+                </mat-option>
             </mat-select>
             </mat-form-field>
         <div>

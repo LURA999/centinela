@@ -12,5 +12,6 @@ export class ContactServiceModel {
     cveServicio : number = 0
     rol : string = ""
     servicio : string =""
+    contrasena : string = ""
 
 }

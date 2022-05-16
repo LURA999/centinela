@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -27,24 +27,24 @@ export class TableRsComponent implements OnInit {
   @Input ()hijoRS :string = ""
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-  id :number = this.rutaActiva.snapshot.params["id"];
+  id :number = Number(this.rutaActiva.url.split("/")[3]);
   mayorNumero : number = 0
   mayorNumeroAux : number = 0
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['rs', 'fechaAlta', 'estatus','opciones'];
   metodo = new RepeteadMethods();
 
-  constructor(private dialog:NgDialogAnimationService,private serviceRs : RsService, private rutaActiva:ActivatedRoute,
+  constructor(private dialog:NgDialogAnimationService,private serviceRs : RsService, private rutaActiva:Router,
     private notificationService: NotificationService,private DataService : DataService
     ) { 
 
     }
 
 
-  ngOnInit(): void {
+  ngOnInit(): void {      
    this.llenarTabla()
    this.$sub.add(this.DataService.open.subscribe(res => {
-    if(res ==true){
+    if(res.abrir ==true){
       this.insertar()
     }else{
       this.descargar()

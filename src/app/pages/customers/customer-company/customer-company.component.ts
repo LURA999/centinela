@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {ThemePalette} from '@angular/material/core';
 import { CustomerService } from 'src/app/core/services/customer.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { lastValueFrom, Observable, Subscription } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
@@ -68,7 +68,11 @@ export class CustomerCompanyComponent implements OnInit {
   dataSourceTickets = new MatTableDataSource(this.ELEMENT_DATA_TICKETS);
   displayedColumnsTickets: string[] = ['id', 'nombre'];
 
-  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute,private DataService : DataService ) { 
+  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute,private DataService : DataService, private router : Router ) { 
+    let diagonal = this.router.url.split("/",6)[4];
+    if(diagonal != undefined){
+      this.activeLink = "./"+diagonal
+    }    
   }
   
 
@@ -91,12 +95,12 @@ export class CustomerCompanyComponent implements OnInit {
   }catch(Exception){}
   }
 
-  agregar(form : Boolean){
-    this.DataService.open.emit(form);
+  agregar(form : Boolean,nombreEmpresa:string){
+    this.DataService.open.emit({abrir:form, nombreEmpresa : nombreEmpresa});
   }
 
-  descargar(form : Boolean){
-    this.DataService.open.emit(form);
+  descargar(form : Boolean,nombreEmpresa : string){
+    this.DataService.open.emit({abrir:form, nombreEmpresa : nombreEmpresa});
   }
 
   ngOnDestroy(): void {
