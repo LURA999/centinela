@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { NewManualComponent } from './popup/new-manual/new-manual.component';
 import { DeleteManualComponent } from './popup/delete-manual/delete-manual.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { EditManualComponent } from './popup/edit-manual/edit-manual.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ManualComponent,
     NewManualComponent,
     DeleteManualComponent,
-    FileDragNDropDirective
+    FileDragNDropDirective,
+    EditManualComponent
   ],
   imports: [
     CommonModule,

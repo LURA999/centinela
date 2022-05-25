@@ -1,12 +1,13 @@
 .boton {
-    margin-right: 5px;
+   
     background-color: #3f51b5;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
     color: white;
     font-weight: 500;
     box-shadow:1px 1px 4px #b6b6b6;
     cursor: pointer;
+    font-size: 12px;
 }
 
 .import {
@@ -29,6 +30,9 @@ button{
 h3,h4,p{
     font-family: Roboto, Arial, sans-serif;
   }
+  h4{
+    width: 250px;
+  }
   
   .uploadzone {
     min-height: 4vw;
@@ -48,20 +52,48 @@ h3,h4,p{
   .centered {
     font-family: sans-serif;
     font-size: 1.3em;
-    font-weight: bold;
+    font-weight: ligth;
     text-align:center;
   }
-  mat-icon{
-display: flex; 
+  .arrow{
 
-margin-left: 200px;}
+text-align: center;}
 
 .justify-content-around{
     margin-top: 10px;
 }
 h2{
     text-align: center;
+    font-size: 25px;
 }
 mat-select{
   width: 200%;
 }
+.cancelar{
+  background-color:  rgb(165, 42, 42);
+
+}
+
+@media screen and (max-width:775px) {
+  h2{
+      font-size: 20px;
+  }
+ 
+        mat-select {
+            width: 80%;
+        }
+        
+        .mat-form-field {
+            width: 100%;
+           
+        }
+
+        .justify-content-around{
+          margin-top: 10px;
+          margin-right: 10px;
+      }
+     
+    
+    }
+
+

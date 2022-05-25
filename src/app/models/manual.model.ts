@@ -1,5 +1,5 @@
 export class ManualModel {
-    
+    id?:number=0
     nombre:string=""
     ubicacion:string=""
     fecha:string=""

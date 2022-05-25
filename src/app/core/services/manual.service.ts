@@ -14,6 +14,15 @@ export class ManualService {
   
     return this.http.get(this.local+"Manual/manual.php");
   }
+  llamarManualbyuser(user:string){
+  
+    return this.http.get(this.local+"Manual/manual.php?user="+user);
+  }
+
+  llamarManualbycount(count:string){
+  
+    return this.http.get(this.local+"Manual/manual.php?count="+count);
+  }
 
   
 

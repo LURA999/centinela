@@ -1,10 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { count } from 'console';
 import { read } from 'fs';
+import { max } from 'moment';
 import { lastValueFrom } from 'rxjs';
+import { AsuntoService } from 'src/app/core/services/asunto.service';
 import { ManualService } from 'src/app/core/services/manual.service';
 import { ManualModel } from 'src/app/models/manual.model';
+import { resourceLimits } from 'worker_threads';
 interface asunto {
   value: number;
   viewValue: string;
@@ -15,31 +19,40 @@ interface asunto {
   styleUrls: ['./new-manual.component.css']
 })
 export class NewManualComponent implements OnInit {
+  count:string=""
   manualmodel=new ManualModel()
-  asuntos: asunto[] = [
-    {value: 1, viewValue: 'Ninguno'},
-    {value: 2, viewValue: 'Configurar radios'},
-    {value: 3, viewValue: 'Cambio de frecuencias'},
-    {value: 4, viewValue: 'Tunel'},
-    {value: 5, viewValue: 'VPN'},
-  ];
-  selectedAsunto = this.asuntos[0].value;
+  asuntos: asunto[] = [];
+  selectedasunto:number =0;
    archivo:string=""
   public files: any [] = [];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private manualservice :ManualService
-  ,private _snackBar: MatSnackBar, public dialogRef: MatDialogRef<NewManualComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private asuntoservice:AsuntoService,private manualservice :ManualService
+  ,private _snackBar: MatSnackBar, public dialogRef: MatDialogRef<NewManualComponent>) { 
+   
+    
+
+  }
   public lector: any [] = [];  
   public arr: File [] = []; 
   ids : number [] =[]
   ngOnInit(): void {
-  /* let x =  localStorage.getItem('sesion')
-let info = this.parseJwt(x!!)
 
-console.log(info);
-*/
+this.llamarasunto();
+
+
+
+
   }
 
+async llamarasunto(){
+ await this.asuntoservice.llamarAsunto().toPromise().then( (result : any) =>{
+for(let i=0;i<result.container.length;i++){
+this.selectedasunto=result.container[0]["idAsunto"]
+this.asuntos.push({value:result.container[i]["idAsunto"], viewValue:result.container[i]["nombre"] })
 
+}
+
+  })
+}
 
 
 
@@ -54,23 +67,15 @@ subir(cveAsunto:number){
   this.manualmodel.nombre=this.files[i]["name"]
 let type=this.files[i]["name"]
 
-if(type.indexOf(".png")>=0){
+if(type.indexOf(".png")>=0 || type.indexOf(".PNG")>=0 || type.indexOf(".gif")>=0 || type.indexOf(".jpg")>=0){
   this.manualmodel.tipo=1
 
 }else if(type.indexOf(".pdf")>=0) {
   this.manualmodel.tipo=2
-  
-
-}else if(type.indexOf(".gif")){
-  this.manualmodel.tipo=1
-
-}else if(type.indexOf(".jpg")){
-  this.manualmodel.tipo=1
-
 }else{
   this.manualmodel.tipo=3
 }
-  this.manualmodel.fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
+  this.manualmodel.fecha=fecha[2]+"-"+fecha[0]+"-"+fecha[1]
   if(this.files[i]["size"]>9999999){
     let tamaño=this.files[i]["size"]/1000000
         this.manualmodel.tamano=tamaño.toFixed()+" MB"
@@ -81,7 +86,20 @@ if(type.indexOf(".png")>=0){
   }
   this.manualmodel.cveAsunto=cveAsunto
  
-  lastValueFrom(this.manualservice.insertarManual(this.manualmodel));  
+  lastValueFrom(this.manualservice.insertarManual(this.manualmodel)); 
+  
+  
+console.log(this.manualmodel);
+ this.manualservice.llamarManualbycount(this.count).toPromise().then( (result : any) =>{
+  console.log(result.container);
+  this.manualmodel.id=result.container[0]["max"]
+  console.log(result.container[0]["max"]);
+  this.dialogRef.close(this.manualmodel)
+  
+});
+
+
+
 
 
 
@@ -119,23 +137,32 @@ for( i=0;target.files.length>i;i++){
 
   
   onFileChange(pFileList: File[]){
-    
-    this.files = pFileList;
-    for(let i=0;i<pFileList.length;i++){
-    let file=pFileList[i]
+console.log(this.files);
+
    
+    for(let i=0;i<pFileList.length;i++){
+     
+
+    let file=pFileList[i]
+ 
+    this.files.push(file)
+   
+
+
     const reader= new FileReader()
     reader.readAsDataURL(file);
+    console.log(file);
     
     reader.onload = () => {
-this.lector[i]=reader.result
+this.lector.push(reader.result)
+
         console.log(reader.result);
        
     }
    
 
   }
-  
+  console.log(this.lector);
   }
 
   deleteFile(f:any){

@@ -26,6 +26,19 @@
     margin-bottom: 5%;
     text-align: center;
    }
+   .barriba {
+    display: flex;
+    justify-content: space-between;
+}
+
+#nuevoc {
+  margin-block: auto;
+}
+
+   /**.buscar{
+display: flex;
+float: right;
+   }*/
 
 .containerMat{
     display: flex;
@@ -62,7 +75,23 @@ color: white;
         border-radius: 100px;
     }
 
+  
+
    
+    .icon{
+font-size: 18px;
+    }
+    
+.group{
+height: 0px;
+margin-top:30px;
+margin-left: 550px;
+}
+
+
+
+
+
     @media screen and (max-width:1220px) {
   td{
       font-size: 10px;

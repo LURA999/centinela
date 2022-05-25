@@ -11,6 +11,7 @@ import { RepeteadMethods } from '../RepeteadMethods';
 import { MyCustomPaginatorIntl } from '../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { DeleteManualComponent } from './popup/delete-manual/delete-manual.component';
+import { EditManualComponent } from './popup/edit-manual/edit-manual.component';
 
 @Component({
   selector: 'app-manual',
@@ -20,16 +21,16 @@ import { DeleteManualComponent } from './popup/delete-manual/delete-manual.compo
 
 })
 export class ManualComponent implements OnInit {
- 
+ user:string =""
   ELEMENT_DATA : any =[]
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns = ['id','nombre',"fecha","tipo","usuario","cveAsunto","tamaño","archivo", 'opciones'];
   cargando : boolean = false;
   mayorNumero : number =0;
   @ViewChild ("paginator") paginator2:any;
+  @ViewChild(MatSort, { static: true })
   sort: MatSort = new MatSort;
   metodos=new RepeteadMethods ()
-
   manualmodel=new ManualModel()
 archivo:string=""
 nombre:string=""
@@ -80,13 +81,33 @@ async eliminar(id:number){
     });
 }
 
-  editar(){
+async editar(id:number,nombre:string){
+  let dialogRef = await this.dialog.open(EditManualComponent,
+    {data: {idManual: id,nombre:nombre},
+    animation: { to: "bottom" },
+      height:"auto", width:"300px",
+    });
+    
+    await dialogRef.afterClosed().subscribe((result : any) => {
+      this.llenarTabla();
+      /** 
+      try{
+      if(result.length > 0  ){
+        this.ELEMENT_DATA = this.ELEMENT_DATA, this.metodos.buscandoIndice(id,this.ELEMENT_DATA)
+     
 
-  }
-  refresh() {
-    this.ELEMENT_DATA.push('testing');
-this.ELEMENT_DATA._updateChangeSubscription();
-        }
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource.paginator = this.paginator2;
+        this.dataSource.sort = this.sort;
+
+      setTimeout(()=>{
+        this.notificationService.openSnackBar("Se actualizo con exito");
+      })
+    }
+    }catch(Exception){}
+
+  */});
+}
 
 
 
@@ -97,20 +118,22 @@ this.ELEMENT_DATA._updateChangeSubscription();
       height:"auto", width:"500px",
      });
     
-     /*this.paginator2.firstPage();
+     this.paginator2.firstPage();
      dialogRef.afterClosed().subscribe((result:any)=>{
-       console.log(result);
+       this.llenarTabla();
+
+       /**console.log(result.id);
        
        try{
-         console.log(result.length);
-         
-      if(result.length > 0  ){
-        console.log(result.length);
-        
-        for(let i=0;i<result.length;i++){
-          console.log("ruben");
+         console.log(result);
+
+      if(result != undefined  ){
+       
+     console.log(result);
+     
+   
           
-        this.ELEMENT_DATA.unshift({id: this.mayorNumero,nombre: result.nombre,fecha:result.fecha,tipo:result.tipo,usaurio:result.usuario,cveAsunto:this.Asunto(result.cveAsunto),tamano:result.tamano,archivo:result.archivo});
+        this.ELEMENT_DATA.unshift({id: result.id ,nombre: result.nombre,fecha:result.fecha,tipo:result.tipo,usaurio:result.usuario,cveAsunto:this.Asunto(result.cveAsunto),tamano:result.tamano,archivo:result.archivo});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
@@ -118,9 +141,8 @@ this.ELEMENT_DATA._updateChangeSubscription();
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-       }
       }catch(Exception){}
-     })*/
+    */})
 
   }
 
@@ -142,7 +164,7 @@ async llenarTabla(){
     for (let i=0; i<result.container.length; i++){
     this.ELEMENT_DATA.push(
       {id: result.container[i]["idManual"],nombre: result.container[i]["nombre"], fecha: result.container[i]["fecha"],archivo: result.container[i]["archivo"]
-        ,ubicacion:result.container[i]["ubicacion"],tipo:this.documento(result.container[i]["tipo"]), usuario:result.container[i]["usuario"], tamano:result.container[i]["tamano"],cveAsunto:this.Asunto(result.container[i]["cveAsunto"])
+        ,ubicacion:result.container[i]["ubicacion"],tipo:this.documento(result.container[i]["tipo"]), usuario:result.container[i]["usuario"], tamano:result.container[i]["tamano"],cveAsunto:result.container[i]["asunto"]
     });
   this.numeroMayor(result.container[i]["idManual"]);
   }
@@ -198,6 +220,32 @@ Asunto(numero:number) {
           case 5:
             return "VPN"
   }
+}
+
+async sortByUser(){
+  this.cargando = false;
+  this.ELEMENT_DATA = [];
+  this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+
+  await this.manualservice.llamarManualbyuser(this.user).toPromise().then( (result : any) =>{
+    
+
+    for (let i=0; i<result.container.length; i++){
+    this.ELEMENT_DATA.push(
+      {id: result.container[i]["idManual"],nombre: result.container[i]["nombre"], fecha: result.container[i]["fecha"],archivo: result.container[i]["archivo"]
+        ,ubicacion:result.container[i]["ubicacion"],tipo:this.documento(result.container[i]["tipo"]), usuario:result.container[i]["usuario"], tamano:result.container[i]["tamano"],cveAsunto:result.container[i]["asunto"]
+    });
+  this.numeroMayor(result.container[i]["idManual"]);
+  }
+    this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
+    
+    this.dataSource.paginator =  this.paginator2;
+    this.cargando = true;
+
+
+  });
+    
+
 }
 
 
