@@ -4,7 +4,7 @@ import { SmtpService } from 'src/app/core/services/smtp.service';
 import { SmtpModel } from 'src/app/models/smtp.model';
 import { runInThisContext } from 'vm';
 import { NotifierService } from 'angular-notifier';
-
+import * as nodemailer from "nodemailer"
 interface auth {
   value: number;
   viewValue: string;
@@ -97,6 +97,33 @@ port=""
   }
   notify(){
     this.notifier.notify('success', 'Informacion actualizada');
+  }
+
+
+  
+ async smtpMail(){
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: {
+        user: '[USERNAME]',
+        pass: '[PASSWORD]'
+    }
+});
+
+// send email
+await transporter.sendMail({
+    from: 'from_address@example.com',
+    to: 'to_address@example.com',
+    subject: 'Test Email Subject',
+    html: '<h1>Example HTML Message Body</h1>'
+});
+}
+
+
+
+  smtpConfig(){
+
   }
 
   

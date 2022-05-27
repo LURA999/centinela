@@ -71,6 +71,10 @@
                             </div>
                             
                         </div>
+
+                        <div>
+                            <button mat-raised-button (click)="smtpMail()" >Mail test</button>
+                        </div>
                         <!-- Save changes button-->
                         <button mat-raised-button	(click)="notify()" (click)="editarSmtp(lim_env2.value,lim_corr2.value,host2.value,auth2.value,username2.value,password2.value,smtp_secure2.value,port2.value)" >Guardar cambios</button>
                         <notifier-container></notifier-container>
