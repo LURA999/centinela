@@ -7,4 +7,5 @@ export class ConfigModel {
     ciudad:string="";
     correo:string="";
     
+    
 }

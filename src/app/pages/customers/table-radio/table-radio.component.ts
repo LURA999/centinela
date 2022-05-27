@@ -35,9 +35,7 @@ export class TableRadioComponent implements OnInit {
   constructor(private dialog:NgDialogAnimationService,
     private notificationService: NotificationService, private DataService : DataService,
     private deviceService : DeviceService, private ruta : Router
-    ) { 
-
-    }
+    ) { }
 
   ngOnInit(): void {
    this.llenarTabla()
@@ -45,9 +43,7 @@ export class TableRadioComponent implements OnInit {
    this.$sub.add(this.DataService.open.subscribe(res => {
     if(res =="equipoAgregar"){
       this.insertar()
-  
     }else{
-      
     }
     })) 
   }
@@ -125,23 +121,18 @@ export class TableRadioComponent implements OnInit {
   }
 
   editar(modal : DeviceModel){
-
     this.modelRadio = modal;
-   
-      
     let dialogRef  = this.dialog.open(NewRadioComponent,
       {data: {opc : true, model : this.modelRadio, salir : true },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
-
      this.paginator2.firstPage();
      this.$sub.add (dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
       try{
       if(result !=undefined){
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice")
       ,1,result);
-        
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
       this.dataSource.paginator = this.paginator2;    
       this.dataSource.sort = this.sort;
@@ -150,7 +141,6 @@ export class TableRadioComponent implements OnInit {
      })
       }
     }catch(Exception){ }
-
      }))
   }
   
@@ -167,6 +157,9 @@ export class TableRadioComponent implements OnInit {
       if(result !=undefined){
        try{
         this.ELEMENT_DATA.unshift(result);
+
+
+
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;

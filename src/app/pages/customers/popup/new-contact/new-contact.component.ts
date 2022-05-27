@@ -1,10 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { throws } from 'assert';
 import { lastValueFrom } from 'rxjs';
 import { ContactService } from 'src/app/core/services/contact.service';
-import { RolService } from 'src/app/core/services/rol.service';
+import { ServiceService } from 'src/app/core/services/services.service';
 import { ContactServiceModel } from 'src/app/models/contactService.model';
 import { responseService } from 'src/app/models/responseService.model';
 
@@ -16,15 +19,28 @@ import { responseService } from 'src/app/models/responseService.model';
 })
 export class NewContactComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>, private rol : RolService
-  ,private contacto : ContactService, private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router, private contactService : ContactService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>
+  ,private contacto : ContactService, private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router
+  , private contactService : ContactService, private serviciosService: ServiceService, private render2: Renderer2) {
+    
+    
+  }
+  
   seleccionar : number=0;
   contactoModel = new ContactServiceModel();
   labelAsignar : string = ""
   labelAgregar : string = ""
+  agregar : boolean = false;
   selectService : boolean = false
   selectContacto : boolean = false
-
+  isChecked:any []=[];
+  isChecked2:any []=[];
+  Servicios : any [] = [];
+  ServiciosMas : any[] =[];
+  c : number=0;
+  contadorSelect : number =0;
+  load : boolean = false;
+  modContacto: boolean = false;
   url = this.ruta.url.split("/")[4]
   agregarForm : FormGroup = this.fb.group({
     nombre: [this.data.nombre ? this.data.nombre: '', Validators.required],
@@ -44,9 +60,13 @@ export class NewContactComponent implements OnInit {
     cveContacto: ["", Validators.required],
     cveServicio: ["", Validators.required] 
   })
-
-  ngOnInit(): void {    
+  
+  ngOnInit(): void {   
+    this.Servicios = this.data.arrayServicios
+    this.load = true;
     this.editarTab()    
+    this.comparandoServicios()
+
     if(this.url == "contact" ){
       this.selectContacto = true
       this.selectService = false
@@ -55,9 +75,26 @@ export class NewContactComponent implements OnInit {
     }
   }
 
+  comparandoServicios(){
+    if(this.agregar == true){
+      this.ServiciosMas = this.data.arrayServicios;
+    }else{
+      //  this. this.Servicios
+    }
+  }
+
+  async quitarSerivicio(indice : string){    
+      
+  }
+
+  click(indice : number)  { 
+
+    this.Servicios.splice(indice,1) 
+    console.log(this.Servicios);
+    
+  }
 
   async enviar(){
-
     if( this.seleccionar== 0){
       this.contactoModel = this.agregarForm.value
       this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";;
@@ -89,11 +126,12 @@ export class NewContactComponent implements OnInit {
   editarTab() {
     if(this.data.opcTab){
       this.labelAgregar = "Editar contacto"
-  
+      this.agregar = false;
     }else{
       this.labelAgregar = "Agregar Contacto y servicio"
       this.labelAsignar = "Asignar contacto a servicio"
-
+    
+      this.agregar = true;
      this.agregarForm  = this.fb.group({
         nombre: [ '', Validators.required],
         paterno: [ '', Validators.required],
@@ -119,7 +157,38 @@ export class NewContactComponent implements OnInit {
   todosContactos(idServicio : number){
     this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente,idServicio,4).subscribe((resp:responseService)=>{
       this.data.arrayContactos = resp.container
-      this.selectContacto = false
+      
     })
+  }
+
+  seleccionandoContacto(isChecked :number[], cve: number){
+    var c =0;
+    var num =0;
+    isChecked.push(cve);
+    for(let y =0; y<isChecked.length; y++){
+      if(isChecked[y]==cve){
+        c++;
+        if(c==2){
+        num = isChecked[isChecked.length-1];
+        isChecked.pop(); 
+        for(let y =0; y<isChecked.length; y++){
+            if(num == isChecked[y])
+            {
+              isChecked.splice(y, 1);
+            }
+          }
+        }
+      }
+    }
+    this.cambioInstalador();
+  }
+
+  cambioInstalador(){
+    if(this.isChecked2.length > 0 || this.isChecked.length > 0){
+    this.modContacto = true;
+    }else{
+      this.modContacto = false;
+
+    }
   }
 }

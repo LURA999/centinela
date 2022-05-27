@@ -20,8 +20,8 @@ export class IpService {
         return this.http.get(this.local+"Repeater/ip.php")
     }
     
-    selectIp(segmento :string,segmento2 :string) : Observable<responseService>{        
-        return this.http.get<responseService>(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2)
+    selectIp(segmento :string,segmento2 :string, condicion?:string) : Observable<responseService>{        
+        return this.http.get<responseService>(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2+"&condicion="+condicion)
     }
 
     selectIpParam(segmento :string,segmento2 :string,segmento3 : string){

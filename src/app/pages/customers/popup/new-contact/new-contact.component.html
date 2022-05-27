@@ -1,3 +1,4 @@
+<div *ngIf="load == true">
 <h2 mat-dialog-title> <ng-container *ngIf="data.opc == false; else elseTemplate">
     Crear contacto
   </ng-container>
@@ -56,13 +57,27 @@
               <mat-label>Puesto</mat-label>
               <input matInput  placeholder="Ingrese un puesto" formControlName="puesto">   
             </mat-form-field>
-          <mat-form-field appearance="fill">
+
+            <mat-form-field appearance="fill">
             <mat-label>Servicio</mat-label>
-            <mat-select id="selectServicio"  [disabled]="selectService " matNativeControl required formControlName="cveServicio">
+            <mat-select id="selectServicio" #select [disabled]="selectService" (selectionChange)="click($event.value)"  matNativeControl required formControlName="cveServicio">
               <mat-option value="0" disabled>Asigne un servicio</mat-option>
-              <mat-option *ngFor="let dato of data.arrayServicios" [value]="dato.idServicio"> {{dato.nombre}}</mat-option>
+              <mat-option *ngFor="let d of Servicios" [value]="d.idServicio" id="a{{d.idServicio}}">{{d.servicio}}</mat-option>
             </mat-select>
           </mat-form-field>
+          
+          <div class="caja-Serv row ">
+          <div class="col servicio">
+            <label class="col-form-label">Servicios del contacto</label>
+                <div class="form-control servicios"  >
+                    <span *ngFor="let i of Servicios"  >
+                      <input type="checkbox" checked="true" >
+                      <label [for]="i[1]">{{i[0]}}</label><br/>
+                    </span>
+                    <p *ngIf="Servicios.length == 0 " class="advertencia">No hay servicios seleccionados</p>
+                </div>
+            </div>
+          </div>  
           <h2>Credenciales</h2>
           <mat-form-field appearance="outline">
             <mat-label>Correo</mat-label>
@@ -118,7 +133,7 @@
     </mat-dialog-actions> 
   </form>
 
-
+</div>
   
 
 

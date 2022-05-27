@@ -10,6 +10,21 @@ mat-dialog-content{
     width: 80%;
 }
 
+/**Creando cajas para los servicios**/
+.caja-Serv{
+    margin-bottom: 10px;
+}
+
+.col-form-label {
+    text-align: center;
+}
+
+.form-control{
+    height: 165px;
+    overflow: auto;
+}
+
+
 #botones , button{
     display:flex; 
     justify-content: center;

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ComponentRef, ElementRef, Inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { lastValueFrom, Subscription } from 'rxjs';
@@ -8,6 +8,9 @@ import { DeviceModel } from 'src/app/models/device.model';
 import { responseService } from 'src/app/models/responseService.model';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { DeviceService } from 'src/app/core/services/device.service';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSelect } from '@angular/material/select';
+
 
 @Component({
   selector: 'app-new-equipament',
@@ -22,13 +25,11 @@ export class NewEquipamentComponent implements OnInit {
     idRepetidora: [this.data.model.idRepetidora !=0? this.data.model.idRepetidora : '', Validators.required],
     comentario: [this.data.model.comentario ? this.data.model.comentario : '', Validators.required],
     modelo: [this.data.model.modelo  ? this.data.model.modelo : '', Validators.required],
-    idSegmento: [this.data.model.idSegmento != 0 ? this.data.model.idSegmento : '', Validators.required],
-    idIp: [this.data.model.idIp != 0? this.data.model.idIp : '', Validators.required],
-    idIp2: [this.data.model.idIp2 != 0? this.data.model.idIp2 : '', Validators.required],
     idUsuario: [this.data.model.idUsuario !=0 ? this.data.model.idUsuario : '', Validators.required],
     contrasena: [this.data.model.contrasena ? this.data.model.contrasena : '', Validators.required],
     snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required]
   });
+
   saveId : number =0;
   newModel = new DeviceModel()
   $sub = new Subscription()
@@ -38,18 +39,28 @@ export class NewEquipamentComponent implements OnInit {
   cveRepetidor : number =0
   segmentos : any []= [] ;
   idAuto : number =0;
-  gIp : number =0
-  gIp2 : number =0  
+  gIp2 : number=0;
+  valorSegmento : number =0
+  
+  IpSeleccionadas : Array<number[]>= []
+  guardandoPrimerIndice : Array<number> = [] 
+  primerIndice : number = 0
+  @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder: ViewContainerRef;
+  @ViewChild('ip') ip : MatSelect | undefined; 
+  @ViewChild('segmento') segmento : MatSelect | undefined; 
 
+  matCheckboxMap : any = {};
+  
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
   ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService, public dialogRef: MatDialogRef<NewEquipamentComponent>,
-  private deviceService : DeviceService) { 
-
+  private deviceService : DeviceService,private _renderer: Renderer2, private fbBox : FormBuilder, private viewC:ViewContainerRef) { 
+      this.placeholder = viewC
   }
   
   ngOnInit(): void {
     this.inicio();
     this.idMax();  
+    this.placeholder.clear();
   }
   async idMax(){
     this.deviceService.idMaxOther().subscribe((resp:responseService)=>{
@@ -63,14 +74,12 @@ export class NewEquipamentComponent implements OnInit {
      if(this.data.opc == true){     
      await this.$sub.add (await this.segmentoService.buscarSegmentoRepetidor(this.data.model.idRepetidora).subscribe((resp:responseService)=>{
          this.segmentos = resp.container;
-         console.log(this.segmentos);
          
      }));
      
        let arraySegmento :string[] = this.data.model.segmento.split("-")  
       await this.$sub.add (await this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
-         this.ips = resp.container
-         console.log(this.ips);
+         this.ips = resp.container;
          
        }))
      }else{
@@ -81,9 +90,6 @@ export class NewEquipamentComponent implements OnInit {
         idRepetidora: ['', Validators.required],
         comentario: ['', Validators.required],
         modelo: ['', Validators.required],
-        idSegmento: ['', Validators.required],
-        idIp: ['', Validators.required],
-        idIp2: ['', Validators.required],
         idUsuario: [ '', Validators.required],
         contrasena: ['', Validators.required],
         snmp: ['', Validators.required]
@@ -93,24 +99,29 @@ export class NewEquipamentComponent implements OnInit {
    }
  //Metodos en el DOM
  tabChangeSegmento(){  
-  let segmento : string= document.getElementById("segmento")?.innerText+""; 
-  let arraySegmento :string[] =segmento.split("-")
-  
-  this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
+   this.primerIndice = this.segmento?.value
+   let arraySegmento :string  []= (this.segmento?._selectionModel.selected[0].viewValue?this.segmento?._selectionModel.selected[0].viewValue:"").split("-") 
+  if(this.guardandoPrimerIndice.indexOf(this.primerIndice) == -1){
+    this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
+      this.ips = resp.container
+    }))
+  }else{
+  this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1],this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(this.primerIndice)].toString()).subscribe((resp:responseService)=>{
     this.ips = resp.container
-    
   }))
+  }
 
 }
 
 tabChangeRepetidora(rep : number){       
-  this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
+  this.valorSegmento = -1 
+  this.$sub.add(this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
       this.segmentos = resp.container;
+      this.primerIndice = this.segmentos.length;
       this.ips = []
-      
-  }));
 
-}
+  }));
+  }
 
 //enviar y editar  form
 enviar(){
@@ -118,7 +129,8 @@ enviar(){
   this.newModel  = this.routerForm.value
   this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
   this.newModel.ip =  document.getElementById("ip")?.innerText+""
-  this.newModel.ip2 =  document.getElementById("ip2")?.innerText+""
+  this.newModel.idIp2 = this.IpSeleccionadas
+ // this.newModel.ip2 =  document.getElementById("ip2")?.innerText+""
   this.newModel.repetidora = document.getElementById("repetidora")?.innerText+""
   this.newModel.segmento = document.getElementById("segmento")?.innerText+""
   this.newModel.tipo =  document.getElementById("tipo")?.innerText+""
@@ -157,13 +169,42 @@ enviar(){
     this.$sub.unsubscribe();
   }
 
-  guardarIp(ip : number){
-    this.gIp = ip
+  async guardarIp(num: number){
+    if(this.guardandoPrimerIndice.indexOf(this.primerIndice) == -1){     
+      this.guardandoPrimerIndice.push(this.primerIndice)
+      this.IpSeleccionadas.push([num])
+    }else{  
+      this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(this.primerIndice)].push(num)
+    }
+    this.createComponent({ title: this.ip?._selectionModel.selected[0].viewValue?this.ip?._selectionModel.selected[0].viewValue:"", id: num.toString(), state: true, index:this.guardandoPrimerIndice.indexOf(this.primerIndice)})
+
   }
 
-  guardarIp2(ip : number){
-    this.gIp2 = ip
+   createComponent(input: { title: string, id: string, state: boolean, index:number }) {
+    let titleElm = this._renderer.createText(input.title);
+    let ref = this.placeholder?.createComponent(MatCheckbox)
+    ref.instance.id = input.id ;
+    ref.instance.checked = input.state;
+    ref.instance.color = "primary"
+    let elm = ref.location.nativeElement as HTMLElement | any;
+    this._renderer.listen(elm, 'click', (event:boolean) => { this.destruirCheckbox(ref,Number(input.id),input.index)});
+    elm.firstChild.lastChild.appendChild(titleElm);
+    this._renderer.addClass(elm, 'mat-checkbox')
+    ref.changeDetectorRef.detectChanges();
+    ref.instance.change.subscribe(val => this.matCheckboxMap[input.id] = val.checked);
   }
+
+  destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,index:number){
+   this.IpSeleccionadas[index].splice(this.IpSeleccionadas[index].indexOf(id), 1);   
+   event.destroy()
+  }
+
+  ngAfterContentInit(): void {
+
+  }
+    checkboxes(){
+    }
+
 
 
 }

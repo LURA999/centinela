@@ -123,7 +123,7 @@ enviar(){
   this.newModel.idTipo = this.routerForm.value.idTipo
   this.newModel.idUsuario = this.routerForm.value.idUsuario
   this.newModel.ip =  document.getElementById("ip")?.innerText+""
-  this.newModel.ip2 =  document.getElementById("ip2")?.innerText+""
+  //this.newModel.ip2 =  document.getElementById("ip2")?.innerText+""
   this.newModel.modelo = this.routerForm.value.modelo
   this.newModel.device = this.routerForm.value.device
   this.newModel.repetidora = document.getElementById("repetidora")?.innerText+""

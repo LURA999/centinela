@@ -12,8 +12,8 @@ export class DeviceModel{
     segmento : string  = ""
     idIp : number = 0
     ip : string = ""
-    idIp2 : number = 0
-    ip2 : string = ""
+    idIp2 : Array<number[]>= []
+    ip2 : Array<string>= []
     idUsuario : number = 0
     usuario : string = ""
     contrasena :string  = "" 
