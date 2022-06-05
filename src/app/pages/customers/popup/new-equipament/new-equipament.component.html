@@ -5,7 +5,7 @@
 <mat-dialog-content>
     <div class="container row">  
     <div class="col">
-        <h2>ID:&nbsp; {{idAuto}}</h2> 
+        <h2>ID:&nbsp; {{this.data.model.idDevice != 0 ? this.data.model.idDevice : idAuto}}</h2> 
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
         <input matInput type="text" formControlName="device">
@@ -21,18 +21,18 @@
         </mat-select>
         </mat-form-field>
         
-        <mat-form-field appearance="fill">
+        <!--<mat-form-field appearance="fill">
         <mat-label>Tipo</mat-label>
         <mat-select id="tipo" formControlName="idTipo">
             <mat-option selected disabled>Seleccione un tipo</mat-option>
             <mat-option value="1">Publico</mat-option>
             <mat-option value="2">Privado</mat-option>
         </mat-select>
-        </mat-form-field>
+        </mat-form-field>-->
         
         <mat-form-field appearance="fill">
         <mat-label>Repetidora</mat-label>
-        <mat-select id="repetidora" (selectionChange)="tabChangeRepetidora($event.value)"  formControlName="idRepetidora" >
+        <mat-select id="repetidora" (selectionChange)="tabChangeRepetidora($event.value)" >
             <mat-option selected disabled>Seleccione una repetidora</mat-option>
             <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}}</mat-option>
         </mat-select>
@@ -53,17 +53,17 @@
         <mat-form-field   appearance="fill" >
             <mat-label>Segmento</mat-label>
             <mat-select #segmento (selectionChange)="tabChangeSegmento()" [disabled]="segmentos.length ==0"  [(value)]="valorSegmento"  >
-                <mat-option  selected disabled value ="-1">Seleccione una segmento</mat-option>
+                <mat-option  selected disabled value ="-1">Sel/eccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento"  >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
             </mat-form-field>
         
         <mat-form-field appearance="fill">
         <mat-label>Ip</mat-label>
-        <mat-select #ip [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value)" >
+        <mat-select #ip [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value,true)" >
                 <mat-option  selected disabled >Seleccione una ip</mat-option>
                 <mat-option *ngFor="let p of ips" [value]="p.idIp" > 
-                    {{p.ip}}
+                    {{p.ip }}
                 </mat-option>
             </mat-select>
         </mat-form-field>

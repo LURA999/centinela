@@ -12,6 +12,7 @@ import { DeviceModel } from 'src/app/models/device.model';
 import { DeviceService } from 'src/app/core/services/device.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { DeleteComponent } from '../popup/delete/delete.component';
+import { IpService } from 'src/app/core/services/ip.service';
 
 @Component({
   selector: 'app-table-router',
@@ -29,11 +30,14 @@ export class TableRouterComponent implements OnInit {
   identificador :string = this.ruta.url.split("/")[4];
   modelRouter = new DeviceModel();
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns: string[] = ['IdDevice', 'Nombre', 'Tipo', "Modelo","Ip","Estatus",'opciones'];
+  displayedColumns: string[] = ['IdDevice', 'Nombre', "Modelo","Ip","Estatus",'opciones'];
   metodo = new RepeteadMethods();
-
+  IpSeleccionadas : Array<any[]>= []
+  guardandoPrimerIndice : Array<any> = [] 
+  primerIndice : number = 0
   constructor(private dialog:NgDialogAnimationService,private ruta : Router, private rutaActiva:ActivatedRoute,
     private notificationService: NotificationService,private DataService : DataService, private deviceService : DeviceService
+    ,private ipSelect: IpService
     ) { 
 
     }
@@ -61,7 +65,7 @@ export class TableRouterComponent implements OnInit {
   async llenarTabla(){
     this.cargando = false;       
 
-    this.$sub.add(this.deviceService.todosRouter(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
+    this.$sub.add(this.deviceService.todosRouter(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)),1).subscribe((resp:responseService)=>{
       if(resp.container.length !=0){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -76,10 +80,10 @@ export class TableRouterComponent implements OnInit {
           modelo :resp.container[i].modelo,
           idSegmento : resp.container[i].idSegmento,
           segmento : resp.container[i].segmento,
-          idIp : resp.container[i].ip1.split("-")[0],
-          ip : resp.container[i].ip1.split("-")[1],
-          idIp2 : resp.container[i].ip2.split("-")[0],
-          ip2 : resp.container[i].ip2.split("-")[1],
+      //    idIp : resp.container[i].ip1.split("-")[0],
+       //   ip : resp.container[i].ip1.split("-")[1],
+        //  idIp2 : resp.container[i].ip2.split("-")[0],
+       //   ip2 : resp.container[i].ip2.split("-")[1],
           idUsuario : resp.container[i].idUsuario,
           usuario : resp.container[i].usuario,
           contrasena : resp.container[i].contrasena, 
@@ -167,8 +171,8 @@ export class TableRouterComponent implements OnInit {
       if(result !=undefined){
 
        try{
+
         this.ELEMENT_DATA.unshift(result);
-        
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
@@ -179,5 +183,22 @@ export class TableRouterComponent implements OnInit {
       }catch(Exception){}
     }
      }))
+  }
+
+  /**Este metodo se usa cuando le picas al boton select de  la tabla, te guarda el resultado de un select, en un espacio designado */
+  async abrirIps(id:number){
+    if(this.guardandoPrimerIndice.indexOf(id) == -1){
+    this.guardandoPrimerIndice.push(id)
+    this.ipSelect.selectIpOneRouter(id,this.identificador.slice(0,2),2,Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
+      this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container      
+    })
+   }
+
+  }
+  /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
+  ipsEditar(id:number){
+    this.ipSelect.selectIpOneRouter(id,this.identificador.slice(0,2),2,Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
+      this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container
+    })
   }
 }

@@ -17,3 +17,14 @@ mat-dialog-content{
     margin-left: 5px;
 }
 
+.cajaBx {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 150px;
+    width: 80%;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+}
+
+

@@ -140,14 +140,10 @@ export class TableContactComponent implements OnInit {
   async buscarServicios(){
     await  this.$sub.add(this.services.llamarTodo(this.id).subscribe((resp:responseService) => {
       this.arrayServicios = resp.container;
-      console.log(resp);
-      
     }))
   }
 
   async llenarTablaContactoEmpresa(){
-    console.log("vista empresa");
-
     this.cargando = false;
     await this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{  
       if(resp.container.length !=0){        
@@ -183,9 +179,7 @@ export class TableContactComponent implements OnInit {
     this.cargando = true;
   }
 
-  async llenarTablaContactoServicio(){
-    console.log("vista servicio");
-    
+  async llenarTablaContactoServicio(){    
     this.cargando = false;        
     await this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),2).subscribe((resp:any) =>{   
       if(resp.container.length !=0){        

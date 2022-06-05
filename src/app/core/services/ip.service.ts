@@ -24,6 +24,14 @@ export class IpService {
         return this.http.get<responseService>(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2+"&condicion="+condicion)
     }
 
+    selectIpOneEquipament(id : number,identificador: string, condicion : number,contador: number){
+        return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id)
+    }
+
+    selectIpOneRouter(id : number,identificador: string, condicion : number,contador: number){
+        return this.http.get<responseService>(this.local+"Devices/router.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id)
+    }
+
     selectIpParam(segmento :string,segmento2 :string,segmento3 : string){
         return this.http.get(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2+"&segmentoBuscar="+segmento3)
     }

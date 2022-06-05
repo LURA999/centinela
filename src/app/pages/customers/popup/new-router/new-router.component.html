@@ -5,7 +5,7 @@
 <mat-dialog-content>
     <div class="container row" >  
     <div class="col">
-        <h2 >ID:&nbsp; {{idAuto}}</h2> 
+        <h2 >ID:&nbsp; {{this.data.model.idDevice != 0 ? this.data.model.idDevice : idAuto}}</h2> 
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
         <input matInput type="text" formControlName="device">
@@ -22,19 +22,10 @@
         </mat-form-field>
         <br>
         <mat-form-field appearance="fill">
-        <mat-label>Tipo</mat-label>
-        <mat-select id="tipo" formControlName="idTipo">
-            <mat-option selected disabled>Seleccione un tipo</mat-option>
-            <mat-option value="1">Publico</mat-option>
-            <mat-option value="2">Privado</mat-option>
-        </mat-select>
-        </mat-form-field>
-        <br>
-        <mat-form-field appearance="fill">
         <mat-label>Repetidora</mat-label>
-        <mat-select id="repetidora"  (selectionChange)="tabChangeRepetidora($event.value)" formControlName="idRepetidora" >
+        <mat-select id="repetidora" #repetidora (selectionChange)="tabChangeRepetidora($event.value)" formControlName="idRepetidora">
             <mat-option selected disabled>Seleccione una repetidora</mat-option>
-            <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}}</mat-option>
+            <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}} </mat-option>
         </mat-select>
         </mat-form-field>
         <br>
@@ -50,45 +41,28 @@
         <input matInput type="text" formControlName="modelo" >
         </mat-form-field>
         <br>
-        <mat-form-field    appearance="fill" >
+        <mat-form-field  appearance="fill" >
             <mat-label>Segmento</mat-label>
-            <mat-select id="segmento" (closed)="tabChangeSegmento()" [disabled]="segmentos.length ==0"  formControlName="idSegmento" >
-                <mat-option  selected disabled>Seleccione una segmento</mat-option>
+            <mat-select #segmento (selectionChange)="tabChangeSegmento()" [disabled]="segmentos.length ==0" >
+                <mat-option  selected disabled value="-1">Seleccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento">{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
             </mat-form-field>
         <br>
         <mat-form-field appearance="fill">
         <mat-label>Ip</mat-label>
-        <mat-select id="ip"  [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value)" formControlName="idIp">
-            <mat-option selected disabled>Seleccione una ip</mat-option>
-            <mat-option *ngFor="let p of ips" [disabled]="p.idIp == gIp2" [value]="p.idIp">
-                <ng-container *ngIf="p.idIp !=gIp2; then thenTemplate; else elseTemplate"></ng-container>
-                <ng-template #thenTemplate>
-                    {{p.ip}}
-                </ng-template>
-                <ng-template #elseTemplate>
-                    <span style="color: red;">{{p.ip}}</span>
-                </ng-template>
+        <mat-select #ip  [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value,1,'',$event)">
+            <mat-option selected disabled value="-1">Seleccione una ip</mat-option>
+            <mat-option *ngFor="let p of ips; let idx=index" [value]="p.idIp" [id]="p.idIp+'z'" (onSelectionChange)="elementOption($event.source)">
+                {{p.ip}}
             </mat-option>
         </mat-select>
         </mat-form-field>
+
+        <div class="cajaBx">
+            <ng-template #placeholder></ng-template>
+        </div>
         <br>
-        <mat-form-field appearance="fill">
-            <mat-label> Ip publica</mat-label>
-            <mat-select id="ip2" [disabled]="ips.length == 0" (selectionChange)="guardarIp2($event.value)" formControlName="idIp2" >
-                <mat-option selected disabled>Seleccione otra Ip</mat-option>
-                <mat-option *ngFor="let p of ips" [value]="p.idIp" [disabled]="p.idIp == gIp">
-                    <ng-container *ngIf="p.idIp !=gIp; then thenTemplate; else elseTemplate"></ng-container>
-                    <ng-template #thenTemplate>
-                        {{p.ip}}
-                    </ng-template>
-                    <ng-template #elseTemplate>
-                        <span style="color: red;">{{p.ip}}</span>
-                    </ng-template>
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
         <div>
         <br>
             <h2>Credenciales</h2>

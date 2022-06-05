@@ -3,3 +3,8 @@
     width: 100%;
     margin-bottom: 20px;
 }
+
+#selectIps{
+    width:100px; 
+    text-align:center;
+}

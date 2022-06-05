@@ -1,6 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ComponentRef, Inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/core/services/device.service';
@@ -15,41 +17,48 @@ import { responseService } from 'src/app/models/responseService.model';
   templateUrl: './new-router.component.html',
   styleUrls: ['./new-router.component.css']
 })
+
 export class NewRouterComponent implements OnInit {
   newModel = new DeviceModel()
   $sub = new Subscription()
   usuarios : any [] = [];
   identificador :string = this.ruta.url.split("/")[4];
+
   repetidoras : any [] =[];
+  ipsAuxiliar : any [] =[];
   ips : any [] = [];
-  cveRepetidor : number =0
+  segmentos : any []= [];
+
   idAuto : number =0;
-  gIp : number =0
-  gIp2 : number =0 
-  segmentos : any []= [] ;
+  ipsGuardadas : any [] =[]
   routerForm : FormGroup  = this.fb.group({
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
     idEstatus: [this.data.model.idEstatus !=0 ? this.data.model.idEstatus : '' , Validators.required],
-    idTipo: [this.data.model.idTipo !=0 ? this.data.model.idTipo : '', Validators.required],
-    idRepetidora: [this.data.model.idRepetidora !=0? this.data.model.idRepetidora : '', Validators.required],
     comentario: [this.data.model.comentario ? this.data.model.comentario : '', Validators.required],
     modelo: [this.data.model.modelo  ? this.data.model.modelo : '', Validators.required],
-    idSegmento: [this.data.model.idSegmento != 0 ? this.data.model.idSegmento : '', Validators.required],
-    idIp: [this.data.model.idIp != 0? this.data.model.idIp : '', Validators.required],
-    idIp2: [this.data.model.idIp2 != 0? this.data.model.idIp2 : '', Validators.required],
     idUsuario: [this.data.model.idUsuario !=0 ? this.data.model.idUsuario : '', Validators.required],
+    idRepetidora  : [this.data.model.idRepetidora !=0 ? this.data.model.idRepetidora : '', Validators.required],
     contrasena: [this.data.model.contrasena ? this.data.model.contrasena : '', Validators.required],
     snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required]
   });
   
-    
+  IpSeleccionadas : Array<number[]>= []
+  guardandoindicesSegmentos : Array<number> = [] 
+  indicesSegmentos : number = 0
+  
+  @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
+  @ViewChild('ip') ip! : MatSelect; 
+  @ViewChild('segmento') segmento! : MatSelect ; 
+  @ViewChild('repetidora') repetidora! : MatSelect ; 
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
-  ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService,
+  ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService, private _renderer : Renderer2,
    public dialogRef: MatDialogRef<NewRouterComponent>, private deviceServicio : DeviceService,private ruta : Router, private deviceService : DeviceService) {
     
    }
   
   ngOnInit(): void {
+    this.placeholder.clear();
     this.inicio();
     this.idMax();
   }
@@ -63,113 +72,255 @@ export class NewRouterComponent implements OnInit {
   async inicio(){
     await  this.todasRepetidoras();
     await this.todosUsuarios();
- 
      if(this.data.opc == true){        
        this.$sub.add (await this.segmentoService.buscarSegmentoRepetidor(this.data.model.idRepetidora).subscribe((resp:responseService)=>{
          this.segmentos = resp.container;
-     }));
-       let arraySegmento :string[] = this.data.model.segmento.split("-")       
-       this.$sub.add (await this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
-         this.ips = resp.container
-       }))
+     }));     
      }else{
        this.data.model = this.newModel
        this.routerForm = this.fb.group({
-         device: ['', Validators.required],
-         idEstatus: ['' , Validators.required],
-         idTipo: ['', Validators.required],
-         idRepetidora: ['', Validators.required],
-         comentario: ['', Validators.required],
-         modelo: ['', Validators.required],
-         idSegmento: ['', Validators.required],
-         idIp: ['', Validators.required],
-         idIp2: ['', Validators.required],
-         idUsuario: ['', Validators.required],
-         contrasena: ['', Validators.required],
-         snmp: ['', Validators.required]
+        device: [ '', Validators.required],
+        idEstatus: ['' , Validators.required],
+        comentario: ['', Validators.required],
+        modelo: ['', Validators.required],
+        idUsuario: [ '', Validators.required],
+        idRepetidora: [ '', Validators.required],
+        contrasena: ['', Validators.required],
+        snmp: ['', Validators.required]
        });
  
      }
-   }
- //Metodos en el DOM
- tabChangeSegmento(){
-  let segmento : string= document.getElementById("segmento")?.innerText+""; 
-  let arraySegmento :string[] =segmento.split("-")
-  this.$sub.add (this.ipService.selectIp(arraySegmento[0].trim(), arraySegmento[1].trim()).subscribe((resp:responseService)=>{
+    }
+
+   //Metodos en el DOM
+  async tabChangeSegmento(){
+  this.ip.value=-1
+  this.indicesSegmentos = this.segmento?.value
+  let arraySegmento :string  []= (this.segmento?._selectionModel.selected[0].viewValue?this.segmento?._selectionModel.selected[0].viewValue:"").split("-") 
+
+  //entrara en el if, si el segmento jamas ha sido seleccionado, de lo contrario entra al else
+    if(this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) == -1  ){
+    this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
     this.ips = resp.container
-      
   }))
-
-}
-
-tabChangeRepetidora(rep : number){   
-  this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
-      this.segmentos = resp.container;
-  }));
-}
-
-
-//enviar y editar  form
-enviar(){
-  this.data.salir = false
-  this.newModel.contrasena =this.routerForm.value.contrasena;
-  this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
-  this.newModel.idEstatus = this.routerForm.value.idEstatus
-  this.newModel.idIp = this.routerForm.value.idIp
-  this.newModel.idIp2 = this.routerForm.value.idIp2
-  this.newModel.idDevice = this.data.idDevice;
-  this.newModel.idRepetidora = this.routerForm.value.idRepetidora
-  this.newModel.idSegmento = this.routerForm.value.idSegmento
-  this.newModel.idTipo = this.routerForm.value.idTipo
-  this.newModel.idUsuario = this.routerForm.value.idUsuario
-  this.newModel.ip =  document.getElementById("ip")?.innerText+""
-  //this.newModel.ip2 =  document.getElementById("ip2")?.innerText+""
-  this.newModel.modelo = this.routerForm.value.modelo
-  this.newModel.device = this.routerForm.value.device
-  this.newModel.repetidora = document.getElementById("repetidora")?.innerText+""
-  this.newModel.segmento = document.getElementById("segmento")?.innerText+""
-  this.newModel.snmp = this.routerForm.value.snmp
-  this.newModel.tipo =  document.getElementById("tipo")?.innerText+""
-  this.newModel.usuario = document.getElementById("usuario")?.innerText+""
-  this.newModel.comentario = this.routerForm.value.comentario
-  this.newModel.identificador = this.identificador.slice(0,2)
-  this.newModel.contador = Number(this.identificador.slice(2,7))
-  if(this.routerForm.valid == false){
-    alert("Por favor llene todos los campos")
   }else{
-    if(this.data.opc == false){
-      this.newModel.idDevice =  this.idAuto;
-      this.dialogRef.close(this.newModel)
-      lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
-    }else{        
-      this.newModel.idDevice = this.data.model.idDevice;
-      this.dialogRef.close(this.newModel)
-      lastValueFrom(this.deviceServicio.actualizarRouter(this.newModel));
+    //Si el array de ips esta vacio, se vuelve a llenar
+    if(this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].length ==0){
+      //Se resetea tanto las ips seleccionadas como los segmentos que contenian dichas ips
+      this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe(async (resp:responseService)=>{
+        if(this.data.opc == true && this.ipsGuardadas.length > 0){
+          let nuevoArray : any []=[]; 
+          for await (const x of this.ipsGuardadas) {
+            if(x.segmento === arraySegmento[0] + "-" + arraySegmento[1]){
+              nuevoArray.push(x)
+            }            
+          }
+          let jsnIpsG =JSON.stringify(nuevoArray);
+          let jsnResp = JSON.stringify(resp.container);
+          jsnIpsG = jsnIpsG.replace("]","");
+          jsnResp = jsnResp.replace("[",",")
+          this.ips = JSON.parse(jsnIpsG+jsnResp)     
+          console.log(this.ips);
+
+        }else{
+          this.ips = resp.container
+        }
+      }))
+      
+    }else{ 
+      this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1],this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].toString()).subscribe(async (resp:responseService)=>{
+        if(this.data.opc == true && this.ipsGuardadas.length > 0){
+          let nuevoArray:any []= []; 
+          for await (const x of this.ipsGuardadas) {
+            if(x.segmento === arraySegmento[0] + "-" + arraySegmento[1]){
+              nuevoArray.push(x)
+            }
+          }          
+          let jsnIpsG =JSON.stringify(nuevoArray);
+          let jsnResp = JSON.stringify(resp.container);
+          jsnIpsG = jsnIpsG.replace("]","");
+          jsnResp = jsnResp.replace("[",",")
+          this.ips = JSON.parse(jsnIpsG+jsnResp)    
+          console.log(this.ips);
+      
+        }else{
+          this.ips = resp.container
+        }
+        
+      }))  
     }
   }
+  }
+
+  async uniendoJSON( segmento0:string, segmento1:string, resp : JSON) : Promise<JSON> {
+    let nuevoArray:JSON []= []; 
+          for await (const x of this.ipsGuardadas) {
+            if(x.segmento === segmento0 + "-" + segmento1){
+              nuevoArray.push(x)
+            }
+          }          
+          let jsnIpsG =JSON.stringify(nuevoArray);
+          let jsnResp = JSON.stringify(resp);
+          jsnIpsG = jsnIpsG.replace("]","");
+          jsnResp = jsnResp.replace("[",",")
+         return JSON.parse(jsnIpsG+jsnResp)    
+  }
+
+  tabChangeRepetidora(rep : number){ 
+    this.segmento.value = -1
+    let arrayString= this.IpSeleccionadas.toString().replace(/\,/gi,"");
+    if(arrayString === ''){
+    this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
+      this.segmentos = resp.container;      
+      this.indicesSegmentos = this.segmentos.length;
+      this.ips = []
+      this.IpSeleccionadas=[]
+    }));
+    }else{
+      alert("No puede mezclar segmentos de otra repetidora")
+      this.repetidora.value = this.data.model.idRepetidora
+      this.ip.value = -1
+    }
+  }
+
+  //enviar y editar  form
+  enviar(){
+    this.data.salir = false
+    this.newModel = this.routerForm.value
+    this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
+    this.newModel.idIp2 = this.IpSeleccionadas
+    this.newModel.idDevice = this.data.idDevice;
+    this.newModel.ip =  document.getElementById("ip")?.innerText+""
+    this.newModel.repetidora = document.getElementById("repetidora")?.innerText+""
+    this.newModel.segmento = document.getElementById("segmento")?.innerText+""
+    this.newModel.tipo =  document.getElementById("tipo")?.innerText+""
+    this.newModel.usuario = document.getElementById("usuario")?.innerText+""
+    this.newModel.identificador = this.identificador.slice(0,2)
+    this.newModel.contador = Number(this.identificador.slice(2,7))
+    if(this.routerForm.valid == false){
+      alert("Por favor llene todos los campos")
+    }else{
+      if(this.data.opc == false){
+        this.newModel.idDevice =  this.idAuto;
+        this.dialogRef.close(this.newModel)      
+        lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
+      }else{        
+        this.newModel.idDevice = this.data.model.idDevice;
+        this.dialogRef.close(this.newModel)
+        lastValueFrom(this.deviceServicio.actualizarRouter(this.newModel));
+      }
+    }
+  }
+
+  //Peticiones
+  async todasRepetidoras() {
+    this.$sub.add (await this.servicioRepetidora.llamarRepitdores().subscribe((resp:responseService)=>{
+      this.repetidoras = resp.container
+    }));
+  }
+
+  async todosUsuarios(){
+    this.$sub.add ( await this.userService.todosUsuarios().subscribe((resp:responseService)=>{
+      this.usuarios = resp.container
+    }))
+  }
+
+  ngOnDestroy(): void {
+    this.$sub.unsubscribe();
+  }
+
+  elementOption(event:any){
+    event._disabled = true
+    this._renderer.setAttribute(event._element.nativeElement,"hidden","true")
+  }
+
+  guardarIp(num: number, primeraOp: number, ip? : string,event?:any,boxIdSegmento?:number){     
+
+  if(boxIdSegmento != undefined){
+    //se ejecuta cuando estas editando y no has elegido manualmente un segmento
+    this.indicesSegmentos = boxIdSegmento;
+  }
+
+  if(this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) == -1){     
+    //se crea un espacio para el id del segmento que se selecciono, y en ese espacio se guarda el ip seleccionado del respecitvo segmento
+    this.guardandoindicesSegmentos.push(this.indicesSegmentos)
+    this.IpSeleccionadas.push([num])
+  }else{  
+    //busca en donde se encuentra el id del segmento, para guardar  MAS ips 
+    this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].push(num)
+  }
+  
+  /**title: el texto del select, id: el id del IP,
+   * state_checkbox: 1  cuando es de select a checkbox y 2 es para inyectarlo directo al checkbox (cuando editas),
+   * index: indice del array (segmentos)  en donde se encuentra el segmento */
+  switch(primeraOp)
+  {
+    case 1:
+      this.createComponent(
+        { title: this.ip?._selectionModel.selected[0].viewValue?this.ip?._selectionModel.selected[0].viewValue:"", id: num.toString(),
+         state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) },event.source._keyManager._activeItem
+         )
+        break;
+    case 2:
+      this.createComponent(
+        { title: ip?ip:"", id: num.toString(),
+          state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) }, event
+        )
+        break;
+  }
+  }
+
+ createComponent(input: { title: string, id: string, state: boolean, index:number },_event? : any) {
+  this.data.model.idRepetidora  = this.routerForm.value.idRepetidora;
+  let titleElm = this._renderer.createText(input.title);
+  let ref = this.placeholder?.createComponent(MatCheckbox)
+  ref.instance.id = input.id ;
+  ref.instance.checked = input.state;
+  ref.instance.color = "primary"
+  let elm = ref.location.nativeElement as HTMLElement | any;  
+  this._renderer.listen(elm, 'click', (event:any) => { this.destruirCheckbox(ref,Number(input.id),input.index,_event)});
+  this._renderer.listen(elm, 'keydown', (event:any) => { this.destruirCheckbox(ref,Number(input.id),input.index,_event)});
+  elm.firstChild.lastChild.appendChild(titleElm);
+  this._renderer.addClass(elm, 'mat-checkbox')
+  ref.changeDetectorRef.detectChanges();
+  //ref.instance.change.subscribe(val => this.matCheckboxMap[input.id] = val.checked);
 }
 
-//Peticiones
-async todasRepetidoras() {
-  this.$sub.add (await this.servicioRepetidora.llamarRepitdores().subscribe((resp:responseService)=>{
-    this.repetidoras = resp.container
-  }));
-}
-async todosUsuarios(){
-  this.$sub.add ( await this.userService.todosUsuarios().subscribe((resp:responseService)=>{
-    this.usuarios = resp.container
+//Se destruye de la vista y del array donde se tiene guardado las ips  de manera local (no BD)
+  destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,index:number, box:any){
     
-  }))
-}
-guardarIp(ip : number){
-  this.gIp = ip
-}
+    if(box.id !== undefined){
+      box._disabled = false;
+      box._selected = false;
+      this._renderer.removeAttribute(box._element.nativeElement,"hidden")
+    }else{
+      console.log("entro aqui");
+      
+       this.ipsAuxiliar = this.ips
+       this.ipsAuxiliar.unshift(box)
+       this.ipsGuardadas = this.ipsAuxiliar;
+    }
 
-guardarIp2(ip : number){
-  this.gIp2 = ip
-}
+    let array = this.IpSeleccionadas[index].toString().split(",");
+    this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
+    event.destroy()
+  }
 
-ngOnDestroy(): void {
-  this.$sub.unsubscribe();
-}
+  ngAfterViewInit(): void { 
+    if (this.data.opc == true) {
+      this.ipsEditar(this.data.model.idDevice)  
+    } 
+  }
+
+  /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
+  async ipsEditar(id:number){    
+    this.ipService.selectIpOneRouter(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe((resp: responseService) => {
+    let ip: any = resp.container;          
+    for (let y = 0; y<ip.length; y++){
+     this.indicesSegmentos= ip[y].idSegmento
+      this.guardarIp(ip[y].idIp,2,ip[y].ip,ip[y]);
+    }
+  })
+  }
+
 }

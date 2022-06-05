@@ -37,8 +37,8 @@ export class DeviceService {
     return this.http.get<responseService>(this.local+"Devices/radio.php");
   }
 /////////////////////////////////////
-  todosRouter(identificador : string,contador: number) : Observable<responseService>{
-    return this.http.get<responseService>(this.local+"Devices/router.php?identificador="+identificador+"&contador="+contador);
+  todosRouter(identificador : string,contador: number, condicion : number, id?:number) : Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Devices/router.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id);
   }
   actualizarRouter(input : DeviceModel) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')
@@ -59,8 +59,8 @@ export class DeviceService {
     return this.http.get<responseService>(this.local+"Devices/router.php");
   }
 ////////////////////////////////////////////
-  todosOtros(identificador : string,contador: number) : Observable<responseService>{
-    return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+"&contador="+contador);
+  todosOtros(identificador : string,contador: number, condicion : number, id?:number) : Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id);
   }
 
   actualizarotros(input : DeviceModel) : Observable<responseService>{
