@@ -17,7 +17,7 @@
                            
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputPassword">Password</label>
-                                <input class="form-control" id="inputPassword" type="text" placeholder="Ingresa password"  [value]="password" #password2 >
+                                <input class="form-control" id="inputPassword" type="password" placeholder="Ingresa password"  [value]="password" #password2 >
                             </div>
                             
                             <div class="col-md-6">
@@ -73,11 +73,13 @@
                         </div>
 
                         <div>
-                            <button mat-raised-button (click)="smtpMail()" >Mail test</button>
-                        </div>
+                            <button mat-raised-button (click)="smtpMail()" >  <mat-icon>mail</mat-icon> </button>
+                       
                         <!-- Save changes button-->
-                        <button mat-raised-button	(click)="notify()" (click)="editarSmtp(lim_env2.value,lim_corr2.value,host2.value,auth2.value,username2.value,password2.value,smtp_secure2.value,port2.value)" >Guardar cambios</button>
+                        <button mat-raised-button class="guardar"	(click)="notify()" (click)="editarSmtp(lim_env2.value,lim_corr2.value,host2.value,auth2.value,username2.value,password2.value,smtp_secure2.value,port2.value)" >Guardar cambios</button>
+                    </div>
                         <notifier-container></notifier-container>
+                        
                     </form>
                 </div>
             </div>

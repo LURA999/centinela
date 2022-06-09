@@ -93,6 +93,7 @@ port=""
     this.smtModel.smtp_secure=smtp_secure
     this.smtModel.port=port
     lastValueFrom(this.smtpservice.updateSmtp(this.smtModel));  
+    
             
   }
   notify(){
@@ -102,22 +103,21 @@ port=""
 
   
  async smtpMail(){
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-        user: '[USERNAME]',
-        pass: '[PASSWORD]'
-    }
-});
-
-// send email
-await transporter.sendMail({
-    from: 'from_address@example.com',
-    to: 'to_address@example.com',
-    subject: 'Test Email Subject',
-    html: '<h1>Example HTML Message Body</h1>'
-});
+  this.smtpservice.llamarSmtp().toPromise().then( (result : any) =>{
+    /**this.lim_env=result.container[0]["lim_env"]*/
+    /**this.lim_corr=result.container[0]["lim_corr"]*/
+    this.smtModel.host=result.container[0]["host"]
+    /**this.auth=result.container[0]["auth"]*/
+    this.smtModel.username=result.container[0]["username"]
+    this.smtModel.password=result.container[0]["password"]
+    /**this.smtp_secure=result.container[0]["smtp_secure"]*/
+    this.smtModel.port=result.container[0]["port"]
+    lastValueFrom(this.smtpservice.smtpMail(this.smtModel));  
+    console.log(this.smtModel);
+     });
+  
+ 
+  
 }
 
 

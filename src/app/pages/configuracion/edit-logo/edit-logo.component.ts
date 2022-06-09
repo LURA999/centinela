@@ -45,6 +45,8 @@ export class EditLogoComponent implements OnInit {
     lastValueFrom(this.configservice.updateLogo(this.logomodel));    
     
   }
+
+  
   rechargepage(){
     location.reload()
 

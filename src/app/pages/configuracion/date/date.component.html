@@ -6,7 +6,7 @@
 <div class="calendario" >
 <mat-form-field appearance="fill">
     <mat-label>Elige la fecha</mat-label>
-    <input [value]="dato.container[0].fecha" matInput [matDatepicker]="picker" #fecha2>
+    <input [value]="fecha" matInput [matDatepicker]="picker" #fecha2>
     <mat-hint>Mes/Dia/Año</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
@@ -15,7 +15,7 @@
 <div class="time">
     <br>
     <mat-form-field  appearance="fill">
-        <input [value]="dato.container[0].hora" type="time" matInput name="week" min="09:00" max="18:00" #hora2>
+        <input [value]="hora" type="time" matInput name="week" min="09:00" max="18:00" #hora2>
         <mat-hint>Hora/Minutos/Segundos</mat-hint>
      </mat-form-field>
 </div>
