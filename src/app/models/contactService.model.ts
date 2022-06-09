@@ -8,8 +8,9 @@ export class ContactServiceModel {
     telefono : string = ""
     puesto : string = ""
     cveRol : number = 0
-    cveContacto : number = 0
-    cveServicio : number = 0
+    cveContacto : number= 0
+    cveServicioArray : Array<number>= []
+    cveContactoArray : Array<number>= []
     rol : string = ""
     servicio : string =""
     contrasena : string = ""

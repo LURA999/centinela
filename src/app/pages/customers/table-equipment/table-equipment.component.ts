@@ -40,9 +40,7 @@ export class TableEquipamentComponent implements OnInit {
   constructor(private dialog:NgDialogAnimationService,private ruta : Router,
     private notificationService: NotificationService,private DataService : DataService, private deviceService : DeviceService,
     private ipSelect: IpService
-    ) { 
-
-    }
+    ) {    }
 
   ngOnInit(): void {
    this.llenarTabla()
@@ -65,9 +63,7 @@ export class TableEquipamentComponent implements OnInit {
   }
   async llenarTabla(){
     this.cargando = false;       
-
-    this.$sub.add(this.deviceService.todosOtros(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)),1).subscribe((resp:responseService)=>{
-      
+    this.$sub.add(this.deviceService.todosOtros(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)),1).subscribe((resp:responseService)=>{           
       if(resp.container.length !=0){           
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -92,9 +88,8 @@ export class TableEquipamentComponent implements OnInit {
           snmp : resp.container[i].snmp,
           comentario : resp.container[i].comentario
         })
-
       }
-      
+
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
@@ -112,14 +107,13 @@ export class TableEquipamentComponent implements OnInit {
         height:"auto", width:"300px",
       });
       
-      await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
         if(result !=undefined){
         try{
           this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"),"idDevice")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
-
         setTimeout(()=>{
           this.notificationService.openSnackBar("Se elimino con exito");
         })
@@ -129,21 +123,17 @@ export class TableEquipamentComponent implements OnInit {
   }
   editar(model : DeviceModel){
     this.modelOtro = model;
-  
     let dialogRef  = this.dialog.open(NewEquipamentComponent,
       {data: {opc : true, model : this.modelOtro, salir: true },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
 
-     this.paginator2.firstPage();
-     
+     this.paginator2.firstPage();   
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
       if(result !=undefined){
-      try{
-        console.log(result);
-        
-        this.guardandoPrimerIndice.splice(this.guardandoPrimerIndice.indexOf(result.idDevice), 1);
+      try{      
+      this.guardandoPrimerIndice.splice(this.guardandoPrimerIndice.indexOf(result.idDevice), 1);
       this.IpSeleccionadas.splice(this.guardandoPrimerIndice.indexOf(result.idDevice),1)
       this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice"),1,result);        
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
@@ -188,9 +178,7 @@ export class TableEquipamentComponent implements OnInit {
   }
 
   /**Este metodo se usa cuando le picas al boton select de  la tabla, te guarda el resultado de un select, en un espacio designado */
-  async abrirIps(id:number){
-    console.log(this.guardandoPrimerIndice.indexOf(id));
-    
+  async abrirIps(id:number){    
     if(this.guardandoPrimerIndice.indexOf(id) == -1){
     this.guardandoPrimerIndice.push(id)
     this.ipSelect.selectIpOneEquipament(id,this.identificador.slice(0,2),2,Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{

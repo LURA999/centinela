@@ -1,13 +1,12 @@
-import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ComponentRef, Inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatOption } from '@angular/material/core';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { throws } from 'assert';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { ContactService } from 'src/app/core/services/contact.service';
-import { ServiceService } from 'src/app/core/services/services.service';
+import { DataService } from 'src/app/core/services/data.service';
 import { ContactServiceModel } from 'src/app/models/contactService.model';
 import { responseService } from 'src/app/models/responseService.model';
 
@@ -21,10 +20,7 @@ export class NewContactComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>
   ,private contacto : ContactService, private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router
-  , private contactService : ContactService, private serviciosService: ServiceService, private render2: Renderer2) {
-    
-    
-  }
+  , private contactService : ContactService,private _renderer: Renderer2,private DataService : DataService) {  }
   
   seleccionar : number=0;
   contactoModel = new ContactServiceModel();
@@ -33,15 +29,16 @@ export class NewContactComponent implements OnInit {
   agregar : boolean = false;
   selectService : boolean = false
   selectContacto : boolean = false
-  isChecked:any []=[];
-  isChecked2:any []=[];
   Servicios : any [] = [];
-  ServiciosMas : any[] =[];
-  c : number=0;
-  contadorSelect : number =0;
+  Contactos : any []= [];
+  cveContactos :Array<number> = []
+  cveServicios : Array<number> = []
   load : boolean = false;
-  modContacto: boolean = false;
   url = this.ruta.url.split("/")[4]
+  id :string = this.ruta.url.split("/")[3];
+
+  serviciosGuardados : any [] =[]
+  eliminarServicio : number = -1
   agregarForm : FormGroup = this.fb.group({
     nombre: [this.data.nombre ? this.data.nombre: '', Validators.required],
     paterno: [this.data.apPaterno ?this.data.apPaterno: '', Validators.required],
@@ -51,76 +48,85 @@ export class NewContactComponent implements OnInit {
     telefono: [this.data.telefono ? this.data.telefono : '', Validators.required],
     celular: [this.data.celular ? this.data.celular : '', Validators.required],
     puesto: [this.data.puesto ? this.data.puesto: '', Validators.required],
-    cveServicio: [this.data.idServicio != 0? this.data.idServicio : '', Validators.required],
     correo: [this.data.correo ? this.data.correo: '', Validators.required],
     contrasena: [this.data.contrasena? this.data.contrasena: '', Validators.required],
   })
 
   asignarForm : FormGroup = this.fb2.group({
     cveContacto: ["", Validators.required],
-    cveServicio: ["", Validators.required] 
   })
   
-  ngOnInit(): void {   
-    this.Servicios = this.data.arrayServicios
+  idAuto : number = 0
+  @ViewChild('placeholder2', {read: ViewContainerRef, static: false}) placeholder2!: ViewContainerRef;
+  @ViewChild('placeholder3', {read: ViewContainerRef, static: false}) placeholder3!: ViewContainerRef;
+  @ViewChild('servicio') servicio!: MatSelect;
+
+  ngOnInit(): void {          
+    this.maxid()
     this.load = true;
     this.editarTab()    
-    this.comparandoServicios()
-
     if(this.url == "contact" ){
       this.selectContacto = true
-      this.selectService = false
-    }else{
+      this.selectService = false     
+      this.serviciosFaltantes(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
+      this.servicios(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
+          }else{
+      this.serviciosFaltantes(this.data.idContacto,this.url.slice(0, 2))
+      this.servicios(this.data.idContacto,this.url.slice(0, 2))
       this.selectService = true
     }
   }
 
-  comparandoServicios(){
-    if(this.agregar == true){
-      this.ServiciosMas = this.data.arrayServicios;
-    }else{
-      //  this. this.Servicios
-    }
+
+  
+  maxid(){
+    firstValueFrom(this.contactService.llamarContactos_maxId()).then((resp:responseService)=>{
+      this.idAuto = resp.container[0].max      
+    })
   }
 
-  async quitarSerivicio(indice : string){    
-      
-  }
-
-  click(indice : number)  { 
-
-    this.Servicios.splice(indice,1) 
-    console.log(this.Servicios);
-    
-  }
 
   async enviar(){
     if( this.seleccionar== 0){
       this.contactoModel = this.agregarForm.value
-      this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";;
-      this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";;
+      this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";
+      this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";
+      this.contactoModel.cveServicioArray = this.cveServicios
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
-            this.contactoModel.cveContacto = Number(this.data.proximoID)+1;
+            this.contactoModel.cveContacto = this.idAuto;
            await lastValueFrom(this.contacto.insertServicios_tServicos(this.contactoModel))
           this.dialogRef.close(this.contactoModel)
         }else{
           alert("Por favor llene los campos");
         }
       }else{
+        if(this.data.idServicio == this.eliminarServicio){
+          this.eliminarServicio = -1
+        }
           this.contactoModel.cveContacto = this.data.idContacto;
           await lastValueFrom(this.contacto.updateContacto_tServicio(this.contactoModel))
+           
           this.dialogRef.close(this.contactoModel)
       }
     }else{
       this.contactoModel = this.asignarForm.value
+      this.contactoModel.cveContactoArray = this.cveContactos
       await lastValueFrom(this.contactService.insertarContacto_Servicio(this.contactoModel))
+      this.dialogRef.close(this.contactoModel)
     }
   }
 
   seleccionado(selected : number){
     this.seleccionar = selected;
-    
+
+    if(selected == 1 && this.url !== "contact"){
+      this.todosContactos(Number(this.data.idServicioDefault))
+    }else if(selected == 1 && this.url === "contact") {
+      this.asignarForm.value.cveServicio = 0
+      console.log(this.asignarForm.value.cveServicio);
+      
+    }
   }
 
   editarTab() {
@@ -129,10 +135,9 @@ export class NewContactComponent implements OnInit {
       this.agregar = false;
     }else{
       this.labelAgregar = "Agregar Contacto y servicio"
-      this.labelAsignar = "Asignar contacto a servicio"
-    
+      this.labelAsignar = "Asignar contacto a servicio"  
       this.agregar = true;
-     this.agregarForm  = this.fb.group({
+      this.agregarForm  = this.fb.group({
         nombre: [ '', Validators.required],
         paterno: [ '', Validators.required],
         materno: [ '', Validators.required],
@@ -145,7 +150,6 @@ export class NewContactComponent implements OnInit {
         correo: ['', Validators.required],
         contrasena: [ '', Validators.required],
       })
-
       this.asignarForm = this.fb2.group({
         cveContacto: ["", Validators.required],
         cveServicio: this.data.idServicioDefault  
@@ -155,40 +159,128 @@ export class NewContactComponent implements OnInit {
 
 
   todosContactos(idServicio : number){
-    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente,idServicio,4).subscribe((resp:responseService)=>{
+    
+    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,idServicio,4).subscribe(async (resp:responseService)=>{
       this.data.arrayContactos = resp.container
+      console.log(resp.container);
+      
+      this.cveContactos = []
+      try{
+      this.placeholder3.clear()
+     
+      for await (const i of resp.container) {
+        this.createComponent2({title:i.nombre, id:i.idContacto,state:false},i)        
+      }
+
+      }catch(Exception){
+
+      }
       
     })
   }
 
-  seleccionandoContacto(isChecked :number[], cve: number){
-    var c =0;
-    var num =0;
-    isChecked.push(cve);
-    for(let y =0; y<isChecked.length; y++){
-      if(isChecked[y]==cve){
-        c++;
-        if(c==2){
-        num = isChecked[isChecked.length-1];
-        isChecked.pop(); 
-        for(let y =0; y<isChecked.length; y++){
-            if(num == isChecked[y])
-            {
-              isChecked.splice(y, 1);
-            }
-          }
-        }
-      }
-    }
-    this.cambioInstalador();
+  elementOption(event:any){
+    event._disabled = true    
+    this._renderer.setAttribute(event._element.nativeElement,"hidden","true")
   }
 
-  cambioInstalador(){
-    if(this.isChecked2.length > 0 || this.isChecked.length > 0){
-    this.modContacto = true;
+
+
+  async guardarServicio(num: number, primeraOp: number, ip? : string,event?:any,boxIdSegmento?:number)  {   
+    this.cveServicios.push(num)
+    if(this.data.idServicio == num){
+      this.eliminarServicio = -1
+    }
+
+    switch(primeraOp)
+    {
+      case 1:
+        this.createComponent(
+          { title: this.servicio?._selectionModel.selected[0].viewValue?this.servicio?._selectionModel.selected[0].viewValue:"", id: num.toString(),
+            state: true }, event.source._keyManager._activeItem
+          )
+        break;
+      case 2:
+        this.createComponent(
+          { title: ip?ip:"", id: num.toString(),
+            state: true }, event
+          )
+        break;
+    }
+  }
+
+  createComponent(input: { title: string, id: string, state: boolean},_event:any) {    
+    let titleElm = this._renderer.createText(input.title);    
+    let ref = this.placeholder2?.createComponent(MatCheckbox)
+    ref.instance.id = input.id ;
+    ref.instance.checked = input.state;
+    ref.instance.color = "primary";
+    let elm = ref.location.nativeElement as HTMLElement | any;  
+    this._renderer.listen(elm, 'click', (event:any) => { this.destruirCheckbox(ref,Number(input.id),_event)});
+    this._renderer.listen(elm, 'keydown', (event:any) => { this.destruirCheckbox(ref,Number(input.id),_event)});
+    elm.firstChild.lastChild.appendChild(titleElm);
+    this._renderer.addClass(elm, 'mat-checkbox')
+    ref.changeDetectorRef.detectChanges();
+    //ref.instance.change.subscribe(val => this.matCheckboxMap[input.id] = val.checked);
+  }
+
+  //Se destruye de la vista y del array donde se tiene guardado las ips  de manera local (no BD)
+  destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,box : any){
+
+    if(this.data.idServicio == id){
+      this.eliminarServicio = id
+    }
+
+    if(box.id != undefined){
+    box._disabled = false;
+    box._selected = false;+
+    this._renderer.removeAttribute(box._element.nativeElement,"hidden")
     }else{
-      this.modContacto = false;
+      this.Servicios.push(box)
+    }    
 
-    }
+    this.cveServicios.splice(this.cveServicios.indexOf(id),1);    
+    event.destroy()
   }
+
+  createComponent2(input: { title: string, id: string, state: boolean},_event:any) {    
+    let titleElm = this._renderer.createText(input.title);    
+    let ref = this.placeholder3?.createComponent(MatCheckbox)
+    ref.instance.id = input.id ;
+    ref.instance.checked = input.state;
+    ref.instance.color = "primary";
+    let elm = ref.location.nativeElement as HTMLElement | any;  
+    this._renderer.listen(elm, 'click', (event:any) => { this.destruirCheckbox2(ref,Number(input.id),_event)});
+    this._renderer.listen(elm, 'keydown', (event:any) => { this.destruirCheckbox2(ref,Number(input.id),_event)});
+    elm.firstChild.lastChild.appendChild(titleElm);
+    this._renderer.addClass(elm, 'mat-checkbox')
+    ref.changeDetectorRef.detectChanges();
+    //ref.instance.change.subscribe(val => this.matCheckboxMap[input.id] = val.checked);
+  }
+
+  //Se destruye de la vista y del array donde se tiene guardado las ips  de manera local (no BD)
+  destruirCheckbox2(event:ComponentRef<MatCheckbox>,id:number,box : any){
+    if(event.instance.checked == true){
+      this.cveContactos.splice(this.cveContactos.indexOf(id),1);    
+    }else{
+      this.cveContactos.push(box)
+    }   
+    
+  }
+
+  servicios(idContacto : number, identificador : string){
+    this.contactService.selectServicioPorContacto(identificador,idContacto,2).subscribe(async (resp:responseService)=>{
+      for await (const y of resp.container) {
+        await this.guardarServicio(y.idServicio,2,y.servicio,y);
+      }      
+    })
+    
+  }
+
+  serviciosFaltantes(idContacto : number, identificador : string){
+    this.contactService.selectServicioPorContacto(identificador,idContacto,1).subscribe(async (resp:responseService)=>{
+     this.Servicios = resp.container         
+    })
+  }
+
 }

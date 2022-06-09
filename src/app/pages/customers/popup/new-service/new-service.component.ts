@@ -24,11 +24,9 @@ export class NewServiceComponent implements OnInit {
   }
 
   async ultimoIDFalso() {
-    
-    
-    this.$sub.add(await this.service.llamarService_maxIdFalso(this.data.idEmpresa+""+this.data.Empresa[0]).subscribe((resp:responseService)=>{
+    this.$sub.add( this.service.llamarService_maxIdFalso(this.data.idEmpresa+""+this.data.Empresa[0]).subscribe((resp:responseService)=>{
       try{
-      this.ultimoIdFalso = resp.container[0].contador      
+      this.ultimoIdFalso = resp.container[0].contador            
       }catch(Exception){}
     }))
   }
@@ -54,7 +52,6 @@ export class NewServiceComponent implements OnInit {
           this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
           this.serviceM.id = Number(this.data.idNuevo)+1;
           this.serviceM.contador = Number(this.ultimoIdFalso)+1;
-          
           lastValueFrom(this.service.insertService(this.serviceM));
           this.dialogRef.close(this.serviceM)
         }else{

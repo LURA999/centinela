@@ -75,4 +75,10 @@ export class ContactService {
     let headers = new HttpHeaders().set('Content-type','Application/json')
     return this.http.post<responseService>(this.local+"Services/contacts.php",input, {headers});
   }
+
+
+  /**Regrese todos los servicios de un contacto */
+  selectServicioPorContacto(identificador:string, idcontacto:number,condicion : number){
+    return this.http.get<responseService>(this.local+"Services/contacts.php?identificador="+identificador+"&idContacto="+idcontacto+"&condicion="+condicion);
+  }
 }

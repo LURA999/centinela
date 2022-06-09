@@ -5,7 +5,14 @@
 <mat-dialog-content >
 <div class="container row" >
     <div class="col">
-        <h2>ID: &nbsp; {{idAuto}}</h2> 
+        <h2>ID: &nbsp; 
+            <ng-container *ngIf="data.opc == true; else elseTemplate">
+                {{this.data.model.idDevice}}
+            </ng-container>
+            <ng-template #elseTemplate>
+                {{idAuto}}
+            </ng-template>
+            </h2> 
         
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
@@ -24,7 +31,7 @@
          <br> 
         <mat-form-field appearance="fill">
         <mat-label>Tipo</mat-label>
-        <mat-select id="tipo" formControlName="idTipo" >
+        <mat-select id="tipo" #tipo (selectionChange)="todasRepetidoras($event.value)" formControlName="idTipo" >
             <mat-option selected disabled>Seleccione un tipo</mat-option>
             <mat-option value="1">Publico</mat-option>
             <mat-option value="2">Privado</mat-option>
@@ -33,7 +40,7 @@
         <br>
         <mat-form-field appearance="fill">
         <mat-label>Repetidora</mat-label>
-        <mat-select  id="repetidora"  (selectionChange)="tabChangeRepetidora($event.value)" formControlName="idRepetidora">
+        <mat-select  id="repetidora"  (selectionChange)="tabChangeRepetidora($event.value,tipo.value)" formControlName="idRepetidora">
             <mat-option selected disabled>Seleccione una repetidora</mat-option>
             <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}}</mat-option>
         </mat-select>
@@ -60,8 +67,12 @@
             </mat-form-field>
         <br>
             <mat-form-field   appearance="fill" >
-                <mat-label>Ip </mat-label>
-                <mat-select id="ip"  [disabled]="ips.length == 0" formControlName="idIp">
+                <mat-label>Ip 
+                    <ng-container *ngIf="data.opc == true;">
+                        - {{this.data.model.ip}}
+                    </ng-container>
+                </mat-label>
+                <mat-select id="ip" [disabled]="ips.length == 0" formControlName="idIp">
                     <mat-option  selected disabled>Seleccione una ip</mat-option>
                     <mat-option *ngFor="let p of ips" [value]="p.idIp">{{p.ip}}</mat-option>
                 </mat-select>
@@ -95,10 +106,10 @@
 <mat-dialog-actions align="center">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
     <button mat-button style="background-color:#3f51b5; color: white;" cdkFocusInitial (click)="enviar()">
-        <ng-container *ngIf="data.opc == false; else elseTemplate">
+        <ng-container *ngIf="data.opc == false; else elseTemplate2">
             Crear
         </ng-container>
-        <ng-template #elseTemplate>
+        <ng-template #elseTemplate2>
             Actualizar
         </ng-template> 
     </button>

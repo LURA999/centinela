@@ -16,6 +16,7 @@ import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 import { DataService } from 'src/app/core/services/data.service';
 import { ServiceService } from 'src/app/core/services/services.service';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-table-contact',
@@ -42,10 +43,10 @@ export class TableContactComponent implements OnInit {
   @Input ()estatus : boolean = false;
   @Input ()celular : boolean = false;
   @Input () puesto : boolean = false;
-
-
   @Input() idServicioDefault : number = 0;
 
+
+  
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   mayorNumero : number = 0
@@ -58,15 +59,11 @@ export class TableContactComponent implements OnInit {
 
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
     private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
-    , private services : ServiceService) { 
-      
-    }
- 
-
+    , private services : ServiceService) {  }
 
   ngOnInit(): void {    
     this.inicio();    
-    this.$sub.add(this.DataService.open.subscribe(res => {
+    this.$sub.add(this.DataService.open.subscribe(res => {     
       if(res.abrir ==true || res == "contactoAgregar"){
         this.insertar()
       }else if(res.abrir == false){
@@ -83,12 +80,10 @@ export class TableContactComponent implements OnInit {
     let worksheet = workbook.addWorksheet("Employee Data");
     let header : string[]=["Nombre","Apellido Materno","Apellido paterno","Celular", "Telefono", "Servicio", "Rol", "Estatus"]
     worksheet.addRow(header);
-  
     for  (let x1 in this.ELEMENT_DATA)
     {
       let x2=Object.keys(x1);
       let temp : any=[]
-
         temp.push(this.ELEMENT_DATA[x1]["nombre" ])
         temp.push(this.ELEMENT_DATA[x1]["apMaterno"])
         temp.push(this.ELEMENT_DATA[x1]["apPaterno"])
@@ -99,9 +94,7 @@ export class TableContactComponent implements OnInit {
         temp.push(this.ELEMENT_DATA[x1]["estatus"])
       worksheet.addRow(temp)
     }
-
     let fname="ExcelClientes"
-
     workbook.xlsx.writeBuffer().then((data) => {
     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');  
@@ -124,7 +117,7 @@ export class TableContactComponent implements OnInit {
     }
   }
   async ultimoID(){
-    await  this.$sub.add(this.serviceContact.llamarContactos_maxId().subscribe((resp:responseService) => {
+    this.$sub.add(this.serviceContact.llamarContactos_maxId().subscribe((resp:responseService) => {
       try{
       this.mayorNumeroUltimo = resp.container[0].idContacto;
       }catch(Exception) {}      
@@ -132,13 +125,13 @@ export class TableContactComponent implements OnInit {
   }
 
   async todoRol(){
-    await  this.$sub.add(this.rol.llamarTodo().subscribe((resp:responseService) => {
+    this.$sub.add(this.rol.llamarTodo().subscribe((resp:responseService) => {
       this.arrayRol = resp.container;
     }))
   }
 
   async buscarServicios(){
-    await  this.$sub.add(this.services.llamarTodo(this.id).subscribe((resp:responseService) => {
+    this.$sub.add(this.services.llamarTodo(this.id).subscribe((resp:responseService) => {
       this.arrayServicios = resp.container;
     }))
   }
@@ -174,14 +167,13 @@ export class TableContactComponent implements OnInit {
       this.mayorNumero = this.mayorNumeroUltimo;
     }
     }));
-    await this.llamarContactos2()
-
+    this.llamarContactos2()
     this.cargando = true;
   }
 
   async llenarTablaContactoServicio(){    
-    this.cargando = false;        
-    await this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),2).subscribe((resp:any) =>{   
+    this.cargando = false;            
+    this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),2).subscribe((resp:any) =>{   
       if(resp.container.length !=0){        
         this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
@@ -210,9 +202,7 @@ export class TableContactComponent implements OnInit {
       this.mayorNumero = this.mayorNumeroUltimo;
     }
     }));
-
-    await this.llamarContactosSelect_detalles()
-
+    this.llamarContactosSelect_detalles()
     this.cargando = true;
   }
 
@@ -240,6 +230,7 @@ export class TableContactComponent implements OnInit {
       }));
   }
   editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number, contrasena:string){
+   
     let dialogRef  = this.dialog.open(NewContactComponent,
       {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno, 
         correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol, contrasena : contrasena, opcTab : true },
@@ -265,12 +256,12 @@ export class TableContactComponent implements OnInit {
           idServicio:result.cveServicio,
           idRol:result.cveRol,
           servicio : result.servicio,
-          rol : result.rol
+          rol : result.rol,
+          contrasena:result.contrasena
           });  
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
@@ -303,17 +294,17 @@ export class TableContactComponent implements OnInit {
         celular:result.celular,
         puesto:result.puesto,
         telefono:result.telefono,
-        idServicio:result.cveServicio,
+       // idServicio:result.cveServicio,
         idRol:result.cveRol,
         servicio : result.servicio,
-        rol : result.rol
-      });
+        rol : result.rol,
+        contrasena : result.contrasena
+        });
 
         this.mayorNumero = result.cveContacto;
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
@@ -337,18 +328,18 @@ export class TableContactComponent implements OnInit {
   }
 
   mensajeFila(objeto : any) : string {
-      let mensaje : string = 
-      "Nombre: "+objeto.nombre+
-      "\nAp. Materno: "+objeto.apPaterno+
-      "\nAp. Paterno: "+objeto.apMaterno+
-      "\nCorreo: "+objeto.correo+
-      "\nEstatus: "+this.metodo.estatus(objeto.cveEstatus)+
-      "\nCelular: "+objeto.celular+
-      "\nPuesto: "+objeto.puesto+
-      "\nTelefono: "+objeto.telefono+
-      "\nServicio: " + objeto.servicio+
-      "\nRol: " + objeto.rol;
-      return mensaje
+    let mensaje : string = 
+    "Nombre: "+objeto.nombre+
+    "\nAp. Materno: "+objeto.apPaterno+
+    "\nAp. Paterno: "+objeto.apMaterno+
+    "\nCorreo: "+objeto.correo+
+    "\nEstatus: "+this.metodo.estatus(objeto.cveEstatus)+
+    "\nCelular: "+objeto.celular+
+    "\nPuesto: "+objeto.puesto+
+    "\nTelefono: "+objeto.telefono+
+    "\nServicio: " + objeto.servicio+
+    "\nRol: " + objeto.rol;
+    return mensaje
   }
  
 }

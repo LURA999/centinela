@@ -13,7 +13,7 @@
         <div class="container row">              
          
         <div class="col">
-            <h2>ID:&nbsp;{{data.idContacto}}</h2> 
+            <h2>ID:&nbsp;{{this.data.idContacto != undefined ? this.data.idContacto : idAuto}}</h2> 
             <mat-form-field appearance="outline">
               <mat-label>Nombre</mat-label>
               <input matInput  placeholder="Ingrese nombre"  formControlName="nombre">   
@@ -60,24 +60,17 @@
 
             <mat-form-field appearance="fill">
             <mat-label>Servicio</mat-label>
-            <mat-select id="selectServicio" #select [disabled]="selectService" (selectionChange)="click($event.value)"  matNativeControl required formControlName="cveServicio">
+            <mat-select id="selectServicio" #servicio  (selectionChange)="guardarServicio($event.value,1,'',$event)"  matNativeControl required>
               <mat-option value="0" disabled>Asigne un servicio</mat-option>
-              <mat-option *ngFor="let d of Servicios" [value]="d.idServicio" id="a{{d.idServicio}}">{{d.servicio}}</mat-option>
+              <mat-option *ngFor="let d of Servicios" [value]="d.idServicio" [id]="d.idServicio+'z'"  (onSelectionChange)="elementOption($event.source)">{{d.servicio}}</mat-option>
             </mat-select>
           </mat-form-field>
           
-          <div class="caja-Serv row ">
-          <div class="col servicio">
-            <label class="col-form-label">Servicios del contacto</label>
-                <div class="form-control servicios"  >
-                    <span *ngFor="let i of Servicios"  >
-                      <input type="checkbox" checked="true" >
-                      <label [for]="i[1]">{{i[0]}}</label><br/>
-                    </span>
-                    <p *ngIf="Servicios.length == 0 " class="advertencia">No hay servicios seleccionados</p>
-                </div>
-            </div>
-          </div>  
+          <div class="cajaBx">
+            <ng-template #placeholder2></ng-template>
+        </div>
+        <br>
+
           <h2>Credenciales</h2>
           <mat-form-field appearance="outline">
             <mat-label>Correo</mat-label>
@@ -92,27 +85,34 @@
 
       </ng-template>
     </mat-tab>
-    <mat-tab [label]="labelAsignar"  >
-      <form [formGroup]="asignarForm">
+    <mat-tab [label]="labelAsignar" >
+      <form [formGroup]="asignarForm" >
       <ng-template matTabContent >
         <div class="container" style="text-align: center;">
           <h2>Asignar servicios</h2> 
         <mat-form-field appearance="fill">
           <mat-label>Servicio</mat-label>
           <mat-select id="selectServicio" (selectionChange)="todosContactos($event.value)"  [disabled]="selectService " formControlName="cveServicio">
-            <mat-option value="0" disabled>Asigne un servicio</mat-option>
+            <mat-option value="0" disabled selected>Asigne un servicio</mat-option>
             <mat-option *ngFor="let dato of data.arrayServicios" [value]="dato.idServicio">
               {{dato.servicio}}
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div>
+        <h3>Contactos faltantes:</h3>
+        <div class="cajaBx2">
+          <ng-template #placeholder3></ng-template>
+        </div>
+      </div>
+      <!--
         <mat-form-field appearance="fill">
           <mat-label>Contactos</mat-label>
-          <mat-select id="selectContacto" [disabled]="selectContacto" formControlName="cveContacto">
+          <mat-select id="selectContacto" [disabled]="selectContacto"  formControlName="cveContacto">
             <mat-option value="0" disabled>Eliga un contacto</mat-option>
             <mat-option *ngFor="let dato of data.arrayContactos" [value]="dato.idContacto"> {{dato.nombre}}</mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field>-->
       </div>
       </ng-template>
     </form>

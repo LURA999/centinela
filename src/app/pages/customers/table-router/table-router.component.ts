@@ -65,7 +65,7 @@ export class TableRouterComponent implements OnInit {
   async llenarTabla(){
     this.cargando = false;       
 
-    this.$sub.add(this.deviceService.todosRouter(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)),1).subscribe((resp:responseService)=>{
+    this.$sub.add(this.deviceService.todosRouter(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)),1).subscribe((resp:responseService)=>{     
       if(resp.container.length !=0){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -80,10 +80,10 @@ export class TableRouterComponent implements OnInit {
           modelo :resp.container[i].modelo,
           idSegmento : resp.container[i].idSegmento,
           segmento : resp.container[i].segmento,
-      //    idIp : resp.container[i].ip1.split("-")[0],
-       //   ip : resp.container[i].ip1.split("-")[1],
-        //  idIp2 : resp.container[i].ip2.split("-")[0],
-       //   ip2 : resp.container[i].ip2.split("-")[1],
+        //idIp : resp.container[i].ip1.split("-")[0],
+        //ip : resp.container[i].ip1.split("-")[1],
+        //idIp2 : resp.container[i].ip2.split("-")[0],
+        //ip2 : resp.container[i].ip2.split("-")[1],
           idUsuario : resp.container[i].idUsuario,
           usuario : resp.container[i].usuario,
           contrasena : resp.container[i].contrasena, 
@@ -109,9 +109,8 @@ export class TableRouterComponent implements OnInit {
         height:"auto", width:"300px",
       });
       
-      await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
         if(result !=undefined){
-
         try{
           this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"idDevice"),"idDevice")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -123,40 +122,32 @@ export class TableRouterComponent implements OnInit {
         })
       }catch(Exception){}
     }
-      }));
+    }));
   }
 
   editar(model : DeviceModel){
     this.modelRouter = model;
-    
     let dialogRef  = this.dialog.open(NewRouterComponent,
       {data: {opc : true, model : this.modelRouter, salir : true },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
-
-     this.paginator2.firstPage();
-     
+     this.paginator2.firstPage(); 
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
-       
       if(result !=undefined){
-
-      try{
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice")
-      ,1,result);        
-      this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
-      this.dataSource.paginator = this.paginator2;    
-      this.dataSource.sort = this.sort;
+        try{
+        this.guardandoPrimerIndice.splice(this.guardandoPrimerIndice.indexOf(result.idDevice),1)  
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice"),1,result);        
+        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+        this.dataSource.paginator = this.paginator2;    
+        this.dataSource.sort = this.sort;
       setTimeout(()=>{
         this.notificationService.openSnackBar("Se edito con exito");
-     })
-    
+     })  
     }catch(Exception){ }
   }
-     }))
+  }))
   }
-
-
 
   insertar(){    
     let dialogRef  = this.dialog.open(NewRouterComponent,
@@ -166,17 +157,13 @@ export class TableRouterComponent implements OnInit {
     });
 
      this.paginator2.firstPage();
-     
      this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
       if(result !=undefined){
-
        try{
-
         this.ELEMENT_DATA.unshift(result);
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
-
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
@@ -193,8 +180,8 @@ export class TableRouterComponent implements OnInit {
       this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container      
     })
    }
-
   }
+
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   ipsEditar(id:number){
     this.ipSelect.selectIpOneRouter(id,this.identificador.slice(0,2),2,Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{

@@ -32,7 +32,7 @@
         
         <mat-form-field appearance="fill">
         <mat-label>Repetidora</mat-label>
-        <mat-select id="repetidora" (selectionChange)="tabChangeRepetidora($event.value)" >
+        <mat-select id="repetidora" #repetidora (selectionChange)="tabChangeRepetidora($event.value)" formControlName="idRepetidora">
             <mat-option selected disabled>Seleccione una repetidora</mat-option>
             <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}}</mat-option>
         </mat-select>
@@ -60,9 +60,9 @@
         
         <mat-form-field appearance="fill">
         <mat-label>Ip</mat-label>
-        <mat-select #ip [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value,true)" >
+        <mat-select #ip [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value,1,'',$event)" >
                 <mat-option  selected disabled >Seleccione una ip</mat-option>
-                <mat-option *ngFor="let p of ips" [value]="p.idIp" > 
+                <mat-option *ngFor="let p of ips" [value]="p.idIp" [id]="p.idIp+'z'"  (onSelectionChange)="elementOption($event.source)"> 
                     {{p.ip }}
                 </mat-option>
             </mat-select>

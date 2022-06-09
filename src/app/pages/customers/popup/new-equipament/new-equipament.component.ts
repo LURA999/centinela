@@ -11,7 +11,6 @@ import { DeviceService } from 'src/app/core/services/device.service';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { Ip } from 'ip-utils';
 
 
 @Component({
@@ -26,6 +25,7 @@ export class NewEquipamentComponent implements OnInit {
     comentario: [this.data.model.comentario ? this.data.model.comentario : '', Validators.required],
     modelo: [this.data.model.modelo  ? this.data.model.modelo : '', Validators.required],
     idUsuario: [this.data.model.idUsuario !=0 ? this.data.model.idUsuario : '', Validators.required],
+    idRepetidora  : [this.data.model.idRepetidora !=0 ? this.data.model.idRepetidora : '', Validators.required],
     contrasena: [this.data.model.contrasena ? this.data.model.contrasena : '', Validators.required],
     snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required]
   });
@@ -41,21 +41,25 @@ export class NewEquipamentComponent implements OnInit {
   idAuto : number =0;
   gIp2 : number=0;
   valorSegmento : number =0
-  
+  ipsGuardadas : any [] =[]
+  cadenaDeIps : string =""
+
   IpSeleccionadas : Array<number[]>= []
-  guardandoPrimerIndice : Array<number> = [] 
-  primerIndice : number = 0
+  guardandoindicesSegmentos : Array<number> = [] 
+  indicesSegmentos : number = 0
   identificador :string = this.ruta.url.split("/")[4];
 
 
   @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
-  @ViewChild('ip') ip : MatSelect | undefined; 
-  @ViewChild('segmento') segmento : MatSelect | undefined; 
+  @ViewChild('ip') ip! : MatSelect; 
+  @ViewChild('segmento') segmento! : MatSelect ; 
+  @ViewChild('repetidora') repetidora! : MatSelect ; 
 
   
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService
   ,private fb:FormBuilder,private segmentoService : RepeaterService, private userService : UsuarioService, public dialogRef: MatDialogRef<NewEquipamentComponent>,
   private deviceService : DeviceService,private _renderer: Renderer2,private ruta : Router) { 
+    
   }
   
   ngOnInit(): void {
@@ -73,18 +77,12 @@ export class NewEquipamentComponent implements OnInit {
   async inicio(){    
     await  this.todasRepetidoras();
     await this.todosUsuarios();
-    
      if(this.data.opc == true){     
-     await this.$sub.add (await this.segmentoService.buscarSegmentoRepetidor(this.data.model.idRepetidora).subscribe((resp:responseService)=>{
+      this.$sub.add ( this.segmentoService.buscarSegmentoRepetidor(this.data.model.idRepetidora).subscribe((resp:responseService)=>{
          this.segmentos = resp.container;
          
      }));
-     
-     /*let arraySegmento :string[] = this.data.model.segmento.split("-")  
-      await this.$sub.add (await this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
-      this.ips = resp.container; 
-      }))*/
-      
+    
      }else{
        this.routerForm = this.fb.group({
         device: [ '', Validators.required],
@@ -92,6 +90,7 @@ export class NewEquipamentComponent implements OnInit {
         comentario: ['', Validators.required],
         modelo: ['', Validators.required],
         idUsuario: [ '', Validators.required],
+        idRepetidora: [ '', Validators.required],
         contrasena: ['', Validators.required],
         snmp: ['', Validators.required]
        });
@@ -100,29 +99,75 @@ export class NewEquipamentComponent implements OnInit {
    }
  //Metodos en el DOM
  tabChangeSegmento(){  
-   this.primerIndice = this.segmento?.value
-   let arraySegmento :string  []= (this.segmento?._selectionModel.selected[0].viewValue?this.segmento?._selectionModel.selected[0].viewValue:"").split("-") 
-  if(this.guardandoPrimerIndice.indexOf(this.primerIndice) == -1){
+  this.ip.value=-1
+  this.indicesSegmentos = this.segmento?.value
+  try {
+  let arraySegmento :string  []= (this.segmento?._selectionModel.selected[0].viewValue?this.segmento?._selectionModel.selected[0].viewValue:"").split("-") 
+  //entrara en el if, si el segmento jamas ha sido seleccionado, de lo contrario entra al else
+    if(this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) == -1  ){
     this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
     this.ips = resp.container
-    }))
-  }else{
-  this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1],this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(this.primerIndice)].toString()).subscribe((resp:responseService)=>{
-    this.ips = resp.container
-  
   }))
+  }else{
+    //Si el array de ips esta vacio, se vuelve a llenar
+    if(this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].length ==0){
+      //Se resetea tanto las ips seleccionadas como los segmentos que contenian dichas ips
+      this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe(async (resp:responseService)=>{
+        if(this.data.opc == true && this.ipsGuardadas.length > 0){
+          let nuevoArray : any []=[];
+          for await (const x of this.ipsGuardadas) {
+            if(x.segmento === arraySegmento[0] + "-" + arraySegmento[1]){
+              nuevoArray.push(x)
+            }            
+          }
+          let jsnIpsG =JSON.stringify(nuevoArray);
+          let jsnResp = JSON.stringify(resp.container);
+          jsnIpsG = jsnIpsG.replace(jsnIpsG=="[]"?"[]":"]", ""); 
+          jsnResp = jsnResp.replace("[",(jsnIpsG==""?"[":","));
+          this.ips = JSON.parse(jsnIpsG+jsnResp)            
+        }else{
+          this.ips = resp.container
+        }
+      }))
+      
+    }else{ 
+      this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1],this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].toString()).subscribe(async (resp:responseService)=>{
+        if(this.data.opc == true && this.ipsGuardadas.length > 0){
+          let nuevoArray:any []= []; 
+          for await (const x of this.ipsGuardadas) {
+            if(x.segmento === arraySegmento[0] + "-" + arraySegmento[1]){
+              nuevoArray.push(x)
+            }
+          }          
+          let jsnIpsG =JSON.stringify(nuevoArray);
+          let jsnResp = JSON.stringify(resp.container);
+          jsnIpsG = jsnIpsG.replace(jsnIpsG=="[]"?"[]":"]", ""); 
+          jsnResp = jsnResp.replace("[",(jsnIpsG==""?"[":","));
+          this.ips = JSON.parse(jsnIpsG+jsnResp)    
+        }else{
+          this.ips = resp.container
+        }   
+      }))  
+    }
   }
-
+  }catch(Exception){  }
 }
 
 tabChangeRepetidora(rep : number){       
-  this.valorSegmento = -1 
-  this.$sub.add(this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
+  this.segmento.value = -1
+    let arrayString= this.IpSeleccionadas.toString().replace(/\,/gi,"");
+    if(arrayString === ''){
+    this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe((resp:responseService)=>{
       this.segmentos = resp.container;      
-      this.primerIndice = this.segmentos.length;
+      this.indicesSegmentos = this.segmentos.length;
       this.ips = []
-
-  }));
+      this.IpSeleccionadas=[]
+    }));
+    }else{
+      alert("No puede mezclar segmentos de otra repetidora")
+      this.repetidora.value = this.data.model.idRepetidora
+      this.ip.value = -1
+    }
   }
 
 //enviar y editar  form
@@ -158,12 +203,12 @@ enviar(){
 
   //Peticiones
   async todasRepetidoras() {
-    this.$sub.add (await this.servicioRepetidora.llamarRepitdores().subscribe((resp:responseService)=>{
+    this.$sub.add(this.servicioRepetidora.llamarRepitdores().subscribe((resp:responseService)=>{
       this.repetidoras = resp.container
     }));
   }
   async todosUsuarios(){
-    this.$sub.add ( await this.userService.todosUsuarios().subscribe((resp:responseService)=>{
+    this.$sub.add(this.userService.todosUsuarios().subscribe((resp:responseService)=>{
       this.usuarios = resp.container
       
     }))
@@ -173,40 +218,58 @@ enviar(){
     this.$sub.unsubscribe();
   }
 
-  async guardarIp(num: number, primeraOp: boolean, ip? : string){
+  async guardarIp(num: number, primeraOp: number, ip? : string,event?:any,boxIdSegmento?:number){
         
-    if(this.guardandoPrimerIndice.indexOf(this.primerIndice) == -1){     
+    if(boxIdSegmento != undefined){
+      //se ejecuta cuando estas editando y no has elegido manualmente un segmento
+      this.indicesSegmentos = boxIdSegmento;
+    }
+    if(this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) == -1){     
       //se crea un espacio para el id del segmento que se selecciono, y en ese espacio se guarda el ip seleccionado del respecitvo segmento
-      this.guardandoPrimerIndice.push(this.primerIndice)
+      this.guardandoindicesSegmentos.push(this.indicesSegmentos)
       this.IpSeleccionadas.push([num])
     }else{  
       //busca en donde se encuentra el id del segmento, para guardar  MAS ips 
-      this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(this.primerIndice)].push(num)
-    }
-    console.log("IP :"+this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(this.primerIndice)]);
-    // title: el texto del select, id: el id del IP, statecheckbox: true, index: del array en donde se encuentra el segmento
-    if(primeraOp == true){
-      this.createComponent(
-        { title: this.ip?._selectionModel.selected[0].viewValue?this.ip?._selectionModel.selected[0].viewValue:"", id: num.toString(),
-         state: true, index:this.guardandoPrimerIndice.indexOf(this.primerIndice)}
-         )
-    }else{
-      this.createComponent(
-      { title: ip?ip:"", id: num.toString(),
-        state: true, index:this.guardandoPrimerIndice.indexOf(this.primerIndice)}
-      )
+      this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].push(num)
     }
 
+    this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"");
+
+    /**title: el texto del select, id: el id del IP,
+     * state_checkbox: 1  cuando es de select a checkbox y 2 es para inyectarlo directo al checkbox (cuando editas),
+     * index: indice del array (segmentos)  en donde se encuentra el segmento */
+    switch(primeraOp)
+    {
+      case 1:
+        this.createComponent(
+          { title: this.ip?._selectionModel.selected[0].viewValue?this.ip?._selectionModel.selected[0].viewValue:"", id: num.toString(),
+           state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) },event.source._keyManager._activeItem
+          )
+        break;
+      case 2:
+        this.createComponent(
+          { title: ip?ip:"", id: num.toString(),
+            state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) }, event
+          )
+        break;
+    }
+  }
+  
+  elementOption(event:any){
+    event._disabled = true
+    this._renderer.setAttribute(event._element.nativeElement,"hidden","true")
   }
 
-   createComponent(input: { title: string, id: string, state: boolean, index:number }) {
+   createComponent(input: { title: string, id: string, state: boolean, index:number },_event? : any) {
+    this.data.model.idRepetidora  = this.routerForm.value.idRepetidora;
     let titleElm = this._renderer.createText(input.title);
     let ref = this.placeholder?.createComponent(MatCheckbox)
     ref.instance.id = input.id ;
     ref.instance.checked = input.state;
     ref.instance.color = "primary"
-    let elm = ref.location.nativeElement as HTMLElement | any;
-    this._renderer.listen(elm, 'click', (event:boolean) => { this.destruirCheckbox(ref,Number(input.id),input.index)});
+    let elm = ref.location.nativeElement as HTMLElement | any;  
+    this._renderer.listen(elm, 'click', (event:any) => { this.destruirCheckbox(ref,Number(input.id),input.index,_event)});
+    this._renderer.listen(elm, 'keydown', (event:any) => { this.destruirCheckbox(ref,Number(input.id),input.index,_event)});
     elm.firstChild.lastChild.appendChild(titleElm);
     this._renderer.addClass(elm, 'mat-checkbox')
     ref.changeDetectorRef.detectChanges();
@@ -214,13 +277,29 @@ enviar(){
   }
 
   //Se destruye de la vista y del array donde se tiene guardado las ips  de manera local (no BD)
-  destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,index:number){
-   
-    console.log("Se elimino el IP :"+this.IpSeleccionadas[index][Number(this.IpSeleccionadas[index].indexOf(id))]);
-    console.log("posicion: "+id);
-    let array = this.IpSeleccionadas[index].toString().split(",");   
-    this.IpSeleccionadas[index].splice(array.indexOf(id.toString()), 1);   
-   event.destroy()
+  destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,index:number, box:any){
+    if(this.cadenaDeIps.split(",").length > 1){
+    if(box.id !== undefined){
+      box._disabled = false;
+      box._selected = false;
+      this._renderer.removeAttribute(box._element.nativeElement,"hidden")
+    }else{
+      this.ipsGuardadas.unshift(box)
+      this.tabChangeSegmento();
+    }
+    let array = this.IpSeleccionadas[index].toString().split(",");
+    this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
+    event.destroy()
+    this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"").replace(/([,]+)*/,"");     
+    this.cadenaDeIps = this.cadenaDeIps.replace(/[,][,]/,",");
+    if((this.cadenaDeIps[this.cadenaDeIps.length-1] === "," ? true : false) === true) 
+    {
+      this.cadenaDeIps=this.cadenaDeIps.substring(0, this.cadenaDeIps.length - 1);
+    }
+  }else{
+    event.instance.checked=false
+    alert("El dispositivo debe de tener por lo menos una ip");
+  }
   }
 
 
@@ -232,12 +311,13 @@ enviar(){
 
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   async ipsEditar(id:number){    
-      this.ipService.selectIpOneEquipament(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe((resp: responseService) => {
-      let ip: any = resp.container;
-      for (let y = 0; y<ip.length; y++){
-       this.primerIndice= ip[y].idSegmento
-        this.guardarIp(ip[y].idIp,false,ip[y].ip+" - "+ip[y].idIp);
+    this.ipService.selectIpOneEquipament(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe(async (resp: responseService) => {
+      let ip: any = resp.container;          
+      for await (let y of ip){
+       this.indicesSegmentos= y.idSegmento
+        this.guardarIp(y.idIp,2,y.ip,y);
       }
+      this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
     })
   }
 }

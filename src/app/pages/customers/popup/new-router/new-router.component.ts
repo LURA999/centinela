@@ -23,7 +23,7 @@ export class NewRouterComponent implements OnInit {
   $sub = new Subscription()
   usuarios : any [] = [];
   identificador :string = this.ruta.url.split("/")[4];
-
+  cadenaDeIps : string =""
   repetidoras : any [] =[];
   ipsAuxiliar : any [] =[];
   ips : any [] = [];
@@ -96,8 +96,8 @@ export class NewRouterComponent implements OnInit {
   async tabChangeSegmento(){
   this.ip.value=-1
   this.indicesSegmentos = this.segmento?.value
+  try {
   let arraySegmento :string  []= (this.segmento?._selectionModel.selected[0].viewValue?this.segmento?._selectionModel.selected[0].viewValue:"").split("-") 
-
   //entrara en el if, si el segmento jamas ha sido seleccionado, de lo contrario entra al else
     if(this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) == -1  ){
     this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
@@ -109,7 +109,7 @@ export class NewRouterComponent implements OnInit {
       //Se resetea tanto las ips seleccionadas como los segmentos que contenian dichas ips
       this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe(async (resp:responseService)=>{
         if(this.data.opc == true && this.ipsGuardadas.length > 0){
-          let nuevoArray : any []=[]; 
+          let nuevoArray : any []=[];
           for await (const x of this.ipsGuardadas) {
             if(x.segmento === arraySegmento[0] + "-" + arraySegmento[1]){
               nuevoArray.push(x)
@@ -117,11 +117,9 @@ export class NewRouterComponent implements OnInit {
           }
           let jsnIpsG =JSON.stringify(nuevoArray);
           let jsnResp = JSON.stringify(resp.container);
-          jsnIpsG = jsnIpsG.replace("]","");
-          jsnResp = jsnResp.replace("[",",")
-          this.ips = JSON.parse(jsnIpsG+jsnResp)     
-          console.log(this.ips);
-
+          jsnIpsG = jsnIpsG.replace(jsnIpsG=="[]"?"[]":"]", ""); 
+          jsnResp = jsnResp.replace("[",(jsnIpsG==""?"[":","));
+          this.ips = JSON.parse(jsnIpsG+jsnResp)            
         }else{
           this.ips = resp.container
         }
@@ -138,32 +136,16 @@ export class NewRouterComponent implements OnInit {
           }          
           let jsnIpsG =JSON.stringify(nuevoArray);
           let jsnResp = JSON.stringify(resp.container);
-          jsnIpsG = jsnIpsG.replace("]","");
-          jsnResp = jsnResp.replace("[",",")
+          jsnIpsG = jsnIpsG.replace(jsnIpsG=="[]"?"[]":"]", ""); 
+          jsnResp = jsnResp.replace("[",(jsnIpsG==""?"[":","));
           this.ips = JSON.parse(jsnIpsG+jsnResp)    
-          console.log(this.ips);
-      
         }else{
           this.ips = resp.container
-        }
-        
+        }   
       }))  
     }
   }
-  }
-
-  async uniendoJSON( segmento0:string, segmento1:string, resp : JSON) : Promise<JSON> {
-    let nuevoArray:JSON []= []; 
-          for await (const x of this.ipsGuardadas) {
-            if(x.segmento === segmento0 + "-" + segmento1){
-              nuevoArray.push(x)
-            }
-          }          
-          let jsnIpsG =JSON.stringify(nuevoArray);
-          let jsnResp = JSON.stringify(resp);
-          jsnIpsG = jsnIpsG.replace("]","");
-          jsnResp = jsnResp.replace("[",",")
-         return JSON.parse(jsnIpsG+jsnResp)    
+  }catch(Exception){  }
   }
 
   tabChangeRepetidora(rep : number){ 
@@ -249,6 +231,7 @@ export class NewRouterComponent implements OnInit {
     //busca en donde se encuentra el id del segmento, para guardar  MAS ips 
     this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].push(num)
   }
+  this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"");
   
   /**title: el texto del select, id: el id del IP,
    * state_checkbox: 1  cuando es de select a checkbox y 2 es para inyectarlo directo al checkbox (cuando editas),
@@ -288,22 +271,32 @@ export class NewRouterComponent implements OnInit {
 
 //Se destruye de la vista y del array donde se tiene guardado las ips  de manera local (no BD)
   destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,index:number, box:any){
-    
-    if(box.id !== undefined){
-      box._disabled = false;
-      box._selected = false;
-      this._renderer.removeAttribute(box._element.nativeElement,"hidden")
-    }else{
-      console.log("entro aqui");
-      
-       this.ipsAuxiliar = this.ips
-       this.ipsAuxiliar.unshift(box)
-       this.ipsGuardadas = this.ipsAuxiliar;
-    }
+  if(this.cadenaDeIps.split(",").length > 1){
 
-    let array = this.IpSeleccionadas[index].toString().split(",");
-    this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
-    event.destroy()
+      if(box.id !== undefined){
+        box._disabled = false;
+        box._selected = false;
+        this._renderer.removeAttribute(box._element.nativeElement,"hidden")
+      }else{
+        this.ipsGuardadas.unshift(box)
+        this.tabChangeSegmento();
+      }
+      let array = this.IpSeleccionadas[index].toString().split(",");
+      this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
+      event.destroy()
+
+      this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"").replace(/([,]+)*/,"");     
+      this.cadenaDeIps = this.cadenaDeIps.replace(/[,][,]/,",");
+      if((this.cadenaDeIps[this.cadenaDeIps.length-1] === "," ? true : false) === true) 
+      {
+        this.cadenaDeIps=this.cadenaDeIps.substring(0, this.cadenaDeIps.length - 1);
+      }
+      
+      
+    }else{
+      event.instance.checked=false
+      alert("El dispositivo debe de tener por lo menos una ip");
+    }
   }
 
   ngAfterViewInit(): void { 
@@ -314,13 +307,14 @@ export class NewRouterComponent implements OnInit {
 
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   async ipsEditar(id:number){    
-    this.ipService.selectIpOneRouter(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe((resp: responseService) => {
-    let ip: any = resp.container;          
-    for (let y = 0; y<ip.length; y++){
-     this.indicesSegmentos= ip[y].idSegmento
-      this.guardarIp(ip[y].idIp,2,ip[y].ip,ip[y]);
-    }
-  })
+    this.ipService.selectIpOneRouter(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe(async (resp: responseService) => {
+      let ip: any = resp.container;          
+      for await (let y of ip){
+       this.indicesSegmentos= y.idSegmento
+        this.guardarIp(y.idIp,2,y.ip,y);
+      }
+      this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
+    })
   }
 
 }

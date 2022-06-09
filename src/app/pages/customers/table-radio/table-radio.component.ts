@@ -53,14 +53,14 @@ export class TableRadioComponent implements OnInit {
   }
 
   async descargar(){
-   
+  
+    
   }
 
   async llenarTabla(){
     this.cargando = false;             
     this.$sub.add (this.deviceService.todosRadios(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
       if(resp.container.length !=0){
-                
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
           idDevice : resp.container[i].idRadio,
@@ -94,13 +94,13 @@ export class TableRadioComponent implements OnInit {
   }
 
   async eliminar(id : number){
-    let dialogRef = await this.dialog.open(DeleteComponent,
+    let dialogRef = this.dialog.open(DeleteComponent,
       {data: {idCliente : id, opc: 7, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       
-      await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
 
         if(result != undefined){          
         try{
@@ -157,9 +157,6 @@ export class TableRadioComponent implements OnInit {
       if(result !=undefined){
        try{
         this.ELEMENT_DATA.unshift(result);
-
-
-
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;

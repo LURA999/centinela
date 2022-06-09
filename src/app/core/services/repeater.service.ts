@@ -16,6 +16,10 @@ export class RepeaterService {
     return this.http.get<responseService>(this.local+"Repeater/repeater.php");
   }
 
+  llamarRepitdoresTipo(tipo:number):Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Repeater/repeater.php?tipo="+tipo);
+  }
+
   llamarRepitdor(cve : number){
     return this.http.get(this.local+"Repeater/repeater.php?id="+cve);
   }
@@ -40,5 +44,8 @@ export class RepeaterService {
     return this.http.get<responseService>(this.local+"Repeater/repeater.php?idr="+cve);    
   }
   
+  buscarSegmentoRepetidorTipo(cve:number,tipo:number) : Observable<responseService>{  
+    return this.http.get<responseService>(this.local+"Repeater/repeater.php?idr="+cve+"&tipo="+tipo);    
+  }
 
 }
