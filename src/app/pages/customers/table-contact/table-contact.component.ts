@@ -62,7 +62,7 @@ export class TableContactComponent implements OnInit {
     private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
     , private services : ServiceService) { 
       try{
-        this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
+       this.contadorIdenti =  this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
       }catch(Exception){  }
      }
 
@@ -178,6 +178,8 @@ export class TableContactComponent implements OnInit {
   }
 
   async llenarTablaContactoServicio(){    
+  
+    
     this.cargando = false;               
     this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.contadorIdenti),2).subscribe((resp:any) =>{   
     
@@ -266,6 +268,13 @@ export class TableContactComponent implements OnInit {
           rol : result.rol,
           contrasena:result.contrasena
           });  
+          this.ELEMENT_DATA = []
+          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
+          if(this.id != undefined && this.identificador == undefined){
+            await this.llenarTablaContactoEmpresa()
+          }else{
+            await this.llenarTablaContactoServicio()
+          }
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
@@ -317,7 +326,11 @@ export class TableContactComponent implements OnInit {
         })
         this.ELEMENT_DATA = []
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-        await this.llenarTablaContactoEmpresa()
+        if(this.id != undefined && this.identificador == undefined){
+          await this.llenarTablaContactoEmpresa()
+        }else{
+          await this.llenarTablaContactoServicio()
+        }
 
       }catch(Exception){}
       }

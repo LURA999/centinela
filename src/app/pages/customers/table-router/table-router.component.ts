@@ -121,7 +121,11 @@ export class TableRouterComponent implements OnInit {
         setTimeout(()=>{
           this.notificationService.openSnackBar("Se elimino con exito");
         })
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA =  []  
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.llenarTabla()
+      }
     }
     }));
   }
@@ -145,7 +149,11 @@ export class TableRouterComponent implements OnInit {
       setTimeout(()=>{
         this.notificationService.openSnackBar("Se edito con exito");
      })  
-    }catch(Exception){ }
+    }catch(Exception){ }finally{
+      this.ELEMENT_DATA =  []  
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.llenarTabla()
+    }
   }
   }))
   }
@@ -168,7 +176,11 @@ export class TableRouterComponent implements OnInit {
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA =  []  
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.llenarTabla()
+      }
     }
      }))
   }

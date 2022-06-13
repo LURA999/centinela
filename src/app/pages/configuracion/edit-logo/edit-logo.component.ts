@@ -29,28 +29,24 @@ export class EditLogoComponent implements OnInit {
 
   ngOnInit(): void {
     this.configservice.llamarEmpresa().toPromise().then( (result : any) =>{
-      this.base64=result.container[0]["logo"]
-     
-      
-       });  }
-  fileChangeEvent(event: any) {
-    this.imageChangedEvent = event;
+      this.base64=result.container[0]["logo"]    
+       });  
+  }
   
-    
+  fileChangeEvent(event: any) {
+    this.imageChangedEvent = event;  
   }
 
   imageCropped(event: CroppedEvent) {
     this.base64 = event.base64;
     this.logomodel.logo=this.base64
     lastValueFrom(this.configservice.updateLogo(this.logomodel));    
-    
   }
 
-  
   rechargepage(){
     location.reload()
-
   }
+
   notifyLogo(){
     this.notifier.notify('success', 'Logo actualizado');
 

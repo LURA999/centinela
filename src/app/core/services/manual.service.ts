@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ManualModel } from 'src/app/models/manual.model';
 
@@ -30,10 +30,9 @@ export class ManualService {
     return this.http.patch(this.local+"Manual/manual.php",input,{responseType: 'text'});
   }
 
-  insertarManual(input :ManualModel){
-   
-    
-    return this.http.post(this.local+"Manual/manual.php",input, {responseType:"text"});
+  insertarManual(input :ManualModel){ 
+    let headers = new HttpHeaders().set('Content-type','Application/json')
+    return this.http.post(this.local+"Manual/manual.php",input, {headers});
   }
 
   deleteManual(id:number){

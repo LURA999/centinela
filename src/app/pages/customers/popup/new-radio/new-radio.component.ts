@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
@@ -42,13 +42,19 @@ export class NewRadioComponent implements OnInit {
     snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required]
   });
 
+  repetidoraValue:number = 0;
+  segmentoValue : number = 0;
+  ipValue: number =0;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private servicioRepetidora : RepeaterService,private ipService : IpService,
   private segmentoService : RepeaterService, private userService : UsuarioService,private fb:FormBuilder, public dialogRef: MatDialogRef<NewRadioComponent>
-  ,private deviceService : DeviceService, private ruta : Router) { }
+  ,private deviceService : DeviceService, private ruta : Router,private renderer : Renderer2) { }
 
   ngOnInit(): void {   
     this.inicio();
     this.idMax();
+   this.ips = []
+    
   }
 
   async idMax(){
@@ -94,6 +100,8 @@ export class NewRadioComponent implements OnInit {
 
 //Metodos en el DOM
   tabChangeSegmento(){    
+
+    this.ipValue = 0;
     let segmento : string= document.getElementById("segmento")?.innerText+""; 
     let arraySegmento :string[] =segmento.split("-")
     this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
@@ -102,6 +110,8 @@ export class NewRadioComponent implements OnInit {
   }
 
   tabChangeRepetidora(rep : number,tipo : number){           
+    this.segmentoValue = 0;
+    this.ipValue = 0;
     this.$sub.add (this.segmentoService.buscarSegmentoRepetidorTipo(rep,tipo).subscribe((resp:responseService)=>{
         this.segmentos = resp.container;
         this.ips = []        
@@ -138,6 +148,9 @@ export class NewRadioComponent implements OnInit {
 
   //Peticiones
   async todasRepetidoras(tipo:number) {
+    this.repetidoraValue = 0;
+    this.segmentoValue = 0;
+    this.ipValue = 0;
     this.$sub.add(this.servicioRepetidora.llamarRepitdoresTipo(tipo).subscribe((resp:responseService)=>{
       this.repetidoras = resp.container
       this.tipo = tipo

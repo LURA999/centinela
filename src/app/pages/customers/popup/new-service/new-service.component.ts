@@ -24,11 +24,13 @@ export class NewServiceComponent implements OnInit {
   }
 
   async ultimoIDFalso() { 
+    try{
     this.$sub.add( this.service.llamarService_maxIdFalso(this.data.idEmpresa+""+this.data.Empresa[0]).subscribe((resp:responseService)=>{
       try{
       this.ultimoIdFalso = resp.container[0].contador      
       }catch(Exception){}
     }))
+  }catch(Exception){}
   }
 
  async crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string,direccion :string , dominio : string, selectEstatus : number, selectPlan : number){  

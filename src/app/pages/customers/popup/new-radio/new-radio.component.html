@@ -40,8 +40,8 @@
         <br>
         <mat-form-field appearance="fill">
         <mat-label>Repetidora</mat-label>
-        <mat-select  id="repetidora"  (selectionChange)="tabChangeRepetidora($event.value,tipo.value)" formControlName="idRepetidora">
-            <mat-option selected disabled>Seleccione una repetidora</mat-option>
+        <mat-select  id="repetidora" [(ngModel)]="repetidoraValue" (selectionChange)="tabChangeRepetidora($event.value,tipo.value)" formControlName="idRepetidora">
+            <mat-option selected disabled value="0">Seleccione una repetidora</mat-option>
             <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}}</mat-option>
         </mat-select>
         </mat-form-field>
@@ -60,8 +60,8 @@
         <br>
         <mat-form-field    appearance="fill" >
             <mat-label>Segmento</mat-label>
-            <mat-select id="segmento" (closed)="tabChangeSegmento()" [disabled]="segmentos.length ==0" formControlName="idSegmento" >
-                <mat-option  selected disabled>Seleccione una segmento</mat-option>
+            <mat-select id="segmento" [(ngModel)]="segmentoValue" (closed)="tabChangeSegmento()"  [disabled]="segmentos.length ==0" formControlName="idSegmento" >
+                <mat-option  selected disabled value="0">Seleccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento" >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
             </mat-form-field>
@@ -72,8 +72,8 @@
                         - {{this.data.model.ip}}
                     </ng-container>
                 </mat-label>
-                <mat-select id="ip" [disabled]="ips.length == 0" formControlName="idIp">
-                    <mat-option  selected disabled>Seleccione una ip</mat-option>
+                <mat-select id="ip" [(ngModel)]="ipValue" [disabled]="ips.length == 0" formControlName="idIp">
+                    <mat-option  selected disabled value="0">Seleccione una ip</mat-option>
                     <mat-option *ngFor="let p of ips" [value]="p.idIp">{{p.ip}}</mat-option>
                 </mat-select>
                 </mat-form-field>
