@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 /**LOGIN PARA USUARIOS */
 @Component({
@@ -13,7 +14,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
   encapsulation: ViewEncapsulation.None
 })
 export class LoginUsuarioComponent implements OnInit {
-
+  logo:any;
   email = new FormControl('', [Validators.required, Validators.email])
   hide = true;
   formSesion : FormGroup =  this.fb.group({
@@ -22,11 +23,15 @@ export class LoginUsuarioComponent implements OnInit {
   });
 
 
-  constructor(private usuarioServicio : UsuarioService
+  constructor(private configservice:ConfigService,private usuarioServicio : UsuarioService
    , private router:Router, private auth :AuthService, private fb :FormBuilder) { }
 
   ngOnInit(): void {
-    
+    this.configservice.llamarEmpresa().toPromise().then( (result : any) =>{
+            
+      this.logo=result.container[0]["logo"]
+       })
+       ;  
   }
   
   //Validacion de correo en input
