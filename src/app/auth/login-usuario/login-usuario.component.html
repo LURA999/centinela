@@ -9,14 +9,14 @@
                     <div>
                         <mat-form-field appearance="fill">
                             <mat-label >Ingresa tu correo</mat-label>
-                            <input class = "matInput" matInput formControlName= "correo" placeholder="email@example.com" [formControl]="email" required>
-                            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+                            <input class = "matInput" matInput formControlName= "correo" placeholder="email@example.com" formControlName="correo" >
+                            <!--<mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>-->
                         </mat-form-field>
                     </div>
                     <div class="grupo2" >
                         <mat-form-field appearance="fill">
                             <mat-label>Ingresa tu contraseña</mat-label>
-                            <input class = "matInput" formControlName= "contrasena" matInput [type]="hide ? 'password' : 'text'" required >
+                            <input class = "matInput" formControlName= "contrasena" matInput [type]="hide ? 'password' : 'text'">
                             <mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                             {{hide ? 'visibility_off' : 'visibility'}}
                             </mat-icon>

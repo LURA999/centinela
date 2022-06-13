@@ -14,8 +14,9 @@ import { AuthService } from 'src/app/core/services/auth.service';
 })
 export class LoginUsuarioComponent implements OnInit {
 
-  email = new FormControl('', [Validators.required, Validators.email])
+ // email = new FormControl('', [Validators.required, Validators.required])
   hide = true;
+  hideError = true;
   formSesion : FormGroup =  this.fb.group({
     correo: ['', Validators.required],
     contrasena:  ['', Validators.required],
@@ -30,22 +31,23 @@ export class LoginUsuarioComponent implements OnInit {
   }
   
   //Validacion de correo en input
-  getErrorMessage() {
+  /*getErrorMessage() {
     if (this.email.hasError('required')) {
-      return 'Debe de ingresar correo ';
+      //return 'Debe de ingresar correo ';
     }
     return this.email.hasError('email') ? 'Correo no valido' : '';
-  }
+  }*/
 
   form(){
     if(this.formSesion.valid){
     this.usuarioServicio.login(btoa(this.formSesion.controls['correo'].value),btoa(this.formSesion.controls['contrasena'].value),0).subscribe((response:any) =>{
       if(response.status === "ok"){
-        
         this.auth.crearSesion( response.container);
+        this.hideError = false;
        location.reload(); 
       }else{
         alert(response.info)
+        this.hideError = true;
       }
     });
   }else{

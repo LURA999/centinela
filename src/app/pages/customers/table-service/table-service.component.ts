@@ -235,7 +235,6 @@ export class TableServiceComponent implements OnInit {
     
 
       if((typeof result) !== "string"){  
-        console.log(typeof result); 
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
         ,1,{

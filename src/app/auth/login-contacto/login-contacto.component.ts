@@ -16,7 +16,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 })
 export class LoginContactoComponent implements OnInit {
 logo:any;
-  email = new FormControl('', [Validators.required, Validators.email]);
+ // email = new FormControl('', [Validators.required, Validators.required]);
   hide = true;
   formSesion : FormGroup =  this.fb.group({
     correo: ['', Validators.required],
@@ -39,13 +39,13 @@ logo:any;
   
 
   //Validacion de correo en input
-  getErrorMessage() {
+ /* getErrorMessage() {
     if (this.email.hasError('required')) {
       return 'Debe de ingresar correo ';
     }
 
     return this.email.hasError('email') ? 'Correo no valido' : '';
-  }
+  }*/
 
   form(){
     if(this.formSesion.valid){
