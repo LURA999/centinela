@@ -48,14 +48,25 @@ mat-card-content {
     margin-bottom: 5%;
 }
 
-.cabecera{
+.cabecera-link{
     display: flex;
-   
+    justify-content: flex-end;
+    margin-right: 3%;
 }
 
-.link{
-    width: 100%;
-    text-align: end;
+img:hover{
+    filter: brightness(1.25);
+}
+
+img:active{
+    filter: brightness(0.90);
+}
+/**Flecha para regresar*/
+
+#regresar{
+    width: 30px;
+    height: 30px;
+    transform: rotate(180deg);
 }
 
 @media screen and (max-width:990px) {
