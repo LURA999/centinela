@@ -17,6 +17,7 @@ import { responseService } from 'src/app/models/responseService.model';
   styleUrls: ['./new-radio.component.css']
 })
 export class NewRadioComponent implements OnInit {
+  hide=true;
   cveRepetidor : number =0
   segmentos : any []= [] ;
   usuarios : any [] = [];

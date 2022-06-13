@@ -19,14 +19,13 @@
     }
     .col {
         padding-right: 0;
-        padding-left: 1em;
-        width: 500px;
+        width: 300px;
         background-color: white;
       }
       
       .col figure img {
         max-width: 60%;
-        display: block;
+    
       }
       
       

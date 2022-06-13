@@ -4,6 +4,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { truncate } from 'fs';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/core/services/device.service';
 import { IpService } from 'src/app/core/services/ip.service';
@@ -19,6 +20,7 @@ import { responseService } from 'src/app/models/responseService.model';
 })
 
 export class NewRouterComponent implements OnInit {
+  hide=true;
   newModel = new DeviceModel()
   $sub = new Subscription()
   usuarios : any [] = [];
