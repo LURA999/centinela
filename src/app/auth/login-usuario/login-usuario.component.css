@@ -1,4 +1,9 @@
 
+
+.col text-center{
+    align-self: center !important;
+}
+
 body{
     background-image: url("../../../assets/usuario.jpg");
     background-size: cover !important;
@@ -6,7 +11,16 @@ body{
     background-position: center center;
     background-attachment: fixed;
 }
+.col {
+   
+    width: 300px;
+    background-color: white;
+  }
+  
+  .col figure img {
+    max-width: 100%;
 
+  }
 
 /**Definiendo formulario*/
 
@@ -25,9 +39,7 @@ body{
     border-left: 30%; */
 }
 
-.containerfixed {
-    margin: 0% 10% 0% 10%;
-}
+
 
 form {
     text-align: center;
@@ -90,6 +102,16 @@ mat-form-field {
     
 }
 @media (max-width: 850px) {
+    .col figure img {
+        max-width: 50%;
+    
+      }
+      .col{
+       
+            text-align: center !important;
+        }
+      
+     
     .titulo h1 {
         font-size: 1rem;
     }
