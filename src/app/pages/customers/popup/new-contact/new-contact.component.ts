@@ -21,7 +21,7 @@ export class NewContactComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>
   ,private contacto : ContactService, private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router
   , private contactService : ContactService,private _renderer: Renderer2,private DataService : DataService) {  }
-  
+  hide = true;
   seleccionar : number=0;
   contactoModel = new ContactServiceModel();
   labelAsignar : string = ""
@@ -142,10 +142,10 @@ export class NewContactComponent implements OnInit {
       this.agregarForm  = this.fb.group({
         nombre: [ '', Validators.required],
         paterno: [ '', Validators.required],
-        materno: [ '', Validators.required],
+        materno:"",
         estatus: [ '', Validators.required],
         cveRol: [ '', Validators.required],
-        telefono: [ '', Validators.required],
+        telefono: "",
         celular: [ '', Validators.required],
         puesto: [ '', Validators.required],
         cveServicio: [this.data.idServicioDefault , Validators.required],

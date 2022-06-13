@@ -29,7 +29,7 @@ export class NewEquipamentComponent implements OnInit {
     contrasena: [this.data.model.contrasena ? this.data.model.contrasena : '', Validators.required],
     snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required]
   });
-
+hide=true;
   saveId : number =0;
   newModel = new DeviceModel()
   $sub = new Subscription()

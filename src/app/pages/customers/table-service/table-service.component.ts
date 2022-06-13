@@ -231,8 +231,11 @@ export class TableServiceComponent implements OnInit {
       height:"auto", width:"350px",
      });
      this.paginator2.firstPage();
-     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{         
-      if(result !=undefined || result != ""){    
+     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{   
+    
+
+      if((typeof result) !== "string"){  
+        console.log(typeof result); 
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
         ,1,{

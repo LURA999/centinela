@@ -2,9 +2,14 @@
 
     <div fxFlex="100%">
         <mat-card *ngIf="servicio | async as dato">
-        <div class="cabecera">
-            <a [routerLink]="['./../../'+idCliente]" class="link">REGRESAR A VISTA EMPRESA-CLIENTE</a>
-        </div>
+            <div class="cabecera-link" >       
+                <div id="link"> 
+                <a [routerLink]="['./../../']" style="text-decoration: none;">Clientes > </a>
+                <a [routerLink]="['./../']" style="text-decoration: none;">Empresa > </a>
+                <a  style="text-decoration: none;">Servicios > </a>
+                </div>
+                
+            </div>
         <div class="nivel1" > 
             <mat-card class="mat-card2">
                 <mat-card-header class="mat-card-header2">

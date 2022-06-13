@@ -77,8 +77,11 @@
             <input matInput   placeholder="Ingrese correo electronico" formControlName="correo">   
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Contraseña</mat-label>
-            <input matInput  type="password"  placeholder="Ingrese correo electronico" formControlName="contrasena">   
+            <mat-label>Ingresa tu contraseña</mat-label>
+                        <input matInput class = "matInput" formControlName="contrasena" [type]="hide ? 'password' : 'text'" required>
+                        <mat-icon  matSuffix (click)="hide = !hide">
+                        {{hide ? 'visibility' : 'visibility_off'}}
+                        </mat-icon>
           </mat-form-field>
           </div>                
           </div>
