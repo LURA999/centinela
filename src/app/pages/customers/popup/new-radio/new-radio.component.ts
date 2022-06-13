@@ -25,7 +25,8 @@ export class NewRadioComponent implements OnInit {
   ips : any [] = [];
   tipo : number =0
   newModel = new DeviceModel()
-  identificador :string = this.ruta.url.split("/")[4];
+  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
+  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
   $sub = new Subscription()
   radioForm : FormGroup  = this.fb.group({
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
@@ -117,8 +118,8 @@ export class NewRadioComponent implements OnInit {
    this.newModel.segmento = document.getElementById("segmento")?.innerText+""
    this.newModel.tipo =  document.getElementById("tipo")?.innerText+""
    this.newModel.usuario = document.getElementById("usuario")?.innerText+""
-   this.newModel.contador = Number(this.identificador.slice(2,7))
-   this.newModel.identificador = this.identificador.slice(0,2)
+   this.newModel.contador = Number(this.contadorIdenti)
+   this.newModel.identificador = this.identificador
     
     if(this.radioForm.valid == false){
       alert("Por favor llene todos los campos")

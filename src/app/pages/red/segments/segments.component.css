@@ -32,6 +32,7 @@
 /**Datos de tabla*/
 table {
     width: 100%;
+
 }
 
 #tablaCliente{
@@ -77,6 +78,18 @@ th.mat-sort-header-sorted {
     width: auto;
     border-radius: 100px;
 }
+
+#link {
+    color: #0d6efd;
+    text-decoration: underline;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#link:hover {
+   color: #3f51b5;
+}
+
 /*
 @media screen and (max-width:999px) {
     .barriba {

@@ -112,6 +112,14 @@ table td{
     }
 }
 
+.cabecera{
+    display: flex;
+    justify-content: space-between;
+}
+
+.cabecera .link {
+    align-self: center;
+}
 @media screen and (max-width: 768px) {
     #lista table td,
     #lista table th{

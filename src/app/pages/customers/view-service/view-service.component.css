@@ -85,3 +85,14 @@ a:active, a:hover {
 .matTab{
     margin-top: 45px;
 } 
+
+
+
+.cabecera {
+    display: flex;
+}
+
+.link{
+    width: 100%;
+    text-align: end;
+}

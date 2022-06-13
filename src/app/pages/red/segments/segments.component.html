@@ -13,6 +13,7 @@
           <button mat-raised-button color="primary" (click)="nuevoSegmento()"> <mat-icon>add</mat-icon> Nuevo</button>
         </div>
           <div>
+            <a  (click)="regresar()" [hidden]="link" id="link"> REGRESAR A CONTACTOS-REPETIDORES</a>
             <mat-form-field appearance="standard">
               <mat-label>Filtro</mat-label>
               <input matInput (keyup)="applyFilter($event)" [(ngModel)]="id" placeholder="Buscar coincidencia..." #input>   

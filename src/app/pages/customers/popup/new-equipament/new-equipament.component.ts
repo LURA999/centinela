@@ -47,8 +47,8 @@ export class NewEquipamentComponent implements OnInit {
   IpSeleccionadas : Array<number[]>= []
   guardandoindicesSegmentos : Array<number> = [] 
   indicesSegmentos : number = 0
-  identificador :string = this.ruta.url.split("/")[4];
-
+  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
+  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
 
   @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
   @ViewChild('ip') ip! : MatSelect; 
@@ -62,7 +62,7 @@ export class NewEquipamentComponent implements OnInit {
     
   }
   
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.placeholder.clear();
     this.inicio();
     this.idMax();  
@@ -171,7 +171,8 @@ tabChangeRepetidora(rep : number){
   }
 
 //enviar y editar  form
-enviar(){
+enviar(){  
+  if(this.cadenaDeIps.split(",").length >1  || this.cadenaDeIps.split(",").length ==1 && this.cadenaDeIps.split(",")[0] !== "" ){
   this.data.salir = false;
   this.newModel  = this.routerForm.value
   this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
@@ -192,11 +193,12 @@ enviar(){
       lastValueFrom(this.deviceService.insertarOtros(this.newModel))
     }else{        
       this.newModel.idDevice = this.data.model.idDevice;            
-      this.dialogRef.close(this.newModel)
-      console.log(this.newModel);
-      
+      this.dialogRef.close(this.newModel)      
       lastValueFrom(this.deviceService.actualizarotros(this.newModel))
     }
+  }
+  }else{
+    alert("El dispositivo debe de tener por lo menos una ip");
   }
   
 }
@@ -278,7 +280,7 @@ enviar(){
 
   //Se destruye de la vista y del array donde se tiene guardado las ips  de manera local (no BD)
   destruirCheckbox(event:ComponentRef<MatCheckbox>,id:number,index:number, box:any){
-    if(this.cadenaDeIps.split(",").length > 1){
+   
     if(box.id !== undefined){
       box._disabled = false;
       box._selected = false;
@@ -296,10 +298,7 @@ enviar(){
     {
       this.cadenaDeIps=this.cadenaDeIps.substring(0, this.cadenaDeIps.length - 1);
     }
-  }else{
-    event.instance.checked=false
-    alert("El dispositivo debe de tener por lo menos una ip");
-  }
+  
   }
 
 
@@ -311,7 +310,7 @@ enviar(){
 
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   async ipsEditar(id:number){    
-    this.ipService.selectIpOneEquipament(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe(async (resp: responseService) => {
+    this.ipService.selectIpOneEquipament(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {
       let ip: any = resp.container;          
       for await (let y of ip){
        this.indicesSegmentos= y.idSegmento

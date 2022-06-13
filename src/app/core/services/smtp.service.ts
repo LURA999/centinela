@@ -25,7 +25,12 @@ export class SmtpService {
   insertarNotify(input :SmtpModel){
     return this.http.post(this.local+"Config/smtp.php",input, {responseType:"text"});
   }
-
+smtpMail(input:SmtpModel){
+  console.log(input);
+  return this.http.post(this.local+"correoAlta.php",input, {responseType:"text"});
+  
+  
+}
   
 
 }

@@ -30,6 +30,7 @@ export class TableContactComponent implements OnInit {
   @Input ()hijoContact :string = ""
   id :number = Number(this.ruta.url.split("/")[3]);
   identificador :string = this.rutaActiva.snapshot.params["identificador"];
+  contadorIdenti :string = ""
   contactos : Observable<any> | undefined;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = ['id',  'nombre',  'apPaterno',  'apMaterno',  'correo',  'estatus',  'celular',  'puesto',  'opciones'];
@@ -59,9 +60,14 @@ export class TableContactComponent implements OnInit {
 
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
     private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
-    , private services : ServiceService) {  }
+    , private services : ServiceService) { 
+      try{
+        this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
+      }catch(Exception){  }
+     }
 
   ngOnInit(): void {    
+    
     this.inicio();    
     this.$sub.add(this.DataService.open.subscribe(res => {     
       if(res.abrir ==true || res == "contactoAgregar"){
@@ -106,7 +112,7 @@ export class TableContactComponent implements OnInit {
     this.$sub.unsubscribe();
   }
 
-  async inicio(){
+  async inicio(){    
     await this.ultimoID()
     await this.todoRol()
     await this.buscarServicios()
@@ -132,13 +138,13 @@ export class TableContactComponent implements OnInit {
 
   async buscarServicios(){
     this.$sub.add(this.services.llamarTodo(this.id).subscribe((resp:responseService) => {
-      this.arrayServicios = resp.container;
+      this.arrayServicios = resp.container;     
     }))
   }
 
   async llenarTablaContactoEmpresa(){
     this.cargando = false;
-    await this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{  
+    this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{  
       if(resp.container.length !=0){        
       this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
@@ -172,8 +178,9 @@ export class TableContactComponent implements OnInit {
   }
 
   async llenarTablaContactoServicio(){    
-    this.cargando = false;            
-    this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),2).subscribe((resp:any) =>{   
+    this.cargando = false;               
+    this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.contadorIdenti),2).subscribe((resp:any) =>{   
+    
       if(resp.container.length !=0){        
         this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
@@ -214,8 +221,8 @@ export class TableContactComponent implements OnInit {
         height:"auto", width:"300px",
       });
       
-      await  this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
-        if(result !=undefined){
+      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+        if(result !=undefined){          
         try{
           this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -232,15 +239,15 @@ export class TableContactComponent implements OnInit {
   editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number, contrasena:string){
    
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno, 
+      {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno, arrayTabla:this.ELEMENT_DATA,
         correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol, contrasena : contrasena, opcTab : true },
       animation: { to: "bottom" },
       height:"auto", width:"70%",
      });
 
      this.paginator2.firstPage();
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{
-      if(result !=undefined){
+     this.$sub.add(dialogRef.afterClosed().subscribe(async (result:any)=>{       
+      if(result !=undefined && result !=""){        
        try{
           this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idContacto,this.ELEMENT_DATA, "id")
         ,1,{id:idContacto,
@@ -271,17 +278,17 @@ export class TableContactComponent implements OnInit {
 
   }
 
-  insertar(){    
+  insertar(){        
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, 
+      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, arrayTabla:this.ELEMENT_DATA,
         idCliente: this.id, salir : true, arrayContactos: this.arrayContactos, idServicioDefault:this.idServicioDefault },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
 
      this.paginator2.firstPage();
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:ContactServiceModel)=>{
-      if(result !=undefined){
+     this.$sub.add(dialogRef.afterClosed().subscribe(async (result:ContactServiceModel)=>{
+      if(result !=undefined){       
        try{
         this.ELEMENT_DATA.unshift(
         {id: result.cveContacto,
@@ -308,6 +315,10 @@ export class TableContactComponent implements OnInit {
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
+        await this.llenarTablaContactoEmpresa()
+
       }catch(Exception){}
       }
      }))
@@ -315,7 +326,7 @@ export class TableContactComponent implements OnInit {
 
   //Este lo que hace es traer los contactos que no estan en la vista-servicio 
   llamarContactosSelect_detalles(){       
-    this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.identificador.slice(2,7)),1).subscribe((resp : responseService)=>{
+    this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.contadorIdenti),1).subscribe((resp : responseService)=>{
       this.arrayContactos = resp.container            
     }))
   }

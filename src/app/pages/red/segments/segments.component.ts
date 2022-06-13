@@ -12,6 +12,7 @@ import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { rango_ip } from '../popup/new-segment/rango_ip';
 import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
@@ -27,7 +28,7 @@ export class SegmentsComponent implements OnInit {
   repetearArray : any 
   segmentosArray :any
   id :number = this.rutaActiva.snapshot.params["id"];
-
+  link : boolean  = true
   rango = new rango_ip()
 
   displayedColumns: string[] = ['id','nombre', 'segmento', 'diagonal', 'tipo', 'estatus','repetear','opciones'];
@@ -42,25 +43,26 @@ export class SegmentsComponent implements OnInit {
     private segmentServicio : SegmentsService,
     private notificationService: NotificationService, 
     private repeaterService : RepeaterService,
-    private rutaActiva: ActivatedRoute
+    private rutaActiva: ActivatedRoute,
   ) { }
 
    ngOnInit(): void {
     this.procesoInicio()
   }
 
-  ngAfterViewInit(): void {
-  
+
+  regresar(){
+    window.history.back();
   }
 
    async procesoInicio(){
     await this.repetears()
     await this.llenarTabla()
-    if(this.id != undefined){      
+    if(this.id != undefined){  
+      this.link = false    
       this.dataSource.filter = (this.id+"").trim().toLowerCase();
     }
    }
-
 
    async nuevoSegmento (){     
     let dialogRef = await this.dialog.open(NewSegmentComponent,

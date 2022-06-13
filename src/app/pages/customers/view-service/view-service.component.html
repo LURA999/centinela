@@ -2,7 +2,9 @@
 
     <div fxFlex="100%">
         <mat-card *ngIf="servicio | async as dato">
-
+        <div class="cabecera">
+            <a [routerLink]="['./../../'+idCliente]" class="link">REGRESAR A VISTA EMPRESA-CLIENTE</a>
+        </div>
         <div class="nivel1" > 
             <mat-card class="mat-card2">
                 <mat-card-header class="mat-card-header2">
@@ -29,7 +31,7 @@
                             Dominio:&nbsp;{{dato.container[0].dominio}}
                         </div >
                         <div class="id col">
-                            ID:&nbsp;{{identificador}}
+                            ID:&nbsp;{{identificador+contadorIdenti}}
                         </div>
                     </div>
                 </mat-card-content>

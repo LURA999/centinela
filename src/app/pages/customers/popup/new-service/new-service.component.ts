@@ -20,18 +20,18 @@ export class NewServiceComponent implements OnInit {
   public dialogRef: MatDialogRef<NewServiceComponent>) { }
 
   ngOnInit(): void {
-    this.ultimoIDFalso()    
+     this.ultimoIDFalso()
   }
 
-  async ultimoIDFalso() {
+  async ultimoIDFalso() { 
     this.$sub.add( this.service.llamarService_maxIdFalso(this.data.idEmpresa+""+this.data.Empresa[0]).subscribe((resp:responseService)=>{
       try{
-      this.ultimoIdFalso = resp.container[0].contador            
+      this.ultimoIdFalso = resp.container[0].contador      
       }catch(Exception){}
     }))
   }
 
-  crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string,direccion :string , dominio : string, selectEstatus : number, selectPlan : number){  
+ async crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string,direccion :string , dominio : string, selectEstatus : number, selectPlan : number){  
     this.serviceM.nombre = nombre;
     this.serviceM.cveCiudad = selectCiudad;
     this.serviceM.ciudadNombre = document.getElementById("selectCiudad")?.innerText+"";
@@ -45,14 +45,14 @@ export class NewServiceComponent implements OnInit {
     this.serviceM.rs = document.getElementById("selectRs")?.innerText+"";
     this.serviceM.plan = document.getElementById("selectPlan")?.innerText+"";
     
-    if(this.data.opc == false){
+    if(this.data.opc == false){   
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 && longitud.length > 0 && direccion.length > 0 && dominio.length > 0 
         && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){          
           this.serviceM.identificador = ((this.data.idEmpresa+""+this.data.Empresa)+""+((Number(this.ultimoIdFalso)+1).toString().padStart(5,"0")))
           this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
           this.serviceM.id = Number(this.data.idNuevo)+1;
           this.serviceM.contador = Number(this.ultimoIdFalso)+1;
-          lastValueFrom(this.service.insertService(this.serviceM));
+         await lastValueFrom(this.service.insertService(this.serviceM));
           this.dialogRef.close(this.serviceM)
         }else{
           alert("Llene todos los campos, por favor")

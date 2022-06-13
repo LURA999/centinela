@@ -10,7 +10,13 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      new ContextReplacementPlugin(
+        /\@angular(\\|\/)core(\\|\/)/,
+        path.join(__dirname, '$_lazy_route_resources'),
+        {}
+    ),
+      new ContextReplacementPlugin(/any-promise/)
     ],
     client: {
       jasmine: {

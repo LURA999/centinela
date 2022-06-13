@@ -22,7 +22,8 @@ export class NewRouterComponent implements OnInit {
   newModel = new DeviceModel()
   $sub = new Subscription()
   usuarios : any [] = [];
-  identificador :string = this.ruta.url.split("/")[4];
+  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
+  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
   cadenaDeIps : string =""
   repetidoras : any [] =[];
   ipsAuxiliar : any [] =[];
@@ -177,8 +178,8 @@ export class NewRouterComponent implements OnInit {
     this.newModel.segmento = document.getElementById("segmento")?.innerText+""
     this.newModel.tipo =  document.getElementById("tipo")?.innerText+""
     this.newModel.usuario = document.getElementById("usuario")?.innerText+""
-    this.newModel.identificador = this.identificador.slice(0,2)
-    this.newModel.contador = Number(this.identificador.slice(2,7))
+    this.newModel.identificador = this.identificador
+    this.newModel.contador = Number(this.contadorIdenti)
     if(this.routerForm.valid == false){
       alert("Por favor llene todos los campos")
     }else{
@@ -307,7 +308,7 @@ export class NewRouterComponent implements OnInit {
 
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   async ipsEditar(id:number){    
-    this.ipService.selectIpOneRouter(id, this.identificador.slice(0, 2), 2, Number(this.identificador.slice(2, 7))).subscribe(async (resp: responseService) => {
+    this.ipService.selectIpOneRouter(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {
       let ip: any = resp.container;          
       for await (let y of ip){
        this.indicesSegmentos= y.idSegmento

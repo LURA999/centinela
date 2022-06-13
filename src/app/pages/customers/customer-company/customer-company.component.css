@@ -47,6 +47,17 @@ mat-card-content {
     margin-top:5%; 
     margin-bottom: 5%;
 }
+
+.cabecera{
+    display: flex;
+   
+}
+
+.link{
+    width: 100%;
+    text-align: end;
+}
+
 @media screen and (max-width:990px) {
 
     mat-paginator{

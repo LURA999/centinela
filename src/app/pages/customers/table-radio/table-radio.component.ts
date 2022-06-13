@@ -27,7 +27,8 @@ export class TableRadioComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-  identificador :string = this.ruta.url.split("/")[4];
+  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
+  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
   metodo  = new RepeteadMethods();
   modelRadio = new DeviceModel();
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -59,7 +60,7 @@ export class TableRadioComponent implements OnInit {
 
   async llenarTabla(){
     this.cargando = false;             
-    this.$sub.add (this.deviceService.todosRadios(this.identificador.slice(0,2),Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
+    this.$sub.add (this.deviceService.todosRadios(this.identificador, Number(this.contadorIdenti)).subscribe((resp:responseService)=>{
       if(resp.container.length !=0){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 

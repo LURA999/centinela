@@ -4,7 +4,6 @@ import { SmtpService } from 'src/app/core/services/smtp.service';
 import { SmtpModel } from 'src/app/models/smtp.model';
 import { runInThisContext } from 'vm';
 import { NotifierService } from 'angular-notifier';
-
 interface auth {
   value: number;
   viewValue: string;
@@ -93,10 +92,37 @@ port=""
     this.smtModel.smtp_secure=smtp_secure
     this.smtModel.port=port
     lastValueFrom(this.smtpservice.updateSmtp(this.smtModel));  
+    
             
   }
   notify(){
     this.notifier.notify('success', 'Informacion actualizada');
+  }
+
+
+  
+ async smtpMail(){
+  this.smtpservice.llamarSmtp().toPromise().then( (result : any) =>{
+    /**this.lim_env=result.container[0]["lim_env"]*/
+    /**this.lim_corr=result.container[0]["lim_corr"]*/
+    this.smtModel.host=result.container[0]["host"]
+    /**this.auth=result.container[0]["auth"]*/
+    this.smtModel.username=result.container[0]["username"]
+    this.smtModel.password=result.container[0]["password"]
+    /**this.smtp_secure=result.container[0]["smtp_secure"]*/
+    this.smtModel.port=result.container[0]["port"]
+    lastValueFrom(this.smtpservice.smtpMail(this.smtModel));  
+    console.log(this.smtModel);
+     });
+  
+ 
+  
+}
+
+
+
+  smtpConfig(){
+
   }
 
   

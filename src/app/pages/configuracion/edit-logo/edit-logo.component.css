@@ -24,3 +24,20 @@ button{
 display: flex;
 float: right;
 }
+
+.col {
+    padding-right: 0;
+    width: 500px;
+    display:inline-block;
+  }
+  
+  .col figure img {
+    max-width: 60%;
+   
+    
+  }
+  img{
+  }
+.card-body text-center{
+    align-self: center !important;
+}

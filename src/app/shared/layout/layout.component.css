@@ -140,22 +140,74 @@ margin-left: 20px;
   margin-top: 1rem;
 }
 img{
-  width: 14vw;
-  height: 3vw;
+  width: 250px;
+  height: 50px;
+  position: absolute;
+    margin-top: -15px;
 }
 
 .clock{
-  font-size: 1.7vw;
+  font-size: 20px;
 }
 .time-date{
-margin-left: 2vw;
+margin-right: 10px;
+font-size: 1.7vw;
+}
+.lupa{
+margin-top: 20px;
 }
 .search{
-margin-left: 20%; 
+margin-right: 40px;
 font-family: Arial, Helvetica, sans-serif;
-font-size: 20px;
+font-size: 1vw;
+}
+
+.rigth{
+  
+  display: flex;
+  float: right;
+}
+
+.top{
+  align-self: center;
+}
+
+.left{
+  display: flex;
+  float: left;
+
+}
+
+@media screen and (max-width:610px) {
+
+mat-form-field{
+  width: 80%;
+}
+.time-date{
+display: none;
 }
 
 
+}
+
+
+
+@media screen and (max-width:500px) {
+  .time-date{
+    display: none;
+    }
+ 
+  
+  }
+  
+
+@media screen and (max-width:390px) {
+  .time-date{
+    display: none;
+    }
+    .search{
+width: 30%;      }
+  
+  }
 
 

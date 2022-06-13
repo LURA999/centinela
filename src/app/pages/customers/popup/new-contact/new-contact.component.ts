@@ -64,12 +64,15 @@ export class NewContactComponent implements OnInit {
   ngOnInit(): void {          
     this.maxid()
     this.load = true;
-    this.editarTab()    
+    this.editarTab()        
     if(this.url == "contact" ){
       this.selectContacto = true
       this.selectService = false     
+      try{
       this.serviciosFaltantes(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
       this.servicios(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
+      }catch(Exception){  }
+
           }else{
       this.serviciosFaltantes(this.data.idContacto,this.url.slice(0, 2))
       this.servicios(this.data.idContacto,this.url.slice(0, 2))
@@ -92,6 +95,8 @@ export class NewContactComponent implements OnInit {
       this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";
       this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";
       this.contactoModel.cveServicioArray = this.cveServicios
+      this.contactoModel.cveContactoArray = this.cveContactos
+
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
             this.contactoModel.cveContacto = this.idAuto;
@@ -106,12 +111,11 @@ export class NewContactComponent implements OnInit {
         }
           this.contactoModel.cveContacto = this.data.idContacto;
           await lastValueFrom(this.contacto.updateContacto_tServicio(this.contactoModel))
-           
           this.dialogRef.close(this.contactoModel)
       }
     }else{
       this.contactoModel = this.asignarForm.value
-      this.contactoModel.cveContactoArray = this.cveContactos
+      this.contactoModel.cveContactoArray = this.cveContactos      
       await lastValueFrom(this.contactService.insertarContacto_Servicio(this.contactoModel))
       this.dialogRef.close(this.contactoModel)
     }
@@ -123,9 +127,7 @@ export class NewContactComponent implements OnInit {
     if(selected == 1 && this.url !== "contact"){
       this.todosContactos(Number(this.data.idServicioDefault))
     }else if(selected == 1 && this.url === "contact") {
-      this.asignarForm.value.cveServicio = 0
-      console.log(this.asignarForm.value.cveServicio);
-      
+      this.asignarForm.value.cveServicio = 0      
     }
   }
 
@@ -162,20 +164,14 @@ export class NewContactComponent implements OnInit {
     
     this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,idServicio,4).subscribe(async (resp:responseService)=>{
       this.data.arrayContactos = resp.container
-      console.log(resp.container);
-      
       this.cveContactos = []
       try{
-      this.placeholder3.clear()
-     
+      this.placeholder3.clear()   
       for await (const i of resp.container) {
         this.createComponent2({title:i.nombre, id:i.idContacto,state:false},i)        
       }
-
       }catch(Exception){
-
       }
-      
     })
   }
 
@@ -184,14 +180,11 @@ export class NewContactComponent implements OnInit {
     this._renderer.setAttribute(event._element.nativeElement,"hidden","true")
   }
 
-
-
   async guardarServicio(num: number, primeraOp: number, ip? : string,event?:any,boxIdSegmento?:number)  {   
     this.cveServicios.push(num)
     if(this.data.idServicio == num){
       this.eliminarServicio = -1
     }
-
     switch(primeraOp)
     {
       case 1:
@@ -233,7 +226,7 @@ export class NewContactComponent implements OnInit {
 
     if(box.id != undefined){
     box._disabled = false;
-    box._selected = false;+
+    box._selected = false;
     this._renderer.removeAttribute(box._element.nativeElement,"hidden")
     }else{
       this.Servicios.push(box)
@@ -279,7 +272,7 @@ export class NewContactComponent implements OnInit {
 
   serviciosFaltantes(idContacto : number, identificador : string){
     this.contactService.selectServicioPorContacto(identificador,idContacto,1).subscribe(async (resp:responseService)=>{
-     this.Servicios = resp.container         
+      this.Servicios = resp.container               
     })
   }
 

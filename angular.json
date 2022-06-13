@@ -17,6 +17,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": 
+            ["crypto","stream","http","https","url","zlib","dns","tls","browserify-zlib"]
+            
+            ,
             "outputPath": "dist/centinela",
             "index": "src/index.html",
             "main": "src/main.ts",

@@ -68,6 +68,7 @@ export class RepeteadMethods {
    }
   }
 
+
   /**Devuelve string esta en dudas, se reutilizara de nuevo, si no, entonces se borrara */
   tipo(tipo:string) : string{
     if(tipo == '1'){

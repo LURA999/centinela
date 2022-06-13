@@ -27,7 +27,8 @@ export class TableEquipamentComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-  identificador :string = this.ruta.url.split("/")[4];
+  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
+  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
   modelOtro = new DeviceModel();
 
   IpSeleccionadas : Array<any[]>= []
@@ -63,7 +64,7 @@ export class TableEquipamentComponent implements OnInit {
   }
   async llenarTabla(){
     this.cargando = false;       
-    this.$sub.add(this.deviceService.todosOtros(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)),1).subscribe((resp:responseService)=>{           
+    this.$sub.add(this.deviceService.todosOtros(this.identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{           
       if(resp.container.length !=0){           
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -161,8 +162,8 @@ export class TableEquipamentComponent implements OnInit {
       if(result !=undefined){
 
        try{
-         result.contador = Number(this.identificador.slice(2,7))
-         result.identificador = this.identificador.slice(0,2)
+         result.contador = Number(this.contadorIdenti)
+         result.identificador = this.identificador
         this.ELEMENT_DATA.unshift(result);        
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
@@ -181,7 +182,7 @@ export class TableEquipamentComponent implements OnInit {
   async abrirIps(id:number){    
     if(this.guardandoPrimerIndice.indexOf(id) == -1){
     this.guardandoPrimerIndice.push(id)
-    this.ipSelect.selectIpOneEquipament(id,this.identificador.slice(0,2),2,Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
+    this.ipSelect.selectIpOneEquipament(id,this.identificador, 2, Number(this.contadorIdenti)).subscribe((resp:responseService)=>{
       this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container
     })
    }
@@ -189,7 +190,7 @@ export class TableEquipamentComponent implements OnInit {
   }
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   ipsEditar(id:number){
-    this.ipSelect.selectIpOneEquipament(id,this.identificador.slice(0,2),2,Number(this.identificador.slice(2,7))).subscribe((resp:responseService)=>{
+    this.ipSelect.selectIpOneEquipament(id,this.identificador, 2, Number(this.contadorIdenti)).subscribe((resp:responseService)=>{
       this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container
     })
   }

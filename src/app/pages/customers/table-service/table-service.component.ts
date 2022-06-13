@@ -157,7 +157,7 @@ export class TableServiceComponent implements OnInit {
           cveEstatus :  resp.container[i].estatus,
           cvePlan :  resp.container[i].cvePlan,
           cveCiudad :  resp.container[i].cveCiudad,
-          identificador:((resp.container[i].identificador)+""+(resp.container[i].contador.padStart(5,"0"))),
+          identificador:((resp.container[i].identificador)+""+(resp.container[i].contador.toString().padStart(5,"0"))),
           ciudad:resp.container[i].ciudad,
           servicio:resp.container[i].servicio,
           plan:resp.container[i].plan,
@@ -203,12 +203,10 @@ export class TableServiceComponent implements OnInit {
   editar(idServicio : number, nombre : string, rs :string, idRazonSocial : number, latitud : string, longitud : string,
     dominio :string, direccion : string, cvePlan :number, cveEstatus : number,cveCiudad : number, identificador : string, ciudad :number, 
     servicio : string){
-      console.log();
-      
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc : true,
         idEmpresa: this.id,
-       //Empresa: this.nombreEmpresa[0],
+        Empresa: this.nombreEmpresa[0],
         idServicio: idServicio, 
         arrayCiudad:this.arrayCiudades, 
         arrayPlan:this.arrayPlan,
@@ -229,9 +227,7 @@ export class TableServiceComponent implements OnInit {
       height:"auto", width:"350px",
      });
      this.paginator2.firstPage();
-     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{   
-      console.log(result);
-      
+     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{         
       if(result !=undefined || result != ""){    
        try{
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
@@ -265,9 +261,7 @@ export class TableServiceComponent implements OnInit {
      }))
   }
 
- async insertar(){   
-   console.log(this.nombreEmpresa);
-   
+ async insertar(){      
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc: false,idEmpresa: this.id,
         Empresa: this.nombreEmpresa[0] ,idNuevo: this.mayorNumero, arrayCiudad: 

@@ -15,7 +15,8 @@ import { RepeteadMethods } from '../../RepeteadMethods';
 })
 export class ViewServiceComponent implements OnInit {
   idCliente = this.activoRouter.snapshot.params["id"]
-  identificador = this.activoRouter.snapshot.params["identificador"]
+  identificador :string = this.activoRouter.snapshot.params["identificador"].replace(/([0-9]{4})\S/,"");
+  contadorIdenti :string = this.activoRouter.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
   servicio : Observable<responseService> | undefined;
   metodo = new RepeteadMethods()
   navLinks  =[
@@ -36,8 +37,8 @@ export class ViewServiceComponent implements OnInit {
   activeLink = this.navLinks[0].link;
 
   constructor(private activoRouter : ActivatedRoute, private service : ServiceService
-    , private DataService : DataService, private router : Router) {
-      this.servicio = this.service.selectVistaServicio(this.identificador.slice(0,2),Number(this.identificador.slice(2,7)))
+    , private DataService : DataService, private router : Router) {   
+      this.servicio = this.service.selectVistaServicio(this.identificador, Number(this.contadorIdenti))
       let diagonal = this.router.url.split("/",6)[5];
       if(diagonal != undefined){
         this.activeLink = "./"+diagonal
@@ -47,12 +48,10 @@ export class ViewServiceComponent implements OnInit {
 
   ngOnInit(): void {
 
-
   }
 
   abrirMapa(direccion : string, ciudad : string,coordenadas : string){
     if(coordenadas ==undefined){
-
     }
     window.open("https://www.google.com/maps/place/"+coordenadas, "_blank");
   }
