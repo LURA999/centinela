@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoginContactoComponent } from './auth/login-contacto/login-contacto.component';
 import { LoginUsuarioComponent } from './auth/login-usuario/login-usuario.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { NotifierModule } from 'angular-notifier';
 
 MatTabsModule
 @NgModule({
@@ -24,6 +25,7 @@ MatTabsModule
     LoginUsuarioComponent,
   ],
   imports: [
+    
     NgbModule,
     CommonModule,
     BrowserModule,
@@ -42,6 +44,8 @@ MatTabsModule
   exports:[
     CustomMaterialModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  
+  
 })
 export class AppModule { }

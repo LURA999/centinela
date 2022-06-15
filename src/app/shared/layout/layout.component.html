@@ -23,10 +23,24 @@
 <div class="rigth">
 <div class="search">
 
-  <mat-form-field  >
-    <input class="find" type="text" matInput>
-    <mat-icon class="lupa" >search</mat-icon>
+  <form class="example-form">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Buscar</mat-label>
+      <input type="text"
+            
+             aria-label="Number"
+             matInput
+             [formControl]="myControl"
+             [matAutocomplete]="auto" #id>
+      <mat-autocomplete (optionSelected)="servicio(id.value)"  autoActiveFirstOption #auto="matAutocomplete" >
+        <mat-option *ngFor="let option of filteredOptions  | async" [value]="option" >
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+      
     </mat-form-field>
+    <mat-icon>search</mat-icon>
+  </form>
   </div>
 
   
@@ -224,3 +238,6 @@
 </mat-sidenav-container>
 
 </div>
+<notifier-container>
+  
+</notifier-container>
