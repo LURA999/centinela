@@ -55,7 +55,7 @@ export class NewRadioComponent implements OnInit {
     this.inicio();
     this.idMax();
    this.ips = []
-    
+
   }
 
   async idMax(){
@@ -100,9 +100,10 @@ export class NewRadioComponent implements OnInit {
   }
 
 //Metodos en el DOM
-  tabChangeSegmento(){    
-
-    this.ipValue = 0;
+  tabChangeSegmento(){   
+    if(this.data.opc == false){ 
+      this.radioForm.controls["idIp"].setValue(0)
+    }
     let segmento : string= document.getElementById("segmento")?.innerText+""; 
     let arraySegmento :string[] =segmento.split("-")
     this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
@@ -110,9 +111,11 @@ export class NewRadioComponent implements OnInit {
     }))
   }
 
-  tabChangeRepetidora(rep : number,tipo : number){           
-    this.segmentoValue = 0;
-    this.ipValue = 0;
+  tabChangeRepetidora(rep : number,tipo : number){          
+    if(this.data.opc == false){ 
+      this.radioForm.controls["idSegmento"].setValue(0)    
+      this.radioForm.controls["idIp"].setValue(0)
+    }
     this.$sub.add (this.segmentoService.buscarSegmentoRepetidorTipo(rep,tipo).subscribe((resp:responseService)=>{
         this.segmentos = resp.container;
         this.ips = []        
@@ -120,7 +123,7 @@ export class NewRadioComponent implements OnInit {
   }
 
   //enviar y editar  form
-  enviar(){
+  async enviar(){
    this.data.salir = false
    this.newModel = this.radioForm.value
    this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
@@ -137,21 +140,23 @@ export class NewRadioComponent implements OnInit {
     }else{
       if(this.data.opc == false){
         this.newModel.idDevice =  this.idAuto;
+        await lastValueFrom(this.deviceService.insertarRadio(this.newModel))
         this.dialogRef.close(this.newModel)     
-        lastValueFrom(this.deviceService.insertarRadio(this.newModel))
       }else{        
         this.newModel.idDevice = this.data.model.idDevice;        
+        await lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
         this.dialogRef.close(this.newModel)  
-        lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
       }
     }
   }
 
   //Peticiones
   async todasRepetidoras(tipo:number) {
-    this.repetidoraValue = 0;
-    this.segmentoValue = 0;
-    this.ipValue = 0;
+    if(this.data.opc == false){
+      this.radioForm.controls["idRepetidora"].setValue(0)    
+      this.radioForm.controls["idSegmento"].setValue(0)    
+      this.radioForm.controls["idIp"].setValue(0)
+    }
     this.$sub.add(this.servicioRepetidora.llamarRepitdoresTipo(tipo).subscribe((resp:responseService)=>{
       this.repetidoras = resp.container
       this.tipo = tipo

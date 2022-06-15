@@ -53,10 +53,7 @@ export class TableRadioComponent implements OnInit {
     this.$sub.unsubscribe();
   }
 
-  async descargar(){
-  
-    
-  }
+  async descargar(){  }
 
   async llenarTabla(){
     this.cargando = false;             

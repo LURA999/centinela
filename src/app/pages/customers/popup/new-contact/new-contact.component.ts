@@ -36,7 +36,7 @@ export class NewContactComponent implements OnInit {
   load : boolean = false;
   url = this.ruta.url.split("/")[4]
   id :string = this.ruta.url.split("/")[3];
-
+  selectServcioValue : number = 0
   serviciosGuardados : any [] =[]
   eliminarServicio : number = -1
   agregarForm : FormGroup = this.fb.group({
@@ -50,10 +50,11 @@ export class NewContactComponent implements OnInit {
     puesto: [this.data.puesto ? this.data.puesto: '', Validators.required],
     correo: [this.data.correo ? this.data.correo: '', Validators.required],
     contrasena: [this.data.contrasena? this.data.contrasena: '', Validators.required],
+    valueServicio: ""
   })
 
   asignarForm : FormGroup = this.fb2.group({
-    cveContacto: ["", Validators.required],
+    cveServicio: [this.data.idServicioDefault , Validators.required],
   })
   
   idAuto : number = 0
@@ -61,7 +62,7 @@ export class NewContactComponent implements OnInit {
   @ViewChild('placeholder3', {read: ViewContainerRef, static: false}) placeholder3!: ViewContainerRef;
   @ViewChild('servicio') servicio!: MatSelect;
 
-  ngOnInit(): void {          
+  ngOnInit(): void {    
     this.maxid()
     this.load = true;
     this.editarTab()        
@@ -72,15 +73,12 @@ export class NewContactComponent implements OnInit {
       this.serviciosFaltantes(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
       this.servicios(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
       }catch(Exception){  }
-
-          }else{
+      }else{
       this.serviciosFaltantes(this.data.idContacto,this.url.slice(0, 2))
       this.servicios(this.data.idContacto,this.url.slice(0, 2))
       this.selectService = true
     }
   }
-
-
   
   maxid(){
     firstValueFrom(this.contactService.llamarContactos_maxId()).then((resp:responseService)=>{
@@ -123,11 +121,11 @@ export class NewContactComponent implements OnInit {
 
   seleccionado(selected : number){
     this.seleccionar = selected;
-
+    
     if(selected == 1 && this.url !== "contact"){
       this.todosContactos(Number(this.data.idServicioDefault))
     }else if(selected == 1 && this.url === "contact") {
-      this.asignarForm.value.cveServicio = 0      
+      this.asignarForm.controls["cveServicio"].setValue(0)      
     }
   }
 
@@ -148,9 +146,9 @@ export class NewContactComponent implements OnInit {
         telefono: "",
         celular: [ '', Validators.required],
         puesto: [ '', Validators.required],
-        cveServicio: [this.data.idServicioDefault , Validators.required],
         correo: ['', Validators.required],
         contrasena: [ '', Validators.required],
+        valueServicio: ""
       })
       this.asignarForm = this.fb2.group({
         cveContacto: ["", Validators.required],
@@ -161,9 +159,8 @@ export class NewContactComponent implements OnInit {
 
 
   todosContactos(idServicio : number){
-    
     this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,idServicio,4).subscribe(async (resp:responseService)=>{
-      this.data.arrayContactos = resp.container
+      this.data.arrayContactos = resp.container      
       this.cveContactos = []
       try{
       this.placeholder3.clear()   
@@ -171,7 +168,12 @@ export class NewContactComponent implements OnInit {
         this.createComponent2({title:i.nombre, id:i.idContacto,state:false},i)        
       }
       }catch(Exception){
+      } finally {
+        this.selectServcioValue = 0;
+
       }
+      this.agregarForm.controls["valueServicio"].setValue(0)  
+
     })
   }
 
@@ -200,6 +202,7 @@ export class NewContactComponent implements OnInit {
           )
         break;
     }
+    this.agregarForm.controls["valueServicio"].setValue(0)  
   }
 
   createComponent(input: { title: string, id: string, state: boolean},_event:any) {    
@@ -267,7 +270,6 @@ export class NewContactComponent implements OnInit {
         await this.guardarServicio(y.idServicio,2,y.servicio,y);
       }      
     })
-    
   }
 
   serviciosFaltantes(idContacto : number, identificador : string){

@@ -27,7 +27,8 @@ export class NewEquipamentComponent implements OnInit {
     idUsuario: [this.data.model.idUsuario !=0 ? this.data.model.idUsuario : '', Validators.required],
     idRepetidora  : [this.data.model.idRepetidora !=0 ? this.data.model.idRepetidora : '', Validators.required],
     contrasena: [this.data.model.contrasena ? this.data.model.contrasena : '', Validators.required],
-    snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required]
+    snmp: [this.data.model.snmp ? this.data.model.snmp : '', Validators.required],
+    ip: ""
   });
 hide=true;
   saveId : number =0;
@@ -92,7 +93,8 @@ hide=true;
         idUsuario: [ '', Validators.required],
         idRepetidora: [ '', Validators.required],
         contrasena: ['', Validators.required],
-        snmp: ['', Validators.required]
+        snmp: ['', Validators.required],
+        ip:""
        });
  
      }
@@ -171,7 +173,7 @@ tabChangeRepetidora(rep : number){
   }
 
 //enviar y editar  form
-enviar(){  
+async enviar(){  
   if(this.cadenaDeIps.split(",").length >1  || this.cadenaDeIps.split(",").length ==1 && this.cadenaDeIps.split(",")[0] !== "" ){
   this.data.salir = false;
   this.newModel  = this.routerForm.value
@@ -189,12 +191,12 @@ enviar(){
   }else{
     if(this.data.opc == false){
       this.newModel.idDevice =  this.idAuto;
+      await lastValueFrom(this.deviceService.insertarOtros(this.newModel))
       this.dialogRef.close(this.newModel)
-      lastValueFrom(this.deviceService.insertarOtros(this.newModel))
     }else{        
       this.newModel.idDevice = this.data.model.idDevice;            
+     await lastValueFrom(this.deviceService.actualizarotros(this.newModel))
       this.dialogRef.close(this.newModel)      
-      lastValueFrom(this.deviceService.actualizarotros(this.newModel))
     }
   }
   }else{
@@ -255,6 +257,7 @@ enviar(){
           )
         break;
     }
+    this.routerForm.controls["ip"].setValue(0)
   }
   
   elementOption(event:any){

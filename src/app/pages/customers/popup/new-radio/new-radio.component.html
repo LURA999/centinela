@@ -40,7 +40,7 @@
         <br>
         <mat-form-field appearance="fill">
         <mat-label>Repetidora</mat-label>
-        <mat-select  id="repetidora" [(ngModel)]="repetidoraValue" (selectionChange)="tabChangeRepetidora($event.value,tipo.value)" formControlName="idRepetidora">
+        <mat-select  id="repetidora" (selectionChange)="tabChangeRepetidora($event.value,tipo.value)" formControlName="idRepetidora">
             <mat-option selected disabled value="0">Seleccione una repetidora</mat-option>
             <mat-option *ngFor="let repetidor of repetidoras" [value]="repetidor.idRepetidora">{{repetidor.nombreRepetidora}}</mat-option>
         </mat-select>
@@ -60,7 +60,7 @@
         <br>
         <mat-form-field    appearance="fill" >
             <mat-label>Segmento</mat-label>
-            <mat-select id="segmento" [(ngModel)]="segmentoValue" (closed)="tabChangeSegmento()"  [disabled]="segmentos.length ==0" formControlName="idSegmento" >
+            <mat-select id="segmento" (closed)="tabChangeSegmento()"  [disabled]="segmentos.length ==0" formControlName="idSegmento" >
                 <mat-option  selected disabled value="0">Seleccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento" >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>

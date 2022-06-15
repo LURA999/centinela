@@ -63,10 +63,11 @@ export class TableRouterComponent implements OnInit {
    
   }
 
-  async llenarTabla(){
+  llenarTabla(){
     this.cargando = false;       
 
-    this.$sub.add(this.deviceService.todosRouter(this.identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{     
+    this.$sub.add(this.deviceService.todosRouter(this.identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{   
+      console.log(resp)  
       if(resp.container.length !=0){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -92,6 +93,7 @@ export class TableRouterComponent implements OnInit {
           comentario : resp.container[i].comentario
         })
       }
+      console.log(this.ELEMENT_DATA);
       
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
@@ -166,19 +168,20 @@ export class TableRouterComponent implements OnInit {
     });
 
      this.paginator2.firstPage();
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+     this.$sub.add(dialogRef.afterClosed().subscribe(async (result:DeviceModel)=>{
       if(result !=undefined){
-       try{
-        this.ELEMENT_DATA.unshift(result);
+       try{ 
+       // this.ELEMENT_DATA.unshift(result);
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
+        
       }catch(Exception){}finally{
         this.ELEMENT_DATA =  []  
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);  
         this.llenarTabla()
       }
     }
