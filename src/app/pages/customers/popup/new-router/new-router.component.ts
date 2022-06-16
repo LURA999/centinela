@@ -35,6 +35,7 @@ export class NewRouterComponent implements OnInit {
   idAuto : number =0;
   ipsGuardadas : any [] =[]
   routerForm : FormGroup  = this.fb.group({
+    ip:"",
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
     idEstatus: [this.data.model.idEstatus !=0 ? this.data.model.idEstatus : '' , Validators.required],
     comentario: [this.data.model.comentario ? this.data.model.comentario : '', Validators.required],
@@ -82,6 +83,7 @@ export class NewRouterComponent implements OnInit {
      }else{
        this.data.model = this.newModel
        this.routerForm = this.fb.group({
+        ip:"",
         device: [ '', Validators.required],
         idEstatus: ['' , Validators.required],
         comentario: ['', Validators.required],
@@ -169,7 +171,7 @@ export class NewRouterComponent implements OnInit {
   }
 
   //enviar y editar  form
-  enviar(){
+ async enviar(){
     this.data.salir = false
     this.newModel = this.routerForm.value
     this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
@@ -187,11 +189,11 @@ export class NewRouterComponent implements OnInit {
     }else{
       if(this.data.opc == false){
         this.newModel.idDevice =  this.idAuto;
-        lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
+        await lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
         this.dialogRef.close(this.newModel)      
       }else{        
         this.newModel.idDevice = this.data.model.idDevice;
-        lastValueFrom(this.deviceServicio.actualizarRouter(this.newModel));
+        await lastValueFrom(this.deviceServicio.actualizarRouter(this.newModel));
         this.dialogRef.close(this.newModel)
       }
     }
@@ -254,6 +256,7 @@ export class NewRouterComponent implements OnInit {
         )
         break;
   }
+  this.routerForm.controls["ip"].setValue(0)
   }
 
  createComponent(input: { title: string, id: string, state: boolean, index:number },_event? : any) {

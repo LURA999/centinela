@@ -95,11 +95,13 @@ export class NewRadioComponent implements OnInit {
 
 //Metodos en el DOM
   tabChangeSegmento(){    
+    this.radioForm.controls["idIp"].setValue(0)
     let segmento : string= document.getElementById("segmento")?.innerText+""; 
     let arraySegmento :string[] =segmento.split("-")
     this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
       this.ips = resp.container
     }))
+    
   }
 
   tabChangeRepetidora(rep : number,tipo : number){           
@@ -107,10 +109,11 @@ export class NewRadioComponent implements OnInit {
         this.segmentos = resp.container;
         this.ips = []        
     }));
+   
   }
 
   //enviar y editar  form
-  enviar(){
+  async enviar(){
    this.data.salir = false
    this.newModel = this.radioForm.value
    this.newModel.estatus =  document.getElementById("estatus")?.innerText+"";
@@ -127,12 +130,12 @@ export class NewRadioComponent implements OnInit {
     }else{
       if(this.data.opc == false){
         this.newModel.idDevice =  this.idAuto;
-        lastValueFrom(this.deviceService.insertarRadio(this.newModel))
+        await lastValueFrom(this.deviceService.insertarRadio(this.newModel))
 
         this.dialogRef.close(this.newModel)     
       }else{        
         this.newModel.idDevice = this.data.model.idDevice;      
-        lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
+        await lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
   
         this.dialogRef.close(this.newModel)  
       }
@@ -141,6 +144,10 @@ export class NewRadioComponent implements OnInit {
 
   //Peticiones
   async todasRepetidoras(tipo:number) {
+    this.radioForm.controls["idRepetidora"].setValue(0)
+    this.radioForm.controls["idIp"].setValue(0)
+    this.radioForm.controls["idSegmento"].setValue(0)
+
     this.$sub.add(this.servicioRepetidora.llamarRepitdoresTipo(tipo).subscribe((resp:responseService)=>{
       this.repetidoras = resp.container
       this.tipo = tipo

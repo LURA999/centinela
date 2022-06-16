@@ -51,7 +51,7 @@ export class NewServiceComponent implements OnInit {
           this.serviceM.identificador = ((this.data.idEmpresa+""+this.data.Empresa)+""+((Number(this.ultimoIdFalso)+1).toString().padStart(5,"0")))
           this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
           this.serviceM.id = Number(this.data.idNuevo)+1;
-          this.serviceM.contador = Number(this.ultimoIdFalso)+1;
+          this.serviceM.contador = Number(this.ultimoIdFalso)+1;          
          await lastValueFrom(this.service.insertService(this.serviceM));
           this.dialogRef.close(this.serviceM)
         }else{

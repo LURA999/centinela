@@ -219,7 +219,7 @@ export class TableContactComponent implements OnInit {
         height:"auto", width:"300px",
       });
       
-      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(dialogRef.afterClosed().subscribe(async (result : any) => {
         if(result !=undefined){          
         try{
           this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
@@ -234,7 +234,12 @@ export class TableContactComponent implements OnInit {
 
       }finally{
         this.ELEMENT_DATA = []
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); 
+        if(this.id != undefined && this.identificador == undefined){
+          await this.llenarTablaContactoEmpresa()
+        }else{
+          await this.llenarTablaContactoServicio()
+        }      
       }
     }
       }));
@@ -269,15 +274,20 @@ export class TableContactComponent implements OnInit {
           rol : result.rol,
           contrasena:result.contrasena
           });  
-        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
-        this.dataSource.paginator = this.paginator2;    
+     /*   this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+        this.dataSource.paginator = this.paginator2;    */
         this.dataSource.sort = this.sort;
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
       }catch(Exception){}finally{
         this.ELEMENT_DATA = []
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); 
+        if(this.id != undefined && this.identificador == undefined){
+          await this.llenarTablaContactoEmpresa()
+        }else{
+          await this.llenarTablaContactoServicio()
+        }
       }
       }
      }))
@@ -314,20 +324,25 @@ export class TableContactComponent implements OnInit {
         contrasena : result.contrasena
         });
 
-        this.mayorNumero = result.cveContacto;
-        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+     //   this.mayorNumero = result.cveContacto;
+     //   this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-        this.ELEMENT_DATA = []
+      /*  this.ELEMENT_DATA = []
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-        await this.llenarTablaContactoEmpresa()
+        await this.llenarTablaContactoEmpresa()*/
 
       }catch(Exception){}finally{
         this.ELEMENT_DATA = []
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); 
+        if(this.id != undefined && this.identificador == undefined){
+          await this.llenarTablaContactoEmpresa()
+        }else{
+          await this.llenarTablaContactoServicio()
+        }      
       }
       }
      }))

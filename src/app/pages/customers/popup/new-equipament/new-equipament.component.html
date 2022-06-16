@@ -60,7 +60,7 @@
         
         <mat-form-field appearance="fill">
         <mat-label>Ip</mat-label>
-        <mat-select #ip [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value,1,'',$event)" >
+        <mat-select #ip [disabled]="ips.length == 0" (selectionChange)="guardarIp($event.value,1,'',$event)"  formControlName="ip">
                 <mat-option  selected disabled >Seleccione una ip</mat-option>
                 <mat-option *ngFor="let p of ips" [value]="p.idIp" [id]="p.idIp+'z'"  (onSelectionChange)="elementOption($event.source)"> 
                     {{p.ip }}

@@ -197,7 +197,7 @@ export class TableServiceComponent implements OnInit {
       }
       }catch(Exception){}finally{
         this.ELEMENT_DATA = []
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); this.llenarTabla()
       }
     }
       }));
@@ -264,7 +264,7 @@ export class TableServiceComponent implements OnInit {
         })
       }catch(Exception){}finally{
         this.ELEMENT_DATA = []
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); this.llenarTabla()
       }
       }
      }))
@@ -315,7 +315,7 @@ export class TableServiceComponent implements OnInit {
        }
       }catch(Exception){}finally{
         this.ELEMENT_DATA = []
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); this.llenarTabla()
       }
     }
      }))

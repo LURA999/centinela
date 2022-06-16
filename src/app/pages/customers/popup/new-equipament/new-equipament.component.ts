@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 })
 export class NewEquipamentComponent implements OnInit {
   routerForm : FormGroup  = this.fb.group({
+    ip:"",
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],
     idEstatus: [this.data.model.idEstatus !=0 ? this.data.model.idEstatus : '' , Validators.required],
     comentario: [this.data.model.comentario ? this.data.model.comentario : '', Validators.required],
@@ -85,6 +86,7 @@ hide=true;
     
      }else{
        this.routerForm = this.fb.group({
+        ip:"",
         device: [ '', Validators.required],
         idEstatus: ['' , Validators.required],
         comentario: ['', Validators.required],
@@ -171,7 +173,7 @@ tabChangeRepetidora(rep : number){
   }
 
 //enviar y editar  form
-enviar(){  
+async enviar(){  
   if(this.cadenaDeIps.split(",").length >1  || this.cadenaDeIps.split(",").length ==1 && this.cadenaDeIps.split(",")[0] !== "" ){
   this.data.salir = false;
   this.newModel  = this.routerForm.value
@@ -189,12 +191,12 @@ enviar(){
   }else{
     if(this.data.opc == false){
       this.newModel.idDevice =  this.idAuto;
-      lastValueFrom(this.deviceService.insertarOtros(this.newModel))
+      await lastValueFrom(this.deviceService.insertarOtros(this.newModel))
 
       this.dialogRef.close(this.newModel)
     }else{        
       this.newModel.idDevice = this.data.model.idDevice;
-      lastValueFrom(this.deviceService.actualizarotros(this.newModel))
+      await lastValueFrom(this.deviceService.actualizarotros(this.newModel))
             
       this.dialogRef.close(this.newModel)      
     }
@@ -257,6 +259,8 @@ enviar(){
           )
         break;
     }
+    this.routerForm.controls["ip"].setValue(0)
+
   }
   
   elementOption(event:any){
