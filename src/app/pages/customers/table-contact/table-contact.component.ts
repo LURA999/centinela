@@ -62,7 +62,7 @@ export class TableContactComponent implements OnInit {
     private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
     , private services : ServiceService) { 
       try{
-        this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
+      this.contadorIdenti =  this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
       }catch(Exception){  }
      }
 
