@@ -62,7 +62,7 @@ export class NewServiceComponent implements OnInit {
       this.serviceM.identificador = this.data.identificador;
       this.serviceM.id = this.data.idServicio
 
-      lastValueFrom(this.service.updateService(this.serviceM));
+      await lastValueFrom(this.service.updateService(this.serviceM));
       this.dialogRef.close(this.serviceM)
     }
   }

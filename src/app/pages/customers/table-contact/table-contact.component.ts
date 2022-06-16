@@ -46,8 +46,6 @@ export class TableContactComponent implements OnInit {
   @Input () puesto : boolean = false;
   @Input() idServicioDefault : number = 0;
 
-
-  
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   mayorNumero : number = 0
@@ -232,7 +230,12 @@ export class TableContactComponent implements OnInit {
         setTimeout(()=>{
           this.notificationService.openSnackBar("Se elimino con exito");
         })
-      }catch(Exception){}
+      }catch(Exception){
+
+      }finally{
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
     }
       }));
   }
@@ -272,7 +275,10 @@ export class TableContactComponent implements OnInit {
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
       }
      }))
 
@@ -319,7 +325,10 @@ export class TableContactComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
         await this.llenarTablaContactoEmpresa()
 
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
       }
      }))
   }

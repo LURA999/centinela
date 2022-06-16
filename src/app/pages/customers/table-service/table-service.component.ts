@@ -195,7 +195,10 @@ export class TableServiceComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
     }
       }));
   }
@@ -259,7 +262,10 @@ export class TableServiceComponent implements OnInit {
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se agrego con exito");
         })
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
       }
      }))
   }
@@ -307,7 +313,10 @@ export class TableServiceComponent implements OnInit {
         this.notificationService.openSnackBar("Se agrego con exito");
         })
        }
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
     }
      }))
   }

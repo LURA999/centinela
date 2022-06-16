@@ -127,12 +127,14 @@ export class NewRadioComponent implements OnInit {
     }else{
       if(this.data.opc == false){
         this.newModel.idDevice =  this.idAuto;
-        this.dialogRef.close(this.newModel)     
         lastValueFrom(this.deviceService.insertarRadio(this.newModel))
+
+        this.dialogRef.close(this.newModel)     
       }else{        
-        this.newModel.idDevice = this.data.model.idDevice;        
-        this.dialogRef.close(this.newModel)  
+        this.newModel.idDevice = this.data.model.idDevice;      
         lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
+  
+        this.dialogRef.close(this.newModel)  
       }
     }
   }

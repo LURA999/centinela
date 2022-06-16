@@ -189,12 +189,14 @@ enviar(){
   }else{
     if(this.data.opc == false){
       this.newModel.idDevice =  this.idAuto;
-      this.dialogRef.close(this.newModel)
       lastValueFrom(this.deviceService.insertarOtros(this.newModel))
+
+      this.dialogRef.close(this.newModel)
     }else{        
-      this.newModel.idDevice = this.data.model.idDevice;            
-      this.dialogRef.close(this.newModel)      
+      this.newModel.idDevice = this.data.model.idDevice;
       lastValueFrom(this.deviceService.actualizarotros(this.newModel))
+            
+      this.dialogRef.close(this.newModel)      
     }
   }
   }else{
