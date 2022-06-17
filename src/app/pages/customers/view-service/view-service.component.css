@@ -71,10 +71,18 @@ mat-card {
     align-self: center;
 }
 
+.mapa #verMapa {
+    margin: 5px;
+}
+.direccionDetalle {
+    width: 60%;
+}
+
 .contenidoDireccion{
     display: flex; 
     justify-content: space-between;
     padding-right: 10%;
+
 }
 
 /** quitar efectos del nav**/
@@ -96,3 +104,4 @@ a:active, a:hover {
     width: 100%;
     text-align: end;
 }
+

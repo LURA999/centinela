@@ -103,13 +103,33 @@
                     </mat-card-title>
                 </mat-card-header>
                 <mat-card-content class="contenidoDireccion">
-                    <div>
-                    Ciudad:&nbsp;{{dato.container[0].ciudad}}<br>
-                    Coordenadas:&nbsp;{{dato.container[0].coordenadas}}<br>
-                    Direccion:&nbsp;{{dato.container[0].direccion}}
+                    <div class="direccionDetalle">
+                    Ciudad:&nbsp;{{ciudad?ciudad:dato.container[0].ciudad}}<br>
+                    Coordenadas:&nbsp;{{coordenadas?coordenadas:dato.container[0].coordenadas}}<br>
+                    Direccion:&nbsp;Av. {{avenida?avenida:dato.container[0].avenida}} 
+                    #{{numero?numero:dato.container[0].numero}}, 
+                    {{colonia?colonia:dato.container[0].colonia}}, 
+                    {{codigoPostal?codigoPostal:dato.container[0].codigoPostal}} {{ciudad?ciudad:dato.container[0].ciudad}},  
+                    {{estado?estado:dato.container[0].estado}}
+                    <br>
                     </div>
-                    <div class="mapa">
-                        <button mat-raised-button color="primary" (click)="abrirMapa(dato.container[0].direccion,dato.container[0].ciudad,dato.container[0].coordenadas)">Ver mapa</button>
+
+                    <div class="mapa" >
+                        <button mat-raised-button color="primary" (click)="editarMapa(dato.container[0].idServicio,cveCiudad?cveCiudad:dato.container[0].cveCiudad,coordenadas?coordenadas:dato.container[0].coordenadas,numero?numero:dato.container[0].numero, 
+                        colonia?colonia:dato.container[0].colonia, 
+                        codigoPostal?codigoPostal:dato.container[0].codigoPostal,  
+                        estado?estado:dato.container[0].estado,cveCiudad?cveCiudad:dato.container[0].cveCiudad,avenida?avenida:dato.container[0].avenida)">Editar</button>
+                        <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"  id="verMapa">Ver mapa</button>
+                        <!-- #enddocregion mat-menu-trigger-for -->
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item (click)="abrirMapaCoordendas(coordenadas?coordenadas:dato.container[0].coordenadas)">Por Coordendas</button>
+                          <button mat-menu-item (click)="abrirMapaDireccion(avenida?avenida:dato.container[0].avenida,
+                          numero?numero:dato.container[0].numero, 
+                          colonia?colonia:dato.container[0].colonia, 
+                          codigoPostal?codigoPostal:dato.container[0].codigoPostal, ciudad?ciudad:dato.container[0].ciudad,  
+                          estado?estado:dato.container[0].estado)">Por direccion</button>
+                        </mat-menu>
+                        
                     </div>
                 </mat-card-content>
             </mat-card>

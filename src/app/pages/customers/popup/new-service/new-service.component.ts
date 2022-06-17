@@ -33,13 +33,18 @@ export class NewServiceComponent implements OnInit {
   }catch(Exception){}
   }
 
- async crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string,direccion :string , dominio : string, selectEstatus : number, selectPlan : number){  
+ async crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string
+  ,estado :string,avenida:string , codigoPostal:string,numero:string, colonia:string, dominio : string, selectEstatus : number, selectPlan : number){  
     this.serviceM.nombre = nombre;
     this.serviceM.cveCiudad = selectCiudad;
     this.serviceM.ciudadNombre = document.getElementById("selectCiudad")?.innerText+"";
     this.serviceM.latitud = latitud;
     this.serviceM.longitud = longitud;
-    this.serviceM.direccion = direccion;
+    this.serviceM.estado = estado;
+    this.serviceM.avenida = avenida;
+    this.serviceM.codigoPostal = codigoPostal;
+    this.serviceM.numero= numero;
+    this.serviceM.colonia= colonia;
     this.serviceM.dominio = dominio;
     this.serviceM.cveEstatus = selectEstatus;
     this.serviceM.cvePlan = selectPlan;
@@ -48,8 +53,11 @@ export class NewServiceComponent implements OnInit {
     this.serviceM.plan = document.getElementById("selectPlan")?.innerText+"";
     
     if(this.data.opc == false){   
-      if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 && longitud.length > 0 && direccion.length > 0 && dominio.length > 0 
+      if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 
+        && longitud.length > 0 && estado.length > 0 && avenida.length > 0 
+        && codigoPostal.length > 0 && numero.length > 0 &&colonia.length > 0 && dominio.length > 0 
         && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){          
+        
           this.serviceM.identificador = ((this.data.idEmpresa+""+this.data.Empresa)+""+((Number(this.ultimoIdFalso)+1).toString().padStart(5,"0")))
           this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
           this.serviceM.id = Number(this.data.idNuevo)+1;

@@ -27,6 +27,7 @@ import { TableRadioComponent } from './table-radio/table-radio.component';
 import { TableRouterComponent } from './table-router/table-router.component';
 import { MAT_TABS_CONFIG } from '@angular/material/tabs';
 import { InfoContactComponent } from './popup/info-contact/info-contact.component';
+import { EditAddressComponent } from './popup/edit-address/edit-address.component';
 
 @NgModule({
   imports: [
@@ -58,7 +59,8 @@ import { InfoContactComponent } from './popup/info-contact/info-contact.componen
     NewRouterComponent,
     TableRadioComponent,
     TableRouterComponent,
-    InfoContactComponent
+    InfoContactComponent,
+    EditAddressComponent
   ],
   exports: [
     CustomerListComponent,

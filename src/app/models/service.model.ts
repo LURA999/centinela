@@ -8,7 +8,11 @@ export class  serviceModel  {
     ciudadNombre: string = ""
     latitud: string=""
     longitud: string=""
-    direccion: string=""
+    estado: string=""
+    avenida: string = ""
+    codigoPostal :string =""
+    numero:string = ""
+    colonia:string = ""
     dominio:string=""
     cveEstatus:number=0
     cvePlan:number=0

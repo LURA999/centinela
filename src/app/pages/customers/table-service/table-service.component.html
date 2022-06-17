@@ -30,10 +30,7 @@
                 <button class="menu" mat-button [matMenuTriggerFor]="menu">...</button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item (click)="eliminar(this.element.id)"><mat-icon>delete</mat-icon>Eliminar</button> 
-                    <button mat-menu-item (click)="editar(element.id, element.nombre, element.rs,
-                     element.idRazonSocial, element.latitud,  element.longitud, element.dominio, element.direccion,
-                      element.cvePlan, element.cveEstatus, element.cveCiudad, element.identificador,  element.ciudad,
-                    element.servicio)"><mat-icon>settings</mat-icon>Editar</button>  
+                    <button mat-menu-item (click)="editar(element)"><mat-icon>settings</mat-icon>Editar</button>  
                 </mat-menu>
             </td>
         </ng-container>

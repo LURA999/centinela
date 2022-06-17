@@ -4,8 +4,8 @@
 <ng-template #elseTemplate>
   Actualizar contacto
 </ng-template></h2>
+<form>
 <mat-dialog-content class="mat-typography">
-  <form>
         <div>
         <mat-form-field appearance="standard">
           <mat-label>Nombre</mat-label>
@@ -44,19 +44,16 @@
           </mat-select>
         </mat-form-field>
         </div>
-
-        <div id="botones">
-          <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-          <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearContacto(selectEstatus.value,nombre.value,telefono.value,correo.value,selectRep.value)" cdkFocusInitial>
-            <ng-container *ngIf="this.data.opc == false; else elseTemplate">
-              Crear
-            </ng-container>
-            <ng-template #elseTemplate>
-              Actualizar
-            </ng-template>
-          </button>
-        </div>
-  </form>
-
 </mat-dialog-content>
-
+<mat-dialog-actions align="center">
+  <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearContacto(selectEstatus.value,nombre.value,telefono.value,correo.value,selectRep.value)" cdkFocusInitial>
+    <ng-container *ngIf="this.data.opc == false; else elseTemplate">
+      Crear
+    </ng-container>
+    <ng-template #elseTemplate>
+      Actualizar
+    </ng-template>
+  </button>
+</mat-dialog-actions>
+</form>

@@ -45,8 +45,8 @@ export class TableServiceComponent implements OnInit {
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns: string[] = [ 'identificador','nombre', 'rs','ciudad','estatus','opciones'];
   
-  constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute
-    ,  private notificationService: NotificationService, private serviceService : ServiceService,
+  constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,
+    private notificationService: NotificationService, private serviceService : ServiceService,
     private city : CityService, private rs : RsService, private plan : planService,private DataService : DataService) {
 
     }
@@ -153,7 +153,11 @@ export class TableServiceComponent implements OnInit {
           latitud :  resp.container[i].latitud,
           longitud :  resp.container[i].longitud,
           dominio :  resp.container[i].dominio,
-          direccion :  resp.container[i].direccion,
+          estado :  resp.container[i].estado,
+          codigoPostal :  resp.container[i].codigoPostal,
+          colonia :  resp.container[i].colonia,
+          avenida :  resp.container[i].avenida,
+          numero :  resp.container[i].numero,
           cveEstatus :  resp.container[i].estatus,
           cvePlan :  resp.container[i].cvePlan,
           cveCiudad :  resp.container[i].cveCiudad,
@@ -177,13 +181,13 @@ export class TableServiceComponent implements OnInit {
 
 
   async eliminar(id : number){
-    let dialogRef = await this.dialog.open(DeleteComponent,
+    let dialogRef = this.dialog.open(DeleteComponent,
       {data: {idCliente : id, opc: 4, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       
-      this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
         if(result !=undefined){
         try{
         if(result.length > 0  ){
@@ -204,39 +208,40 @@ export class TableServiceComponent implements OnInit {
       }));
   }
   
-  editar(idServicio : number, nombre : string, rs :string, idRazonSocial : number, latitud : string, longitud : string,
-    dominio :string, direccion : string, cvePlan :number, cveEstatus : number,cveCiudad : number, identificador : string, ciudad :number, 
-    servicio : string){
+  editar(model : serviceModel){
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc : true,
         idEmpresa: this.id,
         Empresa: this.nombreEmpresa[0],
-        idServicio: idServicio, 
+        idServicio: model.id, 
         arrayCiudad:this.arrayCiudades, 
         arrayPlan:this.arrayPlan,
         arrayRS:this.arrayRS, 
-        servicio : servicio, 
-        idRazonSocial:idRazonSocial, 
-        latitud:latitud, 
-        longitud:longitud,
-        direccion:direccion,
-        cvePlan:cvePlan,
-        dominio:dominio,
-        cveCiudad:cveCiudad,
-        cveEstatus : cveEstatus
-        ,identificador : identificador, 
-        nombre:nombre, 
-        rs:rs },
+        servicio : model.nombre, 
+        idRazonSocial:model.idRazonSocial, 
+        latitud:model.latitud, 
+        longitud:model.longitud,
+        estado :  model.estado,
+        codigoPostal : model.codigoPostal,
+        colonia :  model.colonia,
+        avenida :  model.avenida,
+        numero :  model.numero, 
+        cvePlan:model.cvePlan,
+        dominio:model.dominio,
+        cveCiudad:model.cveCiudad,
+        cveEstatus : model.cveEstatus
+        ,identificador : model.identificador, 
+        nombre:model.nombre, 
+        rs:model.rs },
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
      this.paginator2.firstPage();
-     this.$sub.add( dialogRef.afterClosed().subscribe((result:any)=>{   
-    
-
+     
+     this.$sub.add( dialogRef.afterClosed().subscribe((result:serviceModel)=>{   
       if((typeof result) !== "string"){  
        try{
-        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(idServicio,this.ELEMENT_DATA,"id")
+        this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(model.id,this.ELEMENT_DATA,"id")
         ,1,{
           id:result.id, 
           nombre:result.nombre,
@@ -245,13 +250,17 @@ export class TableServiceComponent implements OnInit {
           latitud :  result.latitud,
           longitud :  result.longitud,
           dominio :  result.dominio,
-          direccion :  result.direccion,
+          estado :  model.estado,
+          codigoPostal : model.codigoPostal,
+          colonia :  model.colonia,
+          avenida :  model.avenida,
+          numero :  model.numero, 
           cvePlan : result.cvePlan,
           cveEstatus :  result.cveEstatus,
           cveCiudad : result.cveCiudad,
           identificador:result.identificador,
           ciudad:result.ciudadNombre,
-          servicio:result.servicio,
+          servicio:result.nombre,
           plan:result.plan,
           estatus:this.metodo.estatus(result.cveEstatus)  
         });
@@ -281,7 +290,7 @@ export class TableServiceComponent implements OnInit {
      });
 
      this.paginator2.firstPage();
-     this.$sub.add(await dialogRef.afterClosed().subscribe((result:serviceModel)=>{
+     this.$sub.add(dialogRef.afterClosed().subscribe((result:serviceModel)=>{
       if(result !=undefined){
 
        try{
@@ -299,7 +308,11 @@ export class TableServiceComponent implements OnInit {
           latitud :  result.latitud,
           longitud :  result.longitud,
           dominio :  result.dominio,
-          direccion :  result.direccion,
+          estado :  result.estado,
+          codigoPostal :  result.codigoPostal,
+          colonia :  result.colonia,
+          avenida :  result.avenida,
+          numero :  result.numero,
           cvePlan : result.cvePlan,
           cveCiudad : result.cveCiudad,
           plan:result.plan
