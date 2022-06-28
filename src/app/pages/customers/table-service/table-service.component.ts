@@ -50,7 +50,10 @@ export class TableServiceComponent implements OnInit {
     private city : CityService, private rs : RsService, private plan : planService,private DataService : DataService) {
 
     }
-
+    filtrar(palabra: string) {
+      this.dataSource.filter = palabra.trim().toLowerCase();
+    } 
+  
 
   descargar(){
     let workbook = new Workbook();
@@ -69,7 +72,6 @@ export class TableServiceComponent implements OnInit {
         temp.push(this.ELEMENT_DATA[x1]["latitud"])
         temp.push(this.ELEMENT_DATA[x1]["longitud"])
         temp.push(this.ELEMENT_DATA[x1]["dominio"])
-        temp.push(this.ELEMENT_DATA[x1]["direccion"])
         temp.push(this.ELEMENT_DATA[x1]["ciudad"])
         temp.push(this.ELEMENT_DATA[x1]["identificador"])
         temp.push(this.ELEMENT_DATA[x1]["servicio"])
@@ -94,12 +96,18 @@ export class TableServiceComponent implements OnInit {
   ngOnInit(): void {
     this.inicio();
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res.abrir ==true){
+      if(res.palabraBuscar !=undefined){
+        console.log(res.palabraBusar);
         
-        this.nombreEmpresa = res.nombreEmpresa
-        this.insertar()
+        this.filtrar(res.palabraBuscar)
       }else{
-        this.descargar()
+        if(res.abrir ==true){
+          
+          this.nombreEmpresa = res.nombreEmpresa
+          this.insertar()
+        }else{
+          this.descargar()
+        }
       }
       }))
     
@@ -141,7 +149,8 @@ export class TableServiceComponent implements OnInit {
 
   async llenarTabla(){
     this.cargando = false;             
-    this.$sub.add(await this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{               
+    this.$sub.add(this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{               
+    console.log(resp);
       if(resp.container.length !=0){
       this.mayorNumero = resp.container[0].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
@@ -180,9 +189,9 @@ export class TableServiceComponent implements OnInit {
   }
 
 
-  async eliminar(id : number){
+  async eliminar(id : number, identificador:string){
     let dialogRef = this.dialog.open(DeleteComponent,
-      {data: {idCliente : id, opc: 4, salir : true},
+      {data: {idCliente : id, opc: 4,identificador:identificador, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });

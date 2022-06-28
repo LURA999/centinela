@@ -31,7 +31,7 @@ export class TableRsComponent implements OnInit {
   mayorNumero : number = 0
   mayorNumeroAux : number = 0
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns: string[] = ['rs', 'fechaAlta', 'estatus','opciones'];
+  displayedColumns: string[] = ["id",'rs', 'fechaAlta', 'estatus','opciones'];
   metodo = new RepeteadMethods();
 
   constructor(private dialog:NgDialogAnimationService,private serviceRs : RsService, private rutaActiva:Router,
@@ -39,15 +39,23 @@ export class TableRsComponent implements OnInit {
     ) { 
 
     }
-
+    
+    filtrar(palabra: string) {
+      this.dataSource.filter = palabra.trim().toLowerCase();
+    } 
+   
 
   ngOnInit(): void {      
    this.llenarTabla()
    this.$sub.add(this.DataService.open.subscribe(res => {
-    if(res.abrir ==true){
-      this.insertar()
+    if(res.palabraBuscar !=undefined){
+      this.filtrar(res.palabraBuscar)
     }else{
-      this.descargar()
+      if(res.abrir ==true){
+        this.insertar()
+      }else{
+        this.descargar()
+      }
     }
     }))
   }

@@ -1,13 +1,12 @@
 .col {
     padding-right: 0;
-    width: 300px;
+    width: 30vw;
     background-color: white;
   }
-  
-  .col figure img {
-    max-width: 100%;
 
-  }
+.col figure img {
+    max-width: 100%;
+}
   
 body {
     background-image: url("../../../assets/admin.jpg");

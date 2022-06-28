@@ -6,4 +6,5 @@ export class segmentsModel {
     nombre:string=""
     estatus:number=0
     segmento2:string= ""
+    segmento3:string= ""
 }   

@@ -45,13 +45,24 @@ export class TableTicketsComponent implements OnInit {
     this.llenarTabla();
     
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res.abrir ==true || res == "ticketAgregar"){
-        this.insertar()
-      }else if (res.abrir == false){
-        this.descargar()
+      if(res.palabraBuscar !=undefined){
+        this.filtrar(res.palabraBuscar)
+      }else{
+        if(res.palabraBuscar !=undefined){
+          this.filtrar(res.palabraBuscar)
+        }else{
+          if(res.abrir ==true || res == "ticketAgregar"){
+            this.insertar()
+          }else if (res.abrir == false){
+            this.descargar()
+          }
+        }
       }
-      })) 
+      }))  
   }
+  filtrar(palabra: string) {
+    this.dataSource.filter = palabra.trim().toLowerCase();
+  } 
 
   descargar(){
     let workbook = new Workbook();

@@ -12,7 +12,9 @@
       <div>
         <mat-form-field appearance="standard">
           <mat-label>Segmento</mat-label>
-          <input matInput [value]="data.segmento? data.segmento : ''" placeholder="Segmento del repetidor" #segmento [disabled]="this.data.opc != false">    
+          <input [formControl]="segmentoFormControl" matInput [value]="data.segmento? data.segmento : ''" placeholder="255.255.255.255" #segmento [disabled]="this.data.opc != false">
+          <mat-error *ngIf="segmentoFormControl.invalid">
+            {{patternSegmento()}}          </mat-error>
         </mat-form-field>
       </div>
     <div >

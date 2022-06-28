@@ -16,7 +16,7 @@ export class ServiceService {
         return this.http.get<responseService>(this.local+"Services/services.php?cve="+cve);
     }
 
-    deleteService(cve : number){
+    deleteService(cve : number){        
         return this.http.patch(this.local+"Services/services.php?cve="+cve,cve);
     }
 
@@ -39,8 +39,8 @@ export class ServiceService {
         return this.http.get<responseService>(this.local+"Services/services.php?identificadorUltimo="+identificador);
     }
     
-    selectVistaServicio(identificador : string, contador : number): Observable<responseService> {
-        return this.http.get<responseService>(this.local+"Services/services.php?identificador="+identificador+"&contador= "+contador);
+    selectVistaServicio(identificador : string, contador : number,condicion : number): Observable<responseService> {        
+        return this.http.get<responseService>(this.local+"Services/services.php?identificador="+identificador+"&contador="+contador+"&condicion="+condicion);
     }
     
 } 

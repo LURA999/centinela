@@ -1,10 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { lastValueFrom, Subscription } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { ContactService } from 'src/app/core/services/contact.service';
 import { DeviceService } from 'src/app/core/services/device.service';
+import { LogService } from 'src/app/core/services/log.service';
 import { RsService } from 'src/app/core/services/rs.service';
 import { ServiceService } from 'src/app/core/services/services.service';
+import { log_clienteEmpresa } from 'src/app/models/log_clienteEmpresa.model';
 import { CustomerService } from '../../../../core/services/customer.service';
 
 @Component({
@@ -13,11 +17,14 @@ import { CustomerService } from '../../../../core/services/customer.service';
   styleUrls: ['./delete.component.css']
 })
 export class DeleteComponent implements OnInit {
+  id :number = Number(this.ruta.url.split("/")[3]);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, 
   private servicioCliente : CustomerService, private serviceService : ServiceService,public dialogRef: MatDialogRef<DeleteComponent>
-  ,private contact : ContactService, private rs : RsService, private deviceService:DeviceService) { }
+  ,private contact : ContactService, private rs : RsService, private deviceService:DeviceService, private authService:AuthService,
+  private logServicio:LogService, private ruta : Router, private logService : LogService) { }
   $sub = new Subscription();
+  logModel = new log_clienteEmpresa();
   ngOnInit(): void {
 
   }
@@ -25,34 +32,45 @@ export class DeleteComponent implements OnInit {
 
   async confirmar(){
     this.data.salir = false;
+    this.logModel.cveUsuario = this.authService.getCveId();
+    this.logModel.cveCliente = this.id;
+    this.logModel.tipo[0] = 2;
+    this.logModel.cve = this.data.idCliente;
 
     switch(Number(this.data.opc)){
       case 0:
-        lastValueFrom(await this.servicioCliente.eliminarFalso(this.data.idCliente));
+        await lastValueFrom(this.servicioCliente.eliminarFalso(this.data.idCliente));
         break;
       case 1:
-        lastValueFrom(await this.contact.deleteContactos_tServicos(this.data.idCliente));
+        await lastValueFrom(this.contact.deleteContactos_tServicos(this.data.idCliente));
+        await lastValueFrom(this.logServicio.insertLog(this.logModel,1));
         break;
       case 2:
-        lastValueFrom(await this.servicioCliente.eliminarFalso(this.data.idCliente));
+        await lastValueFrom(this.servicioCliente.eliminarFalso(this.data.idCliente));
         break;
-      case 3:
-        lastValueFrom(await this.rs.deleteRS(this.data.idCliente));
+      case 3:        
+        await lastValueFrom(this.rs.deleteRS(this.data.idCliente));
+        await lastValueFrom(this.logServicio.insertLog(this.logModel,3));
         break;
       case 4:
-        lastValueFrom(await this.serviceService.deleteService(this.data.idCliente));
+        this.logModel.cve = this.data.identificador;
+        await lastValueFrom(this.serviceService.deleteService(this.data.idCliente));
+        await lastValueFrom(this.logServicio.insertLog(this.logModel,2));
         break;  
       case 5:
-          lastValueFrom(await this.servicioCliente.eliminarFalso(this.data.idCliente));
+        await lastValueFrom(this.servicioCliente.eliminarFalso(this.data.idCliente));
         break;
       case 6:
-        lastValueFrom(await this.deviceService.eliminarRouter(this.data.idCliente));
+        await lastValueFrom(this.deviceService.eliminarRouter(this.data.idCliente));
         break;  
       case 7:        
-          lastValueFrom(await this.deviceService.eliminarRadio(this.data.idCliente));
+          await lastValueFrom(this.deviceService.eliminarRadio(this.data.idCliente));
         break;
       case 8:
-        lastValueFrom(await this.deviceService.eliminarOtros(this.data.idCliente));
+        await lastValueFrom(this.deviceService.eliminarOtros(this.data.idCliente));
+        break;
+      case 9:
+        await lastValueFrom(this.logService.deleteLog(this.data.idCliente));
         break;
     }
     this.dialogRef.close('Se ha eliminado con exito');

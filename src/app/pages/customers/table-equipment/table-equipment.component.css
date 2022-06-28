@@ -6,5 +6,15 @@
 
 #selectIps{
     width:100px; 
-    text-align:center;
+        text-align:center;
+}
+
+td{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+th{
+    padding-right: 10px;
+    padding-left: 10px;
 }

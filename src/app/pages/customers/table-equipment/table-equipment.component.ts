@@ -129,7 +129,7 @@ export class TableEquipamentComponent implements OnInit {
   editar(model : DeviceModel){
     this.modelOtro = model;
     let dialogRef  = this.dialog.open(NewEquipamentComponent,
-      {data: {opc : true, model : this.modelOtro, salir: true },
+      {data: {opc : true, model : this.modelOtro, salir: true,abrirForm:true },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
@@ -159,7 +159,7 @@ export class TableEquipamentComponent implements OnInit {
 
   insertar(){
     let dialogRef  = this.dialog.open(NewEquipamentComponent,
-      {data: {opc : false , model : this.modelOtro, salir : true},
+      {data: {opc : false , model : this.modelOtro, salir : true,abrirForm:true},
       animation: { to: "bottom" },
       height:"auto", width:"70%"
     });

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { LogService } from 'src/app/core/services/log.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -26,26 +26,33 @@ export class TableLogComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   $sub = new Subscription()
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns: string[] = ['id', 'tipo', 'descripcion', 'fecha', 'usuario','opciones'];
+  displayedColumns: string[] = ['id', 'tipo', 'descripcion', 'fecha', 'usuario'];
   cargando : boolean = false;
-  id :number = this.rutaActiva.snapshot.params["id"];
+  id :number = Number(this.ruta.url.split("/")[3]);
   mayorNumero : number = 0
   metodo = new RepeteadMethods();
   
-  constructor(private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,  
+  constructor(private dialog:NgDialogAnimationService, private ruta:Router,  
     private notificationService: NotificationService, private servicioLog : LogService,private DataService : DataService
    ) { 
      
    }
 
+   filtrar(palabra: string) {
+    this.dataSource.filter = palabra.trim().toLowerCase();
+  } 
 
   ngOnInit(): void {
     this.llenarTabla();
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res.abrir ==true){
-     //   this.insertar()
+      if(res.palabraBuscar !=undefined){
+        this.filtrar(res.palabraBuscar)
       }else{
-        this.descargar();
+        if(res.abrir ==true){
+      //   this.insertar()
+        }else{
+          this.descargar();
+        }
       }
       }))
   }
@@ -53,17 +60,19 @@ export class TableLogComponent implements OnInit {
   descargar(){
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet("Employee Data");
-    let header : string[]=["Id","Tipo","Descripcion","Usuario"]
+    let header : string[]=["Id","Tipo","Descripcion","Fecha","Usuario"]
     worksheet.addRow(header);
   
     for  (let x1 in this.ELEMENT_DATA)
     {
       let x2=Object.keys(x1);
       let temp : any=[]
-        temp.push(this.ELEMENT_DATA[x1]["num" ])
+        temp.push(this.ELEMENT_DATA[x1]["id" ])
         temp.push(this.ELEMENT_DATA[x1]["tipo" ])
         temp.push(this.ELEMENT_DATA[x1]["descripcion"])
+        temp.push(this.ELEMENT_DATA[x1]["fecha"])
         temp.push(this.ELEMENT_DATA[x1]["usuario"])
+        
       
       worksheet.addRow(temp)
     }
@@ -80,14 +89,16 @@ export class TableLogComponent implements OnInit {
   
   async llenarTabla(){
     this.cargando = false;             
-    this.$sub.add(await this.servicioLog.llamarTodo(this.id).subscribe((resp:responseService) =>{
-      if(resp.container.length !=0){
-      this.mayorNumero = resp.container[0].idLog;
+    
+    this.$sub.add( this.servicioLog.llamarTodo(this.id).subscribe((resp:responseService) =>{     
+      if(resp.info !='bad'){
       for (let i = 0; i < resp.container.length; i++) {
-        this.ELEMENT_DATA.push({num: resp.container[i].idLog,
-          tipo: resp.container[i].tipo,
+        this.ELEMENT_DATA.push({
+          id: resp.container[i].idLog,
+          tipo: this.tipo(resp.container[i].tipo),
           descripcion: resp.container[i].descripcion,
-          usuario:resp.container[i].usuario
+          usuario:resp.container[i].usuario,
+          fecha:resp.container[i].fecha
         })   
       }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -101,7 +112,7 @@ export class TableLogComponent implements OnInit {
 
   async eliminar(){
     let dialogRef = await this.dialog.open(DeleteComponent,
-      {data: {idCliente : this.id, opc: 2},
+      {data: {idCliente : this.id, opc: 9},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -181,5 +192,14 @@ export class TableLogComponent implements OnInit {
      })
   }*/
  
+  tipo(tipo:number) : string{
+    if(tipo ==1 ){
+      return "Alta";  
+    }else if (tipo == 0){
+      return "Actualizado";
+    }else{
+      return "Eliminado";
+    }
+  }
 
 }

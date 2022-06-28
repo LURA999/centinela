@@ -100,6 +100,8 @@ buscandoIndice(id:number){
 
 
 Newregister(){
+  console.log(this.ciudades);
+  
   let dialogRef  = this.dialog.open(NewRepeaterComponent,
     {data: {opc : false, ciudades: this.ciudades },
     animation: { to: "bottom" },
@@ -111,7 +113,7 @@ Newregister(){
      try{
     if(result.mensaje.length > 0  ){
       this.ELEMENT_DATA.unshift({id:++this.mayorNumero,nombre:result.nombre, latitud: result.latitud,longitud:result.longitud,
-      ciudad: this.ciudades[result.cveCiudad]["nombre"] ,estatus:this.estatus(result.estatus)});
+      ciudad: result.cveCiudad ,estatus:this.estatus(result.estatus)});
 
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
       this.dataSource.paginator = this.paginator2;    
@@ -202,8 +204,8 @@ estatusNumero(numero : string) {
 ciudadId(ciudad : string){
   for(let x=0; x<this.ciudades.length; x++)
   {
-    if(ciudad == this.ciudades[x].nombre){
-      return x
+    if(ciudad === this.ciudades[x].nombre){
+      return this.ciudades[x].idCiudad
     }
   }
   return ""

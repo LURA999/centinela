@@ -1,5 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { lastValueFrom } from 'rxjs';
 import { IpService } from '../../../../core/services/ip.service';
 import { SegmentsService } from '../../../../core/services/segments.service';
 import { rango_ip } from './rango_ip';
@@ -10,14 +12,17 @@ import { rango_ip } from './rango_ip';
   templateUrl: './new-segment.component.html',
   styleUrls: ['./new-segment.component.css']
 })
+
 export class NewSegmentComponent implements OnInit {
   contenedor_carga = <HTMLDivElement> document.getElementById("contenedor_carga");
   subnetting = require('ip-utils')
   repetearArray: any []= [];
   arrayPromises : any []=[]
-   rango  = new rango_ip()
+  rango  = new rango_ip()
 
-  
+  segmentoFormControl = new FormControl('', [Validators.required, Validators.pattern("(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])[\.]){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))")]);
+  segmentoInput : boolean= false
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,
   public dialogRef: MatDialogRef<NewSegmentComponent>, private ipService : IpService  ) { }
 
@@ -30,7 +35,7 @@ export class NewSegmentComponent implements OnInit {
   }
   
   async crearSegment( Selectrepetear:number,nombre : string,segmento : string ,diagonal : number, selectEstatus : number, selectTipo: number){
-    let existe :any = await this.segmentService.existe(segmento).toPromise()
+    let existe :any = await lastValueFrom(this.segmentService.existe(segmento))
     existe=existe.container[0].ip;
     
     //true = actualizar false = insertar
@@ -38,21 +43,26 @@ export class NewSegmentComponent implements OnInit {
       //antes de insertar se averigua si existe tal segmento
       if(existe == 0)
       {
-        this.contenedor_carga.style.display = "block";
-        if(nombre.length >0 && diagonal> 0 && segmento.length > 0  && selectTipo != undefined && selectEstatus !=undefined && Selectrepetear !=undefined){
+        if(nombre.length >0 && diagonal> 0 && this.segmentoFormControl.valid == true  && selectTipo != undefined && selectEstatus !=undefined && Selectrepetear !=undefined){
+          this.contenedor_carga.style.display = "block";
           // se guarda el rango del segmentos y todos sus subnets          
           let segmentoFinal = await this.subnetting.subnet(segmento+"/"+diagonal).info();
-          let r : string []= this.rango.rango(segmentoFinal["networkAddress"], segmentoFinal["broadcastAddress"]);
-          await this.segmentService.insertarSegments({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"]}).toPromise();
-         
+          let r : string []= this.rango.rango(segmentoFinal["networkAddress"], segmentoFinal["broadcastAddress"]);          
+          await lastValueFrom(this.segmentService.insertarSegments({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"],segmento3:segmentoFinal["networkAddress"]}));  
+          let ultimoSegmento :number =0
+          
+          await lastValueFrom(this.segmentService.lastSegmento()).then( (result : any) =>{
+            if(result.status !== "not found"){
+            ultimoSegmento= result.container[0].max;
+          }
+          });
+          
           this.data.id = (Number(this.data.id)+1)
           for (let x=0; x<r.length; x++) {
-          await this.ipService.insertarIp({ip:r[x],cveSegmento:Number(this.data.id)}).toPromise()
-         }
+          await lastValueFrom(this.ipService.insertarIp({ip:r[x],cveSegmento:ultimoSegmento}))
+         }  
         this.contenedor_carga.style.display = "none";
-
-         await  this.dialogRef.close({id: this.data.id,cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"], mensaje:"Se pudo"})
-          
+        this.dialogRef.close({id: this.data.id,cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus,tipo:selectTipo,segmento2:segmentoFinal["broadcastAddress"], mensaje:"Se pudo"})  
         }else{
           alert ("Llene todos los datos")
         }
@@ -61,7 +71,7 @@ export class NewSegmentComponent implements OnInit {
       }
     }else{
       if(nombre.length >0  && selectTipo != undefined && selectEstatus !=undefined ){
-      await  this.segmentService.actualizarSegment(this.data.id,nombre,selectEstatus,selectTipo).toPromise();
+      await lastValueFrom(this.segmentService.actualizarSegment(this.data.id,nombre,selectEstatus,selectTipo));
         this.dialogRef.close({cveRepetdora:Selectrepetear,nombre:nombre, segmento: segmento,diagonal:diagonal,estatus:selectEstatus, tipo: selectTipo, mensaje:"Se pudo"})
       }else{
       alert("Llene todos los datos")
@@ -69,6 +79,15 @@ export class NewSegmentComponent implements OnInit {
     }
   }
 
+  patternSegmento(){
+    console.log(this.segmentoFormControl.valid);
+    
+    if (this.segmentoFormControl.hasError('required')) {
+      return 'Debes de escribir un segmento';
+    }
+    return this.segmentoFormControl.hasError('pattern') ? 'Segmento no valido' : '';
+
+  }
 
 
 }

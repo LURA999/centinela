@@ -1,0 +1,114 @@
+.principal{
+    margin-top: 15px;
+}
+
+
+/**Acomodando mat-cards*/
+#form {
+width: 79%;
+}
+
+#sidenav{
+width: 20%;
+}
+
+
+.sub-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/**Orden de inputs/elementos */
+.campoAgente {
+    margin-left: 5%;
+}
+
+mat-form-field{
+    width: 100%;
+}
+
+.otroBuscador {
+    float:right;
+}
+
+.campoContacto {
+    margin-bottom: 10px;
+}
+
+.campoContacto .mat-hint {
+    font-size: small;
+}
+
+.botonesSolicitud{
+    display: flex;
+    float: right;
+}
+
+
+.botonesSolicitud button{
+    margin: 4px;
+}
+
+/***Navbar*/
+
+#imgDatoExtra {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+}
+
+/**Lista nav*/
+.iconos {
+    display: flex;
+    flex-direction: column;
+}
+
+.circulo {
+    border: 1px solid black;
+    background: grey;
+    width: max-content;
+    border-radius: 50px;
+    padding: 5px;
+}
+
+.circulo.puntitos{
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+ li{
+    list-style: none;
+    font-size: 13px;
+ }
+
+ul li {
+    background: url('../../../../assets/icon/telephone.svg') no-repeat left top;
+    background-size: 30px;
+    padding-left: 40px;
+    padding-top: 7px;
+    }
+
+ul {
+    padding-left: 0;
+}
+
+/** link de contactos e input*/
+
+ .linkContactoCc{
+    float: right;
+    font-size: small;
+    color: blue;
+    text-decoration-line: underline;
+    cursor: pointer;
+}
+.inputs mat-hint {
+    display: flex;
+}
+
+.inputs{
+    margin-bottom: 10px;
+}
+
+.link{
+    margin-bottom: 10px;
+}

@@ -5,6 +5,11 @@ import { ServiceService } from 'src/app/core/services/services.service';
 import { serviceModel } from '../../../../models/service.model';
 import { Subscription } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { LogService } from 'src/app/core/services/log.service';
+import { log_clienteEmpresa } from 'src/app/models/log_clienteEmpresa.model';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-new-service',
@@ -15,12 +20,33 @@ export class NewServiceComponent implements OnInit {
 
   serviceM =  new serviceModel();
   $sub = new Subscription()
+  logModel =new log_clienteEmpresa();
+  servicioModelAux  = new serviceModel() 
   ultimoIdFalso :number = 0
+  id :string = this.ruta.url.split("/")[3];
+  modeloGuardado  : any;
+
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private service : ServiceService,
-  public dialogRef: MatDialogRef<NewServiceComponent>) { }
+  public dialogRef: MatDialogRef<NewServiceComponent>,private authService: AuthService, private ruta : Router,
+  private logService:LogService) { }
 
   ngOnInit(): void {
      this.ultimoIDFalso()
+     this.servicioModelAux.nombre = this.data.servicio;
+     this.servicioModelAux.idRazonSocial = this.data.idRazonSocial;
+     this.servicioModelAux.cveCiudad = this.data.cveCiudad;
+     this.servicioModelAux.estado = this.data.estado;
+     this.servicioModelAux.latitud = this.data.latitud;
+     this.servicioModelAux.longitud = this.data.longitud;
+     this.servicioModelAux.codigoPostal = this.data.codigoPostal;
+     this.servicioModelAux.avenida = this.data.avenida;
+     this.servicioModelAux.numero = this.data.numero;
+     this.servicioModelAux.colonia = this.data.colonia;
+     this.servicioModelAux.cvePlan = this.data.cvePlan;
+     this.servicioModelAux.dominio = this.data.dominio;
+     this.servicioModelAux.cveEstatus = this.data.cveEstatus;     
+    
   }
 
   async ultimoIDFalso() { 
@@ -51,28 +77,50 @@ export class NewServiceComponent implements OnInit {
     this.serviceM.idRazonSocial = selectRS;
     this.serviceM.rs = document.getElementById("selectRs")?.innerText+"";
     this.serviceM.plan = document.getElementById("selectPlan")?.innerText+"";
-    
+    this.logModel.cveUsuario =this.authService.getCveId()
+    this.logModel.cveCliente =  Number(this.ruta.url.split("/")[3]);
+    this.logModel.cve=this.serviceM.identificador;
     if(this.data.opc == false){   
+      let campos :string =""
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 
         && longitud.length > 0 && estado.length > 0 && avenida.length > 0 
         && codigoPostal.length > 0 && numero.length > 0 &&colonia.length > 0 && dominio.length > 0 
-        && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){          
-        
+        && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){                
+   /* this.servicioModelAux.nombre = this.data.servicio;
+      this.servicioModelAux.idRazonSocial = this.data.idRazonSocial;
+      this.servicioModelAux.cveCiudad = this.data.cveCiudad;
+      this.servicioModelAux.estado = this.data.estado;
+      this.servicioModelAux.latitud = this.data.latitud;
+      this.servicioModelAux.longitud = this.data.longitud;
+      this.servicioModelAux.codigoPostal = this.data.codigoPostal;
+      this.servicioModelAux.avenida = this.data.avenida;
+      this.servicioModelAux.numero = this.data.numero;
+      this.servicioModelAux.colonia = this.data.colonia;
+      this.servicioModelAux.cvePlan = this.data.cvePlan;
+      this.servicioModelAux.dominio = this.data.dominio;
+      this.servicioModelAux.cveEstatus = this.data.cveEstatus;    */
+          
           this.serviceM.identificador = ((this.data.idEmpresa+""+this.data.Empresa)+""+((Number(this.ultimoIdFalso)+1).toString().padStart(5,"0")))
           this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
           this.serviceM.id = Number(this.data.idNuevo)+1;
           this.serviceM.contador = Number(this.ultimoIdFalso)+1;
+          this.logModel.tipo[0]=1;
+          this.logModel.cve = this.serviceM.identificador 
          await lastValueFrom(this.service.insertService(this.serviceM));
+         await lastValueFrom(this.logService.insertLog(this.logModel,2))
           this.dialogRef.close(this.serviceM)
         }else{
           alert("Llene todos los campos, por favor")
         }
 
     }else{
+
+      this.logModel.tipo[0]=0;
+      this.logModel.cve = this.data.identificador
       this.serviceM.identificador = this.data.identificador;
       this.serviceM.id = this.data.idServicio
-
-      lastValueFrom(this.service.updateService(this.serviceM));
+      await lastValueFrom(this.service.updateService(this.serviceM));
+      await lastValueFrom(this.logService.insertLog(this.logModel,2))
       this.dialogRef.close(this.serviceM)
     }
   }

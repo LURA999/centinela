@@ -46,8 +46,8 @@ export class AuthService {
 
    getCveId(){
     let payload = localStorage.getItem('sesion')
-    let info = this.parseJwt(payload!!)
-    return info.departamento
+    let info = this.parseJwt(payload!!)    
+    return info.id
   }
 
   cerrarSesion(){

@@ -13,26 +13,34 @@
     <div class="col">
       <figure>
   <img class="img-account-profile"  [src]="logo">
-
 </figure>
 </div>
     </a>
   </div>
-
 </div>
 <div class="rigth">
 <div class="search">
 
-  <mat-form-field  >
-    <input class="find" type="text" matInput>
-    <mat-icon class="lupa" >search</mat-icon>
+  <form class="example-form">
+   <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Buscar</mat-label>
+      <input type="text"
+             aria-label="Number"
+             matInput
+             [formControl]="myControl"
+             (keyup)="servicio(id.value,$event)"
+             [matAutocomplete]="auto" #id>
+      <mat-autocomplete (optionSelected)="irServicio(id.value)"  autoActiveFirstOption #auto="matAutocomplete" >
+        <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+      
     </mat-form-field>
+    <mat-icon>search</mat-icon>
+  </form>
   </div>
-
-  
 <div class="top"> 
-    
-
 <div class="time-date">      
   <div nz-col nzSpan="4">
     <div  nz-row>
@@ -46,9 +54,6 @@
 </div>
 </div>
 
-
-   
- 
   <div class="top" >
   <div class="person">
     <button mat-button [matMenuTriggerFor]="userMenu">
@@ -73,32 +78,19 @@
       <a mat-menu-item [routerLink]="['/admin/configuracion']">
         <mat-icon>edit</mat-icon>
         <span>Editar perfil</span>
-
       </a>
-
       <a mat-menu-item [routerLink]="['/admin/configuracion/notification']">
         <mat-icon>notifications</mat-icon>
         <span>Notificaciones</span>
-
       </a>
-
       <a mat-menu-item (click)="salir()"  >
         <mat-icon>exit_to_app</mat-icon>
         <span>Cerrar sesion</span>
       </a>
-
     </mat-menu>
 
-
-
-    
-    
-
-
   </mat-toolbar>
-
   <mat-sidenav-container class="navbar-sidenav-container">
-    
     <!-- Side nav -->
     <mat-sidenav #snav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'"
       [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav"
@@ -171,7 +163,7 @@
     Propios</a>
     <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
       Informacion</a>
-      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+      <a mat-list-item [routerLink]="['/admin/tickets/ticket-entry']" routerLinkActive="active" mat-line>
         Altas de ticket</a>
 </mat-expansion-panel>
 
@@ -224,3 +216,6 @@
 </mat-sidenav-container>
 
 </div>
+<notifier-container>
+  
+</notifier-container>

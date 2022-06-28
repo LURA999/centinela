@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {ThemePalette} from '@angular/material/core';
 import { CustomerService } from 'src/app/core/services/customer.service';
@@ -7,6 +7,7 @@ import { lastValueFrom, Observable, Subscription } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DataService } from 'src/app/core/services/data.service';
+import { MatButton } from '@angular/material/button';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class CustomerCompanyComponent implements OnInit {
   metodo  = new RepeteadMethods()
   $sub = new Subscription()
   load : boolean = false
-   
+  buttonAgregar : Boolean = false
+  
   ELEMENT_DATA_TICKETS : any = [
     {
     id:"1",
@@ -68,23 +70,33 @@ export class CustomerCompanyComponent implements OnInit {
   dataSourceTickets = new MatTableDataSource(this.ELEMENT_DATA_TICKETS);
   displayedColumnsTickets: string[] = ['id', 'nombre'];
 
-  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute,private DataService : DataService, private router : Router ) { 
+  constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute
+    ,private DataService : DataService, private router : Router,private renderer : Renderer2) { 
     let diagonal = this.router.url.split("/",6)[4];
     if(diagonal != undefined){
       this.activeLink = "./"+diagonal
     }    
+
+    if(diagonal == "log"){
+      this.buttonAgregar = true
+    }else{
+      this.buttonAgregar = false
+    }
+
   }
   
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourceTickets.filter = filterValue.trim().toLowerCase();
-  }
 
   ngOnInit(): void {
     this.datosCliente()
 
   }
+
+  filtrarTabla(event:Event){
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.DataService.open.emit({palabraBuscar:filterValue})
+  }
+
 
   async datosCliente() {
     try{
@@ -103,6 +115,13 @@ export class CustomerCompanyComponent implements OnInit {
     this.DataService.open.emit({abrir:form, nombreEmpresa : nombreEmpresa});
   }
 
+  desactivarBotones(index:number){   
+    if(index == 4){
+      this.buttonAgregar = true
+    }else{
+      this.buttonAgregar = false
+    }
+  }
   ngOnDestroy(): void {
 
   }

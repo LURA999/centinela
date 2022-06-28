@@ -35,6 +35,8 @@ export class SegmentsService {
     return this.http.get(this.local+"Repeater/segment.php?segmento="+segmento);    
   }
 
-  
+  lastSegmento(){
+    return this.http.get(this.local+"Repeater/segment.php?last=true");    
+  }
 
 }

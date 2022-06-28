@@ -13,6 +13,7 @@ export class IpService {
     constructor(private http : HttpClient){}
 
     insertarIp(input : any){
+        
         return this.http.post(this.local+"Repeater/ip.php", input, {responseType: 'text'})
     }
 
@@ -20,8 +21,8 @@ export class IpService {
         return this.http.get(this.local+"Repeater/ip.php")
     }
     
-    selectIp(segmento :string,segmento2 :string, condicion?:string) : Observable<responseService>{        
-        return this.http.get<responseService>(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2+"&condicion="+condicion)
+    selectIp(segmento :string,segmento2 :string,condicion2 : number, condicion?:string) : Observable<responseService>{        
+        return this.http.get<responseService>(this.local+"Repeater/ip.php?segmento="+segmento+"&segmentoFinal="+segmento2+"&condicion="+condicion+"&condicion2="+condicion2)
     }
 
     selectIpOneEquipament(id : number,identificador: string, condicion : number,contador: number){

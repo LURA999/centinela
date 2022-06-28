@@ -1,4 +1,4 @@
-<div class="container" fxLayout="row" fxLayoutAlign="center none">
+<div class="matCardTop" fxLayout="row" fxLayoutAlign="center none">
 
   <div fxFlex="95%">
 
@@ -11,7 +11,7 @@
             <mat-label>Subred</mat-label>
             <mat-select matNativeControl (selectionChange)="filtrar($event.value)" required>
               <mat-option value="0" selected disabled>Seleccione un IP</mat-option>
-              <mat-option *ngFor="let item of segmentos; let i = index" value="{{item.segmento}}-{{item.segmentoFinal}}" >{{item.segmento}} - {{item.segmentoFinal}} </mat-option>
+              <mat-option *ngFor="let item of segmentos; let i = index" [value]="item.segmentoInicial+'-'+item.segmentoFinal" ><b>{{item.segmento}}</b> : {{item.segmentoInicial}} - {{item.segmentoFinal}}  </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -48,7 +48,7 @@
           </ng-container>
           <ng-container matColumnDef="utilizado">
             <th mat-header-cell *matHeaderCellDef >UTILIZADO POR</th>
-            <td mat-cell *matCellDef="let element"> ---- </td>
+            <td mat-cell *matCellDef="let element"> {{element.utilizado? element.utilizado:"Ninguno"}} </td>
           </ng-container>
           <ng-container matColumnDef="tipoequipo">
             <th mat-header-cell *matHeaderCellDef >TIPO DE EQUIPO</th>

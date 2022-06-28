@@ -9,14 +9,44 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { ToastrModule } from "ngx-toastr";
+import { NotifierModule } from 'angular-notifier';
 @NgModule({
   imports: [
+    NotifierModule.withConfig({
+      position: {
+        horizontal: {
+          /**
+           * Defines the horizontal position on the screen
+           * @type {'left' | 'middle' | 'right'}
+           */
+          position: 'right',
+      
+          /**
+           * Defines the horizontal distance to the screen edge (in px)
+           * @type {number}
+           */
+          distance: 12
+        },
+        vertical: {
+          /**
+           * Defines the vertical position on the screen
+           * @type {'top' | 'bottom'}
+           */
+          position: 'bottom',
+      
+          /**
+           * Defines the vertical distance to the screen edge (in px)
+           * @type {number}
+           */
+          distance: 12
+        }
+      } 
+    }),
     RouterModule,
     CustomMaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
+    FlexLayoutModule
   ],
   declarations: [
     LayoutComponent

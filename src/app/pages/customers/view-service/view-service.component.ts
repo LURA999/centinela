@@ -66,7 +66,7 @@ export class ViewServiceComponent implements OnInit {
   constructor(private activoRouter : ActivatedRoute, private service : ServiceService
     , private DataService : DataService, private router : Router,private dialog:NgDialogAnimationService,
     private notificationService: NotificationService) {   
-      this.servicio = this.service.selectVistaServicio(this.identificador, Number(this.contadorIdenti))
+      this.servicio = this.service.selectVistaServicio(this.identificador, Number(this.contadorIdenti),1)
       let diagonal = this.router.url.split("/",6)[5];
       if(diagonal != undefined){
         this.activeLink = "./"+diagonal
@@ -79,7 +79,7 @@ export class ViewServiceComponent implements OnInit {
   }
 
   abrirMapaCoordendas(coordenadas : string){
-    window.open("https://www.google.com/maps/place/"+coordenadas, "_blank");
+    window.open(("https://www.google.com/maps/place/"+coordenadas).replace(/\ /gi,'+'), "_blank");
   }
   
   abrirMapaDireccion(avenida: string, numero: string, colonia: string, codigoPostal: string, 
@@ -129,4 +129,6 @@ export class ViewServiceComponent implements OnInit {
   agregar(form : string){    
     this.DataService.open.emit(form)
   }
+
 }
+

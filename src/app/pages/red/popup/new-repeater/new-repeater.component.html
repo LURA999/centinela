@@ -43,7 +43,7 @@
       <mat-label>Ciudad</mat-label>
       <mat-select [(value)]="data.ciudad " matNativeControl required #selectCiudad >
         <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
-        <mat-option *ngFor="let x of data.ciudades; let i=index" [value]="x.idCiudad">{{x.nombre}}</mat-option>
+        <mat-option *ngFor="let x of data.ciudades" [value]="x.idCiudad">{{x.nombre}}</mat-option>
       </mat-select>
       <!--<mat-icon>location_city</mat-icon> -->
 

@@ -1,0 +1,193 @@
+<div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop">
+    <div fxFlex="95%">
+        <mat-card >
+            <mat-card-header><h2>Nueva solicitud</h2></mat-card-header>
+            <mat-card-content class="sub-container">
+            
+                <mat-card id="form">
+                <mat-card-content>
+                    <button mat-stroked-button class="otroBuscador" (click)="abrirBuscadosIdentificador()">¿No encuentra su id? <mat-icon>search</mat-icon></button>
+                    
+                    <form [formGroup]="formTicket">
+                        <div class="campo">
+                            <mat-form-field appearance="legacy">
+                                <mat-label>Buscar identificador</mat-label>
+                                <input type="text"
+                                    aria-label="Number"
+                                    matInput
+                                    [formControl]="myControl"
+                                    (keyup)="buscarIdentificador(id.value,$event)"
+                                    [matAutocomplete]="auto" #id>
+                                <mat-autocomplete (optionSelected)="opcionSeleccionada(id.value)" autoActiveFirstOption #auto="matAutocomplete" >
+                                <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
+                                    {{option}}
+                                </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                        <mat-form-field  class="inputs" appearance="fill">
+                        <mat-label>De : (seleccione un contacto)</mat-label>
+                            <mat-select #selectContacto (selectionChange)="agregarContacto(selectContacto.value,true)">
+                                <mat-option *ngFor="let contacto of contactoLista let i=index"  [value]="i">
+                                    {{contacto.nombre}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-hint align="end" > <div><a (click)="agregarOtroContacto()" class="linkContactoCc">Aregar otro Contacto  </a></div> &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;<div class="linkContactoCc"><a > Aregar Cc</a></div></mat-hint>
+                        </mat-form-field>
+                        </div>
+                        
+                        <div >
+                            <mat-form-field appearance="fill">
+                                <mat-label>Contactos | Enviar Cc</mat-label>
+                                <input type="text"
+                                    [formControl]="myControlContacts"
+                                    matInput
+                                    [matAutocomplete]="auto2" #autoContacto>
+                                <mat-autocomplete  #auto2="matAutocomplete" (optionSelected)="contactoArray($event)" [displayWith]="displayFn" >
+                                    <mat-option *ngFor="let con of filteredContacts | async  let i = index" [id]="i+''" [value]="con.correo" #selectedOption>
+                                        {{con.nombre}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                                <div id="mat-group-suffix">
+                                    <ng-template #matIcon></ng-template>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                    </div>
+                        <div class="campo">
+                        <mat-form-field  appearance="fill">
+                            <mat-label>Origen</mat-label>
+                            <mat-select>
+                            <mat-option value="0" disabled selected>Seleccione un origen</mat-option>
+                            <mat-option value="1">Llamada directa</mat-option>
+                            <mat-option value="2">WhatsApp</mat-option>
+                            <mat-option value="3">Correo</mat-option>
+                            <mat-option value="4">Asesor</mat-option>
+                            <mat-option value="5">Facebook</mat-option>
+                            <mat-option value="6">Pagina web</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        </div>
+                        <div class="campo">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Grupo</mat-label>
+                            <mat-select #idGrupo (selectionChange)="buscarUsuarios()">
+                                <mat-option value="2">Asesor</mat-option>
+                                <mat-option value="3">Facturacion</mat-option>
+                                <mat-option value="4">Soporte</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        </div>
+                        <div class="campoAgente">
+                        <mat-form-field  appearance="fill">
+                            <mat-label>Agente</mat-label>
+                            <mat-select>
+                                <mat-option *ngFor="let i of usuarios" [value]="i.idUsuario">{{i.usuario}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        </div>
+                        <div class="campo">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Asunto</mat-label>
+                            <mat-select>
+                                <mat-option *ngFor="let i of asuntosArray" [value]="i.idAsunto">{{i.nombre}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        </div>
+                        <div class="campo">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Prioridad</mat-label>
+                                <mat-select>
+                                    <mat-option value="1">Baja</mat-option>
+                                    <mat-option value="2">Media</mat-option>
+                                    <mat-option value="3">Alta</mat-option>
+                                    <mat-option value="4">Urgente</mat-option>                            
+                                </mat-select>
+                            </mat-form-field>
+                            </div>
+                        <div class="campo">
+                            <mat-form-field appearance="legacy">
+                            <mat-label>Descripcion</mat-label>
+                            <textarea matInput placeholder="" rows="15"></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div class="inputs">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Descripcion</mat-label>
+                                <mat-select>
+                                    <mat-option value="1">Baja</mat-option>
+                                    <mat-option value="2">Media</mat-option>
+                                    <mat-option value="3">Alta</mat-option>
+                                    <mat-option value="4">Urgente</mat-option>                            
+                                </mat-select>
+                                <mat-hint align="end" > <div><a (click)="agregarOtroContacto()" class="linkContactoCc">Aregar incidencia  </a></div></mat-hint>
+
+                            </mat-form-field>
+                        </div>    
+
+                        <div class="botonesSolicitud">
+                            <button mat-stroked-button color="primary">Cancelar</button>
+                            <button mat-raised-button color="primary">Crear</button>  
+                        </div>
+                    </form>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card id="sidenav">
+                    <mat-card-content>
+                    <div>
+                        <h3>Datos del servicio</h3>
+                    <p>
+                        Empresa:{{datosServicio?.cliente ? datosServicio?.cliente : "" }}<br/>
+                        Nombre del servicio:{{datosServicio?.servicio ? datosServicio?.servicio : ""}}<br/>
+                        Plan: {{datosServicio?.plan ? datosServicio?.plan : ""}}<br/>
+                        Estatus: {{datosServicio?.estatus ? datosServicio?.estatus : ""}}<br/>
+                        Ping radio: <br/>
+                        Ping router: <br/>
+                        Ping otro: <br/>
+                        Repetidora: <br/>
+                        
+                    </p>
+                    </div>
+                    <hr/>
+                    <div>
+                        <h3>Datos Extras:</h3>
+                        <img src="../../../../assets/avatar.png" id="imgDatoExtra"/>
+                        <div>Gustavo Martinez Yungo</div>
+                        <p>
+                            Correo:<br/>
+                            Numero:<br/>
+                            Puesto:<br/>
+                        </p>
+                    </div>
+                    <hr/>
+                    <div>
+                        <h3>Incidencias abiertas</h3>
+                            <ul>
+                                <li>Lorem ipsum dolor sit amet
+                                    , consectetuer adipiscing elit.</li>
+                                <li>Lorem ipsum dolor sit amet
+                                    , consectetuer adipiscing elit.</li>
+                                <li><a href="#">Ver toda la actividad</a></li>
+                            </ul>                         
+                    </div>
+                    <hr/>
+                    <div>
+                        <h3>Tickets abiertas</h3>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet
+                                , consectetuer adipiscing elit.</li>
+                            <li>Lorem ipsum dolor sit amet
+                                , consectetuer adipiscing elit.</li>
+                            <li><a href="#">Ver toda la actividad</a></li>
+                        </ul>         
+                    </div>
+                    </mat-card-content>
+                </mat-card>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

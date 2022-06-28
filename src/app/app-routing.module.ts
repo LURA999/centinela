@@ -18,6 +18,7 @@ const appRoutes: Routes = [
   { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
   { path: 'admin/report', loadChildren: () => import('./pages/report/report.module').then(m => m.ReportsModule) },
   { path: 'admin/manual', loadChildren: () => import('./pages/manual/manual.module').then(m => m.ManualModule) },
+  { path: 'admin/tickets', loadChildren: () => import('./pages/tickets/tickets.module').then(m => m.TicketsModule) },
   { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 
 ];

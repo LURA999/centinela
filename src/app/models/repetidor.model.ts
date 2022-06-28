@@ -1,5 +1,5 @@
 export class RepetidorModel {
-    cveCiudad: number=0
+    cveCiudad: any 
     nombre:string=""
     latitud:string=""
     longitud:string=""

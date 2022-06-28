@@ -11,16 +11,16 @@ body{
     background-position: center center;
     background-attachment: fixed;
 }
+
 .col {
-   
-    width: 300px;
+    padding-right: 0;
     background-color: white;
-  }
+}
   
-  .col figure img {
+.col figure img {
     max-width: 100%;
 
-  }
+}
 
 /**Definiendo formulario*/
 
@@ -31,7 +31,8 @@ body{
     transform: translate(-50%,-50%);
     background-color: white;
     padding: 5%;
-    border-radius: 10px;    
+    border-radius: 10px;
+    width: 30%;    
     /*float: right;
     height: 100%;
     width: 40vw;
@@ -101,17 +102,16 @@ mat-form-field {
     opacity: 0.5;
     
 }
+
+@media (max-width: 1150px) {
+    .containerform  {
+        width: 40%;
+    }
+
+}
+
+
 @media (max-width: 850px) {
-    .col figure img {
-        max-width: 50%;
-    
-      }
-      .col{
-       
-            text-align: center !important;
-        }
-      
-     
     .titulo h1 {
         font-size: 1rem;
     }

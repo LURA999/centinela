@@ -52,7 +52,7 @@
         
         <mat-form-field   appearance="fill" >
             <mat-label>Segmento</mat-label>
-            <mat-select #segmento (selectionChange)="tabChangeSegmento()" [disabled]="segmentos.length ==0"  [(value)]="valorSegmento"  >
+            <mat-select #segmento (selectionChange)="tabChangeSegmento()" [disabled]="segmentos.length ==0" formControlName="idSegmento" >
                 <mat-option  selected disabled value ="-1">Sel/eccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento"  >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>

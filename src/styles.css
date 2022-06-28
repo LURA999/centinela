@@ -263,9 +263,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-top: -10px;
 }
 
-
-
-/*.mat-dialog-container{
-  padding: 0 0 25px 0!important;
-  overflow-x: hidden !important;
-}*/
+/*mat card del fondo principal TOP*/
+.matCardTop{
+  margin-top: 15px;
+}

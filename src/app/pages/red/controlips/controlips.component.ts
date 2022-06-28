@@ -6,9 +6,10 @@ import { IpService } from './../../../core/services/ip.service';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { SegmentsService } from './../../../core/services/segments.service';
-import { Subscription } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
 import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'; 
+import { RepeteadMethods } from '../../RepeteadMethods';
 
 @Component({
   selector: 'app-controlips',
@@ -33,6 +34,7 @@ export class ControlipsComponent implements OnInit {
   ping : string =""
   comentario :boolean = true;
   cargando : boolean = false;
+  repetheadMethods = new RepeteadMethods()
 
   @ViewChild ("paginator") paginator2:any;
 
@@ -59,13 +61,15 @@ export class ControlipsComponent implements OnInit {
   }
 
   async segmentosArray(){
-    this.segmentos  = await this.segmentoService.llamarSegments().toPromise();
+    this.segmentos  = await lastValueFrom(this.segmentoService.llamarSegments())
     this.segmentos = this.segmentos.container;
+    console.log(this.segmentos);
+    
     
   }
 
  async ipServicios(){
-  this.ips =await this.ipService.select().toPromise();
+  this.ips =await lastValueFrom(this.ipService.select())
   this.ips = this.ips.container;
  }
 
@@ -105,8 +109,8 @@ async refrescar(){
       this.ELEMENT_DATA[this.inicio] =  (    
         {
           ip: this.ips[this.inicio].ip,
-          tipoip: this.ips[this.inicio].tipo,
-          utilizado: "----",
+          tipoip: this.repetheadMethods.tipo(this.ips[this.inicio].tipo),
+          utilizado: this.ips[this.inicio].nombre,
           tipoequipo: "-----",
           ping: this.ips[this.inicio].ping,
         });        
@@ -137,8 +141,8 @@ async cargarInicio(){
     this.ELEMENT_DATA[this.inicio] =  (    
       {
         ip: this.ips[this.inicio].ip,
-        tipoip: this.ips[this.inicio].tipo,
-        utilizado: "----",
+        tipoip: this.repetheadMethods.tipo(this.ips[this.inicio].tipo),
+        utilizado: this.ips[this.inicio].nombre,
         tipoequipo: "-----",
         ping: this.ips[this.inicio].ping,
       });        
@@ -165,7 +169,7 @@ async cargarInicio(){
     this.$sub.unsubscribe();
     this.$sub = new Subscription();
 
-    this.ips = await this.ipService.selectIp(this.segmentoFiltro1, this.segmentoFiltro2).toPromise() 
+    this.ips = await lastValueFrom(this.ipService.selectIp(this.segmentoFiltro1, this.segmentoFiltro2,2)) 
     this.ips = await this.ips.container
     console.log(this.ips);
     await this.cargarInicio();
@@ -189,7 +193,7 @@ async cargarInicio(){
     
     if(this.segmentoFiltro1.length >0 && this.segmentoFiltro2.length > 0){
       if(clave.length > 0){
-       let ipsFake :any = await this.ipService.selectIpParam(this.segmentoFiltro1, this.segmentoFiltro2, clave).toPromise() 
+       let ipsFake :any = await lastValueFrom(this.ipService.selectIpParam(this.segmentoFiltro1, this.segmentoFiltro2, clave)) 
         ipsFake = ipsFake.container;        
         this.mostrarSoloUnaFila(ipsFake);
         if(ipsFake.length > 0){
@@ -206,7 +210,7 @@ async cargarInicio(){
       }
     }else{
       if(clave.length > 0){
-        let ipsFake : any = await this.ipService.selectIpTodosSolo( clave).toPromise()
+        let ipsFake : any = await lastValueFrom(this.ipService.selectIpTodosSolo( clave))
         ipsFake = ipsFake.container;
         
         this.mostrarSoloUnaFila(ipsFake);
@@ -225,8 +229,6 @@ async cargarInicio(){
   }
 
   mostrarSoloUnaFila(ipsFake :any){
-    console.log(ipsFake.length);
-    
     if(ipsFake.length > 0){
     this.comentario = true  
     this.cargando = false;
@@ -240,8 +242,8 @@ async cargarInicio(){
     this.ELEMENT_DATA.push (    
       {
         ip: ipsFake[0].ip,
-        tipoip: ipsFake[0].tipo,
-        utilizado: "----",
+        tipoip: this.repetheadMethods.tipo(ipsFake[0].tipo),
+        utilizado: this.ips[this.inicio].nombre,
         tipoequipo: "-----",
         ping: ipsFake[0].ping,
       });        
@@ -265,13 +267,15 @@ async cargarInicio(){
     let worksheet = workbook.addWorksheet("Employee Data");
     let header : string[]= ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping'];
     worksheet.addRow(header);
+    console.log(this.ips);
     
     for  (let x1=0; x1<this.ips.length; x1++ )
     {
+      
       let temp : any=[]
         temp.push(this.ips[x1].ip)
-        temp.push(this.ips[x1].tipo)
-        temp.push("----")
+        temp.push(this.repetheadMethods.tipo(this.ips[x1].tipo))
+        temp.push(this.ips[x1].nombre?this.ips[x1].nombre:"Ninguno")
         temp.push("----")
         temp.push(await this.monitoreoPingSinIndex(this.ips[x1].ip)) 
         worksheet.addRow(temp)

@@ -7,12 +7,12 @@ import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DataService } from 'src/app/core/services/data.service';
-import { NewRouterComponent } from '../popup/new-router/new-router.component';
 import { DeviceModel } from 'src/app/models/device.model';
 import { DeviceService } from 'src/app/core/services/device.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { DeleteComponent } from '../popup/delete/delete.component';
 import { IpService } from 'src/app/core/services/ip.service';
+import { NewEquipamentComponent } from '../popup/new-equipament/new-equipament.component';
 
 @Component({
   selector: 'app-table-router',
@@ -36,7 +36,7 @@ export class TableRouterComponent implements OnInit {
   IpSeleccionadas : Array<any[]>= []
   guardandoPrimerIndice : Array<any> = [] 
   primerIndice : number = 0
-  constructor(private dialog:NgDialogAnimationService,private ruta : Router, private rutaActiva:ActivatedRoute,
+  constructor(private dialog:NgDialogAnimationService,private ruta : Router,
     private notificationService: NotificationService,private DataService : DataService, private deviceService : DeviceService
     ,private ipSelect: IpService
     ) { 
@@ -67,7 +67,6 @@ export class TableRouterComponent implements OnInit {
     this.cargando = false;       
 
     this.$sub.add(this.deviceService.todosRouter(this.identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{   
-      console.log(resp)  
       if(resp.container.length !=0){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({ 
@@ -92,9 +91,7 @@ export class TableRouterComponent implements OnInit {
           snmp : resp.container[i].snmp,
           comentario : resp.container[i].comentario
         })
-      }
-      console.log(this.ELEMENT_DATA);
-      
+      }      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
       this.dataSource.sort =  this.sort;
@@ -134,8 +131,8 @@ export class TableRouterComponent implements OnInit {
 
   editar(model : DeviceModel){
     this.modelRouter = model;
-    let dialogRef  = this.dialog.open(NewRouterComponent,
-      {data: {opc : true, model : this.modelRouter, salir : true },
+    let dialogRef  = this.dialog.open(NewEquipamentComponent,
+      {data: {opc : true, model : this.modelRouter, salir : true,abrirForm:false },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
@@ -161,8 +158,8 @@ export class TableRouterComponent implements OnInit {
   }
 
   insertar(){    
-    let dialogRef  = this.dialog.open(NewRouterComponent,
-      {data: {opc : false , model : this.modelRouter, salir : true},
+    let dialogRef  = this.dialog.open(NewEquipamentComponent,
+      {data: {opc : false , model : this.modelRouter, salir : true,abrirForm:false},
       animation: { to: "bottom" },
       height:"auto", width:"70%"
     });

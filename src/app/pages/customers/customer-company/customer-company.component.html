@@ -46,7 +46,7 @@
                             <mat-card-title >Ultimos Tickets</mat-card-title>
                           </mat-card-header>
                 <mat-card-content>
-                        <table mat-table [dataSource]="dataSourceTickets" class="mat-elevation-z8">
+                        <table mat-table class="mat-elevation-z8">
                             <ng-container matColumnDef="id">
                               <th mat-header-cell *matHeaderCellDef> id </th>
                               <td mat-cell *matCellDef="let element"> {{element.id}}</td>
@@ -77,15 +77,15 @@
             <div >
                 <div class="cabecera" >
                     <div class="botones">
-                        <button  mat-raised-button color="primary" (click)="agregar(true,datos.nombre)"><mat-icon>add</mat-icon>Agregar</button>
+                        <button  mat-raised-button color="primary" [disabled]="buttonAgregar" (click)="agregar(true,datos.nombre)"><mat-icon>add</mat-icon>Agregar</button>
                     </div>
                     <div class="botones">
-                        <button mat-raised-button color="primary" (click)="descargar(false,datos.nombre)"><mat-icon>download</mat-icon>Exportar</button>
+                        <button mat-raised-button color="primary"  (click)="descargar(false,datos.nombre)"><mat-icon>download</mat-icon>Exportar</button>
                     </div>
                     <div>
                         <mat-form-field style="width: auto;" appearance="standard">
                         <mat-label>Buscar</mat-label>
-                        <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+                        <input matInput (keyup)="filtrarTabla($event)" placeholder="Buscar coincidencia..." #input>   
                         </mat-form-field>
                     </div>
                 </div>
@@ -98,6 +98,7 @@
                 <nav mat-tab-nav-bar >
                     <a mat-tab-link *ngFor="let link of navLinks"
                        (click)="activeLink = link.link"
+                       (click)="desactivarBotones(link.index)"
                        [routerLink]="link.link"
                        [active]="activeLink == link.link"> {{link.label}} </a>
                   </nav>

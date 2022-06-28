@@ -10,13 +10,15 @@ import { RolService } from 'src/app/core/services/rol.service';
 import { ContactServiceModel } from 'src/app/models/contactService.model';
 import { responseService } from 'src/app/models/responseService.model';
 import { DeleteComponent } from '../popup/delete/delete.component';
-import { NewContactComponent } from '../popup/new-contact/new-contact.component';
+import { NewContactComponent } from '../../../shared/components/popup/new-contact/new-contact.component';
 import { RepeteadMethods } from './../../RepeteadMethods';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
 import { DataService } from 'src/app/core/services/data.service';
 import { ServiceService } from 'src/app/core/services/services.service';
 import { data } from 'jquery';
+import { AuthService } from 'src/app/core/services/auth.service';
+
 
 @Component({
   selector: 'app-table-contact',
@@ -60,31 +62,40 @@ export class TableContactComponent implements OnInit {
 
   constructor(private dialog:NgDialogAnimationService,private serviceContact : ContactService,private rutaActiva: ActivatedRoute,
     private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
-    , private services : ServiceService) { 
+    , private services : ServiceService,private serviceAuth :AuthService) { 
       try{
        this.contadorIdenti =  this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
       }catch(Exception){  }
      }
 
   ngOnInit(): void {    
+   this.serviceAuth.getCveId();
     
     this.inicio();    
     this.$sub.add(this.DataService.open.subscribe(res => {     
-      if(res.abrir ==true || res == "contactoAgregar"){
-        this.insertar()
-      }else if(res.abrir == false){
-        this.descargar()
+
+      if(res.palabraBuscar !=undefined){
+        this.filtrar(res.palabraBuscar)
+      }else{
+        if(res.abrir ==true || res == "contactoAgregar"){
+          this.insertar()
+        }else if(res.abrir == false){
+          this.descargar()
+        }
       }
       }))
+      
     
   }
 
-
+  filtrar(palabra: string) {
+    this.dataSource.filter = palabra.trim().toLowerCase();
+  } 
 
   descargar(){
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet("Employee Data");
-    let header : string[]=["Nombre","Apellido Materno","Apellido paterno","Celular", "Telefono", "Servicio", "Rol", "Estatus"]
+    let header : string[]=["Nombre","Apellido Materno","Apellido paterno","Celular", "Telefono","Estatus"]
     worksheet.addRow(header);
     for  (let x1 in this.ELEMENT_DATA)
     {
@@ -95,8 +106,8 @@ export class TableContactComponent implements OnInit {
         temp.push(this.ELEMENT_DATA[x1]["apPaterno"])
         temp.push(this.ELEMENT_DATA[x1]["celular"])
         temp.push(this.ELEMENT_DATA[x1]["telefono"])
-        temp.push(this.ELEMENT_DATA[x1]["servicio"])
-        temp.push(this.ELEMENT_DATA[x1]["rol"])
+        //temp.push(this.ELEMENT_DATA[x1]["servicio"])
+       // temp.push(this.ELEMENT_DATA[x1]["rol"])
         temp.push(this.ELEMENT_DATA[x1]["estatus"])
       worksheet.addRow(temp)
     }
@@ -113,6 +124,7 @@ export class TableContactComponent implements OnInit {
   }
 
   async inicio(){    
+
     await this.ultimoID()
     await this.todoRol()
     await this.buscarServicios()
@@ -144,7 +156,7 @@ export class TableContactComponent implements OnInit {
 
   async llenarTablaContactoEmpresa(){
     this.cargando = false;
-    this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{  
+    this.$sub.add( this.serviceContact.llamarContactos_tServicos(this.id).subscribe((resp:any) =>{      
       if(resp.container.length !=0){        
       this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {
@@ -178,11 +190,8 @@ export class TableContactComponent implements OnInit {
   }
 
   async llenarTablaContactoServicio(){    
-  
-    
     this.cargando = false;               
     this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.contadorIdenti),2).subscribe((resp:any) =>{   
-    
       if(resp.container.length !=0){        
         this.mayorNumero = resp.container[0].idContacto;
       for (let i = 0; i < resp.container.length; i++) {

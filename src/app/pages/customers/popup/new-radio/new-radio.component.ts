@@ -3,12 +3,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { stringify } from 'querystring';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/core/services/device.service';
 import { IpService } from 'src/app/core/services/ip.service';
 import { RepeaterService } from 'src/app/core/services/repeater.service';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { DeviceModel } from 'src/app/models/device.model';
+import { RadioModel } from 'src/app/models/radio.model';
 import { responseService } from 'src/app/models/responseService.model';
 
 @Component({
@@ -55,6 +57,9 @@ export class NewRadioComponent implements OnInit {
     this.inicio();
     this.idMax();
    this.ips = []
+   console.log(this.newModel);
+     
+     
 
   }
 
@@ -70,14 +75,12 @@ export class NewRadioComponent implements OnInit {
    await this.todosUsuarios();
 
     if(this.data.opc == true){ 
-      await this.todasRepetidoras(this.data.model.idTipo)
-
+    await this.todasRepetidoras(this.data.model.idTipo)
       this.$sub.add(this.segmentoService.buscarSegmentoRepetidorTipo(this.data.model.idRepetidora,this.data.model.idTipo).subscribe((resp:responseService)=>{
         this.segmentos = resp.container;                
     }));
-
       let arraySegmento :string[] = this.data.model.segmento.split("-")
-      this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
+      this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1],1).subscribe((resp:responseService)=>{
         this.ips = resp.container
       }))
 
@@ -106,7 +109,7 @@ export class NewRadioComponent implements OnInit {
     }
     let segmento : string= document.getElementById("segmento")?.innerText+""; 
     let arraySegmento :string[] =segmento.split("-")
-    this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1]).subscribe((resp:responseService)=>{
+    this.$sub.add (this.ipService.selectIp(arraySegmento[0], arraySegmento[1],1).subscribe((resp:responseService)=>{
       this.ips = resp.container
     }))
   }
@@ -135,17 +138,25 @@ export class NewRadioComponent implements OnInit {
    this.newModel.contador = Number(this.contadorIdenti)
    this.newModel.identificador = this.identificador
     
-    if(this.radioForm.valid == false){
+    if(this.radioForm.valid == false || this.radioForm.value.idEstatus == 0 || this.radioForm.value.idTipo == 0
+      || this.radioForm.value.idRepetidora == 0 || this.radioForm.value.idSegmento == 0
+      ||this.radioForm.value.idusuario == 0){
       alert("Por favor llene todos los campos")
     }else{
-      if(this.data.opc == false){
+      if(this.data.opc == false && this.radioForm.value.idIp != 0 ){
         this.newModel.idDevice =  this.idAuto;
+        console.log(this.newModel)
         await lastValueFrom(this.deviceService.insertarRadio(this.newModel))
         this.dialogRef.close(this.newModel)     
-      }else{        
-        this.newModel.idDevice = this.data.model.idDevice;        
-        await lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
-        this.dialogRef.close(this.newModel)  
+      }else{           
+        if(this.radioForm.value.idIp == 0 && this.data.opc == true){ 
+          this.newModel.idIp = this.data.model.idIp
+          this.newModel.idDevice = this.data.model.idDevice;        
+          await lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
+          this.dialogRef.close(this.newModel) 
+        }else{
+          alert("Por favor llene todos los campos")
+        }
       }
     }
   }

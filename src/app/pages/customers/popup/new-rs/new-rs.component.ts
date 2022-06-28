@@ -1,8 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { LogService } from 'src/app/core/services/log.service';
 import { RsService } from 'src/app/core/services/rs.service';
+import { log_clienteEmpresa } from 'src/app/models/log_clienteEmpresa.model';
 import { RsModel } from 'src/app/models/rs.model';
 import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
 
@@ -15,9 +19,12 @@ export class NewRsComponent implements OnInit {
 
   rsModel = new RsModel()
   metodo = new RepeteadMethods()
+  logModel = new log_clienteEmpresa();
+
  // fechaAlta : FormControl = this.data.fechaAlta 
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private rs: RsService, public dialogRef: MatDialogRef<NewRsComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private rs: RsService, public dialogRef: MatDialogRef<NewRsComponent>,
+  private servicioLog : LogService, private autoServicio:AuthService, private ruta:Router) { }
 
   ngOnInit(): void {
 
@@ -29,14 +36,21 @@ export class NewRsComponent implements OnInit {
     this.rsModel.fecha = this.metodo.formatoFechaMysql(fechaValue)
     this.rsModel.fechaEspanol = this.metodo.cambiarSeparadoresFecha(fechaValue,"/","-")
     this.rsModel.estatus = select
+    this.logModel.cveUsuario = this.autoServicio.getCveId(); 
     
     if(this.data.opc ==false){
-      this.rsModel.cveCliente = this.data.idCliente     
+      this.logModel.cveCliente = this.data.idCliente
+      this.rsModel.cveCliente = this.data.idCliente 
+      this.logModel.tipo[0] = 1
       await lastValueFrom(this.rs.insertRS(this.rsModel));
+      await lastValueFrom(this.servicioLog.insertLog(this.logModel,3));
       this.dialogRef.close(this.rsModel)    
     }else{
-      this.rsModel.cveCliente = this.data.id           
+      this.logModel.cveCliente = this.data.id
+      this.rsModel.cveCliente = this.data.id 
+      this.logModel.tipo[0] = 0                
       await lastValueFrom(this.rs.updateRS(this.rsModel));
+      await lastValueFrom(this.servicioLog.insertLog(this.logModel,3));
       this.dialogRef.close(this.rsModel)    
     }
     

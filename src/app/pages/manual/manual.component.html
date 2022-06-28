@@ -1,5 +1,5 @@
 
-<div class="container" fxLayout="row" fxLayoutAlign="center none">
+<div class="matCardTop" fxLayout="row" fxLayoutAlign="center none">
 
   <div fxFlex="95%">
     <div >
@@ -7,26 +7,24 @@
       <mat-card-content>
          <h2>Manuales</h2>
         
-         <div class="barriba">
-          <div id="nuevoc">
-          <button mat-raised-button color="primary" (click)="newManual()"> <mat-icon>add</mat-icon> Nuevo</button>
-        </div>
-        <div class="group">
-         
-           
-            <mat-button-toggle-group class="toggle" >
-              <mat-button-toggle (click)="sortByUser()" > <mat-icon class="icon">person</mat-icon>   </mat-button-toggle>
-              <mat-button-toggle (click)="llenarTabla()" >  <mat-icon class="icon">group</mat-icon>  </mat-button-toggle>
-            </mat-button-toggle-group>
-        </div>
-
-          <div class="buscar">
-            <mat-form-field appearance="standard">
-              <mat-label>Buscar</mat-label>
-              <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
-            </mat-form-field>
+          <div class="barriba">
+            <div id="nuevoc">
+              <button mat-raised-button color="primary" (click)="newManual()"> <mat-icon>add</mat-icon> Nuevo</button>
             </div>
-        </div>
+            <div class="toggle">
+              <mat-button-toggle-group class="toggle" >
+                <mat-button-toggle (click)="sortByUser()" > <mat-icon class="icon">person</mat-icon>   </mat-button-toggle>
+                <mat-button-toggle (click)="llenarTabla()" >  <mat-icon class="icon">group</mat-icon>  </mat-button-toggle>
+              </mat-button-toggle-group>
+              </div>
+            <div>
+              <mat-form-field appearance="standard">
+                <mat-label>Buscar</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Buscar coincidencia..." #input>   
+              </mat-form-field>
+              </div>
+          </div>
+          
     
         <div class="table" style="overflow-x: auto;">
         <table mat-table [dataSource]="dataSource" >          

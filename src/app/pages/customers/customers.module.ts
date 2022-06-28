@@ -15,14 +15,13 @@ import { TableRsComponent } from './table-rs/table-rs.component';
 import { TableContactComponent } from './table-contact/table-contact.component';
 import { NewTicketComponent } from './popup/new-ticket/new-ticket.component';
 import { NewLogComponent } from './popup/new-log/new-log.component';
-import { NewContactComponent } from './popup/new-contact/new-contact.component';
+import { NewContactComponent } from '../../shared/components/popup/new-contact/new-contact.component';
 import { NewRsComponent } from './popup/new-rs/new-rs.component';
 import { NewServiceComponent } from './popup/new-service/new-service.component';
 import { ViewServiceComponent } from './view-service/view-service.component';
 import { TableEquipamentComponent } from './table-equipment/table-equipment.component';
 import { NewEquipamentComponent } from './popup/new-equipament/new-equipament.component';
 import { NewRadioComponent } from './popup/new-radio/new-radio.component';
-import { NewRouterComponent } from './popup/new-router/new-router.component';
 import { TableRadioComponent } from './table-radio/table-radio.component';
 import { TableRouterComponent } from './table-router/table-router.component';
 import { MAT_TABS_CONFIG } from '@angular/material/tabs';
@@ -56,7 +55,6 @@ import { EditAddressComponent } from './popup/edit-address/edit-address.componen
     TableEquipamentComponent,
     NewEquipamentComponent,
     NewRadioComponent,
-    NewRouterComponent,
     TableRadioComponent,
     TableRouterComponent,
     InfoContactComponent,

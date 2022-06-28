@@ -5,9 +5,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { ContactService } from 'src/app/core/services/contact.service';
-import { DataService } from 'src/app/core/services/data.service';
+import { LogService } from 'src/app/core/services/log.service';
 import { ContactServiceModel } from 'src/app/models/contactService.model';
+import { log_clienteEmpresa } from 'src/app/models/log_clienteEmpresa.model';
 import { responseService } from 'src/app/models/responseService.model';
 
 @Component({
@@ -20,10 +22,13 @@ export class NewContactComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>
   ,private contacto : ContactService, private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router
-  , private contactService : ContactService,private _renderer: Renderer2,private DataService : DataService) {  }
+  , private contactService : ContactService,private _renderer: Renderer2,
+  private logService :LogService,private serviceAuth :AuthService ) {  }
   hide = true;
   seleccionar : number=0;
   contactoModel = new ContactServiceModel();
+  modelLog = new log_clienteEmpresa();
+
   labelAsignar : string = ""
   labelAgregar : string = ""
   agregar : boolean = false;
@@ -93,12 +98,17 @@ export class NewContactComponent implements OnInit {
       this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";
       this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";
       this.contactoModel.cveServicioArray = this.cveServicios
-      this.contactoModel.cveContactoArray = this.cveContactos
+      this.contactoModel.cveContactoArray = this.cveContactos   
+      this.modelLog.cveUsuario = this.serviceAuth.getCveId();
+      this.modelLog.serviciosAltas = this.cveServicios.toString();
+      this.modelLog.cveCliente = Number(this.id);
 
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
             this.contactoModel.cveContacto = this.idAuto;
-           await lastValueFrom(this.contacto.insertServicios_tServicos(this.contactoModel))
+            this.modelLog.tipo[0]=1;
+           await lastValueFrom(this.contacto.insertServicios_tServicos(this.contactoModel));
+           await lastValueFrom(this.logService.insertLog(this.modelLog,1));
           this.dialogRef.close(this.contactoModel)
         }else{
           alert("Por favor llene los campos");
@@ -107,14 +117,18 @@ export class NewContactComponent implements OnInit {
         if(this.data.idServicio == this.eliminarServicio){
           this.eliminarServicio = -1
         }
+          this.modelLog.tipo[0]=0;
           this.contactoModel.cveContacto = this.data.idContacto;
           await lastValueFrom(this.contacto.updateContacto_tServicio(this.contactoModel))
+          await lastValueFrom(this.logService.insertLog(this.modelLog,1))
           this.dialogRef.close(this.contactoModel)
       }
     }else{
+      this.modelLog.tipo[0]=1;
       this.contactoModel = this.asignarForm.value
-      this.contactoModel.cveContactoArray = this.cveContactos      
+      this.contactoModel.cveContactoArray = this.cveContactos   
       await lastValueFrom(this.contactService.insertarContacto_Servicio(this.contactoModel))
+      await lastValueFrom(this.logService.insertLog(this.modelLog,1))
       this.dialogRef.close(this.contactoModel)
     }
   }
