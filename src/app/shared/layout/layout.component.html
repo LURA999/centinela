@@ -100,12 +100,22 @@
         <div  id="header-nav">
           <p> Menu  </p>
         </div>
-        <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            dashboard
-          </mat-icon>
-          <p mat-line> Dashboard </p>
-        </a>
+
+        <mat-expansion-panel >  
+          <mat-expansion-panel-header>
+            
+              <mat-icon mat-list-icon style="margin-top: 8px;">dashboard </mat-icon> 
+              <p mat-line style="margin-top: 11px;"> Dashboard </p>
+           
+          </mat-expansion-panel-header>
+          <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+             General</a>
+          <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-red']" routerLinkActive="active" mat-line>
+             Red</a>
+            <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-tickets']" routerLinkActive="active" mat-line>
+              Tickets</a>
+        </mat-expansion-panel>
+
         <a mat-list-item [routerLink]="['/admin/client']" [ngStyle]="{'display': acceso()}">
           <mat-icon mat-list-icon >person</mat-icon>
           <p mat-line > Clientes  </p>
