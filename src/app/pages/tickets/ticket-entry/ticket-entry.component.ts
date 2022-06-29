@@ -32,6 +32,7 @@ interface pingDatos {
   idDevice : number;
   nombre : string;
   ip : string;
+  ping:string;
 }
 
 interface datosContacto {
@@ -221,7 +222,8 @@ export class TicketEntryComponent implements OnInit {
           this.pingOtro.push( {
             idDevice :resp.container[i].idOtro,
             nombre : resp.container[i].nombre,
-            ip :  resp.container[i].ip
+            ip :  resp.container[i].ip,
+            ping:"cargando"
           })
         }
         
@@ -238,7 +240,8 @@ export class TicketEntryComponent implements OnInit {
             this.pingRouter.push( {
               idDevice :resp.container[i].idRouter,
               nombre : resp.container[i].nombre,
-              ip :  resp.container[i].ip
+              ip :  resp.container[i].ip,
+              ping: "cargando"
           })
         }
       }
@@ -254,7 +257,8 @@ export class TicketEntryComponent implements OnInit {
             this.pingRadio.push( {
               idDevice :resp.container[i].idRadio,
               nombre : resp.container[i].radio,
-              ip :  resp.container[i].ip
+              ip :  resp.container[i].ip,
+              ping:"cargando"
           })
         }
       }      
@@ -264,9 +268,11 @@ export class TicketEntryComponent implements OnInit {
   async monitoreoPing( ip : string, i : number,array:pingDatos[]){ 
     let ping : string
     this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
-      ping = resp.container.status
+      ping = resp.container.time
       try{
-      array[i].ip = ping;
+      array[i].ping = ping;
+      console.log(array[i].ping);
+      
       }catch(Exception){}
     })) 
   }

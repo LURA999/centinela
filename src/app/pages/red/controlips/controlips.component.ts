@@ -62,10 +62,7 @@ export class ControlipsComponent implements OnInit {
 
   async segmentosArray(){
     this.segmentos  = await lastValueFrom(this.segmentoService.llamarSegments())
-    this.segmentos = this.segmentos.container;
-    console.log(this.segmentos);
-    
-    
+    this.segmentos = this.segmentos.container;    
   }
 
  async ipServicios(){

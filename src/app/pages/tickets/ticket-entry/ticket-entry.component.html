@@ -144,18 +144,18 @@
                         Plan: {{datosServicio?.plan ? datosServicio?.plan : ""}}<br/>
                         Estatus: {{datosServicio?.estatus ? datosServicio?.estatus : ""}}<br/>
                         Ping radio: <br/>
-                        <div *ngFor="let i of pingRadio">
-                           {{i.nombre}}: {{i.ip}}
+                        <div *ngFor="let i of pingRadio; let o =index" class="device">
+                            {{i.ping}} ({{i.ip}})<div><div id="circuloRadio{{o}}" class="circulo"></div></div>
                         </div>
                         <br/>   
                         Ping router: <br/>
-                        <div *ngFor="let i of pingRouter">
-                            {{i.nombre}}: {{i.ip}}
+                        <div *ngFor="let i of pingRouter; let o =index" class="device">
+                            {{i.ping}} ({{i.ip}})<div><div id="circuloRadio{{o}}" class="circulo"></div></div>
                         </div>
                         <br/>
                         Ping otro: <br/>
-                        <div *ngFor="let i of pingOtro">
-                            {{i.nombre}}: {{i.ip}}
+                        <div *ngFor="let i of pingOtro; let o =index" class="device">
+                            {{i.ping}} ({{i.ip}})<div><div id="circuloOtro{{o}}" class="circulo"></div></div>
                         </div>
                         <br/>
                         Repetidora: <br/>
