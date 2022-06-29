@@ -162,8 +162,6 @@ export class TicketEntryComponent implements OnInit {
       } 
     }
 
-    
-  
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
@@ -287,7 +285,7 @@ export class TicketEntryComponent implements OnInit {
     let dialogRef  = this.dialog.open(SearchIdComponent,
       {data: {  },
       animation: { to: "bottom" },
-      height:"auto", width:"70%"
+      height:"auto", width:"40%"
      });
      this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{ 
      }

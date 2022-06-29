@@ -27,6 +27,7 @@ import { TableRouterComponent } from './table-router/table-router.component';
 import { MAT_TABS_CONFIG } from '@angular/material/tabs';
 import { InfoContactComponent } from './popup/info-contact/info-contact.component';
 import { EditAddressComponent } from './popup/edit-address/edit-address.component';
+import { GoogleMapsModule } from '@angular/google-maps'
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { EditAddressComponent } from './popup/edit-address/edit-address.componen
     CustomersRoutingModule,
     SharedModule,
     MatPaginatorModule,
+    GoogleMapsModule
   ],
   declarations: [
     CustomerListComponent,

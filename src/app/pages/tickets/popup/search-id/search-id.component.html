@@ -1,9 +1,35 @@
-<h2 mat-card-title>Buscar identificador</h2>
+<h2 mat-card-title align="center">Buscar identificador</h2>
 <mat-divider></mat-divider>
 <form>
     <mat-card-content class="mat-typography">
-        
+    <div>
+        <mat-form-field appearance="standard">
+            <mat-label>Nombre de la empresa</mat-label>
+            <input matInput placeholder="Nombre de la empresa">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="standard">
+            <mat-label>Razon social</mat-label>
+            <input matInput placeholder="Razon social">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="standard">
+            <mat-label>Nombre Servicio</mat-label>
+            <input matInput placeholder="Nombre servicio">
+        </mat-form-field>
+    </div>
+    <div class="buscar">
+        <button mat-raised-button color="primary">Buscar</button>
+    </div>
+    <h3>Identificadores</h3>
+    <div class="container identificadores">
+
+    </div>
+
     </mat-card-content>
+
     <mat-dialog-actions align="center">
         <button mat-button style="background-color:brown; color: white;"  mat-dialog-close>Cerrar</button>
         <button mat-button style="background-color:#3f51b5; color: white;" cdkFocusInitial >Buscar</button>
