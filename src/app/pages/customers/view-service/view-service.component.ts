@@ -73,7 +73,10 @@ export class ViewServiceComponent implements OnInit {
       }    
     }
 
+    title = 'Angular Google Maps Example';
 
+    lat = 13;
+    lng = 80;
   ngOnInit(): void {
 
   }

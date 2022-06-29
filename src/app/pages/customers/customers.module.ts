@@ -27,7 +27,7 @@ import { TableRouterComponent } from './table-router/table-router.component';
 import { MAT_TABS_CONFIG } from '@angular/material/tabs';
 import { InfoContactComponent } from './popup/info-contact/info-contact.component';
 import { EditAddressComponent } from './popup/edit-address/edit-address.component';
-import { GoogleMapsModule } from '@angular/google-maps'
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   imports: [
@@ -36,7 +36,9 @@ import { GoogleMapsModule } from '@angular/google-maps'
     CustomersRoutingModule,
     SharedModule,
     MatPaginatorModule,
-    GoogleMapsModule
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDfFAkWzzr-lI4RC7lPUvxDKWenYUQT32I'
+    })
   ],
   declarations: [
     CustomerListComponent,
