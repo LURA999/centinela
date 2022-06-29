@@ -26,7 +26,7 @@ export class IpService {
     }
 
     selectIpOneEquipament(id : number,identificador: string, condicion : number,contador: number){
-        return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id)
+        return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+"    &contador="+contador+"&condicion="+condicion+"&iddevice="+id)
     }
 
     selectIpOneRouter(id : number,identificador: string, condicion : number,contador: number){

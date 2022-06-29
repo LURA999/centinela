@@ -19,12 +19,19 @@ import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatSuffix } from '@angular/material/form-field';
+import { IpService } from 'src/app/core/services/ip.service';
 
 interface datosServicio {
   cliente : string,
   servicio : string,
   plan : string,
   estatus: string
+}
+
+interface pingDatos {
+  idDevice : number;
+  nombre : string;
+  ip : string;
 }
 
 interface datosContacto {
@@ -57,6 +64,10 @@ export class TicketEntryComponent implements OnInit {
   filteredOptions: Observable<string[]> | undefined;
   filteredContacts: Observable<any[]> | undefined;
 
+  pingOtro : pingDatos[] = []
+  pingRouter : pingDatos[] = []
+  pingRadio : pingDatos[] = []
+
   options: string[] = [];
   contactoControl = new FormControl('');
   $sub = new Subscription()
@@ -82,7 +93,7 @@ export class TicketEntryComponent implements OnInit {
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
-  , private notificationService: NotificationService, private renderer : Renderer2) {  }
+  , private notificationService: NotificationService, private renderer : Renderer2, private ipService : IpService) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
@@ -120,8 +131,6 @@ export class TicketEntryComponent implements OnInit {
   }
 
   destruirButton(button:any,id:number){
-    console.log(id);
-    
     this.renderer.removeChild(document.querySelector("#mat-group-suffix"),document.getElementById(button.id))
   }
 
@@ -196,39 +205,78 @@ export class TicketEntryComponent implements OnInit {
      } 
     })
 
+    this.pingOtro = []
+    this.pingRadio = []
+    this.pingRouter = []
+
     /**Pidiendo datos para los pings */
-    this.deviceService.todosRadios(id,contador).subscribe((resp:responseService) =>{
+    this.ipService.selectIpOneEquipament(0,id,3,contador).subscribe(async(resp:responseService) =>{
+      console.log(resp);
+      
       if(resp.status === "not found"){
-
+        console.log("No encontro");
       }else{
+        for (let i =0; i<resp.container.length; i++) {
+          this.monitoreoPing(resp.container[i].ip, i,this.pingOtro)  
+          this.pingOtro.push( {
+            idDevice :resp.container[i].idOtro,
+            nombre : resp.container[i].nombre,
+            ip :  resp.container[i].ip
+          })
+        }
+        
       }
       
     })
-    this.deviceService.todosRouter(id,contador,1).subscribe((resp:responseService) =>{
+    this.ipService.selectIpOneRouter(0,id,3,contador).subscribe(async(resp:responseService) =>{
+      console.log(resp);
       if(resp.status === "not found"){
-
+        console.log("No encontro");
       }else{
+        for (let i =0; i<resp.container.length; i++) {
+          this.monitoreoPing(resp.container[i].ip, i,this.pingRouter)  
+            this.pingRouter.push( {
+              idDevice :resp.container[i].idRouter,
+              nombre : resp.container[i].nombre,
+              ip :  resp.container[i].ip
+          })
+        }
       }
-      
+    
     })
-    this.deviceService.todosOtros(id,contador,1).subscribe((resp:responseService)=>{
+    this.deviceService.todosRadios(id,contador).subscribe(async (resp:responseService)=>{
+      console.log(resp);
       if(resp.status === "not found"){
-
-      }else{
+        console.log("No hay radios");
+      }else{  
+        for (let i =0; i<resp.container.length; i++) {       
+          this.monitoreoPing(resp.container[i].ip, i,this.pingRadio)  
+            this.pingRadio.push( {
+              idDevice :resp.container[i].idRadio,
+              nombre : resp.container[i].radio,
+              ip :  resp.container[i].ip
+          })
+        }
       }      
     })
 
   }
-
+  async monitoreoPing( ip : string, i : number,array:pingDatos[]){ 
+    let ping : string
+    this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
+      ping = resp.container.status
+      try{
+      array[i].ip = ping;
+      }catch(Exception){}
+    })) 
+  }
 
   async llamarAsuntos(){
     await lastValueFrom(this.asuntoService.llamarAsunto()).then((resp :any)=>{
       this.asuntosArray = resp.container;
-      
     });
   }
   
-
   abrirBuscadosIdentificador(){
     let dialogRef  = this.dialog.open(SearchIdComponent,
       {data: {  },
@@ -263,10 +311,7 @@ export class TicketEntryComponent implements OnInit {
       cdiv.innerHTML = datos.toString()
       cdiv.id = "a"+this.idNuevo
       mat?.appendChild(cdiv)
-      
-      
-    }
-    
+    } 
   }
 
   agregarOtroContacto(){

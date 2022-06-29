@@ -176,7 +176,7 @@ async cargarInicio(){
   }
 
    async monitoreoPing( ip : string, i : number){ 
-    this.$sub.add(await this.ipService.ping(ip).subscribe((resp:any) => {
+    this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
       this.ping = resp.container.status
       try{
       this.ELEMENT_DATA[i].ping = this.ping;
@@ -194,7 +194,7 @@ async cargarInicio(){
     if(this.segmentoFiltro1.length >0 && this.segmentoFiltro2.length > 0){
       if(clave.length > 0){
        let ipsFake :any = await lastValueFrom(this.ipService.selectIpParam(this.segmentoFiltro1, this.segmentoFiltro2, clave)) 
-        ipsFake = ipsFake.container;        
+        ipsFake = ipsFake.container;               
         this.mostrarSoloUnaFila(ipsFake);
         if(ipsFake.length > 0){
           this.comentario = true;
@@ -243,7 +243,7 @@ async cargarInicio(){
       {
         ip: ipsFake[0].ip,
         tipoip: this.repetheadMethods.tipo(ipsFake[0].tipo),
-        utilizado: this.ips[this.inicio].nombre,
+        utilizado: ipsFake[0].nombre,
         tipoequipo: "-----",
         ping: ipsFake[0].ping,
       });        
