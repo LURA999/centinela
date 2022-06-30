@@ -1,7 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ServiceService } from 'src/app/core/services/services.service';
@@ -74,18 +74,20 @@ export class ViewServiceComponent implements OnInit {
 
 
   ngOnInit(): void {
-     this.service.selectVistaServicio(this.identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{
+     this.mapaGoogle()
+
+  }
+
+  async mapaGoogle (){
+    await lastValueFrom(this.service.selectVistaServicio(this.identificador, Number(this.contadorIdenti),1)).then((resp:responseService)=>{
       this.servicio = resp.container
       this.ruta = "https://maps.google.com/maps?q="+(this.servicio[0].avenida+" "+this.servicio[0].numero
       +", "+this.servicio[0].colonia+", "+this.servicio[0].codigoPostal+" "+this.servicio[0].ciudad
       +", "+this.servicio[0].estado).replace(/\ /gi,'%20')+"&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-      const m = this.renderer.createElement("iframe")
-      const divp = document.querySelector("mapa")
-      this.renderer.appendChild(divp,m)
-      this.renderer.setStyle
-      this.load = true
+      this.load = true  
     })
-
+    const m = document.createElement("iframe")
+    m.src= this.ruta;
   }
 
   abrirMapaCoordendas(coordenadas : string){

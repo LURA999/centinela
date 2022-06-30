@@ -1,4 +1,4 @@
-import {  Component, ComponentRef, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import {  Component, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { lastValueFrom, Observable, startWith, map, Subscription } from 'rxjs';
@@ -12,13 +12,10 @@ import { SearchIdComponent } from '../popup/search-id/search-id.component';
 import { DeviceService } from 'src/app/core/services/device.service'; 
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { MatSelect } from '@angular/material/select';
-//import { NewContactComponent } from '../../customers/popup/new-contact/new-contact.component';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { NewContactComponent } from '../../red/popup/new-contact/new-contact.component';
-import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
-import { MatSuffix } from '@angular/material/form-field';
 import { IpService } from 'src/app/core/services/ip.service';
 
 interface datosServicio {
@@ -33,6 +30,7 @@ interface pingDatos {
   nombre : string;
   ip : string;
   ping:string;
+  color : string;
 }
 
 interface datosContacto {
@@ -151,6 +149,10 @@ export class TicketEntryComponent implements OnInit {
         plan : "",
         estatus: ""
        } 
+
+       this.pingOtro = []
+       this.pingRadio = []
+       this.pingRouter = []
       }else{
         this.options=[]
       }
@@ -208,7 +210,7 @@ export class TicketEntryComponent implements OnInit {
     this.pingRadio = []
     this.pingRouter = []
 
-    /**Pidiendo datos para los pings */
+    /**Pidiendo pings para los otros equipos*/
     this.ipService.selectIpOneEquipament(0,id,3,contador).subscribe(async(resp:responseService) =>{
       console.log(resp);
       
@@ -221,13 +223,16 @@ export class TicketEntryComponent implements OnInit {
             idDevice :resp.container[i].idOtro,
             nombre : resp.container[i].nombre,
             ip :  resp.container[i].ip,
-            ping:"cargando"
+            ping:"cargando",
+            color : ""
           })
         }
         
       }
       
     })
+
+    //pidiendo ping para routers
     this.ipService.selectIpOneRouter(0,id,3,contador).subscribe(async(resp:responseService) =>{
       console.log(resp);
       if(resp.status === "not found"){
@@ -239,12 +244,14 @@ export class TicketEntryComponent implements OnInit {
               idDevice :resp.container[i].idRouter,
               nombre : resp.container[i].nombre,
               ip :  resp.container[i].ip,
-              ping: "cargando"
+              ping: "cargando",
+              color : ""
           })
         }
       }
     
     })
+    //pidiendo ping para radios
     this.deviceService.todosRadios(id,contador).subscribe(async (resp:responseService)=>{
       console.log(resp);
       if(resp.status === "not found"){
@@ -256,7 +263,8 @@ export class TicketEntryComponent implements OnInit {
               idDevice :resp.container[i].idRadio,
               nombre : resp.container[i].radio,
               ip :  resp.container[i].ip,
-              ping:"cargando"
+              ping:"cargando",
+              color:""
           })
         }
       }      
@@ -269,7 +277,13 @@ export class TicketEntryComponent implements OnInit {
       ping = resp.container.time
       try{
       array[i].ping = ping;
-      console.log(array[i].ping);
+      if(Number(ping.replace(/[A-Za-z]+/,"")) <=40){
+        array[i].color = "green";
+      }else if(Number(ping.replace(/[A-Za-z]+/,"")) >40){
+        array[i].color = "orange";
+      }else{
+        array[i].color = "red";
+      }
       
       }catch(Exception){}
     })) 
