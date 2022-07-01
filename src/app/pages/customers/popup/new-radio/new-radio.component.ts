@@ -28,8 +28,9 @@ export class NewRadioComponent implements OnInit {
   ips : any [] = [];
   tipo : number =0
   newModel = new DeviceModel()
-  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
-  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
+    sepId : Array<string> = this.ruta.url.split("/")[4].split("-")
+  identificador :string = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
+  contadorIdenti :string = this.sepId[2];
   $sub = new Subscription()
   radioForm : FormGroup  = this.fb.group({
     device: [this.data.model.device ? this.data.model.device : '', Validators.required],

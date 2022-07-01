@@ -31,8 +31,8 @@ export class ViewServiceComponent implements OnInit {
   load : boolean = false;
   direccionMapa!: mapaDireccion;
   idCliente = this.activoRouter.snapshot.params["id"]
-  identificador :string = this.activoRouter.snapshot.params["identificador"].replace(/([0-9]{4})\S/,"");
-  contadorIdenti :string = this.activoRouter.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
+  identificador :string = this.activoRouter.snapshot.params["identificador"]
+  contadorIdenti :string = this.activoRouter.snapshot.params["identificador"].split("-")[2]
   servicio : any [] =[];
   metodo = new RepeteadMethods()
   ciudad:string | undefined;
@@ -81,8 +81,6 @@ export class ViewServiceComponent implements OnInit {
       +", "+this.servicio[0].estado).replace(/\ /gi,'%20')+"&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
       const m = this.renderer.createElement("iframe")
       const divp = document.querySelector("mapa")
-      this.renderer.appendChild(divp,m)
-      this.renderer.setStyle
       this.load = true
     })
 

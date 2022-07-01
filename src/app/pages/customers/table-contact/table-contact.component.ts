@@ -31,7 +31,8 @@ export class TableContactComponent implements OnInit {
   metodo = new RepeteadMethods();
   @Input ()hijoContact :string = ""
   id :number = Number(this.ruta.url.split("/")[3]);
-  identificador :string = this.rutaActiva.snapshot.params["identificador"];
+  sepId : Array<string> = []
+  identificador :string = "";
   contadorIdenti :string = ""
   contactos : Observable<any> | undefined;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -64,7 +65,9 @@ export class TableContactComponent implements OnInit {
     private notificationService: NotificationService,  private rol :RolService, private ruta : Router,private DataService : DataService
     , private services : ServiceService,private serviceAuth :AuthService) { 
       try{
-       this.contadorIdenti =  this.rutaActiva.snapshot.params["identificador"].replace(/[0-9]*[A-Za-z]/,"");
+        this.sepId  = this.rutaActiva.snapshot.params["identificador"].split("-")
+        this.identificador = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
+       this.contadorIdenti =  this.sepId[2];
       }catch(Exception){  }
      }
 

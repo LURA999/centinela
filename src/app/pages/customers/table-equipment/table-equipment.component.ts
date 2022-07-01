@@ -26,9 +26,10 @@ export class TableEquipamentComponent implements OnInit {
   $sub = new Subscription()
   @ViewChild ("paginator") paginator2:any;
   @Input () tamanoTabla : number = 0
-  @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
-  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
+  @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort; 
+  sepId : Array<string> = this.ruta.url.split("/")[4].split("-")
+  identificador :string = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
+  contadorIdenti :string = this.sepId[2];
   modelOtro = new DeviceModel();
 
   IpSeleccionadas : Array<any[]>= []

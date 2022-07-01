@@ -122,25 +122,25 @@ export class TableServiceComponent implements OnInit {
     await this.llenarTabla()    
   }
 
-  async todasCiudades(){
-    this.$sub.add(await this.city.llamarCiudades().subscribe((resp:any) =>{
+   async todasCiudades(){
+    this.$sub.add( this.city.llamarCiudades().subscribe((resp:any) =>{
       this.arrayCiudades = resp.container      
     }));
   }
   async todasRS(){
-    this.$sub.add(await this.rs.llamarTodo(this.id).subscribe((resp:any) =>{
+    this.$sub.add( this.rs.llamarTodo(this.id).subscribe((resp:any) =>{
       this.arrayRS = resp.container
       
     }));
   }
   async todosPlan(){
-    this.$sub.add(await this.plan.llamarTodo().subscribe((resp:any) =>{
+    this.$sub.add( this.plan.llamarTodo().subscribe((resp:any) =>{
       this.arrayPlan = resp.container
     }));
   }
 
   async ultimoID() {
-    this.$sub.add(await this.serviceService.llamarService_maxId().subscribe((resp:responseService)=>{
+    this.$sub.add( this.serviceService.llamarService_maxId().subscribe((resp:responseService)=>{
       try{
       this.ultimoId = resp.container[0].idServicio
       }catch(Exception){}
@@ -150,10 +150,10 @@ export class TableServiceComponent implements OnInit {
   async llenarTabla(){
     this.cargando = false;             
     this.$sub.add(this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{               
-    console.log(resp);
       if(resp.container.length !=0){
       this.mayorNumero = resp.container[0].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
+        let separandoIdenti : Array<string> = resp.container[i].identificador.split("-")
         this.ELEMENT_DATA.push({
           id:resp.container[i].idServicio,
           nombre:resp.container[i].servicio,
@@ -170,7 +170,7 @@ export class TableServiceComponent implements OnInit {
           cveEstatus :  resp.container[i].estatus,
           cvePlan :  resp.container[i].cvePlan,
           cveCiudad :  resp.container[i].cveCiudad,
-          identificador:((resp.container[i].identificador)+""+(resp.container[i].contador.toString().padStart(5,"0"))),
+          identificador:((separandoIdenti[0])+"-"+(separandoIdenti[1])+"-"+(resp.container[i].contador.toString().padStart(4,"0"))+"-"+(separandoIdenti[2])),
           ciudad:resp.container[i].ciudad,
           servicio:resp.container[i].servicio,
           plan:resp.container[i].plan,
@@ -292,7 +292,7 @@ export class TableServiceComponent implements OnInit {
  async insertar(){      
     let dialogRef  = this.dialog.open(NewServiceComponent,
       {data: {opc: false,idEmpresa: this.id,
-        Empresa: this.nombreEmpresa[0] ,idNuevo: this.mayorNumero, arrayCiudad: 
+        Empresa: this.nombreEmpresa.slice(0,3) ,idNuevo: this.mayorNumero, arrayCiudad: 
         this.arrayCiudades, arrayRS: this.arrayRS, arrayPlan:this.arrayPlan, salir : true},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
@@ -306,24 +306,24 @@ export class TableServiceComponent implements OnInit {
       if(result.id > 0  ){
         this.ELEMENT_DATA.unshift({
           id: result.id,
-          nombre:result.nombre,
-          servicio:result.nombre,
-          rs:result.rs, 
-          ciudad:result.ciudadNombre, 
+          nombre: result.nombre,
+          servicio: result.nombre,
+          rs: result.rs, 
+          ciudad: result.ciudadNombre, 
           identificador: result.identificador, 
           estatus: this.metodo.estatus(result.cveEstatus),
           cveEstatus : result.cveEstatus,
           idRazonSocial : result.idRazonSocial,
-          latitud :  result.latitud,
-          longitud :  result.longitud,
-          dominio :  result.dominio,
-          estado :  result.estado,
-          codigoPostal :  result.codigoPostal,
-          colonia :  result.colonia,
-          avenida :  result.avenida,
-          numero :  result.numero,
-          cvePlan : result.cvePlan,
-          cveCiudad : result.cveCiudad,
+          latitud: result.latitud,
+          longitud: result.longitud,
+          dominio: result.dominio,
+          estado: result.estado,
+          codigoPostal: result.codigoPostal,
+          colonia: result.colonia,
+          avenida: result.avenida,
+          numero: result.numero,
+          cvePlan: result.cvePlan,
+          cveCiudad: result.cveCiudad,
           plan:result.plan
         });
           
