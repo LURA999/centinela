@@ -1,13 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import {  lastValueFrom, Observable, Observer, OperatorFunction, Subscription } from 'rxjs';
-import { startWith,map, filter } from 'rxjs/operators';
+import {  lastValueFrom, Observable, Observer, Subscription } from 'rxjs';
+import { startWith,map } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControl } from '@angular/forms';
 import { SearchService } from 'src/app/core/services/search.service';
-import { splitAtColon } from '@angular/compiler/src/util';
 import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
 

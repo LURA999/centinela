@@ -7,7 +7,6 @@ import { lastValueFrom, Observable, Subscription } from 'rxjs';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { DataService } from 'src/app/core/services/data.service';
-import { MatButton } from '@angular/material/button';
 
 
 @Component({
@@ -100,10 +99,10 @@ export class CustomerCompanyComponent implements OnInit {
 
   async datosCliente() {
     try{
-    this.$sub.add(await this.serviceCustomer.buscarCliente(this.id).subscribe((resp : responseService) =>{
+    lastValueFrom(this.serviceCustomer.buscarCliente(this.id)).then((resp : responseService) =>{
       this.datos = resp.container[0];
       this.load = true;
-    }))
+    })
   }catch(Exception){}
   }
 

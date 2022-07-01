@@ -27,8 +27,9 @@ export class TableRadioComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-  identificador :string = this.ruta.url.split("/")[4].replace(/([0-9]{4})\S/,"");
-  contadorIdenti :string = this.ruta.url.split("/")[4].replace(/[0-9]*[A-Za-z]/,"");
+    sepId : Array<string> = this.ruta.url.split("/")[4].split("-")
+  identificador :string = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
+  contadorIdenti :string = this.sepId[2];
   metodo  = new RepeteadMethods();
   modelRadio = new DeviceModel();
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -39,8 +40,7 @@ export class TableRadioComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-   this.llenarTabla()
-    
+   this.llenarTabla()    
    this.$sub.add(this.DataService.open.subscribe(res => {
     if(res =="equipoAgregar"){
       this.insertar()

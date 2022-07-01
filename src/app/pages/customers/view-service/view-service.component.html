@@ -36,7 +36,7 @@
                             Dominio:&nbsp;{{servicio[0].dominio}}
                         </div >
                         <div class="id col">
-                            ID:&nbsp;{{identificador+contadorIdenti}}
+                            ID:&nbsp;{{identificador}}
                         </div>
                     </div>
                 </mat-card-content>
@@ -104,11 +104,9 @@
                 </mat-card-header>
                 
                 <mat-card-content class="contenidoDireccion">
-                    <div id="mapaGoogle">
+                    <div id="mapa">
 
                     </div>
-                   <!-- <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
-                    [src]="ruta"></iframe>-->
 
                     <div class="direccionDetalle">
                     Ciudad:&nbsp;{{ciudad?ciudad:servicio[0].ciudad}}<br>

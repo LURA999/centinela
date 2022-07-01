@@ -32,7 +32,7 @@ export class NewServiceComponent implements OnInit {
   private logService:LogService) { }
 
   ngOnInit(): void {
-     this.ultimoIDFalso()
+     
      this.servicioModelAux.nombre = this.data.servicio;
      this.servicioModelAux.idRazonSocial = this.data.idRazonSocial;
      this.servicioModelAux.cveCiudad = this.data.cveCiudad;
@@ -49,20 +49,21 @@ export class NewServiceComponent implements OnInit {
     
   }
 
-  async ultimoIDFalso() { 
+  async ultimoIDFalso(abv:string) { 
     try{
-    this.$sub.add( this.service.llamarService_maxIdFalso(this.data.idEmpresa+""+this.data.Empresa[0]).subscribe((resp:responseService)=>{
+      
+    await lastValueFrom(this.service.llamarService_maxIdFalso(this.data.Empresa+"-"+ abv+"-")).then((resp:responseService)=>{
       try{
-      this.ultimoIdFalso = resp.container[0].contador      
+      this.serviceM.contador = Number(resp.container.length==0?0:resp.container[0].contador)+1;
       }catch(Exception){}
-    }))
+    })
   }catch(Exception){}
   }
 
- async crearServicio(nombre : string,selectRS : number,selectCiudad : number,latitud : string, longitud : string
+ async crearServicio(nombre : string,selectRS : number,selectCiudad : string,latitud : string, longitud : string
   ,estado :string,avenida:string , codigoPostal:string,numero:string, colonia:string, dominio : string, selectEstatus : number, selectPlan : number){  
     this.serviceM.nombre = nombre;
-    this.serviceM.cveCiudad = selectCiudad;
+    this.serviceM.cveCiudad = Number(selectCiudad.split("-")[0]);
     this.serviceM.ciudadNombre = document.getElementById("selectCiudad")?.innerText+"";
     this.serviceM.latitud = latitud;
     this.serviceM.longitud = longitud;
@@ -81,34 +82,20 @@ export class NewServiceComponent implements OnInit {
     this.logModel.cveCliente =  Number(this.ruta.url.split("/")[3]);
     this.logModel.cve=this.serviceM.identificador;
     if(this.data.opc == false){   
-      let campos :string =""
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 
         && longitud.length > 0 && estado.length > 0 && avenida.length > 0 
         && codigoPostal.length > 0 && numero.length > 0 &&colonia.length > 0 && dominio.length > 0 
         && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){                
-   /* this.servicioModelAux.nombre = this.data.servicio;
-      this.servicioModelAux.idRazonSocial = this.data.idRazonSocial;
-      this.servicioModelAux.cveCiudad = this.data.cveCiudad;
-      this.servicioModelAux.estado = this.data.estado;
-      this.servicioModelAux.latitud = this.data.latitud;
-      this.servicioModelAux.longitud = this.data.longitud;
-      this.servicioModelAux.codigoPostal = this.data.codigoPostal;
-      this.servicioModelAux.avenida = this.data.avenida;
-      this.servicioModelAux.numero = this.data.numero;
-      this.servicioModelAux.colonia = this.data.colonia;
-      this.servicioModelAux.cvePlan = this.data.cvePlan;
-      this.servicioModelAux.dominio = this.data.dominio;
-      this.servicioModelAux.cveEstatus = this.data.cveEstatus;    */
-          
-          this.serviceM.identificador = ((this.data.idEmpresa+""+this.data.Empresa)+""+((Number(this.ultimoIdFalso)+1).toString().padStart(5,"0")))
-          this.serviceM.identificador2 = (this.data.idEmpresa+""+this.data.Empresa);
-          this.serviceM.id = Number(this.data.idNuevo)+1;
-          this.serviceM.contador = Number(this.ultimoIdFalso)+1;
-          this.logModel.tipo[0]=1;
-          this.logModel.cve = this.serviceM.identificador 
-         await lastValueFrom(this.service.insertService(this.serviceM));
-         await lastValueFrom(this.logService.insertLog(this.logModel,2))
-          this.dialogRef.close(this.serviceM)
+        this.serviceM.identificador2 = this.data.Empresa+"-"+selectCiudad.split("-")[1]+"-"+ this.serviceM.plan;
+        /**Solicitamos el ultimo id del servicio, respecitvo a la ciudad y empresa */
+        await this.ultimoIDFalso(selectCiudad.split("-")[1])
+        /**Insertamos todo el modal ya listo */
+        await lastValueFrom(this.service.insertService(this.serviceM));
+        /**Insertamos el registro de esta actividad, con sus respectivas variables*/
+        this.logModel.tipo[0]=1;
+        this.logModel.cve = this.data.Empresa+"-"+selectCiudad.split("-")[1]+"-"+this.serviceM.contador.toString().padStart(4,"0")+"-"+ this.serviceM.plan
+        await lastValueFrom(this.logService.insertLog(this.logModel,2))
+        this.dialogRef.close(this.serviceM)
         }else{
           alert("Llene todos los campos, por favor")
         }
