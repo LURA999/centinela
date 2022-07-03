@@ -78,9 +78,7 @@ export class ContactService {
 
 
   /**Regrese todos los servicios de un contacto */
-  selectServicioPorContacto(identificador:string, idcontacto:number,condicion : number){
-    console.log(identificador, idcontacto,condicion);
-    
+  selectServicioPorContacto(identificador:string, idcontacto:number,condicion : number){   
     return this.http.get<responseService>(this.local+"Services/contacts.php?identificador="+identificador+"&idContacto="+idcontacto+"&condicion="+condicion);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { lastValueFrom } from 'rxjs';
 import { ServiceService } from 'src/app/core/services/services.service';
@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { LogService } from 'src/app/core/services/log.service';
 import { log_clienteEmpresa } from 'src/app/models/log_clienteEmpresa.model';
 import { Router } from '@angular/router';
+import { MatSelect } from '@angular/material/select';
 
 
 @Component({
@@ -25,8 +26,7 @@ export class NewServiceComponent implements OnInit {
   ultimoIdFalso :number = 0
   id :string = this.ruta.url.split("/")[3];
   modeloGuardado  : any;
-
-
+   @ViewChild("selectCiudad") selectCiudad : MatSelect | undefined
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private service : ServiceService,
   public dialogRef: MatDialogRef<NewServiceComponent>,private authService: AuthService, private ruta : Router,
   private logService:LogService) { }
@@ -51,8 +51,10 @@ export class NewServiceComponent implements OnInit {
 
   async ultimoIDFalso(abv:string) { 
     try{
+      console.log(this.data.Empresa+"-"+ abv+"-");
       
     await lastValueFrom(this.service.llamarService_maxIdFalso(this.data.Empresa+"-"+ abv+"-")).then((resp:responseService)=>{
+      console.log(resp)
       try{
       this.serviceM.contador = Number(resp.container.length==0?0:resp.container[0].contador)+1;
       }catch(Exception){}
@@ -63,7 +65,7 @@ export class NewServiceComponent implements OnInit {
  async crearServicio(nombre : string,selectRS : number,selectCiudad : string,latitud : string, longitud : string
   ,estado :string,avenida:string , codigoPostal:string,numero:string, colonia:string, dominio : string, selectEstatus : number, selectPlan : number){  
     this.serviceM.nombre = nombre;
-    this.serviceM.cveCiudad = Number(selectCiudad.split("-")[0]);
+    this.serviceM.cveCiudad = Number(selectCiudad);
     this.serviceM.ciudadNombre = document.getElementById("selectCiudad")?.innerText+"";
     this.serviceM.latitud = latitud;
     this.serviceM.longitud = longitud;
@@ -85,15 +87,16 @@ export class NewServiceComponent implements OnInit {
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 
         && longitud.length > 0 && estado.length > 0 && avenida.length > 0 
         && codigoPostal.length > 0 && numero.length > 0 &&colonia.length > 0 && dominio.length > 0 
-        && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){                
-        this.serviceM.identificador2 = this.data.Empresa+"-"+selectCiudad.split("-")[1]+"-"+ this.serviceM.plan;
-        /**Solicitamos el ultimo id del servicio, respecitvo a la ciudad y empresa */
-        await this.ultimoIDFalso(selectCiudad.split("-")[1])
+        && selectEstatus !=undefined &&  selectPlan !=undefined && selectRS != undefined){ 
+        this.serviceM.identificador2 = this.data.Empresa+"-"+selectCiudad+"-"+ this.serviceM.plan;
         /**Insertamos todo el modal ya listo */
+        /**dentro de esta insercion, acompletamos el identificador con la ciudad especificada y su contador especifico */
         await lastValueFrom(this.service.insertService(this.serviceM));
         /**Insertamos el registro de esta actividad, con sus respectivas variables*/
         this.logModel.tipo[0]=1;
-        this.logModel.cve = this.data.Empresa+"-"+selectCiudad.split("-")[1]+"-"+this.serviceM.contador.toString().padStart(4,"0")+"-"+ this.serviceM.plan
+        this.logModel.cve = this.data.Empresa+"-"+selectCiudad+"-"+this.serviceM.contador.toString().padStart(4,"0")+"-"+ this.serviceM.plan
+        console.log(this.logModel.cve);
+        
         await lastValueFrom(this.logService.insertLog(this.logModel,2))
         this.dialogRef.close(this.serviceM)
         }else{

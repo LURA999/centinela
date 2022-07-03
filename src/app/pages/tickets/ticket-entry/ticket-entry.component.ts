@@ -179,12 +179,14 @@ export class TicketEntryComponent implements OnInit {
   }
 
   opcionSeleccionada(identificador:string){
-    identificador = identificador.split(" ")[0].toString()
-    let id : string= identificador.replace(/([0-9]{4})\S/,"");
-    let contador = Number(identificador.replace(/[0-9]*[A-Za-z]/,""));
-    let idNum : number= Number(id.replace(/[A-Za-z]/,""))
+    identificador = identificador.split(" ")[0]
+
+    let sepId : Array<string> = identificador.split("-")
+    let id :string = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
+    let contador :number = Number(sepId[2]);
+    console.log(contador);
     
-    this.contactoService.llamar_Contactos_OnlyServicio(idNum,contador,2).subscribe((resp:responseService)=>{
+    this.contactoService.llamar_Contactos_OnlyServicio(1,contador,2).subscribe((resp:responseService)=>{
       this.contactoLista = resp.container
      /**Se llena el mat-autocomplete de los contactos */ 
       this.filteredContacts = this.myControlContacts.valueChanges.pipe(
@@ -273,14 +275,22 @@ export class TicketEntryComponent implements OnInit {
   }
   async monitoreoPing( ip : string, i : number,array:pingDatos[]){ 
     let ping : string
+    console.log(ip);
+    
     this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
       ping = resp.container.time
+      
       try{
-      array[i].ping = ping;
-      if(Number(ping.replace(/[A-Za-z]+/,"")) <=40){
-        array[i].color = "green";
-      }else if(Number(ping.replace(/[A-Za-z]+/,"")) >40){
-        array[i].color = "orange";
+        array[i].ping = ping; 
+        
+        if(resp.container.status == "200"){
+        if(Number(ping.replace(/[A-Za-z]+/,"")) <=40){
+          array[i].color = "green";
+        }else if(Number(ping.replace(/[A-Za-z]+/,"")) >40){
+          array[i].color = "orange";
+        }else{
+          array[i].color = "red";
+        }
       }else{
         array[i].color = "red";
       }

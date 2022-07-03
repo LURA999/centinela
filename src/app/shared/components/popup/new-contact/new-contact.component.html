@@ -61,7 +61,7 @@
             <mat-label>Servicio</mat-label>
             <mat-select id="selectServicio" formControlName="valueServicio" #servicio (selectionChange)="guardarServicio($event.value,1,'',$event)"  matNativeControl required>
               <mat-option value="0" disabled>Asigne un servicio</mat-option>
-              <mat-option *ngFor="let d of data.arrayTabla.length==0?data.arrayServicios:Servicios" [value]="d.idServicio" [id]="d.idServicio+'z'"  (onSelectionChange)="elementOption($event.source)">{{d.servicio}}</mat-option>
+             <mat-option *ngFor="let d of data.arrayTabla===0?data.arrayServicios:Servicios" [value]="d.idServicio" [id]="d.idServicio+'z'"  (onSelectionChange)="elementOption($event.source)">{{d.servicio}}</mat-option>
             </mat-select>
           </mat-form-field>
           
