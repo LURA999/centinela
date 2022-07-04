@@ -99,10 +99,10 @@ export class CustomerCompanyComponent implements OnInit {
 
   async datosCliente() {
     try{
-    this.$sub.add(this.serviceCustomer.buscarCliente(this.id).subscribe((resp : responseService) =>{
+    lastValueFrom(this.serviceCustomer.buscarCliente(this.id)).then((resp : responseService) =>{
       this.datos = resp.container[0];
       this.load = true;
-    }))
+    })
   }catch(Exception){}
   }
 

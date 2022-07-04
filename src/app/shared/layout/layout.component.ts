@@ -92,6 +92,8 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async servicio(id:string,event : any){
+        id = id.split(" ")[0]
+
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){

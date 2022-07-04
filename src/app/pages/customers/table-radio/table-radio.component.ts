@@ -27,7 +27,7 @@ export class TableRadioComponent implements OnInit {
   @ViewChild ("paginator") paginator2:any;
   @Input () tamanoTabla : number = 0
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-    sepId : Array<string> = this.ruta.url.split("/")[4].split("-")
+  sepId : Array<string> = this.ruta.url.split("/")[4].split("-")
   identificador :string = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
   contadorIdenti :string = this.sepId[2];
   metodo  = new RepeteadMethods();

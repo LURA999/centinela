@@ -20,7 +20,7 @@
                                     [matAutocomplete]="auto" #id>
                                 <mat-autocomplete (optionSelected)="opcionSeleccionada(id.value)" autoActiveFirstOption #auto="matAutocomplete" >
                                 <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
-                                    {{option}}
+                                    {{option.split(" ")[0]}} - {{option.split(" ")[1]}}
                                 </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>
@@ -143,17 +143,17 @@
                         Estatus: {{datosServicio?.estatus ? datosServicio?.estatus : ""}}<br/>
                         Ping radio: <br/>
                         <div *ngFor="let i of pingRadio; let o =index" class="device">
-                            {{i.ping}} ({{i.ip}})<div><div id="circuloRadio{{o}}" class="circulo"></div></div>
+                            {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
                         </div>
                         <br/>   
                         Ping router: <br/>
                         <div *ngFor="let i of pingRouter; let o =index" class="device">
-                            {{i.ping}} ({{i.ip}})<div><div id="circuloRadio{{o}}" class="circulo"></div></div>
+                            {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
                         </div>
                         <br/>
                         Ping otro: <br/>
                         <div *ngFor="let i of pingOtro; let o =index" class="device">
-                            {{i.ping}} ({{i.ip}})<div><div id="circuloOtro{{o}}" class="circulo"></div></div>
+                            {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
                         </div>
                         <br/>
                         Repetidora: <br/>

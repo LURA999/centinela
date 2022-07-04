@@ -20,7 +20,7 @@ export class NewClientComponent implements OnInit {
   crearCliente(select : number, empresa : string, nombre : string){
     
     if(this.data.opc == false){
-      if(empresa.length >0 && nombre.length > 0 && select !=undefined ){
+      if(empresa.length >0 && nombre.length > 0 && select !=undefined ){     
     lastValueFrom(this.customerService.insertaCliente({empresa:empresa, nombre: nombre,estatus:select}));
     this.dialogRef.close({empresa:empresa, nombre: nombre,estatus:select, mensaje:"Se pudo"})
       }else{

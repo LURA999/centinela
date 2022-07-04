@@ -67,7 +67,7 @@ export class NewContactComponent implements OnInit {
   @ViewChild('placeholder3', {read: ViewContainerRef, static: false}) placeholder3!: ViewContainerRef;
   @ViewChild('servicio') servicio!: MatSelect;
 
-  ngOnInit(): void {    
+  ngOnInit(): void {       
     this.maxid()
     this.load = true;
     this.editarTab()        
@@ -75,12 +75,12 @@ export class NewContactComponent implements OnInit {
       this.selectContacto = true
       this.selectService = false     
       try{
-      this.serviciosFaltantes(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
-      this.servicios(this.data.idContacto,this.id+this.data.arrayServicios[0].nombre[0])
+      this.serviciosFaltantes(this.data.idContacto,this.data.arrayServicios[0].identificador)
+      this.servicios(this.data.idContacto,this.data.arrayServicios[0].identificador)
       }catch(Exception){  }
-      }else{
-      this.serviciosFaltantes(this.data.idContacto,this.url.slice(0, 2))
-      this.servicios(this.data.idContacto,this.url.slice(0, 2))
+      }else{       
+      this.serviciosFaltantes(this.data.idContacto,this.data.arrayServicios[0].identificador)
+      this.servicios(this.data.idContacto,this.data.arrayServicios[0].identificador)
       this.selectService = true
     }
   }
@@ -279,7 +279,9 @@ export class NewContactComponent implements OnInit {
   }
 
   servicios(idContacto : number, identificador : string){
+  
     this.contactService.selectServicioPorContacto(identificador,idContacto,2).subscribe(async (resp:responseService)=>{
+    console.log(resp);    
       for await (const y of resp.container) {
         await this.guardarServicio(y.idServicio,2,y.servicio,y);
       }      
@@ -287,7 +289,9 @@ export class NewContactComponent implements OnInit {
   }
 
   serviciosFaltantes(idContacto : number, identificador : string){
+    
     this.contactService.selectServicioPorContacto(identificador,idContacto,1).subscribe(async (resp:responseService)=>{
+      console.log(resp);
       this.Servicios = resp.container               
     })
   }

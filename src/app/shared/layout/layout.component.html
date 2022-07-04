@@ -32,7 +32,7 @@
              [matAutocomplete]="auto" #id>
       <mat-autocomplete (optionSelected)="irServicio(id.value)"  autoActiveFirstOption #auto="matAutocomplete" >
         <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
-          {{option}}
+          {{option.split(" ")[0]}} - {{option.split(" ")[1]}}
         </mat-option>
       </mat-autocomplete>
       

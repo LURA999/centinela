@@ -32,7 +32,7 @@ export class TableContactComponent implements OnInit {
   @Input ()hijoContact :string = ""
   id :number = Number(this.ruta.url.split("/")[3]);
   sepId : Array<string> = []
-  identificador :string = "";
+  identificador :string | undefined;
   contadorIdenti :string = ""
   contactos : Observable<any> | undefined;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -253,7 +253,7 @@ export class TableContactComponent implements OnInit {
   editar(idContacto : number, nombre:string,apPaterno:string,apMaterno:string, correo:string, estatus:number,celular:number,telefono:number,puesto:string,idServicio:number,idRol:number, contrasena:string){
    
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno, arrayTabla:this.ELEMENT_DATA,
+      {data: {opc : true,arrayRol:this.arrayRol, arrayServicios:this.arrayServicios,idContacto:idContacto,nombre:nombre,apPaterno:apPaterno,apMaterno:apMaterno,arrayTabla:this.ELEMENT_DATA.length,
         correo:correo, estatus:estatus,celular:celular,puesto:puesto, telefono:telefono,idServicio:idServicio,idRol:idRol, contrasena : contrasena, opcTab : true },
       animation: { to: "bottom" },
       height:"auto", width:"70%",
@@ -301,7 +301,7 @@ export class TableContactComponent implements OnInit {
 
   insertar(){        
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios, arrayTabla:this.ELEMENT_DATA,
+      {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios,arrayTabla:this.ELEMENT_DATA.length,
         idCliente: this.id, salir : true, arrayContactos: this.arrayContactos, idServicioDefault:this.idServicioDefault },
       animation: { to: "bottom" },
       height:"auto", width:"70%"

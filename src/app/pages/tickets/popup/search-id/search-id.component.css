@@ -1,9 +1,12 @@
+/**Campos inputs*/
 mat-form-field {
     width: 100%;
 }
 
+/**Elementos para el formulario*/
+
 .container.identificadores {
-    border: 1px solid black;
+    border: 0.5px solid #ccc;
     height: 150px;
 }
 
