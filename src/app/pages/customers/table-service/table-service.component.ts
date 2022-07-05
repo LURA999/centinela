@@ -149,7 +149,9 @@ export class TableServiceComponent implements OnInit {
 
   async llenarTabla(){
     this.cargando = false;             
-    this.$sub.add(this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{               
+    this.$sub.add(this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{    
+      console.log(resp);
+                 
       if(resp.container.length !=0){
       this.mayorNumero = resp.container[0].idServicio;
       for (let i = 0; i < resp.container.length; i++) {

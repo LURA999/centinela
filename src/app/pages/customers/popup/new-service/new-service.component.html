@@ -26,7 +26,7 @@
         <mat-label>Ciudad</mat-label>
         <mat-select id="selectCiudad" matNativeControl [(value)]="data.cveCiudad"  required #selectCiudad>
           <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
-          <mat-option *ngFor="let dato of data.arrayCiudad" [value]="dato.idCiudad+'-'+dato.abreviado"> {{dato.nombre}}</mat-option>
+          <mat-option *ngFor="let dato of data.arrayCiudad" [value]="dato.idCiudad"> {{dato.nombre}}</mat-option>
         </mat-select>
       </mat-form-field>
       </div>

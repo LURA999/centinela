@@ -173,7 +173,7 @@ export class NewContactComponent implements OnInit {
 
 
   todosContactos(idServicio : number){
-    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,idServicio,4).subscribe(async (resp:responseService)=>{
+    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,idServicio,4,"").subscribe(async (resp:responseService)=>{
       this.data.arrayContactos = resp.container      
       this.cveContactos = []
       try{

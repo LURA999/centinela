@@ -186,7 +186,7 @@ export class TicketEntryComponent implements OnInit {
     let contador :number = Number(sepId[2]);
     console.log(contador);
     
-    this.contactoService.llamar_Contactos_OnlyServicio(1,contador,2).subscribe((resp:responseService)=>{
+    this.contactoService.llamar_Contactos_OnlyServicio(1,contador,2,id).subscribe((resp:responseService)=>{
       this.contactoLista = resp.container
      /**Se llena el mat-autocomplete de los contactos */ 
       this.filteredContacts = this.myControlContacts.valueChanges.pipe(

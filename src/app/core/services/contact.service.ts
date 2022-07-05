@@ -56,8 +56,8 @@ export class ContactService {
     return this.http.get<responseService>(this.local+"Services/contacts.php?cveCliente="+cve+"&identificador="+identificador);
   }
 
-  llamar_Contactos_OnlyServicio(cve : number, identificador : number, condicion:number){
-    return this.http.get<responseService>(this.local+"Services/contacts.php?cve="+cve+"&contador="+identificador+"&condicion="+condicion);
+  llamar_Contactos_OnlyServicio(cve : number, identificadorNum : number, condicion:number, identificadorCom : string){
+    return this.http.get<responseService>(this.local+"Services/contacts.php?cve="+cve+"&contador="+identificadorNum+"&condicion="+condicion+"&identificador="+identificadorCom);
   }
 
   insertServicios_tServicos(input :ContactServiceModel):Observable<responseService>{
