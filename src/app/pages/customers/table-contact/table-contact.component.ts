@@ -193,7 +193,7 @@ export class TableContactComponent implements OnInit {
   }
 
   async llenarTablaContactoServicio(){    
-    this.cargando = false;               
+    this.cargando = false;                   
     this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.contadorIdenti),2,this.identificador!).subscribe((resp:any) =>{   
       if(resp.container.length !=0){        
         this.mayorNumero = resp.container[0].idContacto;
@@ -350,7 +350,7 @@ export class TableContactComponent implements OnInit {
   }
 
   //Este lo que hace es traer los contactos que no estan en la vista-servicio 
-  llamarContactosSelect_detalles(){       
+  llamarContactosSelect_detalles(){           
     this.$sub.add(this.serviceContact.llamar_Contactos_OnlyServicio(this.id,Number(this.contadorIdenti),1,this.identificador!).subscribe((resp : responseService)=>{
       this.arrayContactos = resp.container            
     }))

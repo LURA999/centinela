@@ -74,7 +74,9 @@ export class ViewServiceComponent implements OnInit {
 
 
   ngOnInit(): void {
-     this.service.selectVistaServicio(this.identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{
+    let sepId : Array<string> = this.router.url.split("/")[4].split("-")
+  let identificador :string = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
+     this.service.selectVistaServicio(identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{
       this.servicio = resp.container
       this.ruta = "https://maps.google.com/maps?q="+(this.servicio[0].avenida+" "+this.servicio[0].numero
       +", "+this.servicio[0].colonia+", "+this.servicio[0].codigoPostal+" "+this.servicio[0].ciudad

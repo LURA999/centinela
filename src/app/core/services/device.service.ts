@@ -13,7 +13,7 @@ export class DeviceService {
   constructor(private http : HttpClient) { }
 
   local = environment.api;
-
+///////////radios
   todosRadios(identificador : string,contador: number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/radio.php?identificador="+identificador+"&contador="+contador);
   }
@@ -36,7 +36,7 @@ export class DeviceService {
   idMaxRadio(): Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/radio.php");
   }
-/////////////////////////////////////
+///////////////////////////////////// routers
   todosRouter(identificador : string,contador: number, condicion : number, id?:number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/router.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id);
   }
@@ -58,7 +58,7 @@ export class DeviceService {
   idMaxRotuer(): Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/router.php");
   }
-////////////////////////////////////////////
+//////////////////////////////////////////// otros dispositivos
   todosOtros(identificador : string,contador: number, condicion : number, id?:number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id);
   }

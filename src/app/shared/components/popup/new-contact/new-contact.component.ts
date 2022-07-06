@@ -41,6 +41,8 @@ export class NewContactComponent implements OnInit {
   load : boolean = false;
   url = this.ruta.url.split("/")[4]
   id :string = this.ruta.url.split("/")[3];
+  identificador :string = this.ruta.url.split("/")[4];
+
   selectServcioValue : number = 0
   serviciosGuardados : any [] =[]
   eliminarServicio : number = -1
@@ -73,14 +75,18 @@ export class NewContactComponent implements OnInit {
     this.editarTab()        
     if(this.url == "contact" ){
       this.selectContacto = true
-      this.selectService = false     
+      this.selectService = false    
+       
       try{
       this.serviciosFaltantes(this.data.idContacto,this.data.arrayServicios[0].identificador)
       this.servicios(this.data.idContacto,this.data.arrayServicios[0].identificador)
       }catch(Exception){  }
       }else{       
-      this.serviciosFaltantes(this.data.idContacto,this.data.arrayServicios[0].identificador)
-      this.servicios(this.data.idContacto,this.data.arrayServicios[0].identificador)
+      let split = this.identificador.split("-")    
+    
+       
+      this.serviciosFaltantes(this.data.idContacto,split[0]+"-"+split[1]+"-"+split[3])
+      this.servicios(this.data.idContacto,split[0]+"-"+split[1]+"-"+split[3])
       this.selectService = true
     }
   }
@@ -173,7 +179,9 @@ export class NewContactComponent implements OnInit {
 
 
   todosContactos(idServicio : number){
-    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,idServicio,4,"").subscribe(async (resp:responseService)=>{
+    let split = this.identificador.split("-") 
+    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,Number(split[2]),4
+      ,split[0]+"-"+split[1]+"-"+split[3]).subscribe(async (resp:responseService)=>{
       this.data.arrayContactos = resp.container      
       this.cveContactos = []
       try{
@@ -278,10 +286,8 @@ export class NewContactComponent implements OnInit {
     
   }
 
-  servicios(idContacto : number, identificador : string){
-  
+  servicios(idContacto : number, identificador : string){  
     this.contactService.selectServicioPorContacto(identificador,idContacto,2).subscribe(async (resp:responseService)=>{
-    console.log(resp);    
       for await (const y of resp.container) {
         await this.guardarServicio(y.idServicio,2,y.servicio,y);
       }      
@@ -289,9 +295,7 @@ export class NewContactComponent implements OnInit {
   }
 
   serviciosFaltantes(idContacto : number, identificador : string){
-    
     this.contactService.selectServicioPorContacto(identificador,idContacto,1).subscribe(async (resp:responseService)=>{
-      console.log(resp);
       this.Servicios = resp.container               
     })
   }

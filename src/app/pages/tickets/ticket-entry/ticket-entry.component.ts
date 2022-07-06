@@ -286,10 +286,8 @@ export class TicketEntryComponent implements OnInit {
         if(resp.container.status == "200"){
         if(Number(ping.replace(/[A-Za-z]+/,"")) <=40){
           array[i].color = "green";
-        }else if(Number(ping.replace(/[A-Za-z]+/,"")) >40){
-          array[i].color = "orange";
         }else{
-          array[i].color = "red";
+          array[i].color = "orange";
         }
       }else{
         array[i].color = "red";

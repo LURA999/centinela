@@ -130,6 +130,7 @@ export class NewEquipamentComponent implements OnInit {
       this.$sub.add(this.ipService.selectIp(arraySegmento[0], arraySegmento[1],1).subscribe(async (resp:responseService)=>{
         if(this.data.opc == true && this.ipsGuardadas.length > 0){
           let nuevoArray : any []=[];
+          //en este paso empezamos los ips seleccionadas con las ips que fueron llamadas de la peticion
           for await (const x of this.ipsGuardadas) {
             if(x.segmento === arraySegmento[0] + "-" + arraySegmento[1]){
               nuevoArray.push(x)
@@ -179,7 +180,7 @@ export class NewEquipamentComponent implements OnInit {
       if(this.idRepetidora == rep){
       this.cargarEditar();
       }
-    this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe( (resp:responseService)=>{
+    this.$sub.add (this.segmentoService.buscarSegmentoRepetidor(rep).subscribe( (resp:responseService)=>{      
       this.segmentos = resp.container;      
       this.indicesSegmentos = this.segmentos.length;
     }));
