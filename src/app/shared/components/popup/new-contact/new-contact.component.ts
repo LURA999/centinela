@@ -180,8 +180,8 @@ export class NewContactComponent implements OnInit {
 
   todosContactos(idServicio : number){
     let split = this.identificador.split("-") 
-    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,Number(split[2]),4
-      ,split[0]+"-"+split[1]+"-"+split[3]).subscribe(async (resp:responseService)=>{
+    this.contactService.llamar_Contactos_OnlyServicio(this.data.idCliente?this.data.idCliente:this.id,Number(split[2]),split[1]?4:5
+      ,split[1]?split[0]+"-"+split[1]+"-"+split[3]:idServicio.toString()).subscribe(async (resp:responseService)=>{
       this.data.arrayContactos = resp.container      
       this.cveContactos = []
       try{

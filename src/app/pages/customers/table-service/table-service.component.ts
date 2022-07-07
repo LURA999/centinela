@@ -96,9 +96,7 @@ export class TableServiceComponent implements OnInit {
   ngOnInit(): void {
     this.inicio();
     this.$sub.add(this.DataService.open.subscribe(res => {
-      if(res.palabraBuscar !=undefined){
-        console.log(res.palabraBusar);
-        
+      if(res.palabraBuscar !=undefined){        
         this.filtrar(res.palabraBuscar)
       }else{
         if(res.abrir ==true){
@@ -150,7 +148,6 @@ export class TableServiceComponent implements OnInit {
   async llenarTabla(){
     this.cargando = false;             
     this.$sub.add(this.serviceService.llamarTodo(this.id).subscribe((resp:responseService) =>{    
-      console.log(resp);
                  
       if(resp.container.length !=0){
       this.mayorNumero = resp.container[0].idServicio;

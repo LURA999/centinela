@@ -1,7 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ServiceService } from 'src/app/core/services/services.service';
@@ -76,17 +76,31 @@ export class ViewServiceComponent implements OnInit {
   ngOnInit(): void {
     let sepId : Array<string> = this.router.url.split("/")[4].split("-")
   let identificador :string = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
-     this.service.selectVistaServicio(identificador, Number(this.contadorIdenti),1).subscribe((resp:responseService)=>{
+    
+     lastValueFrom(this.service.selectVistaServicio(identificador, Number(this.contadorIdenti),1)).then((resp:responseService)=>{
       this.servicio = resp.container
-      this.ruta = "https://maps.google.com/maps?q="+(this.servicio[0].avenida+" "+this.servicio[0].numero
-      +", "+this.servicio[0].colonia+", "+this.servicio[0].codigoPostal+" "+this.servicio[0].ciudad
-      +", "+this.servicio[0].estado).replace(/\ /gi,'%20')+"&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-      const m = this.renderer.createElement("iframe")
-      const divp = document.querySelector("mapa")
       this.load = true
+      this.crearMapa()
     })
-
   }
+
+  crearMapa(){
+     setTimeout( () =>{
+    this.ruta = "https://maps.google.com/maps?q="+(this.servicio[0].avenida+" "+this.servicio[0].numero
+    +", "+this.servicio[0].colonia+", "+this.servicio[0].codigoPostal+" "+this.servicio[0].ciudad
+    +", "+this.servicio[0].estado).replace(/\ /gi,'%20')+"&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+    let m = this.renderer.createElement("iframe")
+    let divp = document.getElementById("mapa")
+    divp?.appendChild(m) 
+     },100)
+     console.log("https://maps.google.com/maps?q="+(this.servicio[0].avenida+" "+this.servicio[0].numero
+     +", "+this.servicio[0].colonia+", "+this.servicio[0].codigoPostal+" "+this.servicio[0].ciudad
+     +", "+this.servicio[0].estado).replace(/\ /gi,'%20')+"&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed");
+     
+  }
+
+  
+  
 
   abrirMapaCoordendas(coordenadas : string){
     window.open(("https://www.google.com/maps/place/"+coordenadas).replace(/\ /gi,'+'), "_blank");
@@ -94,6 +108,7 @@ export class ViewServiceComponent implements OnInit {
   
   abrirMapaDireccion(avenida: string, numero: string, colonia: string, codigoPostal: string, 
     ciudad: string,  estado: string){
+
   /* if(codigoPostal == undefined){
    // window.open("https://www.google.com/maps/place/av.+"+direccionArray[0].replace(/\ /gi,'+').replace("#","")+",+"+direccionArray[1].replace(/\ /gi,'+')+",+"+direccionArray[2].replace(/\ /gi,'+')+","+direccionArray[3].replace(/\ /gi,'+'), "_blank");
    }else{*/

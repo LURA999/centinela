@@ -18,7 +18,7 @@ import { CustomerService } from '../../../../core/services/customer.service';
 })
 export class DeleteComponent implements OnInit {
   id :number = Number(this.ruta.url.split("/")[3]);
-
+  mensaje : string = ""
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, 
   private servicioCliente : CustomerService, private serviceService : ServiceService,public dialogRef: MatDialogRef<DeleteComponent>
   ,private contact : ContactService, private rs : RsService, private deviceService:DeviceService, private authService:AuthService,
@@ -26,7 +26,31 @@ export class DeleteComponent implements OnInit {
   $sub = new Subscription();
   logModel = new log_clienteEmpresa();
   ngOnInit(): void {
-
+    this.mensaje = "¿Estas seguro que desea eliminarlo?";
+    switch(Number(this.data.opc)){
+      case 0:
+        break;
+      case 1:
+      
+        break;
+      case 2:
+        break;
+      case 3: 
+      this.mensaje = "Si elimina esta razon social, los servicios relacionados se eliminaran tambien";       
+        break;
+      case 4:
+        break;  
+      case 5:
+        break;
+      case 6:
+        break;  
+      case 7:        
+        break;
+      case 8:
+        break;
+      case 9:
+        break;
+    }
   }
   
 
@@ -36,7 +60,6 @@ export class DeleteComponent implements OnInit {
     this.logModel.cveCliente = this.id;
     this.logModel.tipo[0] = 2;
     this.logModel.cve = this.data.idCliente;
-
     switch(Number(this.data.opc)){
       case 0:
         await lastValueFrom(this.servicioCliente.eliminarFalso(this.data.idCliente));

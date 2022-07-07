@@ -326,7 +326,7 @@ export class NewEquipamentComponent implements OnInit {
         this._renderer.removeAttribute(box._element.nativeElement,"hidden")
       }else{
         this.ipsGuardadas.unshift(box)
-        this.tabChangeSegmento();
+        this.tabChangeSegmento(); 
       }
       let array = this.IpSeleccionadas[index].toString().split(",");
       this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
