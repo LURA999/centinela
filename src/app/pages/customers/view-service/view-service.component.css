@@ -74,15 +74,13 @@ mat-card {
 .mapa #verMapa {
     margin: 5px;
 }
+
 .direccionDetalle {
     width: 60%;
 }
 
-.contenidoDireccion{
-    display: flex; 
-    justify-content: space-between;
-    padding-right: 10%;
-
+#mapa {
+    margin: 10px;
 }
 
 /** quitar efectos del nav**/
