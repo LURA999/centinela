@@ -61,7 +61,7 @@ export class TicketEntryComponent implements OnInit {
   myControl = new FormControl('');
   myControlContacts =new FormControl("")
   filteredOptions: Observable<string[]> | undefined;
-  filteredContacts: Observable<any[]> | undefined;
+  filteredContacts: Observable<datosContacto[]> | undefined;
 
   pingOtro : pingDatos[] = []
   pingRouter : pingDatos[] = []

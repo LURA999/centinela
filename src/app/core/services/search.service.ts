@@ -26,5 +26,13 @@ export class SearchService {
       searchTicketEntry(variable : string):Observable<responseService>{
         return this.http.get<responseService>(this.local+"Search/searchTicketEntry.php?var="+variable)
       }
-      
+
+
+      //Para el componente searchId   
+      buscarMasIdentificadores(variable : string, condicion : number) :Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Search/searchIdentifier.php?var="+variable+"&cond="+condicion)
+      }
+      buscarNombres(variable : string, condicion : number) :Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Search/searchIdentifier.php?name="+variable+"&cond="+condicion)
+      }
 } 

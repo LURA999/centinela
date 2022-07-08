@@ -6,15 +6,14 @@
         <mat-form-field appearance="legacy">
             <mat-label>Nombre de la empresa</mat-label>
             <input type="text"
-            aria-label="Number"
             matInput
             [formControl]="controlEmpresa"
-            (keyup)="buscarEmpresa(id.value,$event)"
-            [matAutocomplete]="auto" #id
+            (keyup)="buscarEmpresa(idNombre.value,$event)"
+            [matAutocomplete]="auto1" #idNombre
              placeholder="Nombre de la empresa"  formControlName="empresa">
-             <mat-autocomplete (optionSelected)="empresaSeleccionada(id.value)" autoActiveFirstOption #auto="matAutocomplete" >
-                <mat-option  *ngFor="let opcion of filtradoEmpresa  | async" [value]="opcion" >
-
+             <mat-autocomplete (optionSelected)="empresaSeleccionada(idNombre.value)" autoActiveFirstOption #auto1="matAutocomplete" >
+                <mat-option  *ngFor="let i of filtradoEmpresa|async" [value]="i.nombre" >
+                    {{i.nombre}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
@@ -23,15 +22,14 @@
         <mat-form-field appearance="legacy" >
             <mat-label>Razon social</mat-label>
             <input type="text"
-            aria-label="Number"
             matInput
             [formControl]="controlRazon"
-            (keyup)="buscarRazon(id.value,$event)"
-            [matAutocomplete]="auto" #id
+            (keyup)="buscarRazon(idRazon.value,$event)"
+            [matAutocomplete]="auto2" #idRazon
             matInput placeholder="Razon social" formControlName="razon">
-            <mat-autocomplete (optionSelected)="razonSeleccionada(id.value)" autoActiveFirstOption #auto="matAutocomplete" >
-                <mat-option  *ngFor="let opcion of filtradoRazon  | async" [value]="opcion" >
-
+            <mat-autocomplete (optionSelected)="razonSeleccionada(idRazon.value)" autoActiveFirstOption #auto2="matAutocomplete" >
+                <mat-option  *ngFor="let i of filtradoRazon | async" [value]="i.nombre" >
+                    {{i.nombre}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
@@ -40,14 +38,13 @@
         <mat-form-field appearance="standard">
             <mat-label>Nombre Servicio</mat-label>
             <input type="text"
-            aria-label="Number"
             matInput
             [formControl]="controlServicio"
-            (keyup)="buscarServicio(id.value,$event)"
-            [matAutocomplete]="auto" #id matInput placeholder="Nombre servicio" formControlName="social">
-            <mat-autocomplete (optionSelected)="servicioSeleccionada(id.value)" autoActiveFirstOption #auto="matAutocomplete" >
-                <mat-option  *ngFor="let opcion of filtradoServicio  | async" [value]="opcion" >
-
+            (keyup)="buscarServicio(idServicio.value,$event)"
+            [matAutocomplete]="auto3" #idServicio matInput placeholder="Nombre servicio" formControlName="social">
+            <mat-autocomplete (optionSelected)="servicioSeleccionada(idServicio.value)" autoActiveFirstOption #auto3="matAutocomplete" >
+                <mat-option  *ngFor="let i of filtradoServicio | async" [value]="i.nombre" >
+                    {{i.nombre}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
