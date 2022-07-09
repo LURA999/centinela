@@ -6,7 +6,7 @@
 <div class="container row" >
     <div class="col">
         <h2>ID: &nbsp; 
-            <ng-container *ngIf="data.opc == true; else elseTemplate">
+            <ng-container *ngIf="data.opc === true; else elseTemplate">
                 {{this.data.model.idDevice}}
             </ng-container>
             <ng-template #elseTemplate>
@@ -60,7 +60,7 @@
         <br>
         <mat-form-field    appearance="fill" >
             <mat-label>Segmento</mat-label>
-            <mat-select id="segmento" (closed)="tabChangeSegmento()"  [disabled]="segmentos.length ==0" formControlName="idSegmento" >
+            <mat-select id="segmento" (closed)="tabChangeSegmento()"  [disabled]="segmentos.length ===0" formControlName="idSegmento" >
                 <mat-option  selected disabled value="0">Seleccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento" >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
@@ -68,11 +68,11 @@
         <br>
             <mat-form-field   appearance="fill" >
                 <mat-label>Ip 
-                    <ng-container *ngIf="data.opc == true;">
+                    <ng-container *ngIf="data.opc === true;">
                         - {{this.data.model.ip}}
                     </ng-container>
                 </mat-label>
-                <mat-select id="ip" [(ngModel)]="ipValue" [disabled]="ips.length == 0" formControlName="idIp">
+                <mat-select id="ip" [(ngModel)]="ipValue" [disabled]="ips.length === 0" formControlName="idIp">
                     <mat-option  selected disabled value="0">Seleccione una ip</mat-option>
                     <mat-option *ngFor="let p of ips" [value]="p.idIp">{{p.ip}}</mat-option>
                 </mat-select>
@@ -109,7 +109,7 @@
 <mat-dialog-actions align="center">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
     <button mat-button style="background-color:#3f51b5; color: white;" cdkFocusInitial (click)="enviar()">
-        <ng-container *ngIf="data.opc == false; else elseTemplate2">
+        <ng-container *ngIf="data.opc === false; else elseTemplate2">
             Crear
         </ng-container>
         <ng-template #elseTemplate2>

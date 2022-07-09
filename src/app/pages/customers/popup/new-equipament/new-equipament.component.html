@@ -5,7 +5,7 @@
 <mat-dialog-content>
     <div class="container row">  
     <div class="col">
-        <h2>ID:&nbsp; {{this.data.model.idDevice != 0 ? this.data.model.idDevice : idAuto}}</h2> 
+        <h2>ID:&nbsp; {{this.data.model.idDevice !== 0 ? this.data.model.idDevice : idAuto}}</h2> 
         <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
         <input matInput type="text" formControlName="device">
@@ -52,7 +52,7 @@
         
         <mat-form-field   appearance="fill" >
             <mat-label>Segmento</mat-label>
-            <mat-select #segmento (selectionChange)="tabChangeSegmento()" [disabled]="segmentos.length ==0" formControlName="idSegmento" >
+            <mat-select #segmento (selectionChange)="tabChangeSegmento()" [disabled]="segmentos.length ===0" formControlName="idSegmento" >
                 <mat-option  selected disabled value ="-1">Sel/eccione una segmento</mat-option>
                 <mat-option *ngFor="let segmento of segmentos" [value]="segmento.idSegmento"  >{{segmento.segmento}}-{{segmento.segmentoFinal}}</mat-option>
             </mat-select>
@@ -60,7 +60,7 @@
         
         <mat-form-field appearance="fill">
         <mat-label>Ip</mat-label>
-        <mat-select #ip [disabled]="ips.length == 0"  formControlName="ip"(selectionChange)="guardarIp($event.value,1,'',$event)" >
+        <mat-select #ip [disabled]="ips.length === 0"  formControlName="ip"(selectionChange)="guardarIp($event.value,1,'',$event)" >
                 <mat-option  selected disabled >Seleccione una ip</mat-option>
                 <mat-option *ngFor="let p of ips" [value]="p.idIp" [id]="p.idIp+'z'"  (onSelectionChange)="elementOption($event.source)"> 
                     {{p.ip }}
@@ -103,7 +103,7 @@
 <mat-dialog-actions align="center">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
     <button mat-button style="background-color:#3f51b5; color: white;" cdkFocusInitial (click)="enviar()">
-        <ng-container *ngIf="data.opc == false; else elseTemplate">
+        <ng-container *ngIf="data.opc === false; else elseTemplate">
             Crear
         </ng-container>
         <ng-template #elseTemplate>

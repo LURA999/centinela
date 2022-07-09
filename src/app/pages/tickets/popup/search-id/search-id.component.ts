@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatInput } from '@angular/material/input';
 import { MatRadioButton } from '@angular/material/radio';
 import { lastValueFrom, map, Observable, startWith } from 'rxjs';
 import { SearchService } from 'src/app/core/services/search.service';
@@ -11,6 +12,11 @@ export interface buscarNombres {
   nombre : string
 }
 
+export interface buscarIdentificador {
+  id : number,
+  categoria : number
+}
+
 @Component({
   selector: 'app-search-id',
   templateUrl: './search-id.component.html',
@@ -18,66 +24,71 @@ export interface buscarNombres {
 })
 export class SearchIdComponent implements OnInit {
 
-  form : FormGroup = this.fb.group({
-    empresa: '',
-    razon: '',
-    social: '',
-  })  
   controlEmpresa =new FormControl("")
   controlServicio =new FormControl("")
   controlRazon =new FormControl("")
 
-  filtradoEmpresa!: Observable<buscarNombres[]> ;
-  filtradoServicio!: Observable<buscarNombres[]> ;
-  filtradoRazon!: Observable<buscarNombres[]> ;
+  filtradoEmpresa: Observable<buscarNombres[]> =  new Observable<buscarNombres[]>();
+  filtradoServicio: Observable<buscarNombres[]> = new Observable<buscarNombres[]>();
+  filtradoRazon: Observable<buscarNombres[]> = new Observable<buscarNombres[]>();
 
   opcionesEmpresa: any[] = [];
   opcionesServicio: any[] = [];
   opcionesRazon: any[] = [];
   datosServicio : buscarNombres | undefined;
+  idEmpresa : number = 0;
+  idServicio : number = 0;
+  idsGuardado : Array<number> = [0,0,0]
+  bIdentificador : buscarIdentificador | undefined
+  identificador : string =""
 
+  @ViewChild("idNombre") iNombre! : MatInput
   @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
 
   constructor(private fb :FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, 
   public dialogRef: MatDialogRef<SearchIdComponent>, private _renderer : Renderer2, private serviceSearch:SearchService) { 
-
   }
 
   ngOnInit(): void {
-  
+
   }
   
-  createComponent(input: { title: string, id: string, state: boolean, index:number },_event? : any) {
+  createComponent(input: { title: string, id: string, state: boolean },_event? : any) {
     let titleElm = this._renderer.createText(input.title);
     let ref = this.placeholder?.createComponent(MatRadioButton)
-    ref.instance.id = input.id ;
+    ref.instance.value = input.id ;
     ref.instance.checked = input.state;
     ref.instance.color = "primary"
+    
     let elm = ref.location.nativeElement as HTMLElement | any;  
     elm.firstChild.lastChild.appendChild(titleElm);
-    this._renderer.addClass(elm, 'mat-radiobutton')
+    this._renderer.addClass(elm, 'mat-radio-button')
+    this._renderer.setStyle(elm,"margin-bottom","10px")
     ref.changeDetectorRef.detectChanges();
   }
 
   //enviar el identificador ya seleccioanda en el checkbox
   enviarIdentificador(){
-    if(this.form.value.social !== "" || this.form.value.razon !== "" || this.form.value.empresa !== "")
+
+      if("")
       {
-        console.log(this.form.value);
-        
-        this.dialogRef.close({identificador:this.form.value.ns?this.form.value.ns:this.form.value.ns?this.form.value.ns:this.form.value.empresa})
+        this.dialogRef.close()
       }else{
         alert("Por favor ingrese seleccione un identificador");
       }
   }
 
   //boton para buscar el identificador de los tres campos
-  buscarIdentificador(){
-    if(this.form.value.social !== "" || this.form.value.razon !== "" || this.form.value.empresa !== "")
-      {
-        console.log(this.form.value);
-        
-        this.dialogRef.close({identificador:this.form.value.ns?this.form.value.ns:this.form.value.ns?this.form.value.ns:this.form.value.empresa})
+  buscarIdentificador(){    
+
+    this.placeholder.clear()
+    if(this.controlEmpresa.value !== "" || this.controlRazon.value !== "" || this.controlServicio.value !== ""){      
+      this.serviceSearch.buscarMasIdentificadores(this.bIdentificador?.id!,this.bIdentificador?.categoria!).subscribe(async(resp:responseService)=>{
+       for await (const i of resp.container) {
+        this.createComponent({title:i.identificador+" - "+i.nombre,id:i.id+"y", state:false})
+       }
+          
+      })
       }else{
         alert("Por favor ingrese seleccione un identificador");
       }
@@ -87,42 +98,71 @@ export class SearchIdComponent implements OnInit {
   //input de nombre de empresa
   buscarEmpresa(palabra : string, event : any){
     this.auxBuscador(palabra,event,1);
-
+    if(palabra !== ""){
+      this._renderer.setAttribute(document.getElementById("iServicio"), "disabled", "true")   
+      this._renderer.setAttribute(document.getElementById("iRazon"), "disabled", "true")  
+    }else{
+      this._renderer.removeAttribute(document.getElementById("iServicio"), "disabled")   
+      this._renderer.removeAttribute(document.getElementById("iRazon"), "disabled")
+    }
   }
 
-  empresaSeleccionada(opcion : string){
-
+  empresaSeleccionada(opcion : buscarNombres){
+    this.idsGuardado[0] = opcion.id
+    this.bIdentificador = {
+      id : opcion.id,
+      categoria : 1
+    }
   }
 
   //input de nombre de razon social
   buscarRazon(palabra : string, event : any){
    this.auxBuscador(palabra,event,2);
-
+   if(palabra !== ""){
+    this._renderer.setAttribute(document.getElementById("iServicio"), "disabled", "true")   
+    this._renderer.setAttribute(document.getElementById("iEmpresa"), "disabled", "true")
+  }else{
+    this._renderer.removeAttribute(document.getElementById("iServicio"), "disabled")   
+    this._renderer.removeAttribute(document.getElementById("iEmpresa"), "disabled")
+  }
   }
 
-  razonSeleccionada(opcion : string){
-
+  razonSeleccionada(opcion : buscarNombres){
+    this.idsGuardado[1] = opcion.id
+    this.bIdentificador = {
+      id : opcion.id,
+      categoria : 2
+    }
   }
 
   //input de nombre de servicio
   buscarServicio(palabra : string, event : any){
     this.auxBuscador(palabra,event,3);
-    
+    if(palabra !== ""){
+      this._renderer.setAttribute(document.getElementById("iEmpresa"), "disabled", "true")   
+      this._renderer.setAttribute(document.getElementById("iRazon"), "disabled", "true")
+    }else{
+      this._renderer.removeAttribute(document.getElementById("iRazon"), "disabled")   
+      this._renderer.removeAttribute(document.getElementById("iEmpresa"), "disabled")
+    }
   }
 
-  servicioSeleccionada(opcion : string){
-
+  servicioSeleccionada(opcion : buscarNombres){
+    this.bIdentificador = {
+      id : opcion.id,
+      categoria : 3
+    }
   }
 
   async auxBuscador(palabra : string, event : any,condicion : number) {
     if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
     && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
-    && palabra.length == 1  && palabra !== ""  ){
+    && palabra.length == 1  ){      
       await lastValueFrom(this.serviceSearch.buscarNombres(palabra,condicion)).then(async (resp : responseService)=>{
         switch(condicion){
           case 1:
-            this.opcionesEmpresa = resp.container;        
-            break;
+            this.opcionesEmpresa = resp.container;            
+           break;
           case 2:
             this.opcionesRazon = resp.container;
             break;
@@ -161,22 +201,25 @@ export class SearchIdComponent implements OnInit {
             )
           break;
       }
-
+      
     }
 
-    
+    if(this.controlEmpresa.value === ""){
+      this.opcionesEmpresa = [];        
+      this.filtradoEmpresa = new Observable<buscarNombres[]>()
+    }
+   
+    if(this.controlRazon.value === ""){
+      this.opcionesRazon = [];
+      this.filtradoRazon = new Observable<buscarNombres[]>()
+    }
+
+    if(this.controlServicio.value === ""){
+      this.opcionesServicio = []; 
+      this.filtradoServicio = new Observable<buscarNombres[]>()
+    }
   }
 
-  /*async complementoFiltrado(_filtradoOpciones : Observable<buscarNombres[]>, control : FormControl, opciones : any){    
-    
-    _filtradoOpciones = control.valueChanges.pipe(
-      startWith(''),
-      map(value => {
-        const nombre = typeof value === 'string' ? value : value?.nombre;
-       return nombre ? this._filter(nombre as string,opciones) : opciones.slice();
-      } )
-      )
-    }*/
 
     private _filterEmpresa(value: string) :buscarNombres[] {
       const filterValue = value.toLowerCase();
@@ -191,7 +234,5 @@ export class SearchIdComponent implements OnInit {
       return this.opcionesRazon.filter(opcion => opcion.nombre.toLowerCase().includes(filterValue));
     }
 
-    displayFn(user: string) : string {
-      return user 
-    }
+
 }

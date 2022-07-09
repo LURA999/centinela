@@ -45,9 +45,10 @@ export class ViewServiceComponent implements OnInit {
   numero : number | undefined;
   cveCiudad : number | undefined;
   avenida : string | undefined;
-  contador : number = 0
-  rutaMapaD : string = ""
-  rutaMapaC : string = ""
+  contadorCoordendas : number = 0
+
+  rutaMapaD : string | undefined;
+  rutaMapaC : string | undefined;
 
   navLinks  =[
     {
@@ -82,15 +83,16 @@ export class ViewServiceComponent implements OnInit {
      lastValueFrom(this.service.selectVistaServicio(identificador, Number(this.contadorIdenti),1)).then((resp:responseService)=>{
       this.servicio = resp.container
       this.load = true
-      this.crearMapa()
+      this.mapaDireccion()
     })
   }
 
-  crearMapa(){
+  //Abre el mapa en base a su respectiva direccion
+  mapaDireccion(){
     setTimeout( () =>{
-    this.rutaMapaD = "https://maps.google.com/maps?q="+(this.servicio[0].avenida+" "+this.servicio[0].numero
-    +", "+this.servicio[0].colonia+", "+this.servicio[0].codigoPostal+" "+this.servicio[0].ciudad
-    +", "+this.servicio[0].estado).replace(/\ /gi,'%20')+"&t=&z=14&ie=UTF8&iwloc=B&output=embed"
+    this.rutaMapaD = "https://maps.google.com/maps?q="+((this.avenida?this.avenida:this.servicio[0].avenida)+" "+(this.numero?this.numero:this.servicio[0].numero)
+    +", "+(this.colonia?this.colonia:this.servicio[0].colonia)+", "+(this.codigoPostal?this.codigoPostal:this.servicio[0].codigoPostal)+" "+(this.ciudad?this.ciudad:this.servicio[0].ciudad)
+    +", "+(this.estado?this.estado:this.servicio[0].estado)).replace(/\ /gi,'%20')+"&t=&z=14&ie=UTF8&iwloc=B&output=embed"
     let m = this.renderer.createElement("iframe")
     this.renderer.setAttribute(m, "src",  this.rutaMapaD)
     this.renderer.setStyle(m,"width","100%")
@@ -99,13 +101,15 @@ export class ViewServiceComponent implements OnInit {
     let divp = document.getElementById("mapaDireccion")
     this.renderer.appendChild(divp,m)
     },500)  
+    
   }
 
   cambiarMapa(){
-    ++this.contador;
-    if(this.contador == 1){
-    this.rutaMapaC = "https://maps.google.com/maps?hl=en&q="+(this.servicio[0].coordenadas.split(",")[0]
-    +", "+(this.servicio[0].coordenadas.split(",")[1].trim())).replace(/\ /gi,'%20')+"&t=&z=14&ie=UTF8&iwloc=B&output=embed"
+    
+    ++this.contadorCoordendas;    
+    if(this.contadorCoordendas == 1){
+    this.rutaMapaC = "https://maps.google.com/maps?hl=en&q="+((this.latitud?this.latitud:this.servicio[0].coordenadas.split(",")[0])
+    +", "+(this.longitud?this.longitud:this.servicio[0].coordenadas.split(",")[1].trim())).replace(/\ /gi,'%20')+"&t=&z=14&ie=UTF8&iwloc=B&output=embed"
     let m2 = this.renderer.createElement("iframe")    
     this.renderer.setAttribute(m2, "src",  this.rutaMapaC)
     this.renderer.setStyle(m2,"width","100%")
@@ -113,7 +117,22 @@ export class ViewServiceComponent implements OnInit {
     this.renderer.setProperty(m2,"id","mc")
     let divpc = document.getElementById("mapaCoordenadas")
     this.renderer.appendChild(divpc,m2)
+    }else{
+      try{
+      this.rutaMapaC = "https://maps.google.com/maps?hl=en&q="+((this.latitud?this.latitud:this.servicio[0].coordenadas.split(",")[0])
+      +", "+(this.longitud?this.longitud:this.servicio[0].coordenadas.split(",")[1].trim()))+"&t=&z=14&ie=UTF8&iwloc=B&output=embed" 
+        this.renderer.setAttribute(document.getElementById("mc"), "src",  this.rutaMapaC)
+      }catch(Exception){}
+      try{
+        this.rutaMapaD = "https://maps.google.com/maps?q="+((this.avenida?this.avenida:this.servicio[0].avenida)+" "+(this.numero?this.numero:this.servicio[0].numero)
+        +", "+(this.colonia?this.colonia:this.servicio[0].colonia)+", "+(this.codigoPostal?this.codigoPostal:this.servicio[0].codigoPostal)+" "+(this.ciudad?this.ciudad:this.servicio[0].ciudad)
+        +", "+(this.estado?this.estado:this.servicio[0].estado)).replace(/\ /gi,'%20')+"&t=&z=14&ie=UTF8&iwloc=B&output=embed"  
+          this.renderer.setAttribute(document.getElementById("md"), "src",  this.rutaMapaD)
+      }catch(Exception){}
+      
     }
+    
+    
   }
   
   
@@ -171,7 +190,6 @@ export class ViewServiceComponent implements OnInit {
         +", "+(this.longitud)).replace(/\ /gi,'%20')+"&t=&z=14&ie=UTF8&iwloc=B&output=embed" 
         this.renderer.setAttribute(document.getElementById("mc"), "src",  this.rutaMapaC)
         }catch(Exception){}
-        this.contador = 0;
         setTimeout(()=>{
         this.notificationService.openSnackBar("Se edito con exito");
         })

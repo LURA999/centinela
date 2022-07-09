@@ -5,6 +5,7 @@ import { TicketsRoutingModule } from './tickets-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TicketEntryComponent } from './ticket-entry/ticket-entry.component';
 import { SearchIdComponent } from './popup/search-id/search-id.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { SearchIdComponent } from './popup/search-id/search-id.component';
   imports: [
     CommonModule,
     TicketsRoutingModule,
-    SharedModule
+    SharedModule,
+    MatRadioModule
   ]
 })
 export class TicketsModule { }

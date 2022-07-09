@@ -29,7 +29,7 @@ export class SearchService {
 
 
       //Para el componente searchId   
-      buscarMasIdentificadores(variable : string, condicion : number) :Observable<responseService>{
+      buscarMasIdentificadores(variable : number, condicion : number) :Observable<responseService>{
         return this.http.get<responseService>(this.local+"Search/searchIdentifier.php?var="+variable+"&cond="+condicion)
       }
       buscarNombres(variable : string, condicion : number) :Observable<responseService>{
