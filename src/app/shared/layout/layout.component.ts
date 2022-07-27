@@ -110,21 +110,30 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
           map((value: any) =>  this._filter(value || '')) );
         }
     
-
-
-var identificador=id.replace(/([0-9]{4})\S/,"");
-  identificador= identificador.substring(0,identificador.length-1)
-
-
-  this.router.navigate(["/admin/client/"+identificador+"/"+id]).then(() => {
-    window.location.reload();
-  });
- 
+   
+    }
+    async irServicio (id : string){
+        console.log(id);
         
-} else{
-    this.notifier.notify('warning', 'Servicio Inactivo');
-
-}     
-}); 
-}
+        await lastValueFrom(this.Search.llamarServicioEstatus(this.options.indexOf(id)+1)).then( (result : any) =>{
+           console.log(result);
+           
+            var estatus=result.container[0]["estatus"]
+        
+            if(estatus!=2){
+                id = id.split(" ")[0]
+                var identificador=id.replace(/([0-9]{4})\S/,"");
+                identificador= identificador.substring(0,identificador.length-1)
+                
+                this.router.navigateByUrl("/admin/client/"+identificador+"/"+id).then(() => {
+                    window.location.reload();
+                  });
+                 
+                     
+                } else{
+                    this.notifier.notify('warning', 'Servicio Inactivo');    
+                
+                }     
+            }); 
+    }
 }
