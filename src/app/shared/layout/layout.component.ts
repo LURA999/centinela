@@ -97,7 +97,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
-          await lastValueFrom(this.Search.searchTicketEntry(id)).then( (result : responseService) =>{
+          await lastValueFrom(this.Search.searchTicketEntry(id,1)).then( (result : responseService) =>{
           if(result.status !== "not found"){
           this.options= result.container;
           }else{

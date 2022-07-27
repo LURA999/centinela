@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Inject, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatInput } from '@angular/material/input';
@@ -22,7 +22,7 @@ export interface buscarIdentificador {
   templateUrl: './search-id.component.html',
   styleUrls: ['./search-id.component.css']
 })
-export class SearchIdComponent implements OnInit {
+export class SearchIdComponent  {
 
   controlEmpresa =new FormControl("")
   controlServicio =new FormControl("")
@@ -40,7 +40,7 @@ export class SearchIdComponent implements OnInit {
   idServicio : number = 0;
   idsGuardado : Array<number> = [0,0,0]
   bIdentificador : buscarIdentificador | undefined
-  identificador : string =""
+  identificadorSelec : string =""
 
   @ViewChild("idNombre") iNombre! : MatInput
   @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
@@ -49,14 +49,12 @@ export class SearchIdComponent implements OnInit {
   public dialogRef: MatDialogRef<SearchIdComponent>, private _renderer : Renderer2, private serviceSearch:SearchService) { 
   }
 
-  ngOnInit(): void {
-
-  }
+  
   
   createComponent(input: { title: string, id: string, state: boolean },_event? : any) {
     let titleElm = this._renderer.createText(input.title);
     let ref = this.placeholder?.createComponent(MatRadioButton)
-    ref.instance.value = input.id ;
+    ref.instance.value = input.id;
     ref.instance.checked = input.state;
     ref.instance.color = "primary"
     
@@ -69,23 +67,27 @@ export class SearchIdComponent implements OnInit {
 
   //enviar el identificador ya seleccioanda en el checkbox
   enviarIdentificador(){
-
-      if("")
+      if(this.identificadorSelec !== "")
       {
-        this.dialogRef.close()
+        this.dialogRef.close(this.identificadorSelec)
       }else{
         alert("Por favor ingrese seleccione un identificador");
       }
   }
 
+
+  seleccionado(target:any){
+    this.identificadorSelec = target.source.value;
+  }
+
   //boton para buscar el identificador de los tres campos
   buscarIdentificador(){    
-
+    this.identificadorSelec = ""
     this.placeholder.clear()
     if(this.controlEmpresa.value !== "" || this.controlRazon.value !== "" || this.controlServicio.value !== ""){      
       this.serviceSearch.buscarMasIdentificadores(this.bIdentificador?.id!,this.bIdentificador?.categoria!).subscribe(async(resp:responseService)=>{
        for await (const i of resp.container) {
-        this.createComponent({title:i.identificador+" - "+i.nombre,id:i.id+"y", state:false})
+        this.createComponent({title:i.identificador+" - "+i.nombre,id:i.identificador, state:false})
        }
           
       })

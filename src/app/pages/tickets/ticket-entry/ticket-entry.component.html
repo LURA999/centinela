@@ -6,8 +6,7 @@
             
                 <mat-card id="form">
                 <mat-card-content>
-                    <button mat-stroked-button class="otroBuscador" (click)="abrirBuscadosIdentificador()">¿No encuentra su id? <mat-icon>search</mat-icon></button>
-                    
+                    <button type="button" mat-stroked-button class="otroBuscador"  (click)="abrirBuscadosIdentificador()" >¿No encuentra su id? <mat-icon>search</mat-icon></button>
                     <form [formGroup]="formTicket">
                         <div class="campo">
                             <mat-form-field appearance="legacy">
@@ -28,16 +27,17 @@
                         <div>
                         <mat-form-field  class="inputs" appearance="fill">
                         <mat-label>De : (seleccione un contacto)</mat-label>
-                            <mat-select #selectContacto (selectionChange)="agregarContacto(selectContacto.value,true)">
+                            <mat-select formControlName="contactoCorreo" (selectionChange)="agregarContacto(selectContacto.value,true)">
+                                <mat-option value="-1" disabled>Selecciona un contacto</mat-option>
                                 <mat-option *ngFor="let contacto of contactoLista let i=index"  [value]="i">
                                     {{contacto.nombre}}
                                 </mat-option>
                             </mat-select>
-                            <mat-hint align="end" > <div><a (click)="agregarOtroContacto()" class="linkContactoCc">Aregar otro Contacto  </a></div> &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;<div class="linkContactoCc"><a > Aregar Cc</a></div></mat-hint>
+                            <mat-hint align="end" > <div><a (click)="agregarOtroContacto()" class="linkContactoCc">Aregar otro Contacto  </a></div> &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;<div class="linkContactoCc" (click)="agregarCopia(false)"><a > Aregar Cc</a></div></mat-hint>
                         </mat-form-field>
                         </div>
                         
-                        <div >
+                        <div [hidden] = "agregarMasContacto">
                             <mat-form-field appearance="fill">
                                 <mat-label>Contactos | Enviar Cc</mat-label>
                                 <input type="text"
@@ -52,6 +52,8 @@
                                 <div id="mat-group-suffix">
                                     <ng-template #matIcon></ng-template>
                                 </div>
+                                <mat-hint align="end" > <div><a (click)="agregarCopia(true)" class="linkContactoCc" style="color:red"> Ocultar Cc</a></div></mat-hint>
+
                             </mat-form-field>
                         </div>
                         <div>
@@ -196,5 +198,7 @@
 
             </mat-card-content>
         </mat-card>
+
+       
     </div>
 </div>

@@ -23,8 +23,8 @@ export class SearchService {
 
       // para el componente Ticket Entry
 
-      searchTicketEntry(variable : string):Observable<responseService>{
-        return this.http.get<responseService>(this.local+"Search/searchTicketEntry.php?var="+variable)
+      searchTicketEntry(variable : string,opc:number):Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Search/searchTicketEntry.php?var="+variable+"&opc="+opc)
       }
 
 

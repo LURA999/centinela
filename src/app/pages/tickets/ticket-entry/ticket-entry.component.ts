@@ -81,13 +81,17 @@ export class TicketEntryComponent implements OnInit {
   metodos = new RepeteadMethods() 
   usuarios : any [] = []
   agregar = false
+
+  agregarMasContacto : boolean = true
+
   @ViewChild("idGrupo") idGrupo! : MatSelect    
   @ViewChild("selectedOption") optionSe! : MatOption    
   @ViewChild('matIcon', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
   @ViewChild('autoContacto' ) autoContacto!: ElementRef;
+  @ViewChild('selectContacto' ) selectContacto!: MatSelect;
 
   formTicket : FormGroup = this.fb.group({
-   
+    contactoCorreo : ["", Validators.required]
   })
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
@@ -138,37 +142,17 @@ export class TicketEntryComponent implements OnInit {
     if(button.key !== "tab" && button.key !=="ArrowUp" && button.key !=="ArrowDown"
     && button.key !=="ArrowLeft" && button.key !=="ArrowRight" && button.key !=="Enter" 
     && (palabra.replace(/[0-9]*\gi/,"")).length == 1  || palabra == "" || Number(palabra) > 0 ){
-      await lastValueFrom(this.Search.searchTicketEntry(palabra)).then( (result : responseService) =>{
-      
-      if(result.status !== "not there Services"){
-      this.options= result.container;
-      
-      this.datosServicio = {
-        cliente : "",
-        servicio : "",
-        plan : "",
-        estatus: ""
-       } 
-
-       this.pingOtro = []
-       this.pingRadio = []
-       this.pingRouter = []
-      }else{
-        this.options=[]
-      }
-    });
-
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value: any) =>  this._filter(value || '')) );
-      } 
+      await this.llamarDatosDelServicio(palabra,1)
     }
+  }
 
+  //te imprime los identificadores
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
+  //imprime todos los correos
   private _filterConcat(name: string): datosContacto[] {
     const filterValue = name.toLowerCase();
     return this.contactoLista.filter(option => option.correo.toLowerCase().includes(filterValue));
@@ -178,18 +162,18 @@ export class TicketEntryComponent implements OnInit {
     return user 
   }
 
-  opcionSeleccionada(identificador:string){
+   async opcionSeleccionada(identificador:string){
     identificador = identificador.split(" ")[0]
-
+    this.formTicket.controls['contactoCorreo'].reset()
+    //se desfragmenta el identificador
     let sepId : Array<string> = identificador.split("-")
     let id :string = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
     let contador :number = Number(sepId[2]);
-    console.log(contador);
     
     this.contactoService.llamar_Contactos_OnlyServicio(1,contador,2,id).subscribe((resp:responseService)=>{
       this.contactoLista = resp.container
      /**Se llena el mat-autocomplete de los contactos */ 
-      this.filteredContacts = this.myControlContacts.valueChanges.pipe(
+      this.filteredContacts =  this.myControlContacts.valueChanges.pipe(
         startWith(''),
         map(value => {
           const nombre = typeof value === 'string' ? value : value?.correo;
@@ -199,7 +183,7 @@ export class TicketEntryComponent implements OnInit {
     })
 
     /**Llenando datos laterales del servicio */
-    this.serviceService.selectVistaServicio(id,contador,2).subscribe((resp : responseService)=>{
+     this.serviceService.selectVistaServicio(id,contador,2).subscribe((resp : responseService)=>{
      this.datosServicio = {
       cliente : resp.container[0].cliente,
       servicio : resp.container[0].servicio,
@@ -251,8 +235,8 @@ export class TicketEntryComponent implements OnInit {
           })
         }
       }
-    
     })
+
     //pidiendo ping para radios
     this.deviceService.todosRadios(id,contador).subscribe(async (resp:responseService)=>{
       console.log(resp);
@@ -273,16 +257,14 @@ export class TicketEntryComponent implements OnInit {
     })
 
   }
+
   async monitoreoPing( ip : string, i : number,array:pingDatos[]){ 
-    let ping : string
-    console.log(ip);
-    
+    let ping : string = ""
     this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
       ping = resp.container.time
       
       try{
         array[i].ping = ping; 
-        
         if(resp.container.status == "200"){
         if(Number(ping.replace(/[A-Za-z]+/,"")) <=40){
           array[i].color = "green";
@@ -303,13 +285,17 @@ export class TicketEntryComponent implements OnInit {
     });
   }
   
+  //form para buscar el identificador
   abrirBuscadosIdentificador(){
     let dialogRef  = this.dialog.open(SearchIdComponent,
       {data: {  },
       animation: { to: "bottom" },
       height:"auto", width:"40%"
      });
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:any)=>{ 
+     this.$sub.add(dialogRef.afterClosed().subscribe(async (result:string)=>{       
+      if(result !== ""){
+        await this.llamarDatosDelServicio(result,2)
+      }
      }
      ));
   }
@@ -356,6 +342,37 @@ export class TicketEntryComponent implements OnInit {
      }
      }catch(Exception){}
     })
+  }
+
+  agregarCopia(bool: boolean){
+    this.agregarMasContacto = bool;
+  }
+
+  async llamarDatosDelServicio(result :string,opc : number){
+    
+    await lastValueFrom(this.Search.searchTicketEntry(result,opc)).then( (result : responseService) =>{
+    
+      if(result.status !== "not there Services"){
+      this.options= result.container;
+      this.myControl.setValue(result.container[0])
+      this.datosServicio = {
+        cliente : "",
+        servicio : "",
+        plan : "",
+        estatus: ""
+      } 
+
+      this.pingOtro = []
+      this.pingRadio = []
+      this.pingRouter = []
+      }else{
+        this.options=[]
+      }
+    });
+
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map((value: any) =>  this._filter(value || '')) );
   }
 
 }

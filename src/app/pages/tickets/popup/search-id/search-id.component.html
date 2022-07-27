@@ -56,7 +56,7 @@
     </div>
     <h3><b>IDENTIFICADORES</b></h3>
     <div class="container identificadores">
-        <mat-radio-group [value]="identificador">
+        <mat-radio-group (change)="seleccionado($event)">
         <ng-template #placeholder></ng-template>
         </mat-radio-group>
     </div>
