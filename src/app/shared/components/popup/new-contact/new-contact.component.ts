@@ -108,7 +108,8 @@ export class NewContactComponent implements OnInit {
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
       this.modelLog.cveCliente = Number(this.id);
-
+      console.log(this.contactoModel);
+      
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
             this.contactoModel.cveContacto = this.idAuto;
@@ -206,6 +207,8 @@ export class NewContactComponent implements OnInit {
 
   async guardarServicio(num: number, primeraOp: number, ip? : string,event?:any,boxIdSegmento?:number)  {   
     this.cveServicios.push(num)
+    console.log(this.cveServicios);
+    
     if(this.data.idServicio == num){
       this.eliminarServicio = -1
     }
@@ -283,6 +286,8 @@ export class NewContactComponent implements OnInit {
     }else{
       this.cveContactos.push(box)
     }   
+    console.log(this.cveContactos);
+    
     
   }
 

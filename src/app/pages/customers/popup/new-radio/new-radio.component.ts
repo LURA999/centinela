@@ -139,23 +139,26 @@ export class NewRadioComponent implements OnInit {
    this.newModel.contador = Number(this.contadorIdenti)
    this.newModel.identificador = this.identificador
     
-    if(this.radioForm.valid == false || this.radioForm.value.idEstatus == 0 || this.radioForm.value.idTipo == 0
-      || this.radioForm.value.idRepetidora == 0 || this.radioForm.value.idSegmento == 0
-      ||this.radioForm.value.idusuario == 0){
+  //console.log(" radioForm = "+this.radioForm.valid+"\n\n\nidEstatus "+this.radioForm.value.idEstatus+"\nidTipo "+ this.radioForm.value.idTipo+"\nidRepetidora "+ this.radioForm.value.idRepetidora+"\nidsegmento"+ this.radioForm.value.idSegmento+"\nidusuario"+ this.radioForm.value.idUsuario+"\nidIp"+ this.radioForm.value.idIp);
+   
+    if(this.radioForm.valid === false || Number(this.radioForm.value.idEstatus == 0) || Number(this.radioForm.value.idTipo == 0)
+      || Number(this.radioForm.value.idRepetidora == 0) || Number(this.radioForm.value.idSegmento) == 0
+      || Number(this.radioForm.value.idUsuario) == 0){
       alert("Por favor llene todos los campos")
     }else{
-      if(this.data.opc == false && this.radioForm.value.idIp != 0 ){
+      if(this.data.opc === false && Number(this.radioForm.value.idIp) != 0 ){
         this.newModel.idDevice =  this.idAuto;
-        console.log(this.newModel)
         await lastValueFrom(this.deviceService.insertarRadio(this.newModel))
         this.dialogRef.close(this.newModel)     
       }else{           
-        if(this.radioForm.value.idIp == 0 && this.data.opc == true){ 
-          this.newModel.idIp = this.data.model.idIp
+        if(Number(this.radioForm.value.idIp) >= 0 && this.data.opc === true){ 
+          this.newModel.idIp = this.radioForm.value.idIp
           this.newModel.idDevice = this.data.model.idDevice;        
+          console.log(this.newModel);
+          
           await lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
           this.dialogRef.close(this.newModel) 
-        }else{
+        }else{          
           alert("Por favor llene todos los campos")
         }
       }

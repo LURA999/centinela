@@ -133,6 +133,8 @@ export class TableRadioComponent implements OnInit {
      this.$sub.add (dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
       try{
       if(result !=undefined){
+        console.log(result);
+        
         this.ELEMENT_DATA.splice(this.metodo.buscandoIndice(result.idDevice,this.ELEMENT_DATA, "idDevice")
       ,1,result);
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
