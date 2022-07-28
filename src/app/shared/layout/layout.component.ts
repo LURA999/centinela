@@ -32,8 +32,13 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     logo:any
     myControl = new FormControl('');
     options: string[] = [];
+    contacts:string[]=[]
+    tickets:string[]=[]
+
     array: string[] = [];
     filteredOptions: Observable<string[]> | undefined;
+    filteredContacts: Observable<string[]> | undefined;
+    filteredTickets: Observable<string[]> | undefined;
 
     constructor( 
         notifierService: NotifierService,
@@ -81,6 +86,15 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         return this.options.filter(option => option.toLowerCase().includes(filterValue));
       }
 
+      private _filterContacts(value: string): string[] {
+        const filterValue = value.toLowerCase();
+        return this.contacts.filter(option => option.toLowerCase().includes(filterValue));
+      }
+       private _filterTickets(value: string): string[] {
+        const filterValue = value.toLowerCase();
+        return this.tickets.filter(option => option.toLowerCase().includes(filterValue));
+      }
+
     salir(){
         if(this.auth.getTipo()==1){
             this.auth.cerrarSesion();
@@ -97,7 +111,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
-          await lastValueFrom(this.Search.searchTicketEntry(id)).then( (result : responseService) =>{
+          await lastValueFrom(this.Search.searchService(id)).then( (result : responseService) =>{
           if(result.status !== "not found"){
           this.options= result.container;
           }else{
@@ -112,6 +126,56 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     
    
     }
+
+    async contacto(id:string,event : any){
+        id = id.split(" ")[0]
+
+        if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
+        && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
+        && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
+          await lastValueFrom(this.Search.searchContact(id)).then( (result : responseService) =>{
+          if(result.status !== "not found"){
+          this.contacts= result.container;
+          }else{
+            this.contacts=[]
+          }
+        });
+    
+        this.filteredContacts = this.myControl.valueChanges.pipe(
+          startWith(''),
+          map((value: any) =>  this._filterContacts(value || '')) );
+        }
+    
+   
+    }
+
+
+
+
+
+    async ticket(id:string,event : any){
+        id = id.split(" ")[0]
+
+        if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
+        && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
+        && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
+          await lastValueFrom(this.Search.searchTicket(id)).then( (result : responseService) =>{
+          if(result.status !== "not found"){
+          this.tickets= result.container;
+          }else{
+            this.tickets=[]
+          }
+        });
+    
+        this.filteredTickets = this.myControl.valueChanges.pipe(
+          startWith(''),
+          map((value: any) =>  this._filterTickets(value || '')) );
+        }
+    
+   
+    }
+
+
     async irServicio (id : string){
         console.log(id);
         

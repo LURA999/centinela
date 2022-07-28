@@ -26,6 +26,17 @@ export class SearchService {
       searchTicketEntry(variable : string):Observable<responseService>{
         return this.http.get<responseService>(this.local+"Search/searchTicketEntry.php?var="+variable)
       }
+      searchService(variable : string):Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Search/mainsearch.php?var="+variable)
+      }
+
+      searchContact(contacto : string):Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Search/mainsearch.php?contacto="+contacto)
+      }
+      searchTicket(ticket : string):Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Search/mainsearch.php?ticket="+ticket)
+      }
+      
 
 
       //Para el componente searchId   
