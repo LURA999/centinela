@@ -13,16 +13,18 @@ import { DeviceService } from 'src/app/core/services/device.service';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { MatSelect } from '@angular/material/select';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { NewContactComponent } from '../../red/popup/new-contact/new-contact.component';
+import { NewContactComponent } from "../popup/new-contact/new-contact.component"
 import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { IpService } from 'src/app/core/services/ip.service';
+import { RolService } from 'src/app/core/services/rol.service';
 
 interface datosServicio {
   cliente : string,
   servicio : string,
   plan : string,
-  estatus: string
+  estatus: string,
+  idServicio : number
 }
 
 interface pingDatos {
@@ -81,6 +83,7 @@ export class TicketEntryComponent implements OnInit {
   metodos = new RepeteadMethods() 
   usuarios : any [] = []
   agregar = false
+  arrayRol : any
 
   agregarMasContacto : boolean = true
 
@@ -96,10 +99,11 @@ export class TicketEntryComponent implements OnInit {
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
-  , private notificationService: NotificationService, private renderer : Renderer2, private ipService : IpService) {  }
+  , private notificationService: NotificationService, private renderer : Renderer2, private ipService : IpService,private rol: RolService) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
+    this.todoRol();
   }
   
   borrar(event : any){ 
@@ -141,8 +145,8 @@ export class TicketEntryComponent implements OnInit {
     
     if(button.key !== "tab" && button.key !=="ArrowUp" && button.key !=="ArrowDown"
     && button.key !=="ArrowLeft" && button.key !=="ArrowRight" && button.key !=="Enter" 
-    && (palabra.replace(/[0-9]*\gi/,"")).length == 1  || palabra == "" || Number(palabra) > 0 ){
-      await this.llamarDatosDelServicio(palabra,1)
+    && (palabra.replace(/[0-9]*\gi/,"")).length < 12  || palabra == "" || Number(palabra) > 0 ){
+       this.llamarDatosDelServicio(palabra,1,false)
     }
   }
 
@@ -184,11 +188,14 @@ export class TicketEntryComponent implements OnInit {
 
     /**Llenando datos laterales del servicio */
      this.serviceService.selectVistaServicio(id,contador,2).subscribe((resp : responseService)=>{
+      console.log(resp);
+      
      this.datosServicio = {
       cliente : resp.container[0].cliente,
       servicio : resp.container[0].servicio,
       plan : resp.container[0].plan,
-      estatus: this.metodos.estatus(resp.container[0].estatus)
+      estatus: this.metodos.estatus(resp.container[0].estatus),
+      idServicio : resp.container[0].idServicio
      } 
     })
 
@@ -197,9 +204,7 @@ export class TicketEntryComponent implements OnInit {
     this.pingRouter = []
 
     /**Pidiendo pings para los otros equipos*/
-    this.ipService.selectIpOneEquipament(0,id,3,contador).subscribe(async(resp:responseService) =>{
-      console.log(resp);
-      
+    this.ipService.selectIpOneEquipament(0,id,3,contador).subscribe(async(resp:responseService) =>{      
       if(resp.status === "not found"){
         console.log("No encontro");
       }else{
@@ -239,7 +244,6 @@ export class TicketEntryComponent implements OnInit {
 
     //pidiendo ping para radios
     this.deviceService.todosRadios(id,contador).subscribe(async (resp:responseService)=>{
-      console.log(resp);
       if(resp.status === "not found"){
         console.log("No hay radios");
       }else{  
@@ -285,7 +289,7 @@ export class TicketEntryComponent implements OnInit {
     });
   }
   
-  //form para buscar el identificador
+  //form para buscar identificador que no sabes como buscar
   abrirBuscadosIdentificador(){
     let dialogRef  = this.dialog.open(SearchIdComponent,
       {data: {  },
@@ -294,7 +298,7 @@ export class TicketEntryComponent implements OnInit {
      });
      this.$sub.add(dialogRef.afterClosed().subscribe(async (result:string)=>{       
       if(result !== ""){
-        await this.llamarDatosDelServicio(result,2)
+        await this.llamarDatosDelServicio(result,2,true)
       }
      }
      ));
@@ -328,7 +332,7 @@ export class TicketEntryComponent implements OnInit {
 
   agregarOtroContacto(){
     let dialogRef  = this.dialog.open(NewContactComponent,
-      {data: {opc : false },
+      {data: {arrayRol:this.arrayRol, datosServicio: this.datosServicio},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
@@ -348,18 +352,25 @@ export class TicketEntryComponent implements OnInit {
     this.agregarMasContacto = bool;
   }
 
-  async llamarDatosDelServicio(result :string,opc : number){
+
+  //Se activa cuando buscamos un identificador en el matAutocomplete
+  async llamarDatosDelServicio(result :string,opc : number, buscarVentana:boolean){
     
-    await lastValueFrom(this.Search.searchTicketEntry(result,opc)).then( (result : responseService) =>{
-    
+    await lastValueFrom(this.Search.searchTicketEntry(result,opc)).then( (result : responseService) =>{    
       if(result.status !== "not there Services"){
       this.options= result.container;
-      this.myControl.setValue(result.container[0])
+      console.log(result);
+      
+      if(buscarVentana == true){
+        this.myControl.setValue(result.container[0])
+      }
+
       this.datosServicio = {
         cliente : "",
         servicio : "",
         plan : "",
-        estatus: ""
+        estatus: "",
+        idServicio : 0
       } 
 
       this.pingOtro = []
@@ -374,5 +385,14 @@ export class TicketEntryComponent implements OnInit {
       startWith(''),
       map((value: any) =>  this._filter(value || '')) );
   }
+
+
+  //Imprimir roles para agregar otro contacto
+  async todoRol(){
+    this.$sub.add(this.rol.llamarTodo().subscribe((resp:responseService) => {
+      this.arrayRol = resp.container;      
+    }))
+  }
+
 
 }

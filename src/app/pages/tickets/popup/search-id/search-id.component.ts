@@ -68,7 +68,7 @@ export class SearchIdComponent  {
   //enviar el identificador ya seleccioanda en el checkbox
   enviarIdentificador(){
       if(this.identificadorSelec !== "")
-      {
+      {        
         this.dialogRef.close(this.identificadorSelec)
       }else{
         alert("Por favor ingrese seleccione un identificador");
@@ -159,7 +159,7 @@ export class SearchIdComponent  {
   async auxBuscador(palabra : string, event : any,condicion : number) {
     if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
     && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
-    && palabra.length == 1  ){      
+     ){      
       await lastValueFrom(this.serviceSearch.buscarNombres(palabra,condicion)).then(async (resp : responseService)=>{
         switch(condicion){
           case 1:
