@@ -185,6 +185,7 @@ margin-left: 20%;
 width: 100%;
 border-radius: 12px;
 height: 60%;
+
 }
 
 ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{

@@ -17,6 +17,9 @@ import { responseService } from 'src/app/models/responseService.model';
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly notifier: NotifierService;
+serviciosboolean:boolean=false
+contactosboolean:boolean=false
+ticketsboolean:boolean=false
 
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
@@ -110,21 +113,27 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
-        && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
+        || id == "" || Number(id) > 0){
           await lastValueFrom(this.Search.searchService(id)).then( (result : responseService) =>{
           if(result.status !== "not found"){
+            this.serviciosboolean=true
+          console.log(result.container);
+          
           this.options= result.container;
           }else{
+            this.serviciosboolean=false
             this.options=[]
+           
+            
           }
         });
-    
+
         this.filteredOptions = this.myControl.valueChanges.pipe(
           startWith(''),
           map((value: any) =>  this._filter(value || '')) );
         }
-    
-   
+
+
     }
 
     async contacto(id:string,event : any){
@@ -132,21 +141,22 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
-        && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
+        || id == "" || Number(id) > 0){
           await lastValueFrom(this.Search.searchContact(id)).then( (result : responseService) =>{
           if(result.status !== "not found"){
+            this.contactosboolean=true
           this.contacts= result.container;
           }else{
+            this.contactosboolean=false
             this.contacts=[]
           }
         });
-    
         this.filteredContacts = this.myControl.valueChanges.pipe(
           startWith(''),
           map((value: any) =>  this._filterContacts(value || '')) );
         }
     
-   
+
     }
 
 
@@ -158,21 +168,29 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
-        && (id.replace(/[0-9]*\gi/,"")).length == 1  || id == "" || Number(id) > 0){
+        || id == "" || Number(id) > 0){
+           
+
           await lastValueFrom(this.Search.searchTicket(id)).then( (result : responseService) =>{
+            console.log(result);
+            
           if(result.status !== "not found"){
+            this.ticketsboolean=true
           this.tickets= result.container;
           }else{
+            console.log("entra");
+            
+            this.ticketsboolean=false
             this.tickets=[]
+            
           }
         });
-    
         this.filteredTickets = this.myControl.valueChanges.pipe(
           startWith(''),
           map((value: any) =>  this._filterTickets(value || '')) );
+
         }
-    
-   
+
     }
 
 
