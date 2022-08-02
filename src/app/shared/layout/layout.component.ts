@@ -9,6 +9,8 @@ import { FormControl } from '@angular/forms';
 import { SearchService } from 'src/app/core/services/search.service';
 import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
+import { stringToKeyValue } from '@angular/flex-layout/extended/style/style-transforms';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'app-layout',
@@ -16,6 +18,7 @@ import { responseService } from 'src/app/models/responseService.model';
     styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
+    mostrar:string="on"
     private readonly notifier: NotifierService;
 serviciosboolean:boolean=false
 contactosboolean:boolean=false
@@ -114,6 +117,10 @@ botontickets:boolean=true
     }
 
 
+
+    
+    
+
     todosbutton(){
         this.botonservicio=true
         this.botoncontacto=true
@@ -127,6 +134,7 @@ serviciobutton(){
     this.botontickets=false
     this.contacts=[]
     this.tickets=[]
+   
 }
 contactobutton(){
     this.botoncontacto=true

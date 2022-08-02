@@ -210,9 +210,10 @@ height: 60%;
   font-weight: bold;
 }
 
-#opciones{
+#opciones {
   overflow-y: scroll;
-  height: 75%;
+  height: 73%;
+  
 
 }
 .filtros{
@@ -290,6 +291,11 @@ text-align: center;
   position: absolute;
   
 }
+#division{
+  margin-top: 1px;
+  
+}
+
 
 mat-option{
 font-size: 10px;
