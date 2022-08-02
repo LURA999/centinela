@@ -1,7 +1,7 @@
 import {  Component, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { lastValueFrom, Observable, startWith, map, Subscription } from 'rxjs';
+import { lastValueFrom, Observable, startWith, map, Subscription, concat, forkJoin, concatMap } from 'rxjs';
 import { AsuntoService } from 'src/app/core/services/asunto.service';
 import { ContactService } from 'src/app/core/services/contact.service';
 import { SearchService } from 'src/app/core/services/search.service';
@@ -73,20 +73,18 @@ export class TicketEntryComponent implements OnInit {
   contactoControl = new FormControl('');
   $sub = new Subscription()
   contactoLista: any[] = [];
-  acomuladorContactos: number[] = [];
+  acomuladorContactos: Array<Number>  =new Array()
   idNuevo : number = 0
-  correos : string[]=[];
-  contactosIndices : string[]=[];
-  contactosElegidos : any [] =[];
   datosServicio : datosServicio | undefined;
   asuntosArray: any [] = []
   metodos = new RepeteadMethods() 
   usuarios : any [] = []
-  agregar = false
   arrayRol : any
-
+  indicesAcomu : Array<Number>  =new Array()
+  contador : number | undefined;
+  id : string | undefined;
   agregarMasContacto : boolean = true
-
+  contactoPrincipal : number | undefined
   @ViewChild("idGrupo") idGrupo! : MatSelect    
   @ViewChild("selectedOption") optionSe! : MatOption    
   @ViewChild('matIcon', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
@@ -94,12 +92,20 @@ export class TicketEntryComponent implements OnInit {
   @ViewChild('selectContacto' ) selectContacto!: MatSelect;
 
   formTicket : FormGroup = this.fb.group({
-    contactoCorreo : ["", Validators.required]
+    contactoCorreo : ["", Validators.required],
+    origen : ["", Validators.required],
+    grupo : [""],
+    agente : [""],
+    asunto : [""],
+    prioridad : [""],
+    descripcion : [""],
+    incidencia : [""],
+
   })
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
-  , private notificationService: NotificationService, private renderer : Renderer2, private ipService : IpService,private rol: RolService) {  }
+  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
@@ -111,10 +117,11 @@ export class TicketEntryComponent implements OnInit {
   }
 
   contactoArray(ev : any){
-    
+    this.indicesAcomu.push(Number(ev.option.id.split("_")[0]))
+    this.acomuladorContactos.push(ev.option.value)
     const newBut = document.createElement("Button");
     const titleIcon = this.renderer.createText("close")
-    const titleBut = this.renderer.createText(ev.option._element.nativeElement.innerText+" ("+ev.option.value+")")
+    const titleBut = this.renderer.createText(ev.option._element.nativeElement.innerText+" ("+ev.option.value.correo+")")
     const icon = this.placeholder?.createComponent(MatIcon)
     
     this.renderer.setStyle(newBut,"border","none")
@@ -132,12 +139,13 @@ export class TicketEntryComponent implements OnInit {
     newBut.id = "a"+(this.idNuevo++)    
     var div = document.querySelector("#mat-group-suffix")
     div?.appendChild(newBut)    
-    this.renderer.listen(newBut, 'click', (f:any) => { this.destruirButton(newBut,ev.option.id)});
+    this.renderer.listen(newBut, 'click', (f:any) => { this.destruirButton(newBut,Number(ev.option.id.split("_")[0]))});
     this.myControlContacts.setValue("")
     
   }
 
   destruirButton(button:any,id:number){
+    this.indicesAcomu.splice(this.indicesAcomu.indexOf(id),1)
     this.renderer.removeChild(document.querySelector("#mat-group-suffix"),document.getElementById(button.id))
   }
 
@@ -171,25 +179,12 @@ export class TicketEntryComponent implements OnInit {
     this.formTicket.controls['contactoCorreo'].reset()
     //se desfragmenta el identificador
     let sepId : Array<string> = identificador.split("-")
-    let id :string = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
-    let contador :number = Number(sepId[2]);
+     this.id = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
+     this.contador = Number(sepId[2]);
     
-    this.contactoService.llamar_Contactos_OnlyServicio(1,contador,2,id).subscribe((resp:responseService)=>{
-      this.contactoLista = resp.container
-     /**Se llena el mat-autocomplete de los contactos */ 
-      this.filteredContacts =  this.myControlContacts.valueChanges.pipe(
-        startWith(''),
-        map(value => {
-          const nombre = typeof value === 'string' ? value : value?.correo;
-         return nombre ? this._filterConcat(nombre as string) : this.contactoLista.slice();
-        }),
-      )
-    })
-
+     this.rellenandoContactos()
     /**Llenando datos laterales del servicio */
-     this.serviceService.selectVistaServicio(id,contador,2).subscribe((resp : responseService)=>{
-      console.log(resp);
-      
+     this.serviceService.selectVistaServicio(this.id,this.contador,2).subscribe((resp : responseService)=>{      
      this.datosServicio = {
       cliente : resp.container[0].cliente,
       servicio : resp.container[0].servicio,
@@ -204,7 +199,7 @@ export class TicketEntryComponent implements OnInit {
     this.pingRouter = []
 
     /**Pidiendo pings para los otros equipos*/
-    this.ipService.selectIpOneEquipament(0,id,3,contador).subscribe(async(resp:responseService) =>{      
+    this.ipService.selectIpOneEquipament(0,this.id,3,this.contador).subscribe(async(resp:responseService) =>{      
       if(resp.status === "not found"){
         console.log("No encontro");
       }else{
@@ -224,7 +219,7 @@ export class TicketEntryComponent implements OnInit {
     })
 
     //pidiendo ping para routers
-    this.ipService.selectIpOneRouter(0,id,3,contador).subscribe(async(resp:responseService) =>{
+    this.ipService.selectIpOneRouter(0,this.id,3,this.contador).subscribe(async(resp:responseService) =>{
       console.log(resp);
       if(resp.status === "not found"){
         console.log("No encontro");
@@ -243,7 +238,7 @@ export class TicketEntryComponent implements OnInit {
     })
 
     //pidiendo ping para radios
-    this.deviceService.todosRadios(id,contador).subscribe(async (resp:responseService)=>{
+    this.deviceService.todosRadios(this.id,this.contador).subscribe(async (resp:responseService)=>{
       if(resp.status === "not found"){
         console.log("No hay radios");
       }else{  
@@ -260,6 +255,20 @@ export class TicketEntryComponent implements OnInit {
       }      
     })
 
+  }
+
+  rellenandoContactos(){
+    this.contactoService.llamar_Contactos_OnlyServicio(1,this.contador!,2,this.id!).subscribe(async(resp:responseService)=>{
+      this.contactoLista =  resp.container      
+     /**Se llena el mat-autocomplete de los contactos */ 
+      this.filteredContacts =  this.myControlContacts.valueChanges.pipe(
+        startWith(''),
+        map(value => {
+          const nombre = typeof value === 'string' ? value : value?.correo;
+         return nombre ? this._filterConcat(nombre as string) : this.contactoLista.slice();
+        }),
+      )
+    })
   }
 
   async monitoreoPing( ip : string, i : number,array:pingDatos[]){ 
@@ -315,37 +324,40 @@ export class TicketEntryComponent implements OnInit {
     })
   }  
 
-  agregarContacto(datos : any,principal : boolean){    
+  agregarContacto(datos : number){        
+
+    this.contactoPrincipal = datos
+    this.acomuladorContactos.push(this.contactoLista[datos])
+
+    /*    
     this.idNuevo = this.idNuevo ++
     if (principal) {
       this.acomuladorContactos.splice(datos,0)
       this.acomuladorContactos.unshift(this.contactoLista[datos])  
     } else {
-      this.acomuladorContactos.push(this.contactoLista[datos])
+    
       const mat = document.querySelector("#mat-group-suffix")
       const cdiv = document.createElement("button")      
       cdiv.innerHTML = datos.toString()
       cdiv.id = "a"+this.idNuevo
       mat?.appendChild(cdiv)
-    } 
+    } */
   }
 
   agregarOtroContacto(){
+    if(this.contador != undefined && this.id!){
     let dialogRef  = this.dialog.open(NewContactComponent,
       {data: {arrayRol:this.arrayRol, datosServicio: this.datosServicio},
       animation: { to: "bottom" },
       height:"auto", width:"350px",
      });
   
-     dialogRef.afterClosed().subscribe((result:any)=>{
-      try{
-     if(result.mensaje.length > 0  ){
-       setTimeout(()=>{
-       this.notificationService.openSnackBar("Se agrego con exito");
-       })
-     }
-     }catch(Exception){}
-    })
+    dialogRef.afterClosed().subscribe( (resp:string)=>{
+     this.rellenandoContactos() } )
+
+    }else{
+      alert('Por favor primero seleccione un identificador')
+    }
   }
 
   agregarCopia(bool: boolean){
@@ -358,9 +370,7 @@ export class TicketEntryComponent implements OnInit {
     
     await lastValueFrom(this.Search.searchTicketEntry(result,opc)).then( (result : responseService) =>{    
       if(result.status !== "not there Services"){
-      this.options= result.container;
-      console.log(result);
-      
+      this.options= result.container;      
       if(buscarVentana == true){
         this.myControl.setValue(result.container[0])
       }
@@ -392,6 +402,16 @@ export class TicketEntryComponent implements OnInit {
     this.$sub.add(this.rol.llamarTodo().subscribe((resp:responseService) => {
       this.arrayRol = resp.container;      
     }))
+  }
+
+  enviarTicket(){
+    if(this.agregarMasContacto == false){
+      console.log(this.contactoPrincipal);
+      console.log(this.indicesAcomu);
+    }else{
+      console.log(this.contactoPrincipal);
+    }
+    
   }
 
 

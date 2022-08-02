@@ -79,16 +79,13 @@ export class NewContactComponent {
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
       this.modelLog.cveCliente = Number(this.id);
-      
-      console.log(this.contactoModel);
-      console.log(this.modelLog);
     
         if(this.agregarForm.valid !=false){
             //this.contactoModel.cveContacto = this.idAuto;
           this.modelLog.tipo[0]=1;
           await lastValueFrom(this.contacto.insertServicios_tServicos(this.contactoModel));
           await lastValueFrom(this.logService.insertLog(this.modelLog,1));
-          this.dialogRef.close(this.contactoModel)
+          this.dialogRef.close("SI REGRESO EL CONTACTO")
         }else{
           alert("Por favor llene los campos");
         }

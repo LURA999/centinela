@@ -27,7 +27,7 @@
                         <div>
                         <mat-form-field  class="inputs" appearance="fill">
                         <mat-label>De : (seleccione un contacto)</mat-label>
-                            <mat-select formControlName="contactoCorreo" #selectContacto (selectionChange)="agregarContacto(selectContacto.value,true)">
+                            <mat-select formControlName="contactoCorreo" #selectContacto (selectionChange)="agregarContacto(selectContacto.value)">
                                 <mat-option value="-1" disabled>Selecciona un contacto</mat-option>
                                 <mat-option *ngFor="let contacto of contactoLista let i=index"  [value]="i">
                                     {{contacto.nombre}}
@@ -45,14 +45,14 @@
                                     matInput
                                     [matAutocomplete]="auto2" #autoContacto>
                                 <mat-autocomplete  #auto2="matAutocomplete" (optionSelected)="contactoArray($event)" [displayWith]="displayFn" >
-                                    <mat-option *ngFor="let con of filteredContacts | async  let i = index" [id]="i+''" [value]="con.correo" #selectedOption>
+                                    <mat-option *ngFor="let con of filteredContacts | async  let i = index" [id]="i+'_'" [value]="con"  #selectedOption>
                                         {{con.nombre}}
                                     </mat-option>
                                 </mat-autocomplete>
                                 <div id="mat-group-suffix">
                                     <ng-template #matIcon></ng-template>
                                 </div>
-                                <mat-hint align="end" > <div><a (click)="agregarCopia(true)" class="linkContactoCc" style="color:red"> Ocultar Cc</a></div></mat-hint>
+                                <mat-hint align="end" > <div><a (click)="agregarCopia(true)" class="linkContactoCc" style="color:red;"> Cerrar Cc</a></div></mat-hint>
 
                             </mat-form-field>
                         </div>
@@ -61,7 +61,7 @@
                         <div class="campo">
                         <mat-form-field  appearance="fill">
                             <mat-label>Origen</mat-label>
-                            <mat-select>
+                            <mat-select formControlName="origen">
                             <mat-option value="0" disabled selected>Seleccione un origen</mat-option>
                             <mat-option value="1">Llamada directa</mat-option>
                             <mat-option value="2">WhatsApp</mat-option>
@@ -75,7 +75,7 @@
                         <div class="campo">
                         <mat-form-field appearance="fill">
                             <mat-label>Grupo</mat-label>
-                            <mat-select #idGrupo (selectionChange)="buscarUsuarios()">
+                            <mat-select formControlName="grupo" #idGrupo (selectionChange)="buscarUsuarios()">
                                 <mat-option value="2">Asesor</mat-option>
                                 <mat-option value="3">Facturacion</mat-option>
                                 <mat-option value="4">Soporte</mat-option>
@@ -85,7 +85,7 @@
                         <div class="campoAgente">
                         <mat-form-field  appearance="fill">
                             <mat-label>Agente</mat-label>
-                            <mat-select>
+                            <mat-select formControlName="agente">
                                 <mat-option *ngFor="let i of usuarios" [value]="i.idUsuario">{{i.usuario}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -93,7 +93,7 @@
                         <div class="campo">
                         <mat-form-field appearance="fill">
                             <mat-label>Asunto</mat-label>
-                            <mat-select>
+                            <mat-select formControlName="asunto">
                                 <mat-option *ngFor="let i of asuntosArray" [value]="i.idAsunto">{{i.nombre}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -101,7 +101,7 @@
                         <div class="campo">
                             <mat-form-field appearance="fill">
                                 <mat-label>Prioridad</mat-label>
-                                <mat-select>
+                                <mat-select formControlName="prioridad">
                                     <mat-option value="1">Baja</mat-option>
                                     <mat-option value="2">Media</mat-option>
                                     <mat-option value="3">Alta</mat-option>
@@ -112,15 +112,15 @@
                         <div class="campo">
                             <mat-form-field appearance="legacy">
                             <mat-label>Descripcion</mat-label>
-                            <textarea matInput placeholder="" rows="15"></textarea>
+                            <textarea formControlName="descripcion" matInput placeholder="" rows="15"></textarea>
                             </mat-form-field>
                         </div>
                         <div class="inputs">
                             <mat-form-field appearance="fill">
                                 <mat-label>Incidencia</mat-label>
-                                <mat-select>
-                                    <mat-option value="1">i</mat-option>
-                   
+                                <mat-select formControlName="incidencia">
+                                    <mat-option value="0" disabled>No hay registradas</mat-option>
+                                    <mat-option value="1">Ninguna</mat-option>
                                 </mat-select>
                                 <mat-hint align="end" > <div><a (click)="agregarOtroContacto()" class="linkContactoCc">Aregar incidencia  </a></div></mat-hint>
 
@@ -129,7 +129,7 @@
 
                         <div class="botonesSolicitud">
                             <button mat-stroked-button color="primary">Cancelar</button>
-                            <button mat-raised-button color="primary">Crear</button>  
+                            <button mat-raised-button color="primary" (click)="enviarTicket()">Crear</button>  
                         </div>
                     </form>
                     </mat-card-content>
