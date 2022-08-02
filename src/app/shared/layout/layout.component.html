@@ -27,46 +27,62 @@
              (keyup)="contacto(id.value,$event)"
              (keyup)="ticket(id.value,$event)"
              [matAutocomplete]="auto" #id>
-      <mat-autocomplete    #auto="matAutocomplete" >
+      <mat-autocomplete [(ngModel)]="filteredOptions"  #auto="matAutocomplete" >
         <br>  
         <div id="botones">
-        <button mat-button class="filtros" >Todos</button>
-          <button mat-button class="filtros">Servicios</button>
-          <button mat-button class="filtros">Contactos</button>
-          <button mat-button class="filtros">Tickets</button>
+        <button mat-button class="filtros" (click)="todosbutton()" >Todos</button>
+          <button mat-button class="filtros" (click)="serviciobutton()">Servicios</button>
+          <button mat-button class="filtros" (click)="contactobutton()">Contactos</button>
+          <button mat-button class="filtros" (click)="ticketbutton()">Tickets</button>
         </div>
+        <div id="opciones">
         <br>
-        <div>
         <mat-divider></mat-divider>
         <mat-label [hidden]="serviciosboolean === false" class="tipo">Servicios</mat-label>
         <mat-divider></mat-divider>
         <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
           
-          <mat-icon style="color: rgb(2, 158, 2);"> lan</mat-icon>
+          <mat-icon  id="lan" > lan</mat-icon>
+          <div id="servicio">
           {{option.split(" ")[0]}} 
+        </div>
+        <div id="empresa">
           {{option.split(" | ")[1]}}
+        </div>
         </mat-option>
         <mat-divider></mat-divider>
         <mat-label *ngIf="this.contactosboolean" class="tipo">Contactos</mat-label>
         <mat-divider></mat-divider>
         <mat-option  *ngFor="let option of filteredContacts  | async" [value]="option" >
-          <mat-icon style="color:rgb(40, 40, 188) ;"> account_box</mat-icon>
+          <mat-icon id="account_box"> account_box</mat-icon>
+          <div id="nombre">
           {{option.split(" ")[0]}}
           {{option.split(" ")[1]}}
           {{option.split(" ")[2]}}
+        </div>
+        <div id="correo">
           {{option.split(" | ")[1]}}
-          {{option.split(" | ")[2]}}
+        </div>
+        <div id="numero">
+          {{option.split(" | ")[2].split(" - ")[1]}}
+        </div>
 
         </mat-option>
         <mat-divider></mat-divider>
         <mat-label [hidden]="ticketsboolean === false"   class="tipo">Tickets</mat-label>
         <mat-divider></mat-divider>
         <mat-option  *ngFor="let option of filteredTickets  | async" [value]="option" >
-          <mat-icon style="color: rgb(141, 18, 194);">confirmation_number </mat-icon>
-          {{option.split(" ")[0]}}
+          <mat-icon id="confirmation_number">confirmation_number </mat-icon>
+          <div id="ticket">
+            {{option.split(" ")[0]}}
+          </div>
+          <div id="asunto">
           {{option.split(" | ")[1]}}
+        </div>
+        <div id="tipo">
           {{option.split(" | ")[2]}}
-          {{option.split(" | ")[3]}}
+
+        </div>
         </mat-option>
       </div>
       </mat-autocomplete> 

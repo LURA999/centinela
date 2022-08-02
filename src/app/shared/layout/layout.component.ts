@@ -20,6 +20,11 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 serviciosboolean:boolean=false
 contactosboolean:boolean=false
 ticketsboolean:boolean=false
+botontodos:boolean=true
+botonservicio:boolean=true
+botoncontacto:boolean=true
+botontickets:boolean=true
+
 
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
@@ -108,7 +113,39 @@ ticketsboolean:boolean=false
         }
     }
 
+
+    todosbutton(){
+        this.botonservicio=true
+        this.botoncontacto=true
+        this.botontickets=true
+       
+    }
+
+serviciobutton(){
+    this.botonservicio=true
+    this.botoncontacto=false
+    this.botontickets=false
+    this.contacts=[]
+    this.tickets=[]
+}
+contactobutton(){
+    this.botoncontacto=true
+    this.botonservicio=false
+    this.botontickets=false
+    this.options=[]
+    this.tickets=[]
+}
+ticketbutton(){
+    this.botontickets=true
+    this.botoncontacto=false
+    this.botonservicio=false
+    this.contacts=[]
+    this.options=[]
+}
+
     async servicio(id:string,event : any){
+if(this.botonservicio==true){
+        
         id = id.split(" ")[0]
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
@@ -132,11 +169,21 @@ ticketsboolean:boolean=false
           startWith(''),
           map((value: any) =>  this._filter(value || '')) );
         }
-
+    }else{
+        this.serviciosboolean=false
+        this.options=[]
+    }
 
     }
 
+
+
+
+
+
     async contacto(id:string,event : any){
+
+        if(this.botoncontacto==true){
         id = id.split(" ")[0]
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
@@ -155,7 +202,11 @@ ticketsboolean:boolean=false
           startWith(''),
           map((value: any) =>  this._filterContacts(value || '')) );
         }
-    
+        }else{
+            this.contactosboolean=false
+            this.contacts=[]  
+        }
+
 
     }
 
@@ -164,13 +215,12 @@ ticketsboolean:boolean=false
 
 
     async ticket(id:string,event : any){
+        if(this.botontickets==true){
         id = id.split(" ")[0]
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         || id == "" || Number(id) > 0){
-           
-
           await lastValueFrom(this.Search.searchTicket(id)).then( (result : responseService) =>{
             console.log(result);
             
@@ -190,7 +240,10 @@ ticketsboolean:boolean=false
           map((value: any) =>  this._filterTickets(value || '')) );
 
         }
-
+    }else{
+        this.ticketsboolean=false
+            this.tickets=[]
+    }
     }
 
 

@@ -190,6 +190,30 @@ height: 60%;
 
 ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
  border-radius: 10px;
+ overflow: hidden;
+}
+#lan{
+  color: rgb(2, 158, 2);
+  position: absolute;
+  margin-top: -3%;
+}
+#empresa{
+  margin-left: 10%;
+  margin-top: -4%;
+  position: absolute;
+}
+
+#servicio{
+  position: absolute;
+  margin-left: 10%;
+  margin-top: -8%;
+  font-weight: bold;
+}
+
+#opciones{
+  overflow-y: scroll;
+  height: 75%;
+
 }
 .filtros{
   background-color: #2b3779 ; 
@@ -208,6 +232,63 @@ text-align: center;
   display: block;
   text-align: center;
   font-weight: bold;
+}
+
+/*  icono de los contactos  */
+#account_box{
+  color:rgb(40, 40, 188) ;
+  position: absolute;
+  margin-top: -3%;
+}
+
+#numero{
+
+  margin-left: 50%;
+  margin-top: -6%;
+  position: absolute;
+}
+
+#correo{
+
+  margin-left: 10%;
+  margin-top: -4%;
+  position: absolute;
+
+}
+
+
+#nombre{
+  position: absolute;
+  margin-left: 10%;
+  margin-top: -8%;
+  font-weight: bold;
+}
+/* icono de los tickets*/
+#confirmation_number{
+  color: rgb(141, 18, 194);
+    position: absolute;
+  margin-top: -3%;
+
+}
+
+#ticket{
+  position: absolute;
+  margin-left: 10%;
+  margin-top: -10%;
+  font-weight: bold;
+}
+
+#tipo{
+  margin-left: 10%;
+  margin-top: -2%;
+  position: absolute;
+}
+
+#asunto{
+  margin-left: 10%;
+  margin-top: -6%;
+  position: absolute;
+  
 }
 
 mat-option{
