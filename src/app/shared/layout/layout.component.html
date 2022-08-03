@@ -30,7 +30,7 @@
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" >
         <mat-option   [disabled]="true" style="height: 50px;">
         <div id="botones">
-        <button mat-button class="filtros" (click)="todosbutton()" >Todos</button>
+        <button mat-button  class="filtros" (click)="todosbutton()" >Todos</button>
           <button mat-button class="filtros" (click)="serviciobutton()">Servicios</button>
           <button mat-button class="filtros" (click)="contactobutton()">Contactos</button>
           <button mat-button class="filtros" (click)="ticketbutton()">Tickets</button>
@@ -62,12 +62,11 @@
           {{option.split(" ")[1]}}
           {{option.split(" ")[2]}}
         </div>
-        <div id="correo">
-          {{option.split(" | ")[1]}}
-        </div>
-        <div id="numero">
-          {{option.split(" | ")[2].split(" - ")[1]}}
-        </div>
+        <div id="correoynumero">
+          {{option.split(" | ")[1]}}-{{option.split(" | ")[2].split(" - ")[1]}}
+          </div>
+      
+       
 
         </mat-option>
         <mat-divider></mat-divider>
