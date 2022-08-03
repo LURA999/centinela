@@ -12,12 +12,14 @@ import { SearchIdComponent } from '../popup/search-id/search-id.component';
 import { DeviceService } from 'src/app/core/services/device.service'; 
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { MatSelect } from '@angular/material/select';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { NewContactComponent } from "../popup/new-contact/new-contact.component"
 import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { IpService } from 'src/app/core/services/ip.service';
 import { RolService } from 'src/app/core/services/rol.service';
+import { contactsEmailTicketInterface } from "../../../interfaces/contactsEmailTicketInterface.interface"
+import { TicketService } from 'src/app/core/services/tickets.service';
+import { formTicketInterface } from "../../../interfaces/formTicketInterface.interface"
 
 interface datosServicio {
   cliente : string,
@@ -52,6 +54,7 @@ interface datosContacto {
   telefono: number
 }
 
+
 @Component({
   selector: 'app-ticket-entry',
   templateUrl: './ticket-entry.component.html',
@@ -64,16 +67,14 @@ export class TicketEntryComponent implements OnInit {
   myControlContacts =new FormControl("")
   filteredOptions: Observable<string[]> | undefined;
   filteredContacts: Observable<datosContacto[]> | undefined;
-
   pingOtro : pingDatos[] = []
   pingRouter : pingDatos[] = []
   pingRadio : pingDatos[] = []
-
   options: string[] = [];
   contactoControl = new FormControl('');
   $sub = new Subscription()
   contactoLista: any[] = [];
-  acomuladorContactos: Array<Number>  =new Array()
+  acomuladorContactos: Array<string>  =new Array()
   idNuevo : number = 0
   datosServicio : datosServicio | undefined;
   asuntosArray: any [] = []
@@ -83,6 +84,7 @@ export class TicketEntryComponent implements OnInit {
   indicesAcomu : Array<Number>  =new Array()
   contador : number | undefined;
   id : string | undefined;
+ 
   agregarMasContacto : boolean = true
   contactoPrincipal : number | undefined
   @ViewChild("idGrupo") idGrupo! : MatSelect    
@@ -94,18 +96,17 @@ export class TicketEntryComponent implements OnInit {
   formTicket : FormGroup = this.fb.group({
     contactoCorreo : ["", Validators.required],
     origen : ["", Validators.required],
-    grupo : [""],
+    cveGrupo : [""],
     agente : [""],
     asunto : [""],
     prioridad : [""],
     descripcion : [""],
-    incidencia : [""],
-
+    cveIncidencia : [""]
   })
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
-  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService) {  }
+  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
@@ -118,7 +119,8 @@ export class TicketEntryComponent implements OnInit {
 
   contactoArray(ev : any){
     this.indicesAcomu.push(Number(ev.option.id.split("_")[0]))
-    this.acomuladorContactos.push(ev.option.value)
+    this.acomuladorContactos.push(ev.option.value.correo)
+  
     const newBut = document.createElement("Button");
     const titleIcon = this.renderer.createText("close")
     const titleBut = this.renderer.createText(ev.option._element.nativeElement.innerText+" ("+ev.option.value.correo+")")
@@ -145,6 +147,7 @@ export class TicketEntryComponent implements OnInit {
   }
 
   destruirButton(button:any,id:number){
+    this.acomuladorContactos.splice(this.indicesAcomu.indexOf(id),1)   
     this.indicesAcomu.splice(this.indicesAcomu.indexOf(id),1)
     this.renderer.removeChild(document.querySelector("#mat-group-suffix"),document.getElementById(button.id))
   }
@@ -201,7 +204,6 @@ export class TicketEntryComponent implements OnInit {
     /**Pidiendo pings para los otros equipos*/
     this.ipService.selectIpOneEquipament(0,this.id,3,this.contador).subscribe(async(resp:responseService) =>{      
       if(resp.status === "not found"){
-        console.log("No encontro");
       }else{
         for (let i =0; i<resp.container.length; i++) {
           this.monitoreoPing(resp.container[i].ip, i,this.pingOtro)  
@@ -220,9 +222,7 @@ export class TicketEntryComponent implements OnInit {
 
     //pidiendo ping para routers
     this.ipService.selectIpOneRouter(0,this.id,3,this.contador).subscribe(async(resp:responseService) =>{
-      console.log(resp);
       if(resp.status === "not found"){
-        console.log("No encontro");
       }else{
         for (let i =0; i<resp.container.length; i++) {
           this.monitoreoPing(resp.container[i].ip, i,this.pingRouter)  
@@ -240,7 +240,6 @@ export class TicketEntryComponent implements OnInit {
     //pidiendo ping para radios
     this.deviceService.todosRadios(this.id,this.contador).subscribe(async (resp:responseService)=>{
       if(resp.status === "not found"){
-        console.log("No hay radios");
       }else{  
         for (let i =0; i<resp.container.length; i++) {       
           this.monitoreoPing(resp.container[i].ip, i,this.pingRadio)  
@@ -260,6 +259,7 @@ export class TicketEntryComponent implements OnInit {
   rellenandoContactos(){
     this.contactoService.llamar_Contactos_OnlyServicio(1,this.contador!,2,this.id!).subscribe(async(resp:responseService)=>{
       this.contactoLista =  resp.container      
+      
      /**Se llena el mat-autocomplete de los contactos */ 
       this.filteredContacts =  this.myControlContacts.valueChanges.pipe(
         startWith(''),
@@ -327,9 +327,7 @@ export class TicketEntryComponent implements OnInit {
   agregarContacto(datos : number){        
 
     this.contactoPrincipal = datos
-    this.acomuladorContactos.push(this.contactoLista[datos])
-
-    /*    
+    /*this.acomuladorContactos.push(this.contactoLista[datos])
     this.idNuevo = this.idNuevo ++
     if (principal) {
       this.acomuladorContactos.splice(datos,0)
@@ -404,14 +402,29 @@ export class TicketEntryComponent implements OnInit {
     }))
   }
 
-  enviarTicket(){
-    if(this.agregarMasContacto == false){
-      console.log(this.contactoPrincipal);
-      console.log(this.indicesAcomu);
+  enviarTicket(){    
+    if(this.formTicket.valid && this.myControl.value.length() > 0){
+      let contactsEmailTickets : contactsEmailTicketInterface
+      if(this.agregarMasContacto == false){
+        contactsEmailTickets = {
+          correo : this.contactoLista[this.contactoPrincipal!].correo,
+          nombre : this.contactoLista[this.contactoPrincipal!].nombre,
+          correoCc : this.acomuladorContactos
+        }
+      }else{
+        contactsEmailTickets = {
+          correo : this.contactoLista[this.contactoPrincipal!].correo,
+          nombre : this.contactoLista[this.contactoPrincipal!].nombre,
+          correoCc : []
+        }
+      }
+      let form : formTicketInterface
+      form = this.formTicket.value
+      
+      this.ticketService.insertTickets()
     }else{
-      console.log(this.contactoPrincipal);
+      alert("Por favor llene el formulario")
     }
-    
   }
 
 
