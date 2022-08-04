@@ -18,15 +18,19 @@ import { MatAutocomplete } from '@angular/material/autocomplete';
     styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
+    booleantodos:boolean=true
+    booleanservicio:boolean=true
+    booleancontactos:boolean=true
+    booleantickets:boolean=true
     mostrar:string="on"
     private readonly notifier: NotifierService;
-serviciosboolean:boolean=false
-contactosboolean:boolean=false
-ticketsboolean:boolean=false
+serviciosbooleanlabel:boolean=false
+contactosbooleanlabel:boolean=false
+ticketsbooleanlabel:boolean=false
 botontodos:boolean=true
-botonservicio:boolean=true
-botoncontacto:boolean=true
-botontickets:boolean=true
+botonservicio:boolean=false
+botoncontacto:boolean=false
+botontickets:boolean=false
 
 
     time = new Observable<string>((observer: Observer<string>) => {
@@ -122,37 +126,105 @@ botontickets:boolean=true
     
 
     todosbutton(){
-        this.botonservicio=true
-        this.botoncontacto=true
-        this.botontickets=true
-       
+
+this.botonservicio=false
+this.botoncontacto=false
+this.botontickets=false
+
+  this.serviciobutton();
+  this.contactobutton();
+  this.ticketbutton();
+
+
     }
 
 serviciobutton(){
-    this.botonservicio=true
-    this.botoncontacto=false
-    this.botontickets=false
-    this.contacts=[]
-    this.tickets=[]
+
+  
+console.log(this.botonservicio);
+
+   if(this.botoncontacto==false){
+    this.filteredContacts = this.myControl.valueChanges
+   }
+
+   if(this.botontickets==false){
+    this.filteredTickets = this.myControl.valueChanges
+
+   }
+
+   if(this.botonservicio==false){
+    console.log("servicio es false");
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map((value: any) =>  this._filter(value || '')) );
+this.botonservicio=true
+   }else{
+     
+    this.filteredOptions = this.myControl.valueChanges
+    this.botonservicio=false
+
+    console.log("servicio es true");
+
+   }
+
+
    
 }
 contactobutton(){
-    this.botoncontacto=true
-    this.botonservicio=false
-    this.botontickets=false
-    this.options=[]
-    this.tickets=[]
+  if(this.botonservicio==false){
+    this.filteredOptions = this.myControl.valueChanges
+
+   }
+
+   if(this.botontickets==false){
+    this.filteredTickets = this.myControl.valueChanges
+
+   }
+
+   if(this.botoncontacto==false){
+    console.log("servicio es false");
+    this.filteredContacts = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map((value: any) =>  this._filter(value || '')) );
+this.botoncontacto=true
+   }else{
+     
+    this.filteredContacts = this.myControl.valueChanges
+    this.botoncontacto=false
+
+    console.log("servicio es true");
+
+   }
 }
 ticketbutton(){
-    this.botontickets=true
-    this.botoncontacto=false
-    this.botonservicio=false
-    this.contacts=[]
-    this.options=[]
+  if(this.botonservicio==false){
+    this.filteredOptions = this.myControl.valueChanges
+
+   }
+
+   if(this.botoncontacto==false){
+    this.filteredContacts = this.myControl.valueChanges
+
+   }
+
+   if(this.botontickets==false){
+    console.log("servicio es false");
+    this.filteredTickets = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map((value: any) =>  this._filter(value || '')) );
+this.botontickets=true
+   }else{
+     
+    this.filteredTickets = this.myControl.valueChanges
+    this.botontickets=false
+
+    console.log("servicio es true");
+
+   }
 }
 
     async servicio(id:string,event : any){
-if(this.botonservicio==true){
+if(this.botonservicio==true||this.botontodos==true){
         
         id = id.split(" ")[0]
 
@@ -161,12 +233,12 @@ if(this.botonservicio==true){
         || id == "" || Number(id) > 0){
           await lastValueFrom(this.Search.searchService(id)).then( (result : responseService) =>{
           if(result.status !== "not found"){
-            this.serviciosboolean=true
+            this.serviciosbooleanlabel=true
           console.log(result.container);
           
           this.options= result.container;
           }else{
-            this.serviciosboolean=false
+            this.serviciosbooleanlabel=false
             this.options=[]
            
             
@@ -178,7 +250,7 @@ if(this.botonservicio==true){
           map((value: any) =>  this._filter(value || '')) );
         }
     }else{
-        this.serviciosboolean=false
+        this.serviciosbooleanlabel=false
         this.options=[]
     }
 
@@ -191,7 +263,7 @@ if(this.botonservicio==true){
 
     async contacto(id:string,event : any){
 
-        if(this.botoncontacto==true){
+        if(this.botoncontacto==true||this.botontodos==true){
         id = id.split(" ")[0]
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
@@ -199,10 +271,10 @@ if(this.botonservicio==true){
         || id == "" || Number(id) > 0){
           await lastValueFrom(this.Search.searchContact(id)).then( (result : responseService) =>{
           if(result.status !== "not found"){
-            this.contactosboolean=true
+            this.contactosbooleanlabel=true
           this.contacts= result.container;
           }else{
-            this.contactosboolean=false
+            this.contactosbooleanlabel=false
             this.contacts=[]
           }
         });
@@ -211,7 +283,7 @@ if(this.botonservicio==true){
           map((value: any) =>  this._filterContacts(value || '')) );
         }
         }else{
-            this.contactosboolean=false
+            this.contactosbooleanlabel=false
             this.contacts=[]  
         }
 
@@ -223,7 +295,7 @@ if(this.botonservicio==true){
 
 
     async ticket(id:string,event : any){
-        if(this.botontickets==true){
+        if(this.botontickets==true||this.botontodos==true){
         id = id.split(" ")[0]
 
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
@@ -233,12 +305,12 @@ if(this.botonservicio==true){
             console.log(result);
             
           if(result.status !== "not found"){
-            this.ticketsboolean=true
+            this.ticketsbooleanlabel=true
           this.tickets= result.container;
           }else{
             console.log("entra");
             
-            this.ticketsboolean=false
+            this.ticketsbooleanlabel=false
             this.tickets=[]
             
           }
@@ -249,7 +321,7 @@ if(this.botonservicio==true){
 
         }
     }else{
-        this.ticketsboolean=false
+        this.ticketsbooleanlabel=false
             this.tickets=[]
     }
     }

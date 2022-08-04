@@ -31,16 +31,16 @@
         <mat-option   [disabled]="true" style="height: 50px;">
         <div id="botones">
         <button mat-button  class="filtros" (click)="todosbutton()" >Todos</button>
-          <button mat-button class="filtros" (click)="serviciobutton()">Servicios</button>
-          <button mat-button class="filtros" (click)="contactobutton()">Contactos</button>
-          <button mat-button class="filtros" (click)="ticketbutton()">Tickets</button>
+          <button mat-button  class="filtros" (click)="serviciobutton()">Servicios</button>
+          <button mat-button  class="filtros" (click)="contactobutton()">Contactos</button>
+          <button mat-button  class="filtros" (click)="ticketbutton()">Tickets</button>
         </div>
       </mat-option>
         <div id="opciones">
           
           <mat-divider id="division"></mat-divider>
 
-        <mat-label [hidden]="serviciosboolean === false" class="tipo">Servicios</mat-label>
+        <mat-label [hidden]="serviciosbooleanlabel === false "  class="tipo">Servicios</mat-label>
         <mat-divider></mat-divider>
         <mat-option [(ngModel)]="filteredOptions"  *ngFor="let option of filteredOptions  | async" [value]="option" >
           
@@ -53,7 +53,7 @@
         </div>
         </mat-option>
         <mat-divider></mat-divider>
-        <mat-label *ngIf="this.contactosboolean" class="tipo">Contactos</mat-label>
+        <mat-label [hidden]="contactosbooleanlabel===false" class="tipo">Contactos</mat-label>
         <mat-divider></mat-divider>
         <mat-option  *ngFor="let option of filteredContacts  | async" [value]="option" >
           <mat-icon id="account_box"> account_box</mat-icon>
@@ -70,7 +70,7 @@
 
         </mat-option>
         <mat-divider></mat-divider>
-        <mat-label [hidden]="ticketsboolean === false"   class="tipo">Tickets</mat-label>
+        <mat-label [hidden]="ticketsbooleanlabel === false"   class="tipo">Tickets</mat-label>
         <mat-divider></mat-divider>
         <mat-option  *ngFor="let option of filteredTickets  | async" [value]="option" >
           <mat-icon id="confirmation_number">confirmation_number </mat-icon>
