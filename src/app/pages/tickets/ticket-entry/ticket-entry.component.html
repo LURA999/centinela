@@ -75,7 +75,7 @@
                         <div class="campo">
                         <mat-form-field appearance="fill">
                             <mat-label>Grupo</mat-label>
-                            <mat-select formControlName="grupo" #idGrupo (selectionChange)="buscarUsuarios()">
+                            <mat-select formControlName="cveGrupo" #idGrupo (selectionChange)="buscarUsuarios()">
                                 <mat-option value="2">Asesor</mat-option>
                                 <mat-option value="3">Facturacion</mat-option>
                                 <mat-option value="4">Soporte</mat-option>
@@ -85,7 +85,7 @@
                         <div class="campoAgente">
                         <mat-form-field  appearance="fill">
                             <mat-label>Agente</mat-label>
-                            <mat-select formControlName="agente">
+                            <mat-select formControlName="cveUsuario">
                                 <mat-option *ngFor="let i of usuarios" [value]="i.idUsuario">{{i.usuario}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -118,7 +118,7 @@
                         <div class="inputs">
                             <mat-form-field appearance="fill">
                                 <mat-label>Incidencia</mat-label>
-                                <mat-select formControlName="incidencia">
+                                <mat-select formControlName="cveIncidencia">
                                     <mat-option value="0" disabled>No hay registradas</mat-option>
                                     <mat-option value="1">Ninguna</mat-option>
                                 </mat-select>

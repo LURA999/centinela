@@ -17,8 +17,9 @@ import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { IpService } from 'src/app/core/services/ip.service';
 import { RolService } from 'src/app/core/services/rol.service';
-import { contactsEmailTicketInterface } from "../../../interfaces/contactsEmailTicketInterface.interface"
+import { contactsEmailTicket } from "../../../models/contactsEmailTicket.model"
 import { TicketService } from 'src/app/core/services/tickets.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { formTicketInterface } from "../../../interfaces/formTicketInterface.interface"
 
 interface datosServicio {
@@ -70,6 +71,7 @@ export class TicketEntryComponent implements OnInit {
   pingOtro : pingDatos[] = []
   pingRouter : pingDatos[] = []
   pingRadio : pingDatos[] = []
+  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket() 
   options: string[] = [];
   contactoControl = new FormControl('');
   $sub = new Subscription()
@@ -84,7 +86,7 @@ export class TicketEntryComponent implements OnInit {
   indicesAcomu : Array<Number>  =new Array()
   contador : number | undefined;
   id : string | undefined;
- 
+  identificador : string = ""
   agregarMasContacto : boolean = true
   contactoPrincipal : number | undefined
   @ViewChild("idGrupo") idGrupo! : MatSelect    
@@ -96,25 +98,21 @@ export class TicketEntryComponent implements OnInit {
   formTicket : FormGroup = this.fb.group({
     contactoCorreo : ["", Validators.required],
     origen : ["", Validators.required],
-    cveGrupo : [""],
-    agente : [""],
-    asunto : [""],
-    prioridad : [""],
-    descripcion : [""],
-    cveIncidencia : [""]
+    cveGrupo : ["", Validators.required],
+    cveUsuario : ["", Validators.required],
+    asunto : ["", Validators.required],
+    prioridad : ["", Validators.required],
+    descripcion : ["", Validators.required],
+    cveIncidencia : ["", Validators.required]
   })
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
-  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService) {  }
+  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
     this.todoRol();
-  }
-  
-  borrar(event : any){ 
-    this.renderer.removeChild(document.getElementById("mat-group-suffix"),document.getElementById(event._elementRef.nativeElement.id))
   }
 
   contactoArray(ev : any){
@@ -179,6 +177,7 @@ export class TicketEntryComponent implements OnInit {
 
    async opcionSeleccionada(identificador:string){
     identificador = identificador.split(" ")[0]
+    this.identificador = identificador
     this.formTicket.controls['contactoCorreo'].reset()
     //se desfragmenta el identificador
     let sepId : Array<string> = identificador.split("-")
@@ -188,7 +187,9 @@ export class TicketEntryComponent implements OnInit {
      this.rellenandoContactos()
     /**Llenando datos laterales del servicio */
      this.serviceService.selectVistaServicio(this.id,this.contador,2).subscribe((resp : responseService)=>{      
-     this.datosServicio = {
+      
+      
+      this.datosServicio = {
       cliente : resp.container[0].cliente,
       servicio : resp.container[0].servicio,
       plan : resp.container[0].plan,
@@ -402,28 +403,47 @@ export class TicketEntryComponent implements OnInit {
     }))
   }
 
-  enviarTicket(){    
-    if(this.formTicket.valid && this.myControl.value.length() > 0){
-      let contactsEmailTickets : contactsEmailTicketInterface
+  async enviarTicket(){    
+
+    if(this.formTicket.valid && this.myControl.valid){
+     
+
       if(this.agregarMasContacto == false){
-        contactsEmailTickets = {
-          correo : this.contactoLista[this.contactoPrincipal!].correo,
-          nombre : this.contactoLista[this.contactoPrincipal!].nombre,
-          correoCc : this.acomuladorContactos
-        }
+        this.contactsEmailTicket.correoCc  = this.acomuladorContactos
       }else{
-        contactsEmailTickets = {
-          correo : this.contactoLista[this.contactoPrincipal!].correo,
-          nombre : this.contactoLista[this.contactoPrincipal!].nombre,
-          correoCc : []
-        }
+        this.contactsEmailTicket.correoCc  = []
       }
+
+      this.contactsEmailTicket.correo = this.contactoLista[this.contactoPrincipal!].correo
+      this.contactsEmailTicket.nombre = this.contactoLista[this.contactoPrincipal!].nombre
+      this.contactsEmailTicket.texto =  this.formTicket.controls["descripcion"].value
+      this.contactsEmailTicket.prioridad = this.prioridadEnLetra(Number(this.formTicket.controls["prioridad"].value))
+      this.contactsEmailTicket.identificador = this.identificador
+      this.contactsEmailTicket.servicio = this.datosServicio?.servicio!
+
       let form : formTicketInterface
       form = this.formTicket.value
-      
-      this.ticketService.insertTickets()
+      form.abiertoUsuario = this.guarduser.getCveId()
+      form.cveServicio = this.datosServicio?.idServicio!
+      await lastValueFrom(this.ticketService.insertTickets(form))
+      await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))
     }else{
       alert("Por favor llene el formulario")
+    }
+  }
+
+  prioridadEnLetra( valor : number) : string{
+    switch (valor) {
+      case 1:
+        return "Baja";
+      case 2:
+        return "Media"
+      case 3:
+        return "Alta";
+      case 4:
+        return "Urgente";                
+      default:
+       return  "";
     }
   }
 

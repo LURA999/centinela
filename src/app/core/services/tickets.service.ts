@@ -1,8 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { formTicketInterface } from "src/app/interfaces/formTicketInterface.interface";
 import { responseService } from "src/app/models/responseService.model";
 import { environment } from 'src/environments/environment';
-import { contactsEmailTicketInterface } from "../../interfaces/contactsEmailTicketInterface.interface"
+import {  contactsEmailTicket } from "../../models/contactsEmailTicket.model"
 
 @Injectable({
     providedIn:'root'
@@ -24,14 +26,14 @@ export class TicketService {
 
     }
 
-    insertTickets()  {
-       // return this.http.get(this.local+"Tickets/tickets.php",);
+    insertTickets(ticket:formTicketInterface) : Observable<responseService> {
+        return this.http.post<responseService>(this.local+"Tickets/tickets.php",ticket);
     }
 
 
     //Enviar correoTicket 
-    enviarCorreo(email:contactsEmailTicketInterface){
-        this.http.post(this.local+"Tickets/correoTicket.php",email);
+    enviarCorreo(email: contactsEmailTicket) : Observable<responseService>{
+        return this.http.post<responseService>(this.local+"Tickets/correoTicket.php",email);
     }
 
 } 
