@@ -143,13 +143,7 @@ export class ViewServiceComponent implements OnInit {
   
   abrirMapaDireccion(avenida: string, numero: string, colonia: string, codigoPostal: string, 
     ciudad: string,  estado: string){
-
-  /* if(codigoPostal == undefined){
-   // window.open("https://www.google.com/maps/place/av.+"+direccionArray[0].replace(/\ /gi,'+').replace("#","")+",+"+direccionArray[1].replace(/\ /gi,'+')+",+"+direccionArray[2].replace(/\ /gi,'+')+","+direccionArray[3].replace(/\ /gi,'+'), "_blank");
-   }else{*/
     window.open(("https://www.google.com/maps/place/av. "+avenida+" "+numero+", "+colonia+", "+codigoPostal+" "+ciudad+", "+estado).replace(/\ /gi,'+'), "_blank");
-  // }
-
   }
   editarMapa(idServicio : number,ciudad: string,coordenadas: string,numero: number, 
     colonia: string, 

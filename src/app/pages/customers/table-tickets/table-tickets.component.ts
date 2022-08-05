@@ -12,7 +12,6 @@ import { NewTicketComponent } from '../popup/new-ticket/new-ticket.component';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
 import { DataService } from 'src/app/core/services/data.service';
-import { responseService } from 'src/app/models/responseService.model';
 
 @Component({
   selector: 'app-table-tickets',
@@ -23,8 +22,8 @@ export class TableTicketsComponent implements OnInit {
   @Input() hijoTickets :string ="";
   activar : string = this.ruta.url.split("/")[4];
   ELEMENT_DATA : any = []
-  metodo = new RepeteadMethods()
-  displayedColumns: string[] = ['departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente','opciones'];
+  metodos = new RepeteadMethods()
+  displayedColumns: string[] = ['departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente'];
   cargando : boolean = false;
   $sub = new Subscription()
   @Input ()hijoRS :string = ""
@@ -81,9 +80,9 @@ export class TableTicketsComponent implements OnInit {
         temp.push(this.ELEMENT_DATA[x1]["departamento"])
         temp.push(this.ELEMENT_DATA[x1]["asunto"])
         temp.push(this.ELEMENT_DATA[x1]["servicio"])
-        temp.push(this.ELEMENT_DATA[x1]["fechaCerrada"])
+        temp.push(this.ELEMENT_DATA[x1]["fechaCerrada"] !== undefined? "No asignada": this.ELEMENT_DATA[x1]["fechaCerrada"])
         temp.push(this.ELEMENT_DATA[x1]["fechaAbierta"])
-        temp.push(this.ELEMENT_DATA[x1]["estado"])
+        temp.push(this.metodos.prioridadEnLetra(this.ELEMENT_DATA[x1]["estado"]))
         temp.push(this.ELEMENT_DATA[x1]["agente"])
       worksheet.addRow(temp)
     }
@@ -112,7 +111,7 @@ export class TableTicketsComponent implements OnInit {
           num:resp.container[i].idTicket,
           departamento: resp.container[i].departamento,
           asunto:resp.container[i].asunto,
-          servicio:resp.container[i].nombre,
+          servicio:resp.container[i].servicio,
           fechaCerrada:resp.container[i].fechaCerrada,
           fechaAbierta:resp.container[i].fechaAbierta,
           estado:resp.container[i].estado,
@@ -129,16 +128,16 @@ export class TableTicketsComponent implements OnInit {
   }
 
   async eliminar(){
-    let dialogRef = await this.dialog.open(DeleteComponent,
+    let dialogRef =  this.dialog.open(DeleteComponent,
       {data: {idCliente : this.id, opc: 5, salir : true},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       
-      this.$sub.add(await dialogRef.afterClosed().subscribe((result : any) => {
+      this.$sub.add(dialogRef.afterClosed().subscribe((result : any) => {
         try{
         if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.metodo.arrayRemove(this.ELEMENT_DATA, this.metodo.buscandoIndice(this.id,this.ELEMENT_DATA,"id"),"id")
+          this.ELEMENT_DATA =  this.metodos.arrayRemove(this.ELEMENT_DATA, this.metodos.buscandoIndice(this.id,this.ELEMENT_DATA,"id"),"id")
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -163,7 +162,7 @@ export class TableTicketsComponent implements OnInit {
       if(result.mensaje.length > 0  ){
         this.ELEMENT_DATA.unshift({num: ++this.mayorNumero, departamento:result.departamento, asunto:result.asunto,
         servicio:result.servicio,  fechaCerrada:result.fechaCerrada, fechaAbierta:result.fechaAbierta,  
-        estado:this.metodo.estatus(result.estado), agente:result.agente});
+        estado:this.metodos.estatus(result.estado), agente:result.agente});
 
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
@@ -191,7 +190,7 @@ export class TableTicketsComponent implements OnInit {
       if(result.mensaje.length > 0  ){
         this.ELEMENT_DATA.unshift({num: ++this.mayorNumero, departamento:result.departamento, asunto:result.asunto,
         servicio:result.servicio,  fechaCerrada:result.fechaCerrada, fechaAbierta:result.fechaAbierta,  
-        estado:this.metodo.estatus(result.estado), agente:result.agente});
+        estado:this.metodos.estatus(result.estado), agente:result.agente});
         this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
         this.dataSource.paginator = this.paginator2;    
         this.dataSource.sort = this.sort;
@@ -207,7 +206,7 @@ export class TableTicketsComponent implements OnInit {
   
 
   async mensaje(mensaje : string){
-    await console.log(mensaje);
+     console.log(mensaje);
     
   }
 

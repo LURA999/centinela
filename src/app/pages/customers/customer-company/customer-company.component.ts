@@ -71,12 +71,12 @@ export class CustomerCompanyComponent implements OnInit {
 
   constructor(private serviceCustomer : CustomerService, private rutaActiva : ActivatedRoute
     ,private DataService : DataService, private router : Router,private renderer : Renderer2) { 
-    let diagonal = this.router.url.split("/",6)[4];
+    let diagonal : string | undefined = this.router.url.split("/",6)[4];
     if(diagonal != undefined){
       this.activeLink = "./"+diagonal
     }    
 
-    if(diagonal == "log"){
+    if(diagonal === "log" || diagonal === "ticket"){
       this.buttonAgregar = true
     }else{
       this.buttonAgregar = false
@@ -115,13 +115,11 @@ export class CustomerCompanyComponent implements OnInit {
   }
 
   desactivarBotones(index:number){   
-    if(index == 4){
+    if(index == 4 || index === 1){
       this.buttonAgregar = true
     }else{
       this.buttonAgregar = false
     }
   }
-  ngOnDestroy(): void {
 
-  }
 }

@@ -121,4 +121,20 @@ export class RepeteadMethods {
     let fecha2 :string = (splitted[0]+remplazar+splitted[1]+remplazar+splitted[2])
   return fecha2 ;
   }
+
+  //Es para los tickets
+  prioridadEnLetra( valor : number) : string{
+    switch (valor) {
+      case 1:
+        return "Baja";
+      case 2:
+        return "Media"
+      case 3:
+        return "Alta";
+      case 4:
+        return "Urgente";                
+      default:
+       return  "";
+    }
+  }
 }

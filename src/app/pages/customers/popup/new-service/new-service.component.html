@@ -1,4 +1,4 @@
-<h2 mat-dialog-title> <ng-container *ngIf="data.opc == false; else elseTemplate">
+<h2 mat-dialog-title> <ng-container *ngIf="data.opc === false; else elseTemplate">
     Crear servicio
   </ng-container>
   <ng-template #elseTemplate>
@@ -104,7 +104,7 @@
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
     <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearServicio(nombre.value,selectRS.value,selectCiudad.value,latitud.value, longitud.value,estado.value,avenida.value,
     codigoPostal.value, numero.value, colonia.value, dominio.value, selectEstatus.value,selectPlan.value)" cdkFocusInitial>
-      <ng-container *ngIf="data.opc == false; else elseTemplate">
+      <ng-container *ngIf="data.opc === false; else elseTemplate">
         Crear
       </ng-container>
       <ng-template #elseTemplate>

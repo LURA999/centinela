@@ -1,4 +1,4 @@
-<h2 mat-dialog-title> <ng-container *ngIf="data.opc == false; else elseTemplate">
+<h2 mat-dialog-title> <ng-container *ngIf="data.opc === false; else elseTemplate">
   Crear cliente
 </ng-container>
 <ng-template #elseTemplate>
@@ -39,7 +39,7 @@
 <mat-dialog-actions align="center">
   <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
   <button mat-button style="background-color:#3f51b5; color: white;" (click)="crearCliente(select.value,empresa.value,nombre.value)" cdkFocusInitial>
-    <ng-container *ngIf="data.opc == false; else elseTemplate">
+    <ng-container *ngIf="data.opc === false; else elseTemplate">
       Crear
     </ng-container>
     <ng-template #elseTemplate>

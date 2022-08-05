@@ -21,7 +21,6 @@ import { contactsEmailTicket } from "../../../models/contactsEmailTicket.model"
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { formTicketInterface } from "../../../interfaces/formTicketInterface.interface"
-
 interface datosServicio {
   cliente : string,
   servicio : string,
@@ -433,15 +432,14 @@ export class TicketEntryComponent implements OnInit {
       }else{
         this.contactsEmailTicket.correoCc  = []
       }
-
+      
       this.contactsEmailTicket.correo = this.contactoLista[this.contactoPrincipal!].correo
-      this.contactsEmailTicket.nombre = this.contactoLista[this.contactoPrincipal!].nombre
       this.contactsEmailTicket.texto =  this.formTicket.controls["descripcion"].value
-      this.contactsEmailTicket.prioridad = this.prioridadEnLetra(Number(this.formTicket.controls["prioridad"].value))
+      this.contactsEmailTicket.prioridad = this.metodos.prioridadEnLetra(Number(this.formTicket.controls["prioridad"].value))
       this.contactsEmailTicket.identificador = this.identificador
       this.contactsEmailTicket.servicio = this.datosServicio?.servicio!
-
-      console.log(this.contactsEmailTicket);
+      this.contactsEmailTicket.nombreContacto = this.contactoLista[this.contactoPrincipal!].nombre
+      this.contactsEmailTicket.nombreCliente = this.datosServicio?.cliente!
       
       let form : formTicketInterface
       form = this.formTicket.value
@@ -455,20 +453,7 @@ export class TicketEntryComponent implements OnInit {
     }
   }
 
-  prioridadEnLetra( valor : number) : string{
-    switch (valor) {
-      case 1:
-        return "Baja";
-      case 2:
-        return "Media"
-      case 3:
-        return "Alta";
-      case 4:
-        return "Urgente";                
-      default:
-       return  "";
-    }
-  }
+  
 
 
 }

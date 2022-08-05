@@ -100,7 +100,7 @@
                        (click)="activeLink = link.link"
                        (click)="desactivarBotones(link.index)"
                        [routerLink]="link.link"
-                       [active]="activeLink == link.link"> {{link.label}} </a>
+                       [active]="activeLink === link.link"> {{link.label}} </a>
                   </nav>
                   <router-outlet></router-outlet>
             </div>

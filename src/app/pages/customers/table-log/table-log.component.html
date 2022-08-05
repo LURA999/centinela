@@ -26,7 +26,7 @@
     <div class="preloader" style="position: relative; left:45%; margin-top:5%; margin-bottom: 5%;" hidden></div>
     <div class="existe" [hidden]="metodo.hayClientes(ELEMENT_DATA,cargando)">No se encontraron registros... </div>
     <mat-paginator  #paginator
-    [pageSize]="10"
+    [pageSize]="5"
     [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
     </mat-card-content>
 
