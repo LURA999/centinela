@@ -301,6 +301,13 @@ mat-option{
 font-size: 10px;
 }
 
+.true {
+background-color: rgb(164, 196, 196);
+}
+.false {
+  background-color: #2b3779;
+  }
+
 @media screen and (max-width:610px) {
 
 mat-form-field{

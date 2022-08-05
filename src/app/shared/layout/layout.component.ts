@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, Input } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import {  lastValueFrom, Observable, Observer, Subscription } from 'rxjs';
 import { startWith,map } from 'rxjs/operators';
@@ -125,97 +125,89 @@ botontickets:boolean=false
     
     
 
-    todosbutton(){
+    todosbutton(id:string,event : any){
+this.botontodos=true
 
 this.botonservicio=false
 this.botoncontacto=false
 this.botontickets=false
 
-  this.serviciobutton();
-  this.contactobutton();
-  this.ticketbutton();
-
+  this.servicio(id,event);
+  this.contacto(id,event);
+  this.ticket(id,event);
 
     }
 
-serviciobutton(){
+serviciobutton(id:string,event : any){
 
-  
-console.log(this.botonservicio);
+  this.botontodos=false
 
    if(this.botoncontacto==false){
-    this.filteredContacts = this.myControl.valueChanges
+    this.filteredContacts = new FormControl('').valueChanges;
    }
 
    if(this.botontickets==false){
-    this.filteredTickets = this.myControl.valueChanges
+    this.filteredTickets = new FormControl('').valueChanges;
 
    }
 
    if(this.botonservicio==false){
-    console.log("servicio es false");
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value: any) =>  this._filter(value || '')) );
-this.botonservicio=true
+    this.botonservicio=true
+    this.servicio(id,event);
+   
    }else{
-     
-    this.filteredOptions = this.myControl.valueChanges
+    this.filteredOptions = new FormControl('').valueChanges;
     this.botonservicio=false
-
     console.log("servicio es true");
-
    }
 
 
    
 }
-contactobutton(){
+contactobutton(id:string,event : any){
+  this.botontodos=false
+
   if(this.botonservicio==false){
-    this.filteredOptions = this.myControl.valueChanges
-
+    this.filteredOptions = new FormControl('').valueChanges;
    }
-
    if(this.botontickets==false){
-    this.filteredTickets = this.myControl.valueChanges
-
+    this.filteredTickets = new FormControl('').valueChanges;
    }
-
    if(this.botoncontacto==false){
-    console.log("servicio es false");
-    this.filteredContacts = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value: any) =>  this._filter(value || '')) );
-this.botoncontacto=true
+    this.botoncontacto=true
+    console.log(this.botoncontacto+"contacto");
+    this.contacto(id,event);
+   
+
    }else{
-     
-    this.filteredContacts = this.myControl.valueChanges
+    this.filteredContacts = new FormControl('').valueChanges;
     this.botoncontacto=false
 
     console.log("servicio es true");
 
    }
 }
-ticketbutton(){
+
+ticketbutton(id:string,event : any){
+  this.botontodos=false
+
   if(this.botonservicio==false){
-    this.filteredOptions = this.myControl.valueChanges
+    this.filteredOptions = new FormControl('').valueChanges;
 
    }
 
    if(this.botoncontacto==false){
-    this.filteredContacts = this.myControl.valueChanges
+    this.filteredContacts = new FormControl('').valueChanges;
 
    }
 
    if(this.botontickets==false){
-    console.log("servicio es false");
-    this.filteredTickets = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value: any) =>  this._filter(value || '')) );
-this.botontickets=true
+    this.botontickets=true
+    this.ticket(id,event);
+ 
+
    }else{
-     
-    this.filteredTickets = this.myControl.valueChanges
+    this.filteredTickets = new FormControl('').valueChanges;
     this.botontickets=false
 
     console.log("servicio es true");
@@ -224,6 +216,8 @@ this.botontickets=true
 }
 
     async servicio(id:string,event : any){
+      console.log(id+this.botonservicio+" <<<<<<>>>>> Los datos");
+      
 if(this.botonservicio==true||this.botontodos==true){
         
         id = id.split(" ")[0]
@@ -262,6 +256,7 @@ if(this.botonservicio==true||this.botontodos==true){
 
 
     async contacto(id:string,event : any){
+
 
         if(this.botoncontacto==true||this.botontodos==true){
         id = id.split(" ")[0]
