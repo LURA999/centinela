@@ -7,5 +7,6 @@ export interface formTicketInterface {
     cveIncidencia : number,
     cveServicio : number,
     abiertoUsuario : number,
-    cveUsuario : number
+    cveUsuario : number,
+    cveCliente : number
 }

@@ -12,6 +12,7 @@ import { NewTicketComponent } from '../popup/new-ticket/new-ticket.component';
 import { Workbook } from 'exceljs'; 
 import * as fs from 'file-saver';
 import { DataService } from 'src/app/core/services/data.service';
+import { responseService } from 'src/app/models/responseService.model';
 
 @Component({
   selector: 'app-table-tickets',
@@ -23,14 +24,14 @@ export class TableTicketsComponent implements OnInit {
   activar : string = this.ruta.url.split("/")[4];
   ELEMENT_DATA : any = []
   metodo = new RepeteadMethods()
-  displayedColumns: string[] = ['num', 'departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente','opciones'];
+  displayedColumns: string[] = ['departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente','opciones'];
   cargando : boolean = false;
   $sub = new Subscription()
   @Input ()hijoRS :string = ""
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
-  id :number = this.rutaActiva.snapshot.params["id"];
-  
+  id :number = Number(this.ruta.url.split("/")[3]);
+  tablaTicket :any [] = []
   mayorNumero : number = 0
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   constructor( private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,
@@ -63,6 +64,7 @@ export class TableTicketsComponent implements OnInit {
   filtrar(palabra: string) {
     this.dataSource.filter = palabra.trim().toLowerCase();
   } 
+
 
   descargar(){
     let workbook = new Workbook();
@@ -99,11 +101,12 @@ export class TableTicketsComponent implements OnInit {
     this.$sub.unsubscribe()
   }
   
-  async llenarTabla(){
+   llenarTabla(){
     this.cargando = false;             
-    this.$sub.add(await this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
+    this.$sub.add( this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
+      console.log(resp.container);
+      
       if(resp.container.length !=0){
-      this.mayorNumero = resp.container[resp.container.length-1].idServicio;
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({
           num:resp.container[i].idTicket,

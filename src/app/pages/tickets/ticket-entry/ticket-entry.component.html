@@ -17,8 +17,8 @@
                                     [formControl]="myControl"
                                     (keyup)="buscarIdentificador(id.value,$event)"
                                     [matAutocomplete]="auto"  #id>
-                                <mat-autocomplete  (optionSelected)="opcionSeleccionada(id.value)" autoActiveFirstOption #auto="matAutocomplete" >
-                                <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
+                                <mat-autocomplete  (optionSelected)="opcionSeleccionada(id.value, $event.option.id)" autoActiveFirstOption #auto="matAutocomplete" >
+                                <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option.split(' ')[0]+' '+option.split(' ')[1]" [id]="option.split(' ')[2]">
                                     {{option.split(" ")[0]}} - {{option.split(" ")[1]}}
                                 </mat-option>
                                 </mat-autocomplete>
@@ -137,61 +137,67 @@
 
                 <mat-card id="sidenav">
                     <mat-card-content>
-                    <div>
-                        <h3>Datos del servicio</h3>
-                        Empresa:{{datosServicio?.cliente ? datosServicio?.cliente : "" }}<br/>
-                        Nombre del servicio:{{datosServicio?.servicio ? datosServicio?.servicio : ""}}<br/>
-                        Plan: {{datosServicio?.plan ? datosServicio?.plan : ""}}<br/>
-                        Estatus: {{datosServicio?.estatus ? datosServicio?.estatus : ""}}<br/>
-                        Ping radio: <br/>
-                        <div *ngFor="let i of pingRadio; let o =index" class="device">
-                            {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                    <div class="bloques">
+                        <div class="bPrincipal">
+                            <h3>Datos del servicio</h3>
+                            Empresa:{{datosServicio?.cliente ? datosServicio?.cliente : "" }}<br/>
+                            Nombre del servicio:{{datosServicio?.servicio ? datosServicio?.servicio : ""}}<br/>
+                            Plan: {{datosServicio?.plan ? datosServicio?.plan : ""}}<br/>
+                            Estatus: {{datosServicio?.estatus ? datosServicio?.estatus : ""}}<br/>
+                            Ping radio: <br/>
+                            <div *ngFor="let i of pingRadio; let o =index" class="device">
+                                {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                            </div>
+                            <br/>   
+                            Ping router: <br/>
+                            <div *ngFor="let i of pingRouter; let o =index" class="device">
+                                {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                            </div>
+                            <br/>
+                            Ping otro: <br/>
+                            <div *ngFor="let i of pingOtro; let o =index" class="device">
+                                {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                            </div>
+                            <br/>
+                            Repetidora: <br/>
                         </div>
-                        <br/>   
-                        Ping router: <br/>
-                        <div *ngFor="let i of pingRouter; let o =index" class="device">
-                            {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                        <hr/>
+                        <div class="bSecundario">
+                            <h3>Datos Extras:</h3>
+                            <img src="../../../../assets/avatar.png" id="imgDatoExtra"/>
+                            <div>Gustavo Martinez Yungo</div>
+                            <p>
+                                Correo:<br/>
+                                Numero:<br/>
+                                Puesto:<br/>
+                            </p>
                         </div>
-                        <br/>
-                        Ping otro: <br/>
-                        <div *ngFor="let i of pingOtro; let o =index" class="device">
-                            {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                        <hr/>
+                        <div class="bSecundario">
+                            <h3>Incidencias abiertas</h3>
+                                <ul>
+                                    <li>#???<br>
+                                        fecha<br/>
+                                        Estado<br/></li>
+                                    <li>#???<br>
+                                        fecha<br/>
+                                        Estado<br/></li>
+                                    <li><a href="#">Ver toda la actividad</a></li>
+                                </ul>                         
                         </div>
-                        <br/>
-                        Repetidora: <br/>
-                    </div>
-                    <hr/>
-                    <div>
-                        <h3>Datos Extras:</h3>
-                        <img src="../../../../assets/avatar.png" id="imgDatoExtra"/>
-                        <div>Gustavo Martinez Yungo</div>
-                        <p>
-                            Correo:<br/>
-                            Numero:<br/>
-                            Puesto:<br/>
-                        </p>
-                    </div>
-                    <hr/>
-                    <div>
-                        <h3>Incidencias abiertas</h3>
-                            <ul>
-                                <li>Lorem ipsum dolor sit amet
-                                    , consectetuer adipiscing elit.</li>
-                                <li>Lorem ipsum dolor sit amet
-                                    , consectetuer adipiscing elit.</li>
+                        <hr/>
+                        <div class="bSecundario">
+                            <h3>Tickets abiertas</h3>
+                            <ul >
+                                
+                                <li *ngFor="let i of arrayPrevTicket">
+                                    <mat-divider vertical class="dividerLi"></mat-divider>
+                                    #{{i.idTicket}}<br>
+                                    {{ date(i.fechaAbierta).toLocaleDateString("es-ES",optionsDate)}}, {{i.horaAbierta}}<br/>
+                                    Estado: Activo<br/></li>
                                 <li><a href="#">Ver toda la actividad</a></li>
-                            </ul>                         
-                    </div>
-                    <hr/>
-                    <div>
-                        <h3>Tickets abiertas</h3>
-                        <ul>
-                            <li>Lorem ipsum dolor sit amet
-                                , consectetuer adipiscing elit.</li>
-                            <li>Lorem ipsum dolor sit amet
-                                , consectetuer adipiscing elit.</li>
-                            <li><a href="#">Ver toda la actividad</a></li>
-                        </ul>         
+                            </ul>         
+                        </div>
                     </div>
                     </mat-card-content>
                 </mat-card>

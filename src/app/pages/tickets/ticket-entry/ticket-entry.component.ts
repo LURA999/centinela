@@ -84,16 +84,26 @@ export class TicketEntryComponent implements OnInit {
   usuarios : any [] = []
   arrayRol : any
   indicesAcomu : Array<Number>  =new Array()
+
+  
   contador : number | undefined;
+  cveCliente : number | undefined;
   id : string | undefined;
   identificador : string = ""
+
   agregarMasContacto : boolean = true
   contactoPrincipal : number | undefined
+  repetidorRouter : Array<string> = new Array()
+  repetidorOtro : Array<string> = new Array()
+  repetidorRadio : Array<string> = new Array()
   @ViewChild("idGrupo") idGrupo! : MatSelect    
   @ViewChild("selectedOption") optionSe! : MatOption    
   @ViewChild('matIcon', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
   @ViewChild('autoContacto' ) autoContacto!: ElementRef;
   @ViewChild('selectContacto' ) selectContacto!: MatSelect;
+
+  arrayPrevTicket : any [] = []
+  optionsDate :any = { year: 'numeric', month: 'long', day: 'numeric' };
 
   formTicket : FormGroup = this.fb.group({
     contactoCorreo : ["", Validators.required],
@@ -113,8 +123,14 @@ export class TicketEntryComponent implements OnInit {
   ngOnInit(): void {
     this.llamarAsuntos();
     this.todoRol();
+    this.vistaPreviaTickets()
+    console.log( new Date("2003-09-03").toLocaleString());
+    
   }
-
+  date(date:string){
+    let dateArray = date.split("-")
+    return new Date (Number(dateArray[0]),Number(dateArray[1]),Number(dateArray[2]))
+  }
   contactoArray(ev : any){
     this.indicesAcomu.push(Number(ev.option.id.split("_")[0]))
     this.acomuladorContactos.push(ev.option.value.correo)
@@ -175,8 +191,9 @@ export class TicketEntryComponent implements OnInit {
     return user 
   }
 
-   async opcionSeleccionada(identificador:string){
+   async opcionSeleccionada(identificador:string, cveCliente : string){
     identificador = identificador.split(" ")[0]
+    this.cveCliente = Number(cveCliente)
     this.identificador = identificador
     this.formTicket.controls['contactoCorreo'].reset()
     //se desfragmenta el identificador
@@ -207,6 +224,10 @@ export class TicketEntryComponent implements OnInit {
       if(resp.status === "not found"){
       }else{
         for (let i =0; i<resp.container.length; i++) {
+          if(Number(this.repetidorOtro.indexOf(resp.container[i].repetidor)) !== -1){
+            this.repetidorOtro.push(resp.container[i].repetidor)
+          }
+
           this.monitoreoPing(resp.container[i].ip, i,this.pingOtro)  
           this.pingOtro.push( {
             idDevice :resp.container[i].idOtro,
@@ -226,6 +247,10 @@ export class TicketEntryComponent implements OnInit {
       if(resp.status === "not found"){
       }else{
         for (let i =0; i<resp.container.length; i++) {
+          if(Number(this.repetidorRouter.indexOf(resp.container[i].repetidor)) !== -1){
+            this.repetidorRouter.push(resp.container[i].repetidor)
+          }
+
           this.monitoreoPing(resp.container[i].ip, i,this.pingRouter)  
             this.pingRouter.push( {
               idDevice :resp.container[i].idRouter,
@@ -242,7 +267,10 @@ export class TicketEntryComponent implements OnInit {
     this.deviceService.todosRadios(this.id,this.contador).subscribe(async (resp:responseService)=>{
       if(resp.status === "not found"){
       }else{  
-        for (let i =0; i<resp.container.length; i++) {       
+        for (let i =0; i<resp.container.length; i++) { 
+          if(Number(this.repetidorRadio.indexOf(resp.container[i].repetidor)) !== -1){
+            this.repetidorRadio.push(resp.container[i].repetidor)
+          }
           this.monitoreoPing(resp.container[i].ip, i,this.pingRadio)  
             this.pingRadio.push( {
               idDevice :resp.container[i].idRadio,
@@ -258,7 +286,7 @@ export class TicketEntryComponent implements OnInit {
   }
 
   rellenandoContactos(){
-    this.contactoService.llamar_Contactos_OnlyServicio(1,this.contador!,2,this.id!).subscribe(async(resp:responseService)=>{
+    this.contactoService.llamar_Contactos_OnlyServicio(this.cveCliente!,this.contador!,2,this.id!).subscribe(async(resp:responseService)=>{
       this.contactoLista =  resp.container      
       
      /**Se llena el mat-autocomplete de los contactos */ 
@@ -326,21 +354,13 @@ export class TicketEntryComponent implements OnInit {
   }  
 
   agregarContacto(datos : number){        
-
     this.contactoPrincipal = datos
-    /*this.acomuladorContactos.push(this.contactoLista[datos])
-    this.idNuevo = this.idNuevo ++
-    if (principal) {
-      this.acomuladorContactos.splice(datos,0)
-      this.acomuladorContactos.unshift(this.contactoLista[datos])  
-    } else {
-    
-      const mat = document.querySelector("#mat-group-suffix")
-      const cdiv = document.createElement("button")      
-      cdiv.innerHTML = datos.toString()
-      cdiv.id = "a"+this.idNuevo
-      mat?.appendChild(cdiv)
-    } */
+  }
+
+  vistaPreviaTickets(){
+    this.ticketService.vistaPreviaTickets().subscribe((resp:responseService)=>{
+      this.arrayPrevTicket =  resp.container;
+    })
   }
 
   agregarOtroContacto(){
@@ -421,9 +441,12 @@ export class TicketEntryComponent implements OnInit {
       this.contactsEmailTicket.identificador = this.identificador
       this.contactsEmailTicket.servicio = this.datosServicio?.servicio!
 
+      console.log(this.contactsEmailTicket);
+      
       let form : formTicketInterface
       form = this.formTicket.value
       form.abiertoUsuario = this.guarduser.getCveId()
+      form.cveCliente = this.cveCliente!
       form.cveServicio = this.datosServicio?.idServicio!
       await lastValueFrom(this.ticketService.insertTickets(form))
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))

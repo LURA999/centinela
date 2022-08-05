@@ -41,8 +41,7 @@ mat-form-field{
 }
 
 .botonesSolicitud{
-    display: flex;
-    float: right;
+    text-align: right;
 }
 
 
@@ -89,6 +88,15 @@ ul li {
     padding-top: 7px;
     }
 
+.dividerLi{
+    height: 65px;
+    background: #ccc;
+    border:0.1px solid #ccc;
+    position: absolute;
+    margin-left: -25px;
+    margin-top: 19px;
+}
+
 ul {
     padding-left: 0;
 }
@@ -124,4 +132,59 @@ ul {
 .device{
     display: flex;
     align-items: center;
+}
+
+
+/*cuando disminuye el tamaño de pantalla*/
+
+@media (max-width:1390px) {
+    .sub-container {
+        display: contents;
+        /*flex-flow: column-reverse;*/
+    }
+    #sidenav {
+        width: 100%;
+    }
+    #form {
+        width: 100%;
+    }
+
+    .bloques {
+        display: flex;
+    }
+    .bPrincipal {
+        width: 33%;
+    }
+    .bSecundario {
+        width: 22%;
+    }
+}
+
+
+/**responsive con una resolucion 1852px para abajo px como maximo
+y minimo 413px
+LINEAS DE la lista de etiquetas*/
+
+@media (max-width:785px) {
+    .dividerLi{
+        height: 85px;
+    }
+}
+
+@media (max-width:701px) {
+    .dividerLi{
+        height: 105px;
+    }
+}
+
+@media (max-width:688px) {
+    .dividerLi{
+        height: 125px;
+    }
+}
+
+@media (max-width:528px) {
+    .dividerLi{
+        height: 145px;
+    }
 }
