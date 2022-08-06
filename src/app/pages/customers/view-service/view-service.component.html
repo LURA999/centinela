@@ -86,11 +86,11 @@
                     </mat-card-title>
                 </mat-card-header>
                 <mat-card-content >
-                    <div>
+                    <!--<div>
                         <button mat-raised-button color="primary" class="agregar" (click)="agregar('ticketAgregar')">Agregar</button>
-                    </div>
+                    </div>-->
                     <div class="component">
-                      <app-table-tickets ></app-table-tickets>
+                      <app-table-tickets [viewService] = true></app-table-tickets>
                     </div>
                 </mat-card-content>
             </mat-card>

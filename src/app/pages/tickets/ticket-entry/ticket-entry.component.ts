@@ -446,6 +446,10 @@ export class TicketEntryComponent implements OnInit {
       form.abiertoUsuario = this.guarduser.getCveId()
       form.cveCliente = this.cveCliente!
       form.cveServicio = this.datosServicio?.idServicio!
+
+      console.log(form);
+      console.log(this.contactsEmailTicket);
+      
       await lastValueFrom(this.ticketService.insertTickets(form))
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))
     }else{

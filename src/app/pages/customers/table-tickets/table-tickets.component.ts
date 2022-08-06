@@ -20,13 +20,13 @@ import { DataService } from 'src/app/core/services/data.service';
 })
 export class TableTicketsComponent implements OnInit {
   @Input() hijoTickets :string ="";
-  activar : string = this.ruta.url.split("/")[4];
+  identificador : string = this.ruta.url.split("/")[4];
   ELEMENT_DATA : any = []
   metodos = new RepeteadMethods()
   displayedColumns: string[] = ['departamento', 'asunto', 'servicio', 'fechaCerrada','fechaAbierta','estado','agente'];
   cargando : boolean = false;
   $sub = new Subscription()
-  @Input ()hijoRS :string = ""
+  @Input ()viewService :boolean = false
   @ViewChild ("paginator") paginator2:any;
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;
   id :number = Number(this.ruta.url.split("/")[3]);
@@ -42,8 +42,8 @@ export class TableTicketsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    if(this.viewService === false){
     this.llenarTabla();
-    
     this.$sub.add(this.DataService.open.subscribe(res => {
       if(res.palabraBuscar !=undefined){
         this.filtrar(res.palabraBuscar)
@@ -59,6 +59,9 @@ export class TableTicketsComponent implements OnInit {
         }
       }
       }))  
+    }else{
+      this.llenarTabla_vistaServicio();
+    }
   }
   filtrar(palabra: string) {
     this.dataSource.filter = palabra.trim().toLowerCase();
@@ -99,12 +102,38 @@ export class TableTicketsComponent implements OnInit {
   ngOnDestroy(): void {
     this.$sub.unsubscribe()
   }
+
+  llenarTabla_vistaServicio(){
+    this.cargando = false;             
+    let sepId : Array<string> = this.identificador.split("-")
+     let identi = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
+     let contador = Number(sepId[2]);
+     
+    this.$sub.add( this.servicioTickets.llamarTodo(this.id,identi+" "+contador).subscribe((resp:any) =>{      
+      if(resp.container.length !=0){
+      for (let i = 0; i < resp.container.length; i++) {
+        this.ELEMENT_DATA.push({
+          num:resp.container[i].idTicket,
+          departamento: resp.container[i].departamento,
+          asunto:resp.container[i].asunto,
+          servicio:resp.container[i].servicio,
+          fechaCerrada:resp.container[i].fechaCerrada,
+          fechaAbierta:resp.container[i].fechaAbierta,
+          estado:resp.container[i].estado,
+          agente: resp.container[i].agente,
+        })   
+      }      
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator =  this.paginator2;    
+      this.dataSource.sort =  this.sort;
+    }
+    }))
+    this.cargando = true;
+  }
   
    llenarTabla(){
     this.cargando = false;             
-    this.$sub.add( this.servicioTickets.llamarTodo(this.id).subscribe((resp:any) =>{
-      console.log(resp.container);
-      
+    this.$sub.add( this.servicioTickets.llamarTodo(this.id,"").subscribe((resp:any) =>{      
       if(resp.container.length !=0){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({
