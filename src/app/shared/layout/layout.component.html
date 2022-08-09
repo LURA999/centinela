@@ -18,28 +18,81 @@
     </a>
   </div>
 </div>
-<div class="rigth">
+
 <div class="search">
 
-  <form class="example-form">
-   <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Buscar</mat-label>
-      <input type="text"
-             aria-label="Number"
-             matInput
+      <input  id="buscador" type="text"
              [formControl]="myControl"
              (keyup)="servicio(id.value,$event)"
-             [matAutocomplete]="auto" #id>
-      <mat-autocomplete (optionSelected)="irServicio(id.value)"  autoActiveFirstOption #auto="matAutocomplete" >
-        <mat-option  *ngFor="let option of filteredOptions  | async" [value]="option" >
-          {{option.split(" ")[0]}} - {{option.split(" ")[1]}}
+             (keyup)="contacto(id.value,$event)"
+             (keyup)="ticket(id.value,$event)"
+             [matAutocomplete]="auto" #id >
+      <mat-autocomplete  autoActiveFirstOption #auto="matAutocomplete" >
+        <mat-option  [disabled]="true" style="height: 50px;">
+        <div id="botones">
+        <button mat-button  [ngClass]="{'true': this.botontodos===true,   'false': this.botontodos===false}" class="filtros" (click)="todosbutton(id.value,$event)" >Todos</button>
+          <button mat-button  [ngClass]="{'true': this.botonservicio===true,   'false': this.botonservicio===false}" class="filtros" (click)="serviciobutton(id.value,$event)">Servicios</button>
+          <button mat-button  [ngClass]="{'true': this.botoncontacto===true,   'false': this.botoncontacto===false}" class="filtros" (click)="contactobutton(id.value,$event)">Contactos</button>
+          <button mat-button   [ngClass]="{'true': this.botontickets===true,   'false': this.botontickets===false}" class="filtros" (click)="ticketbutton(id.value,$event)">Tickets</button>
+        </div>
+      </mat-option>
+        <div id="opciones">
+          
+          <mat-divider id="division"></mat-divider>
+
+        <mat-label [hidden]="serviciosbooleanlabel === false || this.botonservicio===false&&this.botontodos===false "  class="tipo">Servicios</mat-label>
+        <mat-divider></mat-divider>
+        
+        <mat-option [(ngModel)]="filteredOptions"  *ngFor="let option of filteredOptions  | async" [value]="option" >
+          
+          <mat-icon  id="lan" > lan</mat-icon>
+          <div id="servicio">
+          {{option.split(" ")[0]}} 
+        </div>
+        <div id="empresa">
+          {{option.split(" | ")[1]}}
+        </div>
         </mat-option>
-      </mat-autocomplete>
+        <mat-divider></mat-divider>
+        <mat-label [hidden]="contactosbooleanlabel===false || this.botoncontacto===false&&this.botontodos===false " class="tipo">Contactos</mat-label>
+        <mat-divider></mat-divider>
+        <mat-option  *ngFor="let option of filteredContacts  | async" [value]="option" >
+          <mat-icon id="account_box"> account_box</mat-icon>
+          <div id="nombre">
+          {{option.split(" ")[0]}}
+          {{option.split(" ")[1]}}
+          {{option.split(" ")[2]}}
+        </div>
+        <div id="correoynumero">
+          {{option.split(" | ")[1]}}-{{option.split(" | ")[2].split(" - ")[1]}}
+          </div>
       
-    </mat-form-field>
-    <mat-icon>search</mat-icon>
-  </form>
+       
+
+        </mat-option>
+        <mat-divider></mat-divider>
+        <mat-label [hidden]="ticketsbooleanlabel === false || this.botontickets===false&&this.botontodos===false "   class="tipo">Tickets</mat-label>
+        <mat-divider></mat-divider>
+        <mat-option  *ngFor="let option of filteredTickets  | async" [value]="option" >
+          <mat-icon id="confirmation_number">confirmation_number </mat-icon>
+          <div id="ticket">
+            {{option.split(" ")[0]}}
+          </div>
+          <div id="asunto">
+          {{option.split(" | ")[1]}}
+        </div>
+        <div id="tipo">
+          {{option.split(" | ")[2]}}
+
+        </div>
+        </mat-option>
+      </div>
+      </mat-autocomplete> 
+          
+      <mat-icon>search</mat-icon>
+ 
   </div>
+  <div class="rigth">
 <div class="top"> 
 <div class="time-date">      
   <div nz-col nzSpan="4">
@@ -100,12 +153,22 @@
         <div  id="header-nav">
           <p> Menu  </p>
         </div>
-        <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            dashboard
-          </mat-icon>
-          <p mat-line> Dashboard </p>
-        </a>
+
+        <mat-expansion-panel >  
+          <mat-expansion-panel-header>
+            
+              <mat-icon mat-list-icon style="margin-top: 8px;">dashboard </mat-icon> 
+              <p mat-line style="margin-top: 11px;"> Dashboard </p>
+           
+          </mat-expansion-panel-header>
+          <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+             General</a>
+          <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-red']" routerLinkActive="active" mat-line>
+             Red</a>
+            <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-tickets']" routerLinkActive="active" mat-line>
+              Tickets</a>
+        </mat-expansion-panel>
+
         <a mat-list-item [routerLink]="['/admin/client']" [ngStyle]="{'display': acceso()}">
           <mat-icon mat-list-icon >person</mat-icon>
           <p mat-line > Clientes  </p>

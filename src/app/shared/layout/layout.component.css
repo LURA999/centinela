@@ -159,6 +159,8 @@ font-family: Arial, Helvetica, sans-serif;
 margin-right: 2.5rem;
 font-size: 1vw;
 margin-top: 1.5%;
+width: 30%;
+margin-left: 20%;
 
 }
 
@@ -177,6 +179,150 @@ margin-top: 1.5%;
   float: left;
 
 }
+
+
+#buscador{
+width: 100%;
+border-radius: 12px;
+height: 60%;
+
+}
+
+::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
+ border-radius: 10px;
+ overflow: hidden;
+}
+#lan{
+  color: rgb(2, 158, 2);
+  position: absolute;
+  margin-top: -3%;
+}
+#empresa{
+  margin-left: 10%;
+  margin-top: -4%;
+  position: absolute;
+}
+
+#servicio{
+  position: absolute;
+  margin-left: 10%;
+  margin-top: -8%;
+  font-weight: bold;
+}
+
+#opciones {
+  overflow-y: scroll;
+  height: 73%;
+  
+
+}
+.filtros{
+  background-color: #2b3779 ; 
+  color: white;
+  margin: 3px;
+  font-size: 12px;
+  border-radius: 12px;
+}
+
+#botones{
+text-align: center;
+}
+
+.tipo{
+  font-size: 14px;
+  display: block;
+  text-align: center;
+  font-weight: bold;
+}
+
+/*  icono de los contactos  */
+#account_box{
+  color:rgb(40, 40, 188) ;
+  position: absolute;
+  margin-top: -3%;
+}
+
+#numero{
+
+  margin-left: 50%;
+  margin-top: -6%;
+  position: absolute;
+}
+
+#correoynumero{
+
+  margin-left: 10%;
+  margin-top: -4%;
+  position: absolute;
+
+}
+
+
+#nombre{
+  position: absolute;
+  margin-left: 10%;
+  margin-top: -8%;
+  font-weight: bold;
+}
+/* icono de los tickets*/
+#confirmation_number{
+  color: rgb(141, 18, 194);
+    position: absolute;
+  margin-top: -3%;
+
+}
+
+#ticket{
+  position: absolute;
+  margin-left: 10%;
+  margin-top: -10%;
+  font-weight: bold;
+}
+
+#tipo{
+  margin-left: 10%;
+  margin-top: -2%;
+  position: absolute;
+}
+
+#asunto{
+  margin-left: 10%;
+  margin-top: -6%;
+  position: absolute;
+  
+}
+#division{
+  margin-top: 1px;
+
+}
+
+
+mat-option{
+font-size: 10px;
+}
+
+.true {
+background-color: rgb(164, 196, 196);
+}
+.false {
+  background-color: #2b3779;
+  }
+
+  .loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+
 
 @media screen and (max-width:610px) {
 
