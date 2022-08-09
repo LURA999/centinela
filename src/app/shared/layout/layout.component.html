@@ -28,7 +28,7 @@
              (keyup)="ticket(id.value,$event)"
              [matAutocomplete]="auto" #id >
       <mat-autocomplete  autoActiveFirstOption #auto="matAutocomplete" >
-        <mat-option   [disabled]="this.botonservicio" [disabled]="true" style="height: 50px;">
+        <mat-option  [disabled]="true" style="height: 50px;">
         <div id="botones">
         <button mat-button  [ngClass]="{'true': this.botontodos===true,   'false': this.botontodos===false}" class="filtros" (click)="todosbutton(id.value,$event)" >Todos</button>
           <button mat-button  [ngClass]="{'true': this.botonservicio===true,   'false': this.botonservicio===false}" class="filtros" (click)="serviciobutton(id.value,$event)">Servicios</button>
@@ -42,6 +42,7 @@
 
         <mat-label [hidden]="serviciosbooleanlabel === false || this.botonservicio===false&&this.botontodos===false "  class="tipo">Servicios</mat-label>
         <mat-divider></mat-divider>
+        
         <mat-option [(ngModel)]="filteredOptions"  *ngFor="let option of filteredOptions  | async" [value]="option" >
           
           <mat-icon  id="lan" > lan</mat-icon>

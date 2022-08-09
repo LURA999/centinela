@@ -31,7 +31,7 @@ botontodos:boolean=true
 botonservicio:boolean=false
 botoncontacto:boolean=false
 botontickets:boolean=false
-
+cargando : boolean=false
 
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
@@ -123,7 +123,7 @@ botontickets:boolean=false
 
 
     
-    
+  
 
     todosbutton(id:string,event : any){
 this.botontodos=true
@@ -216,7 +216,7 @@ ticketbutton(id:string,event : any){
 }
 
     async servicio(id:string,event : any){
-      console.log(id+this.botonservicio+" <<<<<<>>>>> Los datos");
+      this.cargando=true
       
 if(this.botonservicio==true||this.botontodos==true){
         
@@ -240,13 +240,17 @@ if(this.botonservicio==true||this.botontodos==true){
         });
 
         this.filteredOptions = this.myControl.valueChanges.pipe(
+          
           startWith(''),
           map((value: any) =>  this._filter(value || '')) );
         }
+
     }else{
         this.serviciosbooleanlabel=false
         this.options=[]
     }
+    this.cargando=false
+
 
     }
 
