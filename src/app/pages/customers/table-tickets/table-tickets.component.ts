@@ -85,7 +85,7 @@ export class TableTicketsComponent implements OnInit {
         temp.push(this.ELEMENT_DATA[x1]["servicio"])
         temp.push(this.ELEMENT_DATA[x1]["fechaCerrada"] !== undefined? "No asignada": this.ELEMENT_DATA[x1]["fechaCerrada"])
         temp.push(this.ELEMENT_DATA[x1]["fechaAbierta"])
-        temp.push(this.metodos.prioridadEnLetra(this.ELEMENT_DATA[x1]["estado"]))
+        temp.push(this.metodos.estadoEnLetra(this.ELEMENT_DATA[x1]["estado"]))
         temp.push(this.ELEMENT_DATA[x1]["agente"])
       worksheet.addRow(temp)
     }

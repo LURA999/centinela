@@ -63,46 +63,57 @@ interface datosContacto {
 
 
 export class TicketEntryComponent implements OnInit {
+
+  //inicializando vairables de los mat-autocomplete
   myControl = new FormControl('');
   myControlContacts =new FormControl("")
   filteredOptions: Observable<string[]> | undefined;
   filteredContacts: Observable<datosContacto[]> | undefined;
+  options: string[] = [];
+
+  //INTERFACES O MODELOS
   pingOtro : pingDatos[] = []
   pingRouter : pingDatos[] = []
   pingRadio : pingDatos[] = []
-  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket() 
-  options: string[] = [];
-  contactoControl = new FormControl('');
-  $sub = new Subscription()
-  contactoLista: any[] = [];
-  acomuladorContactos: Array<string>  =new Array()
-  idNuevo : number = 0
   datosServicio : datosServicio | undefined;
-  asuntosArray: any [] = []
-  metodos = new RepeteadMethods() 
-  usuarios : any [] = []
-  arrayRol : any
-  indicesAcomu : Array<Number>  =new Array()
+  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket() 
 
   
+  //Variables para guardar servicios
+  contactoLista: any[] = [];
+  asuntosArray: any [] = []
+  usuarios : any [] = []
+  arrayRol : any [] = []
+
+ 
+  //variables globales importantes
   contador : number | undefined;
   cveCliente : number | undefined;
   id : string | undefined;
   identificador : string = ""
-
-  agregarMasContacto : boolean = true
+  agregarMasContacto : boolean = true //<- Abre Cc oculta
+  idNuevo : number = 0
+  indicesAcomu : Array<Number>  =new Array() // <- Guarda indices de los contactos seleccionados
+  acomuladorContactos: Array<string>  =new Array() // <- Guarda correos de los contactos seleccionados
+  $sub = new Subscription()
   contactoPrincipal : number | undefined
+  metodos = new RepeteadMethods() 
+
+  //Para guardar los repetidores de los diferentes dispositivos
   repetidorRouter : Array<string> = new Array()
   repetidorOtro : Array<string> = new Array()
   repetidorRadio : Array<string> = new Array()
-  @ViewChild("idGrupo") idGrupo! : MatSelect    
-  @ViewChild("selectedOption") optionSe! : MatOption    
-  @ViewChild('matIcon', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
-  @ViewChild('autoContacto' ) autoContacto!: ElementRef;
-  @ViewChild('selectContacto' ) selectContacto!: MatSelect;
 
+ 
+  //maticon para crear variable de angular y idGrupo, para acceder a aun valor de select
+  @ViewChild("idGrupo") idGrupo! : MatSelect    
+  @ViewChild('matIcon', {read: ViewContainerRef, static: true}) placeholder!: ViewContainerRef;
+
+
+  //variables para la barra izquierda (prev= previos), optionsDate para mostrar una fecha estructurada
   arrayPrevTicket : any [] = []
   optionsDate :any = { year: 'numeric', month: 'long', day: 'numeric' };
+
 
   formTicket : FormGroup = this.fb.group({
     contactoCorreo : ["", Validators.required],
@@ -111,9 +122,11 @@ export class TicketEntryComponent implements OnInit {
     cveUsuario : ["", Validators.required],
     asunto : ["", Validators.required],
     prioridad : ["", Validators.required],
+    tipo : ["", Validators.required],
     descripcion : ["", Validators.required],
     cveIncidencia : ["", Validators.required]
   })
+
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
@@ -123,7 +136,6 @@ export class TicketEntryComponent implements OnInit {
     this.llamarAsuntos();
     this.todoRol();
     this.vistaPreviaTickets()
-    console.log( new Date("2003-09-03").toLocaleString());
     
   }
   date(date:string){
@@ -446,9 +458,6 @@ export class TicketEntryComponent implements OnInit {
       form.abiertoUsuario = this.guarduser.getCveId()
       form.cveCliente = this.cveCliente!
       form.cveServicio = this.datosServicio?.idServicio!
-
-      console.log(form);
-      console.log(this.contactsEmailTicket);
       
       await lastValueFrom(this.ticketService.insertTickets(form))
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))

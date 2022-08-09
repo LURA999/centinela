@@ -7,13 +7,15 @@ import { TicketEntryComponent } from './ticket-entry/ticket-entry.component';
 import { SearchIdComponent } from './popup/search-id/search-id.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { NewContactComponent } from './popup/new-contact/new-contact.component';
+import { AllTicketsComponent } from './all-tickets/all-tickets.component';
 
 
 @NgModule({
   declarations: [
     TicketEntryComponent,
     SearchIdComponent,
-    NewContactComponent
+    NewContactComponent,
+    AllTicketsComponent
   ],
   imports: [
     CommonModule,

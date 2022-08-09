@@ -137,4 +137,20 @@ export class RepeteadMethods {
        return  "";
     }
   }
+
+
+  estadoEnLetra( valor : number) : string{
+    switch (valor) {
+      case 1:
+        return "Abierto";
+      case 2:
+        return "Cerrado"
+      case 3:
+        return "En progreso";
+      case 4:
+        return "Pausado";                
+      default:
+       return  "";
+    }
+  }
 }

@@ -1,0 +1,62 @@
+/*TABLA*/
+.tabla{
+    overflow-x:auto ;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+table{
+    width: 100%;
+}
+
+td{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+th{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+/** Sidenav*/
+.sidenav-child{
+    padding-left: 30px;  
+    padding-right: 10px; 
+    text-align: center;    
+}
+
+.sidenav-content {
+    text-align: right;
+} 
+
+.input{
+    font-size: small;
+}
+
+
+mat-drawer-container.mat-drawer-container.example-container.mat-drawer-transition {
+    height: 72vh ;
+    overflow-x: hidden;
+    
+}
+mat-drawer-container.mat-drawer-container.container-child {
+    background: #f3f3f3;
+    height: 72vh ;
+}
+
+
+/** childs del mat-autocomplete*/
+
+mat-chip{
+    font-size: 12px;
+}
+
+/**Titutlo de la pagina*/
+mat-card-header {
+    display: flex;
+}
+
+.title{
+    align-self: center;
+}

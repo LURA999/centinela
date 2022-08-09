@@ -15,13 +15,14 @@ import { responseService } from 'src/app/models/responseService.model';
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.css']
 })
-export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
+export class LayoutComponent implements  AfterViewInit {
     private readonly notifier: NotifierService;
 
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
             new Date().toTimeString().split(" ")[0]), 1000);
     });    
+    
     private _mobileQueryListener: () => void;
     mobileQuery: MediaQueryList;
     showSpinner: boolean = false;
@@ -69,8 +70,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
             return "block"
         }  
     }
-    ngOnDestroy(): void {
-    }
+
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();

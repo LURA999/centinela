@@ -17,6 +17,7 @@ export class TicketService {
     vistaPreviaTickets() : Observable<responseService>{
         return this.http.get<responseService>(this.local+"Tickets/tickets.php");
     }
+    
     llamarTodo(cve:number,identificador:string) : Observable<responseService>{
         return this.http.get<responseService>(this.local+"Tickets/tickets.php?cve="+cve+"&identificador="+identificador);
     }
