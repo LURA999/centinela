@@ -22,7 +22,27 @@
             <mat-card-content >
             <div id="container-paginator">
               <div id="main">
-                
+                <ng-container *ngIf="borrar===true; else elseTemplate">
+                  <span class="tituloFecha">
+                    Buscar Por
+                    </span>
+                    <div>
+                     <mat-form-field  appearance="fill" id="buscarCreacion">
+                        <mat-label>Fecha de creacion</mat-label>
+                        <mat-select placeholder="Fecha de creacion" formControlName="cveUsuario">
+                          <mat-option value="0" disabled>Seleccione fecha de creacion</mat-option>
+    
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <button mat-raised-button style="background: brown;"><mat-icon>close</mat-icon>Cerrar</button>
+                  <button mat-raised-button style="background:red;"><mat-icon>delete</mat-icon>Eliminar</button>
+                </ng-template>
+              </div>
+              <div class="sidenav-content">
+                <button mat-raised-button class="bNuevo">Nuevo ticket</button>
               </div>
               <div id="paginator">
                 <mat-paginator class="all-tickets"
@@ -166,7 +186,7 @@
 
                         <ng-container matColumnDef="checkbox">
                           <th mat-header-cell *matHeaderCellDef>  </th>
-                          <td mat-cell *matCellDef="let element"> <mat-checkbox [value]="element.checbox" color="primary"> </mat-checkbox> </td>
+                          <td mat-cell *matCellDef="let element"> <mat-checkbox [value]="element.checbox" color="primary" (click)="borrarSioNo(matBorar.checked)" #matBorar> </mat-checkbox> </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="ticket">

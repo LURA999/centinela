@@ -9,8 +9,7 @@ import { FormControl } from '@angular/forms';
 import { SearchService } from 'src/app/core/services/search.service';
 import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
-import { stringToKeyValue } from '@angular/flex-layout/extended/style/style-transforms';
-import { MatAutocomplete } from '@angular/material/autocomplete';
+import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
 
 @Component({
     selector: 'app-layout',
@@ -24,16 +23,16 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     booleancontactos:boolean=true
     booleantickets:boolean=true
     mostrar:string="on"
-
+    metodos = new RepeteadMethods();
     private readonly notifier: NotifierService;
-serviciosbooleanlabel:boolean=false
-contactosbooleanlabel:boolean=false
-ticketsbooleanlabel:boolean=false
-botontodos:boolean=true
-botonservicio:boolean=false
-botoncontacto:boolean=false
-botontickets:boolean=false
-cargando : boolean=false
+    serviciosbooleanlabel:boolean=false
+    contactosbooleanlabel:boolean=false
+    ticketsbooleanlabel:boolean=false
+    botontodos:boolean=true
+    botonservicio:boolean=false
+    botoncontacto:boolean=false
+    botontickets:boolean=false
+    cargando : boolean=false
 
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(

@@ -276,6 +276,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: auto;
   margin-left: auto;
   padding-left: 0;
-
+  line-height: normal;
+  width: auto;
 }
 

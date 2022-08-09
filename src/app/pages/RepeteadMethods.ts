@@ -138,7 +138,18 @@ export class RepeteadMethods {
     }
   }
 
-
+  tipoEnLetra( valor : string) : string{
+    switch (Number(valor)) {
+      case 1:
+        return "Soporte";
+      case 2:
+        return "Atencion"
+      case 3:
+        return "Solicitud";
+      default:
+       return  "";
+    }
+  }
   estadoEnLetra( valor : number) : string{
     switch (valor) {
       case 1:

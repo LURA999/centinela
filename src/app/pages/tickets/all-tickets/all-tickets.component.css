@@ -65,7 +65,7 @@ mat-card-header {
 /** botones del mat-paginator */
 
 mat-paginator {
-    width: 250px;
+    width: 194px;
 }
 
 
@@ -73,6 +73,10 @@ mat-paginator {
     width: 100%;
     display: flex;
     align-items: center;
+}
+
+.bNuevo{
+    height: fit-content;
 }
 
 #paginator {
@@ -83,3 +87,13 @@ mat-paginator {
     width: 100%;
 }
 
+/** Boton para buscar por creacion*/
+
+#buscarCreacion {
+    line-height: normal;
+    font-size: small;
+}
+
+.tituloFecha{
+    font-size: 10px;
+}

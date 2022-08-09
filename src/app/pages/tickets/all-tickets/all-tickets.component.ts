@@ -32,6 +32,9 @@ export interface ticket {
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class AllTicketsComponent implements OnInit{
+  //var para borrar tickets
+  borrar:boolean = true
+
   //variables de la tabla
   ELEMENT_DATA: ticket[] = [
     { checkbox : true, ticket: 10101, servicio : "servicioPrueba", fechaAbierto: "fecha abierto", fechaCerrado: "----", 
@@ -80,7 +83,7 @@ export class AllTicketsComponent implements OnInit{
      //autocomplete normal
      this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter2(value || '')),
+      map((value : string) => this._filter2(value || '')),
     );
   }
   //Metodos para los autocomplete con chips
@@ -153,7 +156,10 @@ export class AllTicketsComponent implements OnInit{
     return this.allFruits.filter(fruit => fruit.toLowerCase().includes(filterValue));
   }
 
-
+  borrarSioNo(bool : boolean){
+    this.borrar = bool
+  
+  }
 
   ///metodos del auto complete
   private _filter2(value: string): string[] {
