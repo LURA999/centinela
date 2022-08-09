@@ -6,6 +6,8 @@ import { map, Observable, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatTableDataSource } from '@angular/material/table';
+import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 export interface ticket {
   idTicket? : Number,
@@ -26,7 +28,8 @@ export interface ticket {
 @Component({
   selector: 'app-all-tickets',
   templateUrl: './all-tickets.component.html',
-  styleUrls: ['./all-tickets.component.css']
+  styleUrls: ['./all-tickets.component.css'],
+  providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class AllTicketsComponent implements OnInit{
   //variables de la tabla

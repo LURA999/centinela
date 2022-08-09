@@ -267,3 +267,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .matCardTop{
   margin-top: 15px;
 }
+
+
+/**botones del paginator del componente all-tickets*/
+.all-tickets button {
+  border: 1px solid  !important;
+  border-radius: 5px;
+  height: auto;
+  margin-left: auto;
+  padding-left: 0;
+
+}
+

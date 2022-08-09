@@ -14,15 +14,15 @@ export class MyCustomPaginatorIntl implements MatPaginatorIntl {
 
   // You can set labels to an arbitrary string too, or dynamically compute
   // it through other third-party internationalization libraries.
-  nextPageLabel = 'Pagina siguiente';
-  previousPageLabel = 'Pagina anterior';
+  nextPageLabel = 'Pag. siguiente';
+  previousPageLabel = 'Pag. anterior';
 
   getRangeLabel(page: number, pageSize: number, length: number): string {
     if (length === 0) {
-      return `Pagina 1 de 1`;
+      return `Pag. 1 de 1`;
     }
     const amountPages = Math.ceil(length / pageSize);
-    return `Pagina ${page + 1} de ${amountPages}`;
+    return `Pag. ${page + 1} de ${amountPages}`;
   }
 }
 

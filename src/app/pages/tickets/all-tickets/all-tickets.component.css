@@ -60,3 +60,26 @@ mat-card-header {
 .title{
     align-self: center;
 }
+
+
+/** botones del mat-paginator */
+
+mat-paginator {
+    width: 250px;
+}
+
+
+#container-paginator{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#paginator {
+    justify-content: right;
+}
+
+#main {
+    width: 100%;
+}
+
