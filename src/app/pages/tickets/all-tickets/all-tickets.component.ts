@@ -1,6 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { map, Observable, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -50,21 +50,38 @@ export class AllTicketsComponent implements OnInit{
 
   //variables para los inputs con opciones y con autocomplete
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  fruitCtrl = new FormControl('');
-  filteredFruits: Observable<string[]>;
-  fruits: string[] = [];
-  allFruits: string[] = ['Abierto', 'Cerrado', 'En progreso', 'Pausado', 'Strawberry'];
-  @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;
+  estadoControl = new FormControl('');
+  filteredEstado: Observable<string[]>;
+  filteredAgente: Observable<string[]>;
+  estados: string[] = [];
+  todoEstado: string[] = ['Abierto', 'Cerrado', 'En progreso', 'Pausado'];
+  todoAgente: string[] = ['Abierto', 'Cerrado', 'En progreso', 'Pausado'];
+
+  @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
 
 
-  //autocomplete normal
-  myControl = new FormControl('');
-  options: string[] = ['One', 'Two', 'Three'];
-  filteredOptions: Observable<string[]> | undefined;
+  //autocomplete
+  agenteControl = new FormControl('');
+  creadoControl = new FormControl('');
 
+  optionsAgente: string[] = ['One', 'Two', 'Three'];
+  optionsCreado: string[] = ['One', 'Two', 'Three'];
+
+  filteredOptionsAgente: Observable<string[]> | undefined;
+  filteredOptionsCreado: Observable<string[]> | undefined;
+
+
+  formNav :FormGroup =  this.fb.group({
+    buscar:[""],
+    grupo:[""],
+    tipo: [""],
+    prioridad:[""],
+    fuente:[""]
+  })
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
-    private media: MediaMatcher) { 
+    private media: MediaMatcher,
+    private fb : FormBuilder) { 
       //responsive del navbar
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
     this._mobileQueryListener = () => this.changeDetectorRef.detectChanges();
@@ -72,88 +89,60 @@ export class AllTicketsComponent implements OnInit{
 
 
     ///variables para los inputs con opciones
-    this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
+    this.filteredEstado = this.estadoControl.valueChanges.pipe(
       startWith(null),
-      map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allFruits.slice())),
+      map((estado: string | null) => (estado ? this._filter(estado) : this.todoEstado.slice())),
     );
+
+    this.filteredAgente = this.agenteControl.valueChanges.pipe(
+      startWith(null),
+      map((agente: string | null) => (agente ? this._filter(agente) : this.todoAgente.slice())),
+    );
+
+    
   }
  
 
   ngOnInit(): void {
      //autocomplete normal
-     this.filteredOptions = this.myControl.valueChanges.pipe(
+     this.filteredOptionsAgente = this.agenteControl.valueChanges.pipe(
       startWith(''),
-      map((value : string) => this._filter2(value || '')),
+      map((value : string) => this._filterAgente(value || '')),
     );
+    this.filteredOptionsCreado = this.creadoControl.valueChanges.pipe(
+      startWith(''),
+      map((value : string) => this._filterCreado(value || '')),
+    );
+
   }
   //Metodos para los autocomplete con chips
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.fruits.push(value);
+      this.estados.push(value);
+
     }
     event.chipInput!.clear();
-    this.fruitCtrl.setValue(null);
+    this.estadoControl.setValue(null);
   }
 
-  remove(fruit: string): void {
-    const index = this.fruits.indexOf(fruit);
+  remove(estado: string): void {
+    const index = this.estados.indexOf(estado);
     if (index >= 0) {
-      this.fruits.splice(index, 1);
+      this.estados.splice(index, 1);
     }
-  }
-
-  selectedGeneral(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
-  }
-
-  selectedAgente(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
-  }
-
-  selectedGrupo(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
-  }
-
-  selectedCreado(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
   }
 
   selectedEstado(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
+    this.estados.push(event.option.viewValue);
+    this.estadoInput.nativeElement.value = '';
+    this.estadoControl.setValue(null);
   }
 
-  selectedPrioridad(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
-  }
-
-  selectedFuente(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
-  }
-
-  selectedTipo(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
-  }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allFruits.filter(fruit => fruit.toLowerCase().includes(filterValue));
+    return this.todoEstado.filter(estado => estado.toLowerCase().includes(filterValue));
   }
 
   borrarSioNo(bool : boolean){
@@ -162,9 +151,21 @@ export class AllTicketsComponent implements OnInit{
   }
 
   ///metodos del auto complete
-  private _filter2(value: string): string[] {
+  private _filterAgente(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    return this.optionsAgente.filter(option => option.toLowerCase().includes(filterValue));
+  }
+  private _filterCreado(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.optionsCreado.filter(option => option.toLowerCase().includes(filterValue));
   }
 
+  aplicar(){
+    console.log(this.agenteControl.value)
+    console.log(this.creadoControl.value)
+    console.log(this.estados);
+    
+    console.log(this.formNav.value);
+    
+  }
 }

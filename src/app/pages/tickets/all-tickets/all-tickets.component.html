@@ -23,26 +23,30 @@
             <div id="container-paginator">
               <div id="main">
                 <ng-container *ngIf="borrar===true; else elseTemplate">
-                  <span class="tituloFecha">
-                    Buscar Por
-                    </span>
+                  
                     <div>
                      <mat-form-field  appearance="fill" id="buscarCreacion">
-                        <mat-label>Fecha de creacion</mat-label>
+                        <mat-label>Ordenar por</mat-label>
                         <mat-select placeholder="Fecha de creacion" formControlName="cveUsuario">
-                          <mat-option value="0" disabled>Seleccione fecha de creacion</mat-option>
-    
+                          <mat-option value="0" disabled>Seleccione una opcion</mat-option>
+                          <mat-option value="1" selected> Fecha de creacion</mat-option>
+                          <mat-option value="2" > Vencidos</mat-option>
+                          <mat-option value="3" > Modificados</mat-option>
+                          <mat-option value="4" > Prioridad</mat-option>
+                          <mat-option value="5" > Estado</mat-option>
                         </mat-select>
                       </mat-form-field>
                     </div>
                 </ng-container>
                 <ng-template #elseTemplate>
-                  <button mat-raised-button style="background: brown;"><mat-icon>close</mat-icon>Cerrar</button>
-                  <button mat-raised-button style="background:red;"><mat-icon>delete</mat-icon>Eliminar</button>
+                  <div class="parBoton">
+                    <button mat-raised-button style="background: brown;"><mat-icon>close</mat-icon>Cerrar</button>
+                    <button mat-raised-button style="background:red;"><mat-icon>delete</mat-icon>Eliminar</button>
+                  </div>
                 </ng-template>
               </div>
               <div class="sidenav-content">
-                <button mat-raised-button class="bNuevo">Nuevo ticket</button>
+                <button mat-raised-button class="bNuevo" color="primary">Nuevo ticket</button>
               </div>
               <div id="paginator">
                 <mat-paginator class="all-tickets"
@@ -62,124 +66,127 @@
 
                 <mat-drawer-container class="container-child" autosize>
                     <mat-drawer #drawer class="sidenav-child" mode="side" position="end" opened>
-                    <div class="form-sideNav">
-                      <h3>Filtros</h3>
-                      <div class="input">
-                        <mat-form-field class="example-full-width" appearance="fill">
-                          <mat-label>Buscar</mat-label>
-                          <input matInput placeholder="Ex. Pizza" value="Sushi">
-                        </mat-form-field>
-                      </div>
-                      <div class="input" >
-                        <mat-form-field appearance="fill">
-                          <mat-label>Grupo</mat-label>
-                          <mat-select>
-                              <mat-option value="1">Administrador</mat-option>
-                                <mat-option value="2">Soporte</mat-option>
-                                <mat-option value="3">Comercial</mat-option>
-                                <mat-option value="4">Administracion</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                      <div class="input">
-                        <mat-form-field class="example-full-width" appearance="fill">
-                          <mat-label>Agente</mat-label>
-                          <input type="text"
-                                 placeholder="Pick one"
-                                 aria-label="Creado"
-                                 matInput
-                                 [formControl]="myControl"
-                                 [matAutocomplete]="auto3">
-                          <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete">
-                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                              {{option}}
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-form-field>
-                      </div>
-                      <div class="input">
-                        <mat-form-field appearance="fill">
-                            <mat-label>Tipo</mat-label>
-                            <mat-select>
-                                <mat-option value="1">Soporte</mat-option>
-                                <mat-option value="2">Atencion</mat-option>
-                                <mat-option value="3">Solicitud</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                      </div>
-                      <div class="input">
+                    <form [formGroup]="formNav">
+                      <div class="form-sideNav">
+                        <h3>Filtros</h3>
+                        <div class="input">
                           <mat-form-field class="example-full-width" appearance="fill">
-                            <mat-label>Creado</mat-label>
+                            <mat-label>Buscar</mat-label>
+                            <input formControlName="buscar" matInput placeholder="busqueda general..." value="Sushi">
+                          </mat-form-field>
+                          <mat-icon>search</mat-icon>
+                        </div>
+                        <div class="input" >
+                          <mat-form-field appearance="fill">
+                            <mat-label>Grupo</mat-label>
+                            <mat-select formControlName="grupo">
+                                <mat-option value="1">Administrador</mat-option>
+                                  <mat-option value="2">Soporte</mat-option>
+                                  <mat-option value="3">Comercial</mat-option>
+                                  <mat-option value="4">Administracion</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="input">
+                          <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Agente</mat-label>
                             <input type="text"
-                                   placeholder="Pick one"
-                                   aria-label="Creado"
-                                   matInput
-                                   [formControl]="myControl"
-                                   [matAutocomplete]="auto3">
-                            <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete">
-                              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                  placeholder="Pick one"
+                                  aria-label="Creado"
+                                  matInput
+                                  [formControl]="agenteControl"
+                                  [matAutocomplete]="auto4">
+                            <mat-autocomplete autoActiveFirstOption #auto4="matAutocomplete">
+                              <mat-option *ngFor="let option of filteredOptionsAgente | async" [value]="option">
                                 {{option}}
                               </mat-option>
                             </mat-autocomplete>
                           </mat-form-field>
+                        </div>
+                        <div class="input">
+                          <mat-form-field appearance="fill">
+                              <mat-label>Tipo</mat-label>
+                              <mat-select formControlName="tipo">
+                                  <mat-option value="1">Soporte</mat-option>
+                                  <mat-option value="2">Atencion</mat-option>
+                                  <mat-option value="3">Solicitud</mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="input">
+                            <mat-form-field class="example-full-width" appearance="fill">
+                              <mat-label>Creado</mat-label>
+                              <input type="text"
+                                    placeholder="Pick one"
+                                    aria-label="Creado"
+                                    matInput
+                                    [formControl]="creadoControl"
+                                    [matAutocomplete]="auto3">
+                              <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete">
+                                <mat-option *ngFor="let option of filteredOptionsCreado | async" [value]="option">
+                                  {{option}}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        
+                        
+                        <div class="input">
+                          <mat-form-field class="example-chip-list" appearance="fill">
+                            <mat-label>Estado</mat-label>
+                            <mat-chip-list #chipList aria-label="estado seleccion">
+                              <mat-chip 
+                                *ngFor="let estado of estados"
+                                (removed)="remove(estado)">
+                                {{estado}}
+                                <button matChipRemove>
+                                  <mat-icon>cancel</mat-icon>
+                                </button>
+                              </mat-chip>
+                              <input
+                                placeholder="Cualquier estado..."
+                                #estadoInput
+                                [formControl]="estadoControl"
+                                [matAutocomplete]="auto6"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto6="matAutocomplete" (optionSelected)="selectedEstado($event)">
+                              <mat-option *ngFor="let estado of filteredEstado | async" [value]="estado">
+                                {{estado}}
+                              </mat-option>
+                            </mat-autocomplete>
+                          </mat-form-field>
+                        </div>
+                        <div class="input">
+                          <mat-form-field appearance="fill">
+                            <mat-label>Prioridad</mat-label>
+                            <mat-select formControlName="prioridad">
+                                <mat-option value="1">Baja</mat-option>
+                                <mat-option value="2">Media</mat-option>
+                                <mat-option value="3">Alta</mat-option>
+                                <mat-option value="4">Urgente</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="input">
+                          <mat-form-field appearance="fill">
+                            <mat-label>Fuente</mat-label>
+                            <mat-select formControlName="fuente">
+                              <mat-option value="0" disabled selected>Seleccione un origen</mat-option>
+                              <mat-option value="1">Llamada directa</mat-option>
+                              <mat-option value="2">WhatsApp</mat-option>
+                              <mat-option value="3">Correo</mat-option>
+                              <mat-option value="4">Asesor</mat-option>
+                              <mat-option value="5">Facebook</mat-option>
+                              <mat-option value="6">Pagina web</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <button mat-raised-button color="primary" (click)="aplicar()">Aplicar</button>
                       </div>
-                      
-                      
-                      <div class="input">
-                        <mat-form-field class="example-chip-list" appearance="fill">
-                          <mat-label>Estado</mat-label>
-                          <mat-chip-list #chipList aria-label="Fruit selection">
-                            <mat-chip 
-                              *ngFor="let fruit of fruits"
-                              (removed)="remove(fruit)">
-                              {{fruit}}
-                              <button matChipRemove>
-                                <mat-icon>cancel</mat-icon>
-                              </button>
-                            </mat-chip>
-                            <input
-                              placeholder="Cualquier estado..."
-                              #fruitInput
-                              [formControl]="fruitCtrl"
-                              [matAutocomplete]="auto6"
-                              [matChipInputFor]="chipList"
-                              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                              (matChipInputTokenEnd)="add($event)">
-                          </mat-chip-list>
-                          <mat-autocomplete #auto6="matAutocomplete" (optionSelected)="selectedCreado($event)">
-                            <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
-                              {{fruit}}
-                            </mat-option>
-                          </mat-autocomplete>
-                        </mat-form-field>
-                      </div>
-                      <div class="input">
-                        <mat-form-field appearance="fill">
-                          <mat-label>Prioridad</mat-label>
-                          <mat-select>
-                              <mat-option value="1">Baja</mat-option>
-                              <mat-option value="2">Media</mat-option>
-                              <mat-option value="3">Alta</mat-option>
-                              <mat-option value="4">Urgente</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                      <div class="input">
-                        <mat-form-field appearance="fill">
-                          <mat-label>Fuente</mat-label>
-                          <mat-select>
-                            <mat-option value="0" disabled selected>Seleccione un origen</mat-option>
-                            <mat-option value="1">Llamada directa</mat-option>
-                            <mat-option value="2">WhatsApp</mat-option>
-                            <mat-option value="3">Correo</mat-option>
-                            <mat-option value="4">Asesor</mat-option>
-                            <mat-option value="5">Facebook</mat-option>
-                            <mat-option value="6">Pagina web</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                      <button mat-raised-button color="primary">Aplicar</button>
-                    </div>
+                    </form>
                     </mat-drawer>
                 <div class="tabla">
                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
