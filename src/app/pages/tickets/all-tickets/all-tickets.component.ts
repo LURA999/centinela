@@ -8,22 +8,24 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatTableDataSource } from '@angular/material/table';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { TicketService } from 'src/app/core/services/tickets.service';
+import { responseService } from 'src/app/models/responseService.model';
+import { RepeteadMethods } from '../../RepeteadMethods';
+import { UsuarioService } from 'src/app/core/services/user.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
 
 export interface ticket {
-  idTicket? : Number,
-  checkbox : Boolean,
-  ticket: Number,
+  idTicket: Number,
   servicio : String,
-  fechaAbierto: String,
-  fechaCerrado: String,
+  fechaAbierta: String,
+  fechaCerrada: String,
   grupo: Number,
   tipo: Number,
   agente: Number,
-  estado: Number
+  estado: Number,
+  prioridad:Number
 }
-
-
-
 
 @Component({
   selector: 'app-all-tickets',
@@ -34,13 +36,10 @@ export interface ticket {
 export class AllTicketsComponent implements OnInit{
   //var para borrar tickets
   borrar:boolean = true
-
+ 
   //variables de la tabla
-  ELEMENT_DATA: ticket[] = [
-    { checkbox : true, ticket: 10101, servicio : "servicioPrueba", fechaAbierto: "fecha abierto", fechaCerrado: "----", 
-      grupo: 1, tipo: 1, agente: 1, estado: 1}
-  ];
-  displayedColumns: string[] = ['checkbox', 'ticket', 'servicio', 'fechaAbierto', 'fechaCerrado','grupo','tipo','agente','estado'];
+  ELEMENT_DATA:  ticket[] = [ ];
+  displayedColumns: string[] = ['checkbox', 'ticket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','tipo','agente','estado',"prioridad"];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);  
 
   //variables para el responsive del navbar
@@ -52,23 +51,21 @@ export class AllTicketsComponent implements OnInit{
   separatorKeysCodes: number[] = [ENTER, COMMA];
   estadoControl = new FormControl('');
   filteredEstado: Observable<string[]>;
-  filteredAgente: Observable<string[]>;
   estados: string[] = [];
   todoEstado: string[] = ['Abierto', 'Cerrado', 'En progreso', 'Pausado'];
-  todoAgente: string[] = ['Abierto', 'Cerrado', 'En progreso', 'Pausado'];
 
   @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
-
+  @ViewChild ("paginator") paginator:any;
 
   //autocomplete
   agenteControl = new FormControl('');
   creadoControl = new FormControl('');
 
-  optionsAgente: string[] = ['One', 'Two', 'Three'];
-  optionsCreado: string[] = ['One', 'Two', 'Three'];
+  optionsAgente: any[] = [];
+  optionsCreado: any[] = [];
 
-  filteredOptionsAgente: Observable<string[]> | undefined;
-  filteredOptionsCreado: Observable<string[]> | undefined;
+  filteredOptionsAgente: Observable<any[]> | undefined;
+  filteredOptionsCreado: Observable<any[]> | undefined;
 
 
   formNav :FormGroup =  this.fb.group({
@@ -78,10 +75,15 @@ export class AllTicketsComponent implements OnInit{
     prioridad:[""],
     fuente:[""]
   })
+
+  metodos = new RepeteadMethods();
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
-    private fb : FormBuilder) { 
+    private fb : FormBuilder,
+    private ticketService : TicketService,
+    private userServ: UsuarioService,
+    private auth : AuthService) { 
       //responsive del navbar
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
     this._mobileQueryListener = () => this.changeDetectorRef.detectChanges();
@@ -93,48 +95,72 @@ export class AllTicketsComponent implements OnInit{
       startWith(null),
       map((estado: string | null) => (estado ? this._filter(estado) : this.todoEstado.slice())),
     );
-
-    this.filteredAgente = this.agenteControl.valueChanges.pipe(
-      startWith(null),
-      map((agente: string | null) => (agente ? this._filter(agente) : this.todoAgente.slice())),
-    );
-
-    
   }
  
 
   ngOnInit(): void {
-     //autocomplete normal
-     this.filteredOptionsAgente = this.agenteControl.valueChanges.pipe(
-      startWith(''),
-      map((value : string) => this._filterAgente(value || '')),
-    );
-    this.filteredOptionsCreado = this.creadoControl.valueChanges.pipe(
-      startWith(''),
-      map((value : string) => this._filterCreado(value || '')),
-    );
+    this.llenarTabla(1)
+    this.llenarUsuarios();
+  }
 
+  llenarTabla(cond:number){
+    this.ELEMENT_DATA = [];
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.ticketService.tickets(cond,this.auth.getCveId()).subscribe(async(resp:responseService) =>{
+      for await (const respuesta of resp.container) {
+        this.ELEMENT_DATA.push(respuesta)
+      }
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator =  this.paginator;    
+      
+    })
+  }
+
+  llenarUsuarios(){
+    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{      
+      for await (const usuario of resp.container) {
+        this.optionsAgente.push(usuario)
+        this.optionsCreado.push(usuario)
+      }
+      this.filteredOptionsAgente = this.agenteControl.valueChanges.pipe(
+        startWith(''),
+        map((value : string) => this._filterAgente(value || '')),
+      );
+      this.filteredOptionsCreado = this.creadoControl.valueChanges.pipe(
+        startWith(''),
+        map((value : string) => this._filterCreado(value || '')),
+      );
+      })
+      
+   
   }
   //Metodos para los autocomplete con chips
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.estados.push(value);
-
+      this.estados.push(value);      
     }
     event.chipInput!.clear();
     this.estadoControl.setValue(null);
   }
 
   remove(estado: string): void {
-    const index = this.estados.indexOf(estado);
+    const index = this.estados.indexOf(estado)
+
     if (index >= 0) {
+      this.todoEstado.push(this.estados[index])
       this.estados.splice(index, 1);
+      this.filteredEstado = this.estadoControl.valueChanges.pipe(
+        startWith(null),
+        map((estado: string | null) => (estado ? this._filter(estado) : this.todoEstado.slice())),
+      );
     }
   }
 
   selectedEstado(event: MatAutocompleteSelectedEvent): void {
     this.estados.push(event.option.viewValue);
+    this.todoEstado.splice(this.todoEstado.indexOf(event.option.viewValue),1)
+
     this.estadoInput.nativeElement.value = '';
     this.estadoControl.setValue(null);
   }
@@ -153,19 +179,26 @@ export class AllTicketsComponent implements OnInit{
   ///metodos del auto complete
   private _filterAgente(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.optionsAgente.filter(option => option.toLowerCase().includes(filterValue));
+    return this.optionsAgente.filter(option => option.includes(filterValue));
   }
   private _filterCreado(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.optionsCreado.filter(option => option.toLowerCase().includes(filterValue));
+    return this.optionsCreado.filter(option => option.includes(filterValue));
   }
 
   aplicar(){
-    console.log(this.agenteControl.value)
-    console.log(this.creadoControl.value)
-    console.log(this.estados);
+    const form :formNavSearchTicket = this.formNav.value
+    form.agente = this.agenteControl.value
+    form.creador = this.creadoControl.value 
+    //form.estados = this.estados
+  
+    console.log(form);
     
-    console.log(this.formNav.value);
-    
+  }
+
+
+  ///Empiezan las funciones de los filtros
+  ordenarPor(posicion : number){
+    this.llenarTabla(posicion);  
   }
 }

@@ -13,7 +13,6 @@ import { DeviceService } from 'src/app/core/services/device.service';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { MatSelect } from '@angular/material/select';
 import { NewContactComponent } from "../popup/new-contact/new-contact.component"
-import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { IpService } from 'src/app/core/services/ip.service';
 import { RolService } from 'src/app/core/services/rol.service';
@@ -21,6 +20,7 @@ import { contactsEmailTicket } from "../../../models/contactsEmailTicket.model"
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { formTicketInterface } from "../../../interfaces/formTicketInterface.interface"
+import { ActivatedRoute, Router } from '@angular/router';
 interface datosServicio {
   cliente : string,
   servicio : string,
@@ -127,10 +127,12 @@ export class TicketEntryComponent implements OnInit {
     cveIncidencia : ["", Validators.required]
   })
 
+  desacBtnCrear : boolean = false
 
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
-  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService) {  }
+  ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService,
+    private ruta : Router,private route: ActivatedRoute) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
@@ -138,10 +140,12 @@ export class TicketEntryComponent implements OnInit {
     this.vistaPreviaTickets()
     
   }
+
   date(date:string){
-    let dateArray = date.split("-")
-    return new Date (Number(dateArray[0]),Number(dateArray[1]),Number(dateArray[2]))
+    let dateArray = date.split("-")    
+    return new Date (Number(dateArray[0]),Number(dateArray[1])-1,Number(dateArray[2]))
   }
+
   contactoArray(ev : any){
     this.indicesAcomu.push(Number(ev.option.id.split("_")[0]))
     this.acomuladorContactos.push(ev.option.value.correo)
@@ -355,9 +359,10 @@ export class TicketEntryComponent implements OnInit {
 
   buscarUsuarios(){
     let cve : number = this.idGrupo.value
-    this.usarioservice.usuariosRol(cve).subscribe((resp:responseService)=>{
+    this.formTicket.controls["cveUsuario"].reset();
+    this.usarioservice.usuariosGrupo(cve).subscribe((resp:responseService)=>{
       if(resp.status === "not found"){
-
+        this.usuarios = []
       }else{
        this.usuarios = resp.container;
       }
@@ -369,7 +374,7 @@ export class TicketEntryComponent implements OnInit {
   }
 
   vistaPreviaTickets(){
-    this.ticketService.vistaPreviaTickets().subscribe((resp:responseService)=>{
+    this.ticketService.tickets(0,0).subscribe((resp:responseService)=>{
       this.arrayPrevTicket =  resp.container;
     })
   }
@@ -437,8 +442,7 @@ export class TicketEntryComponent implements OnInit {
   async enviarTicket(){    
 
     if(this.formTicket.valid && this.myControl.valid){
-     
-
+      this.desacBtnCrear = true;
       if(this.agregarMasContacto == false){
         this.contactsEmailTicket.correoCc  = this.acomuladorContactos
       }else{
@@ -447,7 +451,7 @@ export class TicketEntryComponent implements OnInit {
       
       this.contactsEmailTicket.correo = this.contactoLista[this.contactoPrincipal!].correo
       this.contactsEmailTicket.texto =  this.formTicket.controls["descripcion"].value
-      this.contactsEmailTicket.prioridad = this.metodos.prioridadEnLetra(Number(this.formTicket.controls["prioridad"].value))
+      this.contactsEmailTicket.prioridad = this.metodos.prioridadEnLetraTicket(Number(this.formTicket.controls["prioridad"].value))
       this.contactsEmailTicket.identificador = this.identificador
       this.contactsEmailTicket.servicio = this.datosServicio?.servicio!
       this.contactsEmailTicket.nombreContacto = this.contactoLista[this.contactoPrincipal!].nombre
@@ -461,6 +465,8 @@ export class TicketEntryComponent implements OnInit {
       
       await lastValueFrom(this.ticketService.insertTickets(form))
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))
+      this.ruta.navigate(['../all-tickets'], {relativeTo: this.route});
+      
     }else{
       alert("Por favor llene el formulario")
     }

@@ -9,7 +9,7 @@
               <button mat-menu-item>
                 <span>Mis tickets</span>
               </button>
-              <button mat-menu-item disabled>
+              <button mat-menu-item>
                 <span>Todos los tickets</span>
               </button>
               <button mat-menu-item>
@@ -27,13 +27,11 @@
                     <div>
                      <mat-form-field  appearance="fill" id="buscarCreacion">
                         <mat-label>Ordenar por</mat-label>
-                        <mat-select placeholder="Fecha de creacion" formControlName="cveUsuario">
+                        <mat-select placeholder="Fecha de creacion" (selectionChange)="ordenarPor($event.value)" >
                           <mat-option value="0" disabled>Seleccione una opcion</mat-option>
                           <mat-option value="1" selected> Fecha de creacion</mat-option>
-                          <mat-option value="2" > Vencidos</mat-option>
-                          <mat-option value="3" > Modificados</mat-option>
-                          <mat-option value="4" > Prioridad</mat-option>
-                          <mat-option value="5" > Estado</mat-option>
+                          <mat-option value="2" > Prioridad</mat-option>
+                          <mat-option value="3" > Estado</mat-option>
                         </mat-select>
                       </mat-form-field>
                     </div>
@@ -46,10 +44,10 @@
                 </ng-template>
               </div>
               <div class="sidenav-content">
-                <button mat-raised-button class="bNuevo" color="primary">Nuevo ticket</button>
+                <button mat-raised-button class="bNuevo" color="primary" [routerLink]="['../ticket-entry']">Nuevo ticket</button>
               </div>
               <div id="paginator">
-                <mat-paginator class="all-tickets"
+                <mat-paginator #paginator class="all-tickets"
                 [length]="100"
                 [pageSize]="15"
                 hidePageSize="true"
@@ -98,7 +96,7 @@
                                   [matAutocomplete]="auto4">
                             <mat-autocomplete autoActiveFirstOption #auto4="matAutocomplete">
                               <mat-option *ngFor="let option of filteredOptionsAgente | async" [value]="option">
-                                {{option}}
+                                {{option.usuario}}
                               </mat-option>
                             </mat-autocomplete>
                           </mat-form-field>
@@ -193,12 +191,12 @@
 
                         <ng-container matColumnDef="checkbox">
                           <th mat-header-cell *matHeaderCellDef>  </th>
-                          <td mat-cell *matCellDef="let element"> <mat-checkbox [value]="element.checbox" color="primary" (click)="borrarSioNo(matBorar.checked)" #matBorar> </mat-checkbox> </td>
+                          <td mat-cell *matCellDef="let element"> <mat-checkbox color="primary" (click)="borrarSioNo(matBorar.checked)" #matBorar> </mat-checkbox> </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="ticket">
                           <th mat-header-cell *matHeaderCellDef> Ticket </th>
-                          <td mat-cell *matCellDef="let element"> {{element.ticket}} </td>
+                          <td mat-cell *matCellDef="let element"> {{element.idTicket}} </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="servicio">
@@ -206,14 +204,14 @@
                           <td mat-cell *matCellDef="let element"> {{element.servicio}} </td>
                         </ng-container>
 
-                        <ng-container matColumnDef="fechaAbierto">
+                        <ng-container matColumnDef="fechaAbierta">
                           <th mat-header-cell *matHeaderCellDef> Fecha abierto </th>
-                          <td mat-cell *matCellDef="let element"> {{element.fechaAbierto}} </td>
+                          <td mat-cell *matCellDef="let element"> {{element.fechaAbierta}} </td>
                         </ng-container>
 
-                        <ng-container matColumnDef="fechaCerrado">
+                        <ng-container matColumnDef="fechaCerrada">
                           <th mat-header-cell *matHeaderCellDef> Fecha cerrado </th>
-                          <td mat-cell *matCellDef="let element"> {{element.fechaCerrado}} </td>
+                          <td mat-cell *matCellDef="let element"> {{element.fechaCerrada !== undefined? "No asignada": element.fechaCerrada}} </td>
                         </ng-container>
 
                         <ng-container matColumnDef="grupo">
@@ -223,7 +221,7 @@
 
                         <ng-container matColumnDef="tipo">
                           <th mat-header-cell *matHeaderCellDef> tipo </th>
-                          <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+                          <td mat-cell *matCellDef="let element"> {{metodos.tipoEnLetraTicket(element.tipo)}} </td>
                         </ng-container>
 
                         <ng-container matColumnDef="agente">
@@ -233,7 +231,12 @@
 
                         <ng-container matColumnDef="estado">
                           <th mat-header-cell *matHeaderCellDef> Estado </th>
-                          <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                          <td mat-cell *matCellDef="let element"> {{metodos.estadoEnLetraTicket(element.estado)}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="prioridad">
+                          <th mat-header-cell *matHeaderCellDef> Prioridad </th>
+                          <td mat-cell *matCellDef="let element"> {{metodos.prioridadEnLetraTicket(element.prioridad)}} </td>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

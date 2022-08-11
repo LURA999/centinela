@@ -14,8 +14,8 @@ export class TicketService {
 
     constructor(private http:HttpClient){}
 
-    vistaPreviaTickets() : Observable<responseService>{
-        return this.http.get<responseService>(this.local+"Tickets/tickets.php");
+    tickets(cond : number,cve:number) : Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Tickets/tickets.php?cond="+cond+"&cve="+cve);
     }
     
     llamarTodo(cve:number,identificador:string) : Observable<responseService>{

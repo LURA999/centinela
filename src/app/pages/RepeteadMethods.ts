@@ -123,7 +123,7 @@ export class RepeteadMethods {
   }
 
   //Es para los tickets
-  prioridadEnLetra( valor : number) : string{
+  prioridadEnLetraTicket( valor : number) : string{
     switch (valor) {
       case 1:
         return "Baja";
@@ -138,7 +138,7 @@ export class RepeteadMethods {
     }
   }
 
-  tipoEnLetra( valor : string) : string{
+  tipoEnLetraTicket( valor : string) : string{
     switch (Number(valor)) {
       case 1:
         return "Soporte";
@@ -150,16 +150,16 @@ export class RepeteadMethods {
        return  "";
     }
   }
-  estadoEnLetra( valor : number) : string{
+  estadoEnLetraTicket( valor : number) : string{
     switch (valor) {
       case 1:
         return "Abierto";
       case 2:
-        return "Cerrado"
-      case 3:
         return "En progreso";
+      case 3:
+        return "Pausado";  
       case 4:
-        return "Pausado";                
+        return "Cerrado";             
       default:
        return  "";
     }
