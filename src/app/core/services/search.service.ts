@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { responseService } from "src/app/models/responseService.model";
 import { serviceModel } from "src/app/models/service.model";
 import { environment } from 'src/environments/environment';
+import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
 
 @Injectable({
     providedIn:'root'
@@ -34,8 +35,6 @@ export class SearchService {
         return this.http.get<responseService>(this.local+"Search/mainsearch.php?contacto="+contacto)
       }
       searchTicket(ticket : string):Observable<responseService>{
-        console.log(this.local+"Search/mainsearch.php?ticket="+ticket);
-        
         return this.http.get<responseService>(this.local+"Search/mainsearch.php?ticket="+ticket)
       }
       
@@ -47,5 +46,10 @@ export class SearchService {
       }
       buscarNombres(variable : string, condicion : number) :Observable<responseService>{
         return this.http.get<responseService>(this.local+"Search/searchIdentifier.php?name="+variable+"&cond="+condicion)
+      }
+
+      //es para la vista all-ticket
+      buscarPorNavbar(input:formNavSearchTicket){
+        return this.http.post<responseService>(this.local+"Search/searchNavTicket.php",input)
       }
 } 

@@ -14,6 +14,7 @@ import { RepeteadMethods } from '../../RepeteadMethods';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
+import { SearchService } from 'src/app/core/services/search.service';
 
 export interface ticket {
   idTicket: Number,
@@ -27,6 +28,14 @@ export interface ticket {
   prioridad:Number
 }
 
+export interface usuario {
+  apellidoPaterno: string,
+  appelidoMaterno: string,
+  correo: string,
+  idUsuario: number,
+  nombres: string,
+  usuario: string
+}
 @Component({
   selector: 'app-all-tickets',
   templateUrl: './all-tickets.component.html',
@@ -42,17 +51,15 @@ export class AllTicketsComponent implements OnInit{
   displayedColumns: string[] = ['checkbox', 'ticket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','tipo','agente','estado',"prioridad"];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);  
 
-  //variables para el responsive del navbar
-  showFiller :boolean = false;
-  mobileQuery: MediaQueryList;
-  private _mobileQueryListener: () => void;
 
   //variables para los inputs con opciones y con autocomplete
   separatorKeysCodes: number[] = [ENTER, COMMA];
   estadoControl = new FormControl('');
   filteredEstado: Observable<string[]>;
   estados: string[] = [];
-  todoEstado: string[] = ['Abierto', 'Cerrado', 'En progreso', 'Pausado'];
+  estadosCve : number [] = [];
+  todoEstado: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
+  todoEstadoAux: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
 
   @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
   @ViewChild ("paginator") paginator:any;
@@ -63,9 +70,10 @@ export class AllTicketsComponent implements OnInit{
 
   optionsAgente: any[] = [];
   optionsCreado: any[] = [];
-
-  filteredOptionsAgente: Observable<any[]> | undefined;
-  filteredOptionsCreado: Observable<any[]> | undefined;
+  creador? : usuario 
+  agente? : usuario 
+  filteredOptionsAgente?: Observable<any[]> ;
+  filteredOptionsCreado?: Observable<any[]> ;
 
 
   formNav :FormGroup =  this.fb.group({
@@ -78,17 +86,11 @@ export class AllTicketsComponent implements OnInit{
 
   metodos = new RepeteadMethods();
   constructor(
-    private changeDetectorRef: ChangeDetectorRef,
-    private media: MediaMatcher,
     private fb : FormBuilder,
     private ticketService : TicketService,
     private userServ: UsuarioService,
-    private auth : AuthService) { 
-      //responsive del navbar
-    this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
-    this._mobileQueryListener = () => this.changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
-
+    private auth : AuthService,
+    private search: SearchService) { 
 
     ///variables para los inputs con opciones
     this.filteredEstado = this.estadoControl.valueChanges.pipe(
@@ -97,6 +99,15 @@ export class AllTicketsComponent implements OnInit{
     );
   }
  
+  eligiendoCreador(u : usuario){
+    this.creador = u
+    this.creadoControl.setValue(u.usuario)      
+  }
+
+  eligiendoAgente(u : usuario){
+    this.agente = u
+    this.agenteControl.setValue(u.usuario)
+  }
 
   ngOnInit(): void {
     this.llenarTabla(1)
@@ -107,6 +118,7 @@ export class AllTicketsComponent implements OnInit{
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     this.ticketService.tickets(cond,this.auth.getCveId()).subscribe(async(resp:responseService) =>{
+     
       for await (const respuesta of resp.container) {
         this.ELEMENT_DATA.push(respuesta)
       }
@@ -117,19 +129,23 @@ export class AllTicketsComponent implements OnInit{
   }
 
   llenarUsuarios(){
-    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{      
+    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{            
       for await (const usuario of resp.container) {
         this.optionsAgente.push(usuario)
-        this.optionsCreado.push(usuario)
+        this.optionsCreado.push(usuario)        
       }
       this.filteredOptionsAgente = this.agenteControl.valueChanges.pipe(
         startWith(''),
-        map((value : string) => this._filterAgente(value || '')),
+        map(value => {
+          const nombre = typeof value === 'string' ? value : value?.usuario;
+         return nombre ? this._filterAgente(nombre as string) : this.optionsAgente.slice()}),
       );
       this.filteredOptionsCreado = this.creadoControl.valueChanges.pipe(
         startWith(''),
-        map((value : string) => this._filterCreado(value || '')),
-      );
+        map(value => {
+          const nombre = typeof value === 'string' ? value : value?.usuario;
+         return nombre ? this._filterCreado(nombre as string) : this.optionsCreado.slice()}
+          ));
       })
       
    
@@ -149,7 +165,9 @@ export class AllTicketsComponent implements OnInit{
 
     if (index >= 0) {
       this.todoEstado.push(this.estados[index])
+      this.estadosCve.splice(this.estadosCve.indexOf(  this.todoEstadoAux.indexOf(this.estados[index])+1),1)
       this.estados.splice(index, 1);
+
       this.filteredEstado = this.estadoControl.valueChanges.pipe(
         startWith(null),
         map((estado: string | null) => (estado ? this._filter(estado) : this.todoEstado.slice())),
@@ -159,8 +177,9 @@ export class AllTicketsComponent implements OnInit{
 
   selectedEstado(event: MatAutocompleteSelectedEvent): void {
     this.estados.push(event.option.viewValue);
+    this.estadosCve.push(this.todoEstadoAux.indexOf(event.option.viewValue)+1)
+    
     this.todoEstado.splice(this.todoEstado.indexOf(event.option.viewValue),1)
-
     this.estadoInput.nativeElement.value = '';
     this.estadoControl.setValue(null);
   }
@@ -179,26 +198,48 @@ export class AllTicketsComponent implements OnInit{
   ///metodos del auto complete
   private _filterAgente(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.optionsAgente.filter(option => option.includes(filterValue));
+    return this.optionsAgente.filter((option :any)=> option.usuario.toLowerCase().includes(filterValue));
   }
-  private _filterCreado(value: string): string[] {
+
+  private _filterCreado(value: string): string[] {    
     const filterValue = value.toLowerCase();
-    return this.optionsCreado.filter(option => option.includes(filterValue));
+    return this.optionsCreado.filter((option :any) => option.usuario.toLowerCase().includes(filterValue));
   }
 
   aplicar(){
     const form :formNavSearchTicket = this.formNav.value
-    form.agente = this.agenteControl.value
-    form.creador = this.creadoControl.value 
-    //form.estados = this.estados
-  
-    console.log(form);
+    form.agente = this.agente?.idUsuario!
+    form.creador = this.creador?.idUsuario!
+    form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
+    form.grupo = this.auth.getCveGrupo()    
+    form.cve = this.auth.getCveId()
     
+    this.search.buscarPorNavbar(form).subscribe((res:responseService)=>{
+        console.log(res.container);
+        
+    })
   }
 
 
-  ///Empiezan las funciones de los filtros
+  ///filtros  de segundo grado
   ordenarPor(posicion : number){
     this.llenarTabla(posicion);  
   }
+
+  //filtros de primer grado
+  filtroTicketGeneral(){
+
+  }
+
+  //filtros de tercer grado
+  filtroNavbar(){
+    
+    const form :formNavSearchTicket = this.formNav.value 
+    form.cve = this.auth.getCveId(),
+    form.estados = this.estadosCve.toString()
+     
+   // this.search.buscarPorNavbar(formNavSearchTicket)
+  }
+
+
 }

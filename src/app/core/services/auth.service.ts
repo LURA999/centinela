@@ -50,6 +50,12 @@ export class AuthService {
     return info.id
   }
 
+  getCveGrupo(){
+    let payload = localStorage.getItem('sesion')
+    let info = this.parseJwt(payload!!)    
+    return info.grupo
+  }
+
   cerrarSesion(){
     localStorage.removeItem("sesion");
   }

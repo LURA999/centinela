@@ -1,7 +1,8 @@
 export interface formNavSearchTicket{
+    cve:Number,
     agente:Number,
     creador:Number,
-    estados:Number[],
+    estados:String,
     buscar:String,
     grupo:Number,
     tipo: Number,

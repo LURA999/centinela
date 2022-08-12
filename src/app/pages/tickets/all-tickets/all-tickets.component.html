@@ -78,6 +78,7 @@
                           <mat-form-field appearance="fill">
                             <mat-label>Grupo</mat-label>
                             <mat-select formControlName="grupo">
+                              <mat-option value="0">Ninguno</mat-option>
                                 <mat-option value="1">Administrador</mat-option>
                                   <mat-option value="2">Soporte</mat-option>
                                   <mat-option value="3">Comercial</mat-option>
@@ -94,7 +95,7 @@
                                   matInput
                                   [formControl]="agenteControl"
                                   [matAutocomplete]="auto4">
-                            <mat-autocomplete autoActiveFirstOption #auto4="matAutocomplete">
+                            <mat-autocomplete autoActiveFirstOption (optionSelected)="eligiendoAgente($event.option.value)" #auto4="matAutocomplete">
                               <mat-option *ngFor="let option of filteredOptionsAgente | async" [value]="option">
                                 {{option.usuario}}
                               </mat-option>
@@ -105,6 +106,7 @@
                           <mat-form-field appearance="fill">
                               <mat-label>Tipo</mat-label>
                               <mat-select formControlName="tipo">
+                                <mat-option value="0">Ninguno</mat-option>
                                   <mat-option value="1">Soporte</mat-option>
                                   <mat-option value="2">Atencion</mat-option>
                                   <mat-option value="3">Solicitud</mat-option>
@@ -120,15 +122,13 @@
                                     matInput
                                     [formControl]="creadoControl"
                                     [matAutocomplete]="auto3">
-                              <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete">
-                                <mat-option *ngFor="let option of filteredOptionsCreado | async" [value]="option">
-                                  {{option}}
+                              <mat-autocomplete autoActiveFirstOption (optionSelected)="eligiendoCreador($event.option.value)" #auto3="matAutocomplete">
+                                <mat-option *ngFor="let option of filteredOptionsCreado | async let i = index" [id]="i+'_'" [value]="option">
+                                  {{option.usuario}}
                                 </mat-option>
                               </mat-autocomplete>
                             </mat-form-field>
                         </div>
-                        
-                        
                         <div class="input">
                           <mat-form-field class="example-chip-list" appearance="fill">
                             <mat-label>Estado</mat-label>
@@ -144,6 +144,7 @@
                               <input
                                 placeholder="Cualquier estado..."
                                 #estadoInput
+                                [disabled]="estados.length === 4"
                                 [formControl]="estadoControl"
                                 [matAutocomplete]="auto6"
                                 [matChipInputFor]="chipList"
@@ -151,7 +152,7 @@
                                 (matChipInputTokenEnd)="add($event)">
                             </mat-chip-list>
                             <mat-autocomplete #auto6="matAutocomplete" (optionSelected)="selectedEstado($event)">
-                              <mat-option *ngFor="let estado of filteredEstado | async" [value]="estado">
+                              <mat-option *ngFor="let estado of filteredEstado | async let i = index" [id]="i+'_'" [value]="estado">
                                 {{estado}}
                               </mat-option>
                             </mat-autocomplete>
@@ -161,6 +162,7 @@
                           <mat-form-field appearance="fill">
                             <mat-label>Prioridad</mat-label>
                             <mat-select formControlName="prioridad">
+                                <mat-option value="0">Ninguno</mat-option>
                                 <mat-option value="1">Baja</mat-option>
                                 <mat-option value="2">Media</mat-option>
                                 <mat-option value="3">Alta</mat-option>
@@ -172,7 +174,7 @@
                           <mat-form-field appearance="fill">
                             <mat-label>Fuente</mat-label>
                             <mat-select formControlName="fuente">
-                              <mat-option value="0" disabled selected>Seleccione un origen</mat-option>
+                              <mat-option value="0">Ninguno</mat-option>
                               <mat-option value="1">Llamada directa</mat-option>
                               <mat-option value="2">WhatsApp</mat-option>
                               <mat-option value="3">Correo</mat-option>
