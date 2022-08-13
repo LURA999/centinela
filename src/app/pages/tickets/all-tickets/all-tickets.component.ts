@@ -15,6 +15,8 @@ import { UsuarioService } from 'src/app/core/services/user.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
 import { SearchService } from 'src/app/core/services/search.service';
+import { MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatButton } from '@angular/material/button';
 
 export interface ticket {
   idTicket: Number,
@@ -64,9 +66,16 @@ export class AllTicketsComponent implements OnInit{
   @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
   @ViewChild ("paginator") paginator:any;
 
+  //botones del mat-menu-trigger
+  @ViewChild ("misTickets") misTickets!:MatButton;
+  @ViewChild ("todosTickets") todosTickets!:MatButton;
+  @ViewChild ("ticketsSinResolver") ticketsSinResolver!:MatButton;
+  @ViewChild ("ticketsAbiertosNuevos") ticketsAbiertosNuevos!:MatButton;
+
   //autocomplete
   agenteControl = new FormControl('');
   creadoControl = new FormControl('');
+  filtroSecControl = new FormControl('');
 
   optionsAgente: any[] = [];
   optionsCreado: any[] = [];
@@ -85,6 +94,9 @@ export class AllTicketsComponent implements OnInit{
   })
 
   metodos = new RepeteadMethods();
+
+  tituloAllTickets : string= "Todos los tickets";
+
   constructor(
     private fb : FormBuilder,
     private ticketService : TicketService,
@@ -208,37 +220,85 @@ export class AllTicketsComponent implements OnInit{
 
   aplicar(){
     const form :formNavSearchTicket = this.formNav.value
-    form.agente = this.agente?.idUsuario!
-    form.creador = this.creador?.idUsuario!
-    form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
-    form.grupo = this.auth.getCveGrupo()    
-    form.cve = this.auth.getCveId()
     
-    this.search.buscarPorNavbar(form).subscribe((res:responseService)=>{
-        console.log(res.container);
-        
+    
+    form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
+    form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
+    form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
+    form.cveGrupo = this.auth.getCveGrupo()    
+    form.cve = this.auth.getCveId()
+    form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value)
+    form.condicion2 = -1;
+    this.search.buscarPorNavbar(form).subscribe(async(resp:responseService)=>{
+    this.ELEMENT_DATA = [];
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    for await (const respuesta of resp.container) {
+      this.ELEMENT_DATA.push(respuesta)
+    }
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator =  this.paginator; 
     })
+    
   }
 
 
   ///filtros  de segundo grado
-  ordenarPor(posicion : number){
-    this.llenarTabla(posicion);  
+  ordenarPor(){
+    const form :formNavSearchTicket = this.formNav.value
+    form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
+    form.cveGrupo = this.auth.getCveGrupo()    
+    form.cve = this.auth.getCveId()
+    form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value)
+    form.condicion2 = -1;
+    this.search.buscarPorNavbar(form).subscribe(async(resp:responseService)=>{
+      this.ELEMENT_DATA = [];
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      for await (const respuesta of resp.container) {
+        this.ELEMENT_DATA.push(respuesta)
+      }
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator =  this.paginator; 
+      })  
   }
 
-  //filtros de primer grado
-  filtroTicketGeneral(){
-
-  }
-
+  
   //filtros de tercer grado
   filtroNavbar(){
-    
     const form :formNavSearchTicket = this.formNav.value 
     form.cve = this.auth.getCveId(),
     form.estados = this.estadosCve.toString()
-     
    // this.search.buscarPorNavbar(formNavSearchTicket)
+  }
+
+
+  //Filtro de primer grado
+
+  cambiarTitulo(opc:Number){
+    this.misTickets.disabled = false;
+    this.ticketsAbiertosNuevos.disabled = false;
+    this.ticketsSinResolver.disabled = false;
+    this.todosTickets.disabled = false;
+
+    switch (opc) {
+      case 1:
+        this.tituloAllTickets = "Mis Tickets";
+        this.misTickets.disabled = true;
+        break;
+      case 2:
+        this.tituloAllTickets = "Todos los tickets";
+        this.todosTickets.disabled = true;
+        break;
+      case 3:
+        this.tituloAllTickets = "Todos los tickets sin resolver";
+        this.ticketsSinResolver.disabled = true;
+        break;
+      case 4:
+        this.tituloAllTickets = "Tickets nuevos y abiertos";
+        this.ticketsAbiertosNuevos.disabled = true;
+        break;    
+      default:
+        break;
+    }
   }
 
 

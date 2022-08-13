@@ -1,5 +1,6 @@
 export interface formNavSearchTicket{
     cve:Number,
+    cveGrupo: Number,
     agente:Number,
     creador:Number,
     estados:String,
@@ -7,5 +8,7 @@ export interface formNavSearchTicket{
     grupo:Number,
     tipo: Number,
     prioridad:Number,
-    fuente:Number
+    fuente:Number,
+    condicion:Number,
+    condicion2:Number
 }

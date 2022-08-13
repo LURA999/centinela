@@ -5,20 +5,20 @@
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                 <mat-icon>filter_list</mat-icon>
             </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item>
+            <mat-menu  #menu="matMenu">
+              <button mat-menu-item #misTickets (click)="cambiarTitulo(1)">
                 <span>Mis tickets</span>
               </button>
-              <button mat-menu-item>
+              <button mat-menu-item #todosTickets (click)="cambiarTitulo(2)" disabled>
                 <span>Todos los tickets</span>
               </button>
-              <button mat-menu-item>
+              <button mat-menu-item #ticketsSinResolver (click)="cambiarTitulo(3)">
                 <span>Todos los tickets sin resolver</span>
               </button>
-              <button mat-menu-item>
+              <button mat-menu-item  #ticketsAbiertosNuevos (click)="cambiarTitulo(4)">
                 <span>Tickets nuevos y abiertos</span>
               </button>
-            </mat-menu> <span class="title">Todos los tickets</span></mat-card-header>
+            </mat-menu> <span class="title"> {{tituloAllTickets}}</span></mat-card-header>
             <mat-card-content >
             <div id="container-paginator">
               <div id="main">
@@ -27,11 +27,11 @@
                     <div>
                      <mat-form-field  appearance="fill" id="buscarCreacion">
                         <mat-label>Ordenar por</mat-label>
-                        <mat-select placeholder="Fecha de creacion" (selectionChange)="ordenarPor($event.value)" >
-                          <mat-option value="0" disabled>Seleccione una opcion</mat-option>
-                          <mat-option value="1" selected> Fecha de creacion</mat-option>
-                          <mat-option value="2" > Prioridad</mat-option>
-                          <mat-option value="3" > Estado</mat-option>
+                        <mat-select placeholder="Fecha de creacion" [formControl]="filtroSecControl" (selectionChange)="ordenarPor()" >
+                          <mat-option value=0 disabled>Seleccione una opcion</mat-option>
+                          <mat-option value=1 selected> Fecha de creacion</mat-option>
+                          <mat-option value=2 > Prioridad</mat-option>
+                          <mat-option value=3 > Estado</mat-option>
                         </mat-select>
                       </mat-form-field>
                     </div>
@@ -78,11 +78,11 @@
                           <mat-form-field appearance="fill">
                             <mat-label>Grupo</mat-label>
                             <mat-select formControlName="grupo">
-                              <mat-option value="0">Ninguno</mat-option>
-                                <mat-option value="1">Administrador</mat-option>
-                                  <mat-option value="2">Soporte</mat-option>
-                                  <mat-option value="3">Comercial</mat-option>
-                                  <mat-option value="4">Administracion</mat-option>
+                              <mat-option value=0>Ninguno</mat-option>
+                                <mat-option value=1>Administrador</mat-option>
+                                  <mat-option value=2>Soporte</mat-option>
+                                  <mat-option value=3>Comercial</mat-option>
+                                  <mat-option value=4>Administracion</mat-option>
                             </mat-select>
                           </mat-form-field>
                         </div>
@@ -106,10 +106,10 @@
                           <mat-form-field appearance="fill">
                               <mat-label>Tipo</mat-label>
                               <mat-select formControlName="tipo">
-                                <mat-option value="0">Ninguno</mat-option>
-                                  <mat-option value="1">Soporte</mat-option>
-                                  <mat-option value="2">Atencion</mat-option>
-                                  <mat-option value="3">Solicitud</mat-option>
+                                <mat-option value=0>Ninguno</mat-option>
+                                  <mat-option value=1>Soporte</mat-option>
+                                  <mat-option value=2>Atencion</mat-option>
+                                  <mat-option value=3>Solicitud</mat-option>
                               </mat-select>
                           </mat-form-field>
                         </div>
@@ -162,11 +162,11 @@
                           <mat-form-field appearance="fill">
                             <mat-label>Prioridad</mat-label>
                             <mat-select formControlName="prioridad">
-                                <mat-option value="0">Ninguno</mat-option>
-                                <mat-option value="1">Baja</mat-option>
-                                <mat-option value="2">Media</mat-option>
-                                <mat-option value="3">Alta</mat-option>
-                                <mat-option value="4">Urgente</mat-option>
+                                <mat-option value=0>Ninguno</mat-option>
+                                <mat-option value=1>Baja</mat-option>
+                                <mat-option value=2>Media</mat-option>
+                                <mat-option value=3>Alta</mat-option>
+                                <mat-option value=4>Urgente</mat-option>
                             </mat-select>
                           </mat-form-field>
                         </div>
@@ -174,13 +174,13 @@
                           <mat-form-field appearance="fill">
                             <mat-label>Fuente</mat-label>
                             <mat-select formControlName="fuente">
-                              <mat-option value="0">Ninguno</mat-option>
-                              <mat-option value="1">Llamada directa</mat-option>
-                              <mat-option value="2">WhatsApp</mat-option>
-                              <mat-option value="3">Correo</mat-option>
-                              <mat-option value="4">Asesor</mat-option>
-                              <mat-option value="5">Facebook</mat-option>
-                              <mat-option value="6">Pagina web</mat-option>
+                              <mat-option value=0>Ninguno</mat-option>
+                              <mat-option value=1>Llamada directa</mat-option>
+                              <mat-option value=2>WhatsApp</mat-option>
+                              <mat-option value=3>Correo</mat-option>
+                              <mat-option value=4>Asesor</mat-option>
+                              <mat-option value=5>Facebook</mat-option>
+                              <mat-option value=6>Pagina web</mat-option>
                             </mat-select>
                           </mat-form-field>
                         </div>
