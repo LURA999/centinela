@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, Input, Renderer2 } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import {  lastValueFrom, Observable, Observer, Subscription } from 'rxjs';
 import { startWith,map } from 'rxjs/operators';
@@ -18,10 +18,15 @@ import { MatAutocomplete } from '@angular/material/autocomplete';
     styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
+dentro:boolean=false
+fuera:boolean=false
+
+  nombre: string =""
     booleantodos:boolean=true
     booleanservicio:boolean=true
     booleancontactos:boolean=true
     booleantickets:boolean=true
+    ocultar:boolean=true
     mostrar:string="on"
     private readonly notifier: NotifierService;
 serviciosbooleanlabel:boolean=false
@@ -62,8 +67,8 @@ cargando : boolean=false
         private media: MediaMatcher,
         private router : Router,
         private configservice:ConfigService,
-        private Search:SearchService
-        
+        private Search:SearchService,
+        private _renderer : Renderer2
       ) {
         this.notifier = notifierService;
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
@@ -122,10 +127,35 @@ cargando : boolean=false
 
 
 
+  close(){
+    console.log(this.dentro+"Fuera<----->Dentro"+this.fuera);
     
-  
+this.fuera=true
+    if(this.fuera==true&&this.dentro==true){
+console.log("SE MIRA");
 
-    todosbutton(id:string,event : any){
+      this._renderer.setStyle(document.getElementById("ocultar"),"visibility","visible")
+      this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","visible")
+
+
+}else{
+  console.log("NO SE MIRA");
+
+  this._renderer.setStyle(document.getElementById("ocultar"),"visibility","hidden")
+  this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","hidden")
+
+
+}
+this.fuera=false
+this.dentro=false
+
+  }
+
+
+ close2(){
+  this.dentro=true
+}
+todosbutton(id:string,event : any){
 this.botontodos=true
 
 this.botonservicio=false
@@ -230,12 +260,13 @@ if(this.botonservicio==true||this.botontodos==true){
             this.serviciosbooleanlabel=true
           console.log(result.container);
           
+          
           this.options= result.container;
+         
           }else{
             this.serviciosbooleanlabel=false
             this.options=[]
-           
-            
+  
           }
         });
 
@@ -254,13 +285,7 @@ if(this.botonservicio==true||this.botontodos==true){
 
     }
 
-
-
-
-
-
     async contacto(id:string,event : any){
-
 
         if(this.botoncontacto==true||this.botontodos==true){
         id = id.split(" ")[0]
@@ -275,6 +300,8 @@ if(this.botonservicio==true||this.botontodos==true){
           }else{
             this.contactosbooleanlabel=false
             this.contacts=[]
+            console.log(this.contacts);
+            
           }
         });
         this.filteredContacts = this.myControl.valueChanges.pipe(
@@ -326,28 +353,23 @@ if(this.botonservicio==true||this.botontodos==true){
     }
 
 
-    async irServicio (id : string){
-        console.log(id);
+    async irServicio (servicio : string){
+    var onlyservice =servicio.split(" ")[0];
+var number=servicio.split(" | ")[2]
+
         
-        await lastValueFrom(this.Search.llamarServicioEstatus(this.options.indexOf(id)+1)).then( (result : any) =>{
-           console.log(result);
-           
-            var estatus=result.container[0]["estatus"]
-        
-            if(estatus!=2){
-                id = id.split(" ")[0]
-                var identificador=id.replace(/([0-9]{4})\S/,"");
-                identificador= identificador.substring(0,identificador.length-1)
-                
-                this.router.navigateByUrl("/admin/client/"+identificador+"/"+id).then(() => {
-                    window.location.reload();
-                  });
-                 
-                     
-                } else{
-                    this.notifier.notify('warning', 'Servicio Inactivo');    
-                
-                }     
-            }); 
-    }
+      
+          
+      
+            var estatus=servicio.split(" | ")[3]
+      
+            if(Number(estatus)!=2){
+     this.router.navigateByUrl("/admin/client/"+Number(number)+"/"+onlyservice).then(() => {
+                    window.location.reload();            
+     });
+               } else{
+                 this.notifier.notify('warning', 'Servicio Inactivo');            
+    }    
+          
+  }
 }
