@@ -4,13 +4,15 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { lastValueFrom, Subscription } from 'rxjs';
+import { lastValueFrom, map, Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/core/services/device.service';
 import { IpService } from 'src/app/core/services/ip.service';
 import { RepeaterService } from 'src/app/core/services/repeater.service';
 import { UsuarioService } from 'src/app/core/services/user.service';
 import { DeviceModel } from 'src/app/models/device.model';
 import { responseService } from 'src/app/models/responseService.model';
+
+
 
 @Component({
   selector: 'app-new-router',
@@ -215,9 +217,19 @@ export class NewEquipamentComponent implements OnInit {
       if(this.data.opc == false){
         this.newModel.idDevice =  this.idAuto;
         if(this.data.abrirForm == true){
-        await lastValueFrom(this.deviceService.insertarOtros(this.newModel));
+          const  cveOtro : Number = (await lastValueFrom(this.deviceService.insertarOtros(this.newModel))).container[0]       
+          for (const iterator of this.newModel.idIp2) {
+            iterator.map(async (el:Number) => {
+              await lastValueFrom(this.deviceService.insertarOtrosP2({cveIp:el,cve:cveOtro}));
+            });
+          }
         }else{
-        await lastValueFrom(this.deviceServicio.insertarRouter(this.newModel));
+          const  cveRouter : Number = (await lastValueFrom(this.deviceServicio.insertarRouter(this.newModel))).container[0];
+          for (const iterator of this.newModel.idIp2) {
+            iterator.map(async (el:Number) => {
+              await lastValueFrom(this.deviceService.insertarRouterP2({cveIp:el,cve:cveRouter}));
+            });
+          }
         }
         this.dialogRef.close(this.newModel)      
 

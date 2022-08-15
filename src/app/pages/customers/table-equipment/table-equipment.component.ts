@@ -192,10 +192,13 @@ export class TableEquipamentComponent implements OnInit {
 
   /**Este metodo se usa cuando le picas al boton select de  la tabla, te guarda el resultado de un select, en un espacio designado */
   async abrirIps(id:number){    
+    
     if(this.guardandoPrimerIndice.indexOf(id) == -1){
     this.guardandoPrimerIndice.push(id)
-    this.ipSelect.selectIpOneEquipament(id,this.identificador, 2, Number(this.contadorIdenti)).subscribe((resp:responseService)=>{
+    this.ipSelect.selectIpOneEquipament(id,this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp:responseService)=>{
       this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container
+      console.log(this.IpSeleccionadas);
+      
     })
    }
 

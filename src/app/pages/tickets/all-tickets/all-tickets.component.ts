@@ -2,7 +2,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { map, Observable, startWith } from 'rxjs';
+import { lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,7 +15,6 @@ import { UsuarioService } from 'src/app/core/services/user.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
 import { SearchService } from 'src/app/core/services/search.service';
-import { MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
 
 export interface ticket {
@@ -47,9 +46,10 @@ export interface usuario {
 export class AllTicketsComponent implements OnInit{
   //var para borrar tickets
   borrar:boolean = true
- 
+  
   //variables de la tabla
   ELEMENT_DATA:  ticket[] = [ ];
+  tickets:  ticket[] = [ ];
   displayedColumns: string[] = ['checkbox', 'ticket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','tipo','agente','estado',"prioridad"];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);  
 
@@ -62,7 +62,7 @@ export class AllTicketsComponent implements OnInit{
   estadosCve : number [] = [];
   todoEstado: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
   todoEstadoAux: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
-
+  usuariosGrupo : any [] = []
   @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
   @ViewChild ("paginator") paginator:any;
 
@@ -81,6 +81,8 @@ export class AllTicketsComponent implements OnInit{
   optionsCreado: any[] = [];
   creador? : usuario 
   agente? : usuario 
+  grupoAgente : usuario[] = []
+
   filteredOptionsAgente?: Observable<any[]> ;
   filteredOptionsCreado?: Observable<any[]> ;
 
@@ -96,13 +98,18 @@ export class AllTicketsComponent implements OnInit{
   metodos = new RepeteadMethods();
 
   tituloAllTickets : string= "Todos los tickets";
+  arrayAgente : Number []= []
+  inicio : number=0;
+  fin : number=15;
+
+  $sub :  Subscription = new Subscription();
 
   constructor(
     private fb : FormBuilder,
-    private ticketService : TicketService,
     private userServ: UsuarioService,
     private auth : AuthService,
-    private search: SearchService) { 
+    private search: SearchService, 
+    private usarioservice : UsuarioService) { 
 
     ///variables para los inputs con opciones
     this.filteredEstado = this.estadoControl.valueChanges.pipe(
@@ -122,23 +129,30 @@ export class AllTicketsComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.llenarTabla(1)
+    this.procedmiento();
     this.llenarUsuarios();
+  
   }
 
-  llenarTabla(cond:number){
-    this.ELEMENT_DATA = [];
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.ticketService.tickets(cond,this.auth.getCveId()).subscribe(async(resp:responseService) =>{
-     
-      for await (const respuesta of resp.container) {
-        this.ELEMENT_DATA.push(respuesta)
-      }
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator =  this.paginator;    
-      
-    })
+
+  async procedmiento(){
+    this.inicio = 0;
+    this.fin = 15;
+   await this.llenadoInicial()
+    await this.compaginar()
   }
+
+
+  buscarUsuarios(cve:string,cveTicket:string){
+    
+    this.usarioservice.usuariosGrupo(Number(cve)).subscribe((resp:responseService)=>{
+      if(resp.status === "not found"){
+        this.usuariosGrupo = []
+      }else{
+        this.usuariosGrupo = resp.container;
+      }
+    })
+  }  
 
   llenarUsuarios(){
     this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{            
@@ -218,10 +232,9 @@ export class AllTicketsComponent implements OnInit{
     return this.optionsCreado.filter((option :any) => option.usuario.toLowerCase().includes(filterValue));
   }
 
-  aplicar(){
+  ///filtros  de segundo grado
+ /* async llenarTabla(){
     const form :formNavSearchTicket = this.formNav.value
-    
-    
     form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
     form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
     form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
@@ -233,33 +246,38 @@ export class AllTicketsComponent implements OnInit{
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     for await (const respuesta of resp.container) {
-      this.ELEMENT_DATA.push(respuesta)
+      this.tickets.push(respuesta)
     }
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     this.dataSource.paginator =  this.paginator; 
     })
-    
-  }
+  }*/
 
 
-  ///filtros  de segundo grado
-  ordenarPor(){
+  async llenadoInicial(){
     const form :formNavSearchTicket = this.formNav.value
+    form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
+    form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
     form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
     form.cveGrupo = this.auth.getCveGrupo()    
     form.cve = this.auth.getCveId()
     form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value)
     form.condicion2 = -1;
-    this.search.buscarPorNavbar(form).subscribe(async(resp:responseService)=>{
-      this.ELEMENT_DATA = [];
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      for await (const respuesta of resp.container) {
-        this.ELEMENT_DATA.push(respuesta)
-      }
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator =  this.paginator; 
-      })  
+    this.tickets = (await lastValueFrom(this.search.buscarPorNavbar(form))).container    
   }
+
+  async cargarFiltros(){
+    while ( this.inicio <this.fin + 2 && this.inicio < this.tickets.length) {
+      if(this.inicio < this.fin){
+      }
+    }
+
+    this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = await this.paginator;    
+    this.paginator.hidePageSize= await true;
+    this.paginator.length = await this.tickets.length;
+  }
+  
 
   
   //filtros de tercer grado
@@ -270,6 +288,50 @@ export class AllTicketsComponent implements OnInit{
    // this.search.buscarPorNavbar(formNavSearchTicket)
   }
 
+  async pageEvents(event: any) {  
+    this.$sub.unsubscribe();
+    this.$sub = new Subscription();
+  
+      if(event.previousPageIndex > event.pageIndex) {
+      this.inicio = (this.inicio-(this.inicio%15)) - 30;
+      if(this.inicio < 0){
+        this.inicio = 0;
+      }
+      this.fin =  (this.fin - (this.fin%15)) - 15;
+      this.compaginar();
+    } else {
+      this.inicio = this.fin;
+      this.fin = this.fin + 15;
+      this.compaginar();
+    }
+  }
+
+  async compaginar(){
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource();
+   while (this.inicio < this.fin + 2 && this.inicio < this.tickets.length) {
+    
+    if(this.inicio < this.fin){ 
+      this.ELEMENT_DATA[this.inicio] =  (this.tickets[this.inicio] )
+      
+      this.usuariosGrupo.push(
+        {
+          apellidoPaterno: "string",
+          appelidoMaterno: "string",
+          correo: "string",
+          idUsuario: 1,
+          nombres: "0",
+          usuario: "string"
+        }
+      )
+      this.inicio++
+      }
+    }
+    
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;    
+    this.paginator.length =  this.tickets.length;  
+  }
 
   //Filtro de primer grado
 

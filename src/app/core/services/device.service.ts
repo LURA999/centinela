@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ip_otro_detalle } from 'src/app/interfaces/ip_detalle.interface';
 import { DeviceModel } from 'src/app/models/device.model';
 import { responseService } from 'src/app/models/responseService.model';
 import { environment } from 'src/environments/environment';
@@ -13,7 +14,7 @@ export class DeviceService {
   constructor(private http : HttpClient) { }
 
   local = environment.api;
-///////////radios
+  /* radios*/
   todosRadios(identificador : string,contador: number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/radio.php?identificador="+identificador+"&contador="+contador);
   }
@@ -36,7 +37,7 @@ export class DeviceService {
   idMaxRadio(): Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/radio.php");
   }
-///////////////////////////////////// routers
+/* routers */
   todosRouter(identificador : string,contador: number, condicion : number, id?:number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/router.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id);
   }
@@ -54,11 +55,16 @@ export class DeviceService {
     let headers = new HttpHeaders().set('Content-type','Application/json')    
     return this.http.post<responseService>(this.local+"Devices/router.php",input,{headers});
   }
+
+  insertarRouterP2(input : ip_otro_detalle) :Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')    
+    return this.http.post<responseService>(this.local+"Devices/router.php",input,{headers});
+  }
   
   idMaxRotuer(): Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/router.php");
   }
-//////////////////////////////////////////// otros dispositivos
+  /* otros dispositivos*/
   todosOtros(identificador : string,contador: number, condicion : number, id?:number) : Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/others.php?identificador="+identificador+" &contador="+contador+"&condicion="+condicion+"&iddevice="+id);
   }
@@ -78,6 +84,12 @@ export class DeviceService {
     return this.http.post<responseService>(this.local+"Devices/others.php",input,{headers});
   }
 
+  insertarOtrosP2(input : ip_otro_detalle) :Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')    
+    return this.http.post<responseService>(this.local+"Devices/others.php",input,{headers});
+  }
+
+  
   idMaxOther(): Observable<responseService>{
     return this.http.get<responseService>(this.local+"Devices/others.php");
   }

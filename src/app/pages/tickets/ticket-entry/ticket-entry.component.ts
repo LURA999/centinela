@@ -451,7 +451,7 @@ export class TicketEntryComponent implements OnInit {
       
       this.contactsEmailTicket.correo = this.contactoLista[this.contactoPrincipal!].correo
       this.contactsEmailTicket.texto =  this.formTicket.controls["descripcion"].value
-      this.contactsEmailTicket.prioridad = this.metodos.prioridadEnLetraTicket(Number(this.formTicket.controls["prioridad"].value))
+      this.contactsEmailTicket.prioridad = this.metodos.prioridadEnLetraTicket(this.formTicket.controls["prioridad"].value)
       this.contactsEmailTicket.identificador = this.identificador
       this.contactsEmailTicket.servicio = this.datosServicio?.servicio!
       this.contactsEmailTicket.nombreContacto = this.contactoLista[this.contactoPrincipal!].nombre

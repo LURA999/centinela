@@ -123,8 +123,8 @@ export class RepeteadMethods {
   }
 
   //Es para los tickets
-  prioridadEnLetraTicket( valor : number) : string{
-    switch (valor) {
+  prioridadEnLetraTicket( valor : string) : string{
+    switch (Number(valor)) {
       case 1:
         return "Baja";
       case 2:
@@ -150,8 +150,8 @@ export class RepeteadMethods {
        return  "";
     }
   }
-  estadoEnLetraTicket( valor : number) : string{
-    switch (valor) {
+  estadoEnLetraTicket( valor : string) : string{    
+    switch (Number(valor)) {
       case 1:
         return "Abierto";
       case 2:

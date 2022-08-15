@@ -9,14 +9,9 @@ table{
     width: 100%;
 }
 
-td{
-    padding-right: 10px;
-    padding-left: 10px;
-}
-
-th{
-    padding-right: 10px;
-    padding-left: 10px;
+td.mat-cell.cdk-cell {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 /** Sidenav*/
@@ -101,4 +96,9 @@ mat-paginator {
 /*Eliminar y cerrar ticket*/
 .parBoton button{
     margin-left:5px;
+}
+
+/*Grupo*/
+.matformfield {
+    width: 113px !important;
 }
