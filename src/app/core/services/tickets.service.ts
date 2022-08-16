@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { formTicketInterface } from "src/app/interfaces/formTicketInterface.interface";
+import { actualizarUno } from "src/app/interfaces/ticketActualizar.interface";
 import { responseService } from "src/app/models/responseService.model";
 import { environment } from 'src/environments/environment';
 import {  contactsEmailTicket } from "../../models/contactsEmailTicket.model"
@@ -26,8 +27,21 @@ export class TicketService {
 
     }
 
-    updateTickets(){
+    updateTickets() {
+    }
 
+    actualizarPropiedad(input : actualizarUno) : Observable<responseService>{
+        return this.http.patch<responseService>(this.local+"Tickets/tickets.php?propiedad=true",input);
+    }
+
+    actualizarEstado(input : actualizarUno) : Observable<responseService>{
+        return this.http.patch<responseService>(this.local+"Tickets/tickets.php?estado=true",input);
+    }
+    actualizarAgente(input : actualizarUno) : Observable<responseService>{
+        return this.http.patch<responseService>(this.local+"Tickets/tickets.php?agente=true",input);
+    }
+    actualizarGrupo(input : actualizarUno) : Observable<responseService>{
+        return this.http.patch<responseService>(this.local+"Tickets/tickets.php?grupo=true",input);
     }
 
     insertTickets(ticket:formTicketInterface) : Observable<responseService> {

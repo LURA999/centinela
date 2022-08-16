@@ -263,7 +263,7 @@ export class AllTicketsComponent implements OnInit{
     if(limpieza == false){
       form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
       form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
-      form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
+      form.estados = this.estadosCve.toString();
       form.condicion2 = -1;
       form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value);
     }else{
@@ -271,12 +271,13 @@ export class AllTicketsComponent implements OnInit{
       form.condicion = 1
       form.agente = 0
       form.creador = 0
-      form.estados = ""
+      form.estados = ""      
     }
     form.cveGrupo = this.auth.getCveGrupo()    
     form.cve = this.auth.getCveId()
 
-    this.tickets = (await lastValueFrom(this.search.buscarPorNavbar(form))).container    
+    this.tickets = (await lastValueFrom(this.search.buscarPorNavbar(form))).container
+        
   }
 
   async cargarFiltros(){
@@ -329,7 +330,6 @@ export class AllTicketsComponent implements OnInit{
       
       if(this.gruposCve.indexOf(this.ELEMENT_DATA[this.inicio].grupo) == -1){
         this.gruposCve.push(Number(this.ELEMENT_DATA[this.inicio].grupo));
-
 
       }
       
