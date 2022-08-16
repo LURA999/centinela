@@ -1,14 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { count } from 'console';
-import { read } from 'fs';
-import { max } from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { AsuntoService } from 'src/app/core/services/asunto.service';
 import { ManualService } from 'src/app/core/services/manual.service';
 import { ManualModel } from 'src/app/models/manual.model';
-import { resourceLimits } from 'worker_threads';
 interface asunto {
   value: number;
   viewValue: string;

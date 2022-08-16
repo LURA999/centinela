@@ -7,6 +7,9 @@ import { RepeteadMethods } from '../RepeteadMethods';
 import { MyCustomPaginatorIntl } from '../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+import { NewUserComponent } from './popup/new-user/new-user.component';
+import { EditUserComponent } from './popup/edit-user/edit-user.component';
+import { DeleteUserComponent } from './popup/delete-user/delete-user.component';
 
 @Component({
   selector: 'app-users',
@@ -29,7 +32,7 @@ estatus:string=""
 
   ELEMENT_DATA : any =[]
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns = ['id','usuario',"grupo","estado",'opciones'];
+  displayedColumns = ['id','usuario','grupo','estatus','rol','opciones'];
   constructor(     private notificationService: NotificationService
     ,   private dialog : NgDialogAnimationService, private userservice : UsersmoduleService) { }
 
@@ -45,6 +48,74 @@ estatus:string=""
       }
   
   }
+
+  async eliminar(id:number){
+    let dialogRef = await this.dialog.open(DeleteUserComponent,
+      {data: {idManual: id},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+      
+      await dialogRef.afterClosed().subscribe((result : any) => {
+        try{
+        if(result.length > 0  ){
+          this.ELEMENT_DATA = this.metodos.arrayRemove(this.ELEMENT_DATA, this.metodos.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
+       
+  
+          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+          this.dataSource.paginator = this.paginator2;
+          this.dataSource.sort = this.sort;
+  
+        setTimeout(()=>{
+          this.notificationService.openSnackBar("Se elimino con exito");
+        })
+      }
+      }catch(Exception){}
+      });
+  }
+  
+
+  async editar(id:number,nombre:string){
+    let dialogRef = await this.dialog.open(EditUserComponent,
+      {data: {idManual: id,nombre:nombre},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+      
+      await dialogRef.afterClosed().subscribe((result : any) => {
+        this.llenarTabla();
+        /** 
+        try{
+        if(result.length > 0  ){
+          this.ELEMENT_DATA = this.ELEMENT_DATA, this.metodos.buscandoIndice(id,this.ELEMENT_DATA)
+       
+  
+          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+          this.dataSource.paginator = this.paginator2;
+          this.dataSource.sort = this.sort;
+  
+        setTimeout(()=>{
+          this.notificationService.openSnackBar("Se actualizo con exito");
+        })
+      }
+      }catch(Exception){}
+  
+    */});
+  }
+
+  newUser(){
+    let dialogRef  = this.dialog.open(NewUserComponent,
+      {data: {opc : false, id: this.mayorNumero },
+      animation: { to: "bottom" },
+      height:"auto", width:"500px",
+     });
+    
+     this.paginator2.firstPage();
+     dialogRef.afterClosed().subscribe((result:any)=>{
+       this.llenarTabla();
+})
+
+  }
   
   async llenarTabla(){
     this.cargando = false;
@@ -57,8 +128,7 @@ estatus:string=""
   
       for (let i=0; i<result.container.length; i++){
       this.ELEMENT_DATA.push(
-        {id: result.container[i]["idUsuario"],usuario: result.container[i]["usuario"], grupo: result.container[i]["grupo"],estatus: this.Estatus( result.container[i]["estatus"])
-          ,rol:result.container[i]["rol"]
+        {id: result.container[i]["idUsuario"],usuario: result.container[i]["usuario"], grupo: result.container[i]["grupo"],estatus: this.Estatus( result.container[i]["estatus"]), rol:result.container[i]["rol"]
       });
     this.numeroMayor(result.container[i]["idUsuario"]);
     }
@@ -75,7 +145,7 @@ estatus:string=""
       
   }
   
-  hayManual(){
+  hayUsers(){
     if(this.ELEMENT_DATA != 0 || this.cargando ==false){
       return true;
     }else{

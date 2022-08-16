@@ -8,7 +8,7 @@ import { ManualModel } from 'src/app/models/manual.model';
 })
 export class ManualService {
   local = environment.api; 
-  constructor(private http : HttpClient, private manualservice:ManualService) { }
+  constructor(private http : HttpClient) { }
 
   llamarManual(){
   

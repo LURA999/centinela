@@ -12,13 +12,11 @@ import { MyCustomPaginatorIntl } from '../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { DeleteManualComponent } from './popup/delete-manual/delete-manual.component';
 import { EditManualComponent } from './popup/edit-manual/edit-manual.component';
-
 @Component({
   selector: 'app-manual',
   templateUrl: './manual.component.html',
   styleUrls: ['./manual.component.css'],
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
-
 })
 export class ManualComponent implements OnInit {
  user:string =""
@@ -42,20 +40,15 @@ fecha:string=""
     private notificationService: NotificationService,
 
 
-
-
     
   ) { }
-
   ngOnInit(): void {
     this.llenarTabla();
   }
 
-
   sanitizeUrl(archivo: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(archivo);
 }
-
 async eliminar(id:number){
   let dialogRef = await this.dialog.open(DeleteManualComponent,
     {data: {idManual: id},
@@ -68,11 +61,9 @@ async eliminar(id:number){
       if(result.length > 0  ){
         this.ELEMENT_DATA = this.metodos.arrayRemove(this.ELEMENT_DATA, this.metodos.buscandoIndice(id,this.ELEMENT_DATA,"id"),"id")
      
-
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator2;
         this.dataSource.sort = this.sort;
-
       setTimeout(()=>{
         this.notificationService.openSnackBar("Se elimino con exito");
       })
@@ -80,7 +71,6 @@ async eliminar(id:number){
     }catch(Exception){}
     });
 }
-
 async editar(id:number,nombre:string){
   let dialogRef = await this.dialog.open(EditManualComponent,
     {data: {idManual: id,nombre:nombre},
@@ -95,21 +85,16 @@ async editar(id:number,nombre:string){
       if(result.length > 0  ){
         this.ELEMENT_DATA = this.ELEMENT_DATA, this.metodos.buscandoIndice(id,this.ELEMENT_DATA)
      
-
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator2;
         this.dataSource.sort = this.sort;
-
       setTimeout(()=>{
         this.notificationService.openSnackBar("Se actualizo con exito");
       })
     }
     }catch(Exception){}
-
   */});
 }
-
-
 
   newManual(){
     let dialogRef  = this.dialog.open(NewManualComponent,
@@ -121,12 +106,10 @@ async editar(id:number,nombre:string){
      this.paginator2.firstPage();
      dialogRef.afterClosed().subscribe((result:any)=>{
        this.llenarTabla();
-
        /**console.log(result.id);
        
        try{
          console.log(result);
-
       if(result != undefined  ){
        
      console.log(result);
@@ -143,24 +126,18 @@ async editar(id:number,nombre:string){
         })
       }catch(Exception){}
     */})
-
   }
-
   numeroMayor(numero : number){
     if (this.mayorNumero <numero){
       this.mayorNumero = numero
     }
-
 }
-
 async llenarTabla(){
   this.cargando = false;
   this.ELEMENT_DATA = [];
   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-
   await this.manualservice.llamarManual().toPromise().then( (result : any) =>{
     
-
     for (let i=0; i<result.container.length; i++){
     this.ELEMENT_DATA.push(
       {id: result.container[i]["idManual"],nombre: result.container[i]["nombre"], fecha: result.container[i]["fecha"],archivo: result.container[i]["archivo"]
@@ -177,7 +154,6 @@ async llenarTabla(){
   });
     
 }
-
 hayManual(){
   if(this.ELEMENT_DATA != 0 || this.cargando ==false){
     return true;
@@ -185,12 +161,10 @@ hayManual(){
     return false;
   }
 }
-
 applyFilter(event: Event) {
   const filterValue = (event.target as HTMLInputElement).value;
   this.dataSource.filter = filterValue.trim().toLowerCase();
 }
-
 
 documento(numero:number) {
   switch(numero){
@@ -202,11 +176,8 @@ documento(numero:number) {
       return "Documento"
   }
   
-
   
-
 }
-
 Asunto(numero:number) {
   switch(numero){
     case 1:
@@ -221,15 +192,12 @@ Asunto(numero:number) {
             return "VPN"
   }
 }
-
 async sortByUser(){
   this.cargando = false;
   this.ELEMENT_DATA = [];
   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-
   await this.manualservice.llamarManualbyuser(this.user).toPromise().then( (result : any) =>{
     
-
     for (let i=0; i<result.container.length; i++){
     this.ELEMENT_DATA.push(
       {id: result.container[i]["idManual"],nombre: result.container[i]["nombre"], fecha: result.container[i]["fecha"],archivo: result.container[i]["archivo"]
@@ -242,11 +210,8 @@ async sortByUser(){
     this.dataSource.paginator =  this.paginator2;
     this.cargando = true;
 
-
   });
     
-
 }
-
 
 }

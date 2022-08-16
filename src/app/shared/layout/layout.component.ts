@@ -11,7 +11,6 @@ import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
 import { stringToKeyValue } from '@angular/flex-layout/extended/style/style-transforms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-
 @Component({
     selector: 'app-layout',
     templateUrl: './layout.component.html',
@@ -20,7 +19,6 @@ import { MatAutocomplete } from '@angular/material/autocomplete';
 export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 dentro:boolean=false
 fuera:boolean=false
-
   nombre: string =""
     booleantodos:boolean=true
     booleanservicio:boolean=true
@@ -37,7 +35,6 @@ botonservicio:boolean=false
 botoncontacto:boolean=false
 botontickets:boolean=false
 cargando : boolean=false
-
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
             new Date().toTimeString().split(" ")[0]), 1000);
@@ -54,12 +51,10 @@ cargando : boolean=false
     options: string[] = [];
     contacts:string[]=[]
     tickets:string[]=[]
-
     array: string[] = [];
     filteredOptions: Observable<string[]> | undefined;
     filteredContacts: Observable<string[]> | undefined;
     filteredTickets: Observable<string[]> | undefined;
-
     constructor( 
         notifierService: NotifierService,
        private auth : AuthService,
@@ -76,7 +71,6 @@ cargando : boolean=false
         // tslint:disable-next-line: deprecation
         this.mobileQuery.addListener(this._mobileQueryListener);
     }
-
     ngOnInit(): void {
           
         // tslint:disable-next-line: deprecation
@@ -86,7 +80,6 @@ cargando : boolean=false
         this.logo=result.container[0]["logo"]
         });    
     }
-
     acceso(){
         if(this.auth.getCveRol() == 4){
             return "none"
@@ -96,16 +89,13 @@ cargando : boolean=false
     }
     ngOnDestroy(): void {
     }
-
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
     }
-
     private _filter(value: string): string[] {
         const filterValue = value.toLowerCase();
         return this.options.filter(option => option.toLowerCase().includes(filterValue));
       }
-
       private _filterContacts(value: string): string[] {
         const filterValue = value.toLowerCase();
         return this.contacts.filter(option => option.toLowerCase().includes(filterValue));
@@ -114,7 +104,6 @@ cargando : boolean=false
         const filterValue = value.toLowerCase();
         return this.tickets.filter(option => option.toLowerCase().includes(filterValue));
       }
-
     salir(){
         if(this.auth.getTipo()==1){
             this.auth.cerrarSesion();
@@ -125,62 +114,45 @@ cargando : boolean=false
         }
     }
 
-
-
   close(){
     console.log(this.dentro+"Fuera<----->Dentro"+this.fuera);
     
 this.fuera=true
     if(this.fuera==true&&this.dentro==true){
 console.log("SE MIRA");
-
       this._renderer.setStyle(document.getElementById("ocultar"),"visibility","visible")
       this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","visible")
 
-
 }else{
   console.log("NO SE MIRA");
-
   this._renderer.setStyle(document.getElementById("ocultar"),"visibility","hidden")
   this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","hidden")
-
 
 }
 this.fuera=false
 this.dentro=false
-
   }
-
 
  close2(){
   this.dentro=true
 }
 todosbutton(id:string,event : any){
 this.botontodos=true
-
 this.botonservicio=false
 this.botoncontacto=false
 this.botontickets=false
-
   this.servicio(id,event);
   this.contacto(id,event);
   this.ticket(id,event);
-
     }
-
 serviciobutton(id:string,event : any){
-
   this.botontodos=false
-
    if(this.botoncontacto==false){
     this.filteredContacts = new FormControl('').valueChanges;
    }
-
    if(this.botontickets==false){
     this.filteredTickets = new FormControl('').valueChanges;
-
    }
-
    if(this.botonservicio==false){
     this.botonservicio=true
     this.servicio(id,event);
@@ -191,12 +163,10 @@ serviciobutton(id:string,event : any){
     console.log("servicio es true");
    }
 
-
    
 }
 contactobutton(id:string,event : any){
   this.botontodos=false
-
   if(this.botonservicio==false){
     this.filteredOptions = new FormControl('').valueChanges;
    }
@@ -208,50 +178,36 @@ contactobutton(id:string,event : any){
     console.log(this.botoncontacto+"contacto");
     this.contacto(id,event);
    
-
    }else{
     this.filteredContacts = new FormControl('').valueChanges;
     this.botoncontacto=false
-
     console.log("servicio es true");
-
    }
 }
-
 ticketbutton(id:string,event : any){
   this.botontodos=false
-
   if(this.botonservicio==false){
     this.filteredOptions = new FormControl('').valueChanges;
-
    }
-
    if(this.botoncontacto==false){
     this.filteredContacts = new FormControl('').valueChanges;
-
    }
-
    if(this.botontickets==false){
     this.botontickets=true
     this.ticket(id,event);
  
-
    }else{
     this.filteredTickets = new FormControl('').valueChanges;
     this.botontickets=false
-
     console.log("servicio es true");
-
    }
 }
-
     async servicio(id:string,event : any){
       this.cargando=true
       
 if(this.botonservicio==true||this.botontodos==true){
         
         id = id.split(" ")[0]
-
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         || id == "" || Number(id) > 0){
@@ -269,27 +225,21 @@ if(this.botonservicio==true||this.botontodos==true){
   
           }
         });
-
         this.filteredOptions = this.myControl.valueChanges.pipe(
           
           startWith(''),
           map((value: any) =>  this._filter(value || '')) );
         }
-
     }else{
         this.serviciosbooleanlabel=false
         this.options=[]
     }
     this.cargando=false
 
-
     }
-
     async contacto(id:string,event : any){
-
         if(this.botoncontacto==true||this.botontodos==true){
         id = id.split(" ")[0]
-
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         || id == "" || Number(id) > 0){
@@ -313,17 +263,12 @@ if(this.botonservicio==true||this.botontodos==true){
             this.contacts=[]  
         }
 
-
     }
-
-
-
 
 
     async ticket(id:string,event : any){
         if(this.botontickets==true||this.botontodos==true){
         id = id.split(" ")[0]
-
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         || id == "" || Number(id) > 0){
@@ -344,7 +289,6 @@ if(this.botonservicio==true||this.botontodos==true){
         this.filteredTickets = this.myControl.valueChanges.pipe(
           startWith(''),
           map((value: any) =>  this._filterTickets(value || '')) );
-
         }
     }else{
         this.ticketsbooleanlabel=false
@@ -352,11 +296,9 @@ if(this.botonservicio==true||this.botontodos==true){
     }
     }
 
-
     async irServicio (servicio : string){
     var onlyservice =servicio.split(" ")[0];
 var number=servicio.split(" | ")[2]
-
         
       
           
