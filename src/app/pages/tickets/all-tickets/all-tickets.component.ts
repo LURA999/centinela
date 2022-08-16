@@ -2,7 +2,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
+import { elementAt, lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatTableDataSource } from '@angular/material/table';
@@ -62,7 +62,12 @@ export class AllTicketsComponent implements OnInit{
   estadosCve : number [] = [];
   todoEstado: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
   todoEstadoAux: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
+
+
+  //Variables para los grupos que se estan abriendo en la tabla
   usuariosGrupo : any [] = []
+  gruposCve:Number [] = []
+
   @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
   @ViewChild ("paginator") paginator:any;
 
@@ -96,13 +101,13 @@ export class AllTicketsComponent implements OnInit{
   })
 
   metodos = new RepeteadMethods();
-
   tituloAllTickets : string= "Todos los tickets";
   arrayAgente : Number []= []
   inicio : number=0;
   fin : number=15;
-
   $sub :  Subscription = new Subscription();
+  
+  condicion2: Number = 2;
 
   constructor(
     private fb : FormBuilder,
@@ -129,22 +134,21 @@ export class AllTicketsComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.procedmiento();
+    this.procedimiento(false);
     this.llenarUsuarios();
   
   }
 
 
-  async procedmiento(){
+  async procedimiento(limpieza: Boolean){
     this.inicio = 0;
     this.fin = 15;
-   await this.llenadoInicial()
-    await this.compaginar()
+   await this.llenadoInicial(limpieza)
+   await this.compaginar()
   }
 
 
-  buscarUsuarios(cve:string,cveTicket:string){
-    
+  buscarUsuarios(cve:string,cveTicket:string){    
     this.usarioservice.usuariosGrupo(Number(cve)).subscribe((resp:responseService)=>{
       if(resp.status === "not found"){
         this.usuariosGrupo = []
@@ -254,15 +258,24 @@ export class AllTicketsComponent implements OnInit{
   }*/
 
 
-  async llenadoInicial(){
+  async llenadoInicial( limpieza:Boolean){
     const form :formNavSearchTicket = this.formNav.value
-    form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
-    form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
-    form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
+    if(limpieza == false){
+      form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
+      form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
+      form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
+      form.condicion2 = -1;
+      form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value);
+    }else{
+      form.condicion2 = this.condicion2;
+      form.condicion = 1
+      form.agente = 0
+      form.creador = 0
+      form.estados = ""
+    }
     form.cveGrupo = this.auth.getCveGrupo()    
     form.cve = this.auth.getCveId()
-    form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value)
-    form.condicion2 = -1;
+
     this.tickets = (await lastValueFrom(this.search.buscarPorNavbar(form))).container    
   }
 
@@ -314,16 +327,12 @@ export class AllTicketsComponent implements OnInit{
     if(this.inicio < this.fin){ 
       this.ELEMENT_DATA[this.inicio] =  (this.tickets[this.inicio] )
       
-      this.usuariosGrupo.push(
-        {
-          apellidoPaterno: "string",
-          appelidoMaterno: "string",
-          correo: "string",
-          idUsuario: 1,
-          nombres: "0",
-          usuario: "string"
-        }
-      )
+      if(this.gruposCve.indexOf(this.ELEMENT_DATA[this.inicio].grupo) == -1){
+        this.gruposCve.push(Number(this.ELEMENT_DATA[this.inicio].grupo));
+
+
+      }
+      
       this.inicio++
       }
     }
@@ -335,12 +344,13 @@ export class AllTicketsComponent implements OnInit{
 
   //Filtro de primer grado
 
-  cambiarTitulo(opc:Number){
+  async cambiarTitulo(opc:Number){
     this.misTickets.disabled = false;
     this.ticketsAbiertosNuevos.disabled = false;
     this.ticketsSinResolver.disabled = false;
     this.todosTickets.disabled = false;
 
+    this.condicion2 = opc;
     switch (opc) {
       case 1:
         this.tituloAllTickets = "Mis Tickets";
@@ -361,6 +371,7 @@ export class AllTicketsComponent implements OnInit{
       default:
         break;
     }
+    await this.procedimiento(true);
   }
 
 

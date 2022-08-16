@@ -39,7 +39,7 @@
           <mat-label>Rol</mat-label>
           <mat-select id="selectRol" matNativeControl  required formControlName="cveRol">
             <mat-option value="0" disabled>Seleccione un Rol</mat-option>
-            <mat-option *ngFor="let dato of data.arrayRol" [value]="dato.idRol"> {{dato.nombre}}</mat-option>
+            <mat-option *ngFor="let dato of data.arrayRol" [value]="dato.idRol.toString()"> {{dato.nombre}}</mat-option>
           </mat-select>
         </mat-form-field>
           <mat-form-field appearance="outline">
