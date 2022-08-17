@@ -10,7 +10,8 @@ const routes: Routes = [
   component: LayoutComponent,
   children:[
     { path: 'ticket-entry', canActivate:[DashAdminGuard], component: TicketEntryComponent },
-    { path: 'all-tickets', canActivate:[DashAdminGuard], component: AllTicketsComponent }
+    { path: 'all-tickets', canActivate:[DashAdminGuard], component: AllTicketsComponent },
+    { path: 'general', canActivate:[DashAdminGuard], component: AllTicketsComponent }
     ]
   }
 ];

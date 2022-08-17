@@ -220,14 +220,14 @@ export class NewEquipamentComponent implements OnInit {
           const  cveOtro : Number = (await lastValueFrom(this.deviceService.insertarOtros(this.newModel))).container[0]       
           for (const iterator of this.newModel.idIp2) {
             iterator.map(async (el:Number) => {
-              await lastValueFrom(this.deviceService.insertarOtrosP2({cveIp:el,cve:cveOtro}));
+              await lastValueFrom(this.deviceService.insertarOtrosP2({cve2:el,cve:cveOtro}));
             });
           }
         }else{
           const  cveRouter : Number = (await lastValueFrom(this.deviceServicio.insertarRouter(this.newModel))).container[0];
           for (const iterator of this.newModel.idIp2) {
             iterator.map(async (el:Number) => {
-              await lastValueFrom(this.deviceService.insertarRouterP2({cveIp:el,cve:cveRouter}));
+              await lastValueFrom(this.deviceService.insertarRouterP2({cve2:el,cve:cveRouter}));
             });
           }
         }

@@ -1,5 +1,5 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { elementAt, lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
@@ -7,7 +7,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatTableDataSource } from '@angular/material/table';
 import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
-import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from '../../RepeteadMethods';
@@ -16,6 +16,10 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
 import { SearchService } from 'src/app/core/services/search.service';
 import { MatButton } from '@angular/material/button';
+import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatRadioButton } from '@angular/material/radio';
+import { createVerify } from 'crypto';
 
 export interface ticket {
   idTicket: Number,
@@ -23,10 +27,12 @@ export interface ticket {
   fechaAbierta: String,
   fechaCerrada: String,
   grupo: Number,
+  grupoModificado:Number,
   tipo: Number,
   agente: Number,
   estado: Number,
-  prioridad:Number
+  prioridad:Number,
+  idUsuario:Number
 }
 
 export interface usuario {
@@ -66,10 +72,11 @@ export class AllTicketsComponent implements OnInit{
 
   //Variables para los grupos que se estan abriendo en la tabla
   usuariosGrupo : any [] = []
+  usuariosCveGrupo : number [] = []
   gruposCve:Number [] = []
 
   @ViewChild('estadoInput') estadoInput!: ElementRef<HTMLInputElement>;
-  @ViewChild ("paginator") paginator:any;
+  @ViewChild ("paginator") paginator!:MatPaginator;
 
   //botones del mat-menu-trigger
   @ViewChild ("misTickets") misTickets!:MatButton;
@@ -100,21 +107,26 @@ export class AllTicketsComponent implements OnInit{
     fuente:[""]
   })
 
+  valueAgenteTab :FormGroup =  this.fb.group({
+    agenteTabla:[""]
+  })
   metodos = new RepeteadMethods();
   tituloAllTickets : string= "Todos los tickets";
   arrayAgente : Number []= []
   inicio : number=0;
   fin : number=15;
   $sub :  Subscription = new Subscription();
-  
   condicion2: Number = 2;
+  contadorRadioButton : number = 0;
+  elTicket : number =0
 
   constructor(
     private fb : FormBuilder,
     private userServ: UsuarioService,
     private auth : AuthService,
     private search: SearchService, 
-    private usarioservice : UsuarioService) { 
+    private usarioservice : UsuarioService,
+    private ticketService: TicketService) { 
 
     ///variables para los inputs con opciones
     this.filteredEstado = this.estadoControl.valueChanges.pipe(
@@ -123,15 +135,8 @@ export class AllTicketsComponent implements OnInit{
     );
   }
  
-  eligiendoCreador(u : usuario){
-    this.creador = u
-    this.creadoControl.setValue(u.usuario)      
-  }
 
-  eligiendoAgente(u : usuario){
-    this.agente = u
-    this.agenteControl.setValue(u.usuario)
-  }
+ 
 
   ngOnInit(): void {
     this.procedimiento(false);
@@ -139,30 +144,35 @@ export class AllTicketsComponent implements OnInit{
   
   }
 
-
+//Metodo utilizado para hacer todos los filtros
   async procedimiento(limpieza: Boolean){
-    this.inicio = 0;
-    this.fin = 15;
    await this.llenadoInicial(limpieza)
-   await this.compaginar()
+   //await this.compaginar()
   }
 
+  //Actualizando elementos de cada ticket y un poco mas
 
-  buscarUsuarios(cve:string,cveTicket:string){    
-    this.usarioservice.usuariosGrupo(Number(cve)).subscribe((resp:responseService)=>{
-      if(resp.status === "not found"){
-        this.usuariosGrupo = []
-      }else{
-        this.usuariosGrupo = resp.container;
-      }
-    })
+
+  async guardarGrupo(cve:string,cveTicket:string){ 
+  let dosParamsNumGrupo:dosParamsNum = {
+    cve : Number(cve),
+    cve2 : Number(cveTicket)
+  } 
+
+  let dosParamsNumAgente:dosParamsNum = {
+    cve : 0,
+    cve2 : Number(cveTicket)
+  } 
+    await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
+    await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
+    
   }  
 
-  llenarUsuarios(){
-    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{            
+  async buscarUsuarionav(cve:string){
+    this.optionsAgente = []
+    this.usarioservice.usuariosGrupo(Number(cve)).subscribe(async (resp:responseService)=>{
       for await (const usuario of resp.container) {
-        this.optionsAgente.push(usuario)
-        this.optionsCreado.push(usuario)        
+          this.optionsAgente.push(usuario)
       }
       this.filteredOptionsAgente = this.agenteControl.valueChanges.pipe(
         startWith(''),
@@ -170,6 +180,80 @@ export class AllTicketsComponent implements OnInit{
           const nombre = typeof value === 'string' ? value : value?.usuario;
          return nombre ? this._filterAgente(nombre as string) : this.optionsAgente.slice()}),
       );
+    })
+  }
+  async buscarUsuariosTabla(cve:string,ticket? :ticket){
+    this.usarioservice.usuariosGrupo(Number(cve)).subscribe((resp:responseService)=>{
+      if(resp.status === "not found"){
+        this.usuariosGrupo[this.gruposCve.indexOf(Number(cve))] = []
+      }else{
+        this.usuariosGrupo[this.gruposCve.indexOf(Number(cve))] = resp.container;  
+      }
+
+      if(ticket !=undefined) {        
+        this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupoModificado = this.gruposCve.indexOf(Number(cve))        
+      }
+
+    })
+  }
+
+  async agenteGuardar(cve:string,cveTicket:string){
+    if(Number(cve) > 0){
+    let dosParamsNum:dosParamsNum = {
+      cve : Number(cve),
+      cve2 : Number(cveTicket)
+    } 
+      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
+    }
+  }
+
+  async guardarEstado(cve:string,cveTicket:string){
+    if(Number(cve) > 0){
+      let dosParamsNum:dosParamsNum = {
+        cve : Number(cve),
+        cve2 : Number(cveTicket)
+      } 
+        await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
+      }
+  }
+
+  async guardarPrioridad(cve:string,cveTicket:string){
+    if(Number(cve) > 0){
+      let dosParamsNum:dosParamsNum = {
+        cve : Number(cve),
+        cve2 : Number(cveTicket)
+      } 
+        await lastValueFrom(this.ticketService.actualizarPropiedad(dosParamsNum))
+      }
+  }
+
+  async eliminarTicket(){
+    let eliminarTicket : dosParamsNum ={
+      cve:Number(this.elTicket),
+      cve2:0
+    }
+    await lastValueFrom(this.ticketService.deleteTickets(eliminarTicket))
+
+    this.procedimiento(false)
+  }
+
+    async cerrarTicket(){
+ 
+      let dosParamsNum : dosParamsNum = {
+        cve:4,
+        cve2:Number(this.elTicket)
+      }
+      await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
+      this.procedimiento(false)
+
+    }
+
+  //metodo utilizado cuando entras a la pagina
+  llenarUsuarios(){
+    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{            
+      for await (const usuario of resp.container) {
+        this.optionsCreado.push(usuario)        
+      }
       this.filteredOptionsCreado = this.creadoControl.valueChanges.pipe(
         startWith(''),
         map(value => {
@@ -180,6 +264,7 @@ export class AllTicketsComponent implements OnInit{
       
    
   }
+
   //Metodos para los autocomplete con chips
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -220,12 +305,25 @@ export class AllTicketsComponent implements OnInit{
     return this.todoEstado.filter(estado => estado.toLowerCase().includes(filterValue));
   }
 
-  borrarSioNo(bool : boolean){
+  borrarSioNo(bool : boolean, idTicket : number ){
+    
     this.borrar = bool
+    this.elTicket = idTicket
+
+
+    if(this.contadorRadioButton == 0){
+      
+      this.contadorRadioButton ++;
+    }else{
+      console.log("hola");
+      
+      this.contadorRadioButton = 0;
+    }
+    
   
   }
 
-  ///metodos del auto complete
+  ///metodos del auto complete (para su funcionamiento)
   private _filterAgente(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.optionsAgente.filter((option :any)=> option.usuario.toLowerCase().includes(filterValue));
@@ -235,48 +333,61 @@ export class AllTicketsComponent implements OnInit{
     const filterValue = value.toLowerCase();
     return this.optionsCreado.filter((option :any) => option.usuario.toLowerCase().includes(filterValue));
   }
+ 
+  //metodos extras del auto complete
+ eligiendoCreadorMatAutoCom(u : usuario){
+  this.creador = u
+  this.creadoControl.setValue(u.usuario)      
+}
 
-  ///filtros  de segundo grado
- /* async llenarTabla(){
-    const form :formNavSearchTicket = this.formNav.value
-    form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
-    form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
-    form.estados = this.estadosCve.toString().replace(/(,)/gi, " or ");
-    form.cveGrupo = this.auth.getCveGrupo()    
-    form.cve = this.auth.getCveId()
-    form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value)
-    form.condicion2 = -1;
-    this.search.buscarPorNavbar(form).subscribe(async(resp:responseService)=>{
-    this.ELEMENT_DATA = [];
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    for await (const respuesta of resp.container) {
-      this.tickets.push(respuesta)
-    }
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.paginator =  this.paginator; 
-    })
-  }*/
+eligiendoAgenteMatAutoCom(u : usuario){
+  this.agente = u
+  this.agenteControl.setValue(u.usuario)
+}
+
 
 
   async llenadoInicial( limpieza:Boolean){
-    const form :formNavSearchTicket = this.formNav.value
+    let form :formNavSearchTicket = this.formNav.value 
     if(limpieza == false){
       form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
       form.creador = this.creadoControl.value==="" || this.creadoControl.value===undefined ?0:this.creador?.idUsuario!
       form.estados = this.estadosCve.toString();
-      form.condicion2 = -1;
+      form.condicion2 = this.condicion2;
       form.condicion = Number(this.filtroSecControl.value==0?1:this.filtroSecControl.value);
     }else{
-      form.condicion2 = this.condicion2;
-      form.condicion = 1
+      this.agenteControl.reset()
+      this.creadoControl.reset()
+      this.formNav.reset()
+      this.filtroSecControl.reset()  
+      form = this.formNav.value
       form.agente = 0
-      form.creador = 0
-      form.estados = ""      
+      form.creador = 0   
+      form.estados = ""
+      form.condicion = 1
+      form.condicion2 = this.condicion2;
+
     }
     form.cveGrupo = this.auth.getCveGrupo()    
     form.cve = this.auth.getCveId()
 
-    this.tickets = (await lastValueFrom(this.search.buscarPorNavbar(form))).container
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource();
+
+     this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{
+        for await (const iterator of resp.container) {
+          this.ELEMENT_DATA.push(iterator)
+          if(this.gruposCve.indexOf(iterator.grupo) == -1){
+            this.gruposCve.push(Number(iterator.grupo));
+            this.buscarUsuariosTabla(iterator.grupo.toString()) 
+          } 
+        }
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource.paginator = this.paginator;    
+        this.paginator.length =  this.tickets.length;  
+    })
+    console.log(this.tickets);
+    
         
   }
 
@@ -320,22 +431,23 @@ export class AllTicketsComponent implements OnInit{
     }
   }
 
+
+
   async compaginar(){
     this.ELEMENT_DATA=[];
     this.dataSource = new MatTableDataSource();
    while (this.inicio < this.fin + 2 && this.inicio < this.tickets.length) {
     
     if(this.inicio < this.fin){ 
-      this.ELEMENT_DATA[this.inicio] =  (this.tickets[this.inicio] )
-      
+      this.ELEMENT_DATA[this.inicio] =  this.tickets[this.inicio] 
       if(this.gruposCve.indexOf(this.ELEMENT_DATA[this.inicio].grupo) == -1){
         this.gruposCve.push(Number(this.ELEMENT_DATA[this.inicio].grupo));
-
-      }
-      
+        this.buscarUsuariosTabla(this.ELEMENT_DATA[this.inicio].grupo.toString()) 
+      }      
       this.inicio++
       }
     }
+    
     
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;    
@@ -364,7 +476,7 @@ export class AllTicketsComponent implements OnInit{
         this.tituloAllTickets = "Todos los tickets sin resolver";
         this.ticketsSinResolver.disabled = true;
         break;
-      case 4:
+      case 4: 
         this.tituloAllTickets = "Tickets nuevos y abiertos";
         this.ticketsAbiertosNuevos.disabled = true;
         break;    

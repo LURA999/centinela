@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ip_otro_detalle } from 'src/app/interfaces/ip_detalle.interface';
+import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
 import { DeviceModel } from 'src/app/models/device.model';
 import { responseService } from 'src/app/models/responseService.model';
 import { environment } from 'src/environments/environment';
@@ -56,7 +56,7 @@ export class DeviceService {
     return this.http.post<responseService>(this.local+"Devices/router.php",input,{headers});
   }
 
-  insertarRouterP2(input : ip_otro_detalle) :Observable<responseService>{
+  insertarRouterP2(input : dosParamsNum) :Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
     return this.http.post<responseService>(this.local+"Devices/router.php",input,{headers});
   }
@@ -84,7 +84,7 @@ export class DeviceService {
     return this.http.post<responseService>(this.local+"Devices/others.php",input,{headers});
   }
 
-  insertarOtrosP2(input : ip_otro_detalle) :Observable<responseService>{
+  insertarOtrosP2(input : dosParamsNum) :Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
     return this.http.post<responseService>(this.local+"Devices/others.php",input,{headers});
   }
