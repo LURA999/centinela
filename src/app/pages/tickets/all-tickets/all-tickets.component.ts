@@ -20,6 +20,7 @@ import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatRadioButton } from '@angular/material/radio';
 import { createVerify } from 'crypto';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 export interface ticket {
   idTicket: Number,
@@ -112,12 +113,12 @@ export class AllTicketsComponent implements OnInit{
   })
   metodos = new RepeteadMethods();
   tituloAllTickets : string= "Todos los tickets";
-  arrayAgente : Number []= []
-  inicio : number=0;
-  fin : number=15;
-  $sub :  Subscription = new Subscription();
   condicion2: Number = 2;
-  contadorRadioButton : number = 0;
+
+  //variables para controlar los checkbox de angular
+  cBox : FormControl = new FormControl() 
+  guardarIdcBox : number = 0;
+  banderaCheckbox : boolean = true;
   elTicket : number =0
 
   constructor(
@@ -135,9 +136,6 @@ export class AllTicketsComponent implements OnInit{
     );
   }
  
-
- 
-
   ngOnInit(): void {
     this.procedimiento(false);
     this.llenarUsuarios();
@@ -146,13 +144,12 @@ export class AllTicketsComponent implements OnInit{
 
 //Metodo utilizado para hacer todos los filtros
   async procedimiento(limpieza: Boolean){
+    this.cBox.reset()
+    this.borrar = true;
    await this.llenadoInicial(limpieza)
-   //await this.compaginar()
   }
 
   //Actualizando elementos de cada ticket y un poco mas
-
-
   async guardarGrupo(cve:string,cveTicket:string){ 
   let dosParamsNumGrupo:dosParamsNum = {
     cve : Number(cve),
@@ -305,22 +302,22 @@ export class AllTicketsComponent implements OnInit{
     return this.todoEstado.filter(estado => estado.toLowerCase().includes(filterValue));
   }
 
-  borrarSioNo(bool : boolean, idTicket : number ){
-    
+  borrarClick(bool : boolean, idTicket : number,matCheck : MatCheckbox ){
     this.borrar = bool
     this.elTicket = idTicket
+    this.cBox.reset()
+  }
 
+  borrarChange(idTicket : number,matCheck : MatCheckbox){
 
-    if(this.contadorRadioButton == 0){
-      
-      this.contadorRadioButton ++;
-    }else{
-      console.log("hola");
-      
-      this.contadorRadioButton = 0;
+    if (this.guardarIdcBox == idTicket && this.banderaCheckbox == false) {
+      matCheck.checked = false
+      this.banderaCheckbox = true;
+    } else {
+      this.banderaCheckbox = false
     }
-    
-  
+    this.guardarIdcBox = idTicket;
+
   }
 
   ///metodos del auto complete (para su funcionamiento)
@@ -336,16 +333,14 @@ export class AllTicketsComponent implements OnInit{
  
   //metodos extras del auto complete
  eligiendoCreadorMatAutoCom(u : usuario){
-  this.creador = u
-  this.creadoControl.setValue(u.usuario)      
-}
+    this.creador = u
+    this.creadoControl.setValue(u.usuario)      
+  }
 
-eligiendoAgenteMatAutoCom(u : usuario){
-  this.agente = u
-  this.agenteControl.setValue(u.usuario)
-}
-
-
+  eligiendoAgenteMatAutoCom(u : usuario){
+    this.agente = u
+    this.agenteControl.setValue(u.usuario)
+  }
 
   async llenadoInicial( limpieza:Boolean){
     let form :formNavSearchTicket = this.formNav.value 
@@ -391,67 +386,12 @@ eligiendoAgenteMatAutoCom(u : usuario){
         
   }
 
-  async cargarFiltros(){
-    while ( this.inicio <this.fin + 2 && this.inicio < this.tickets.length) {
-      if(this.inicio < this.fin){
-      }
-    }
-
-    this.dataSource = await new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.paginator = await this.paginator;    
-    this.paginator.hidePageSize= await true;
-    this.paginator.length = await this.tickets.length;
-  }
-  
-
-  
   //filtros de tercer grado
   filtroNavbar(){
     const form :formNavSearchTicket = this.formNav.value 
     form.cve = this.auth.getCveId(),
     form.estados = this.estadosCve.toString()
    // this.search.buscarPorNavbar(formNavSearchTicket)
-  }
-
-  async pageEvents(event: any) {  
-    this.$sub.unsubscribe();
-    this.$sub = new Subscription();
-  
-      if(event.previousPageIndex > event.pageIndex) {
-      this.inicio = (this.inicio-(this.inicio%15)) - 30;
-      if(this.inicio < 0){
-        this.inicio = 0;
-      }
-      this.fin =  (this.fin - (this.fin%15)) - 15;
-      this.compaginar();
-    } else {
-      this.inicio = this.fin;
-      this.fin = this.fin + 15;
-      this.compaginar();
-    }
-  }
-
-
-
-  async compaginar(){
-    this.ELEMENT_DATA=[];
-    this.dataSource = new MatTableDataSource();
-   while (this.inicio < this.fin + 2 && this.inicio < this.tickets.length) {
-    
-    if(this.inicio < this.fin){ 
-      this.ELEMENT_DATA[this.inicio] =  this.tickets[this.inicio] 
-      if(this.gruposCve.indexOf(this.ELEMENT_DATA[this.inicio].grupo) == -1){
-        this.gruposCve.push(Number(this.ELEMENT_DATA[this.inicio].grupo));
-        this.buscarUsuariosTabla(this.ELEMENT_DATA[this.inicio].grupo.toString()) 
-      }      
-      this.inicio++
-      }
-    }
-    
-    
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.paginator = this.paginator;    
-    this.paginator.length =  this.tickets.length;  
   }
 
   //Filtro de primer grado

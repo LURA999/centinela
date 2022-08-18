@@ -188,9 +188,9 @@
                     </mat-drawer>
                 <div class="tabla">
                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-                        <ng-container matColumnDef="checkbox">
+                        <ng-container matColumnDef="checkbox" >
                           <th mat-header-cell *matHeaderCellDef>  </th>
-                          <td mat-cell *matCellDef="let element"> <mat-radio-button [id]="element.idTicket" color="primary" (click)="borrarSioNo(matBorrar.checked,element.idTicket)" #matBorrar > </mat-radio-button> </td>
+                          <td mat-cell *matCellDef="let element"> <mat-checkbox [id]="element.idTicket" [formControl] = "cBox" color="primary" (click)="borrarClick(matBorrar.checked,element.idTicket,matBorrar)" (change)="borrarChange(element.idTicket,matBorrar)" #matBorrar > </mat-checkbox> </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="ticket">
