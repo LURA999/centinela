@@ -30,7 +30,6 @@ const routes: Routes = [
           {path: "log", component:TableLogComponent}
         ]
       },
-
       { path: ":id/:identificador", component: ViewServiceComponent ,
         children:[
           {path: "",component:TableEquipamentComponent},

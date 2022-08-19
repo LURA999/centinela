@@ -6,10 +6,10 @@
                 <mat-icon>filter_list</mat-icon>
             </button>
             <mat-menu  #menu="matMenu">
-              <button mat-menu-item #misTickets (click)="cambiarTitulo(1)">
+              <button mat-menu-item #misTickets (click)="cambiarTitulo(1)" [disabled]="filtroPGrado === false">
                 <span>Mis tickets</span>
               </button>
-              <button mat-menu-item #todosTickets (click)="cambiarTitulo(2)" disabled>
+              <button mat-menu-item #todosTickets (click)="cambiarTitulo(2)" [disabled]="filtroPGrado === true">
                 <span>Todos los tickets</span>
               </button>
               <button mat-menu-item #ticketsSinResolver (click)="cambiarTitulo(3)">
@@ -195,20 +195,20 @@
                       
                         <ng-container matColumnDef="ticket">
                           <th mat-header-cell *matHeaderCellDef> Ticket </th>
-                          <td mat-cell *matCellDef="let element"> {{element.idTicket}} </td>
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.idTicket}} </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="servicio">
                           <th mat-header-cell *matHeaderCellDef> servicio </th>
-                          <td mat-cell *matCellDef="let element"> {{element.servicio}} </td>
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.servicio}} </td>
                         </ng-container>
                         <ng-container matColumnDef="fechaAbierta">
                           <th mat-header-cell *matHeaderCellDef> Fecha abierto </th>
-                          <td mat-cell *matCellDef="let element"> {{element.fechaAbierta}} </td>
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.fechaAbierta}} </td>
                         </ng-container>
                         <ng-container matColumnDef="fechaCerrada">
                           <th mat-header-cell *matHeaderCellDef> Fecha cerrado </th>
-                          <td mat-cell *matCellDef="let element"> {{element.fechaCerrada !== undefined? "No asignada": element.fechaCerrada}} </td>
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.fechaCerrada !== undefined? "No asignada": element.fechaCerrada}} </td>
                         </ng-container>
                         <ng-container matColumnDef="grupo">
                           <th mat-header-cell *matHeaderCellDef> Grupo </th>
@@ -225,7 +225,7 @@
                         </ng-container>
                         <ng-container matColumnDef="tipo">
                           <th mat-header-cell *matHeaderCellDef> tipo </th>
-                          <td mat-cell *matCellDef="let element"> 
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> 
                              {{metodos.tipoEnLetraTicket(element.tipo)}}   
                           </td>
                         </ng-container>
@@ -255,7 +255,7 @@
                         </ng-container>
                         <ng-container matColumnDef="prioridad">
                           <th mat-header-cell *matHeaderCellDef> Prioridad </th>
-                          <td mat-cell *matCellDef="let element">
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]">
                             <mat-form-field appearance="standard" class="matformfield">
                               <mat-select [value]="element.prioridad.toString()" (selectionChange)="guardarPrioridad(prioridadTable.value,element.idTicket)" #prioridadTable>
                                   <mat-option value="1">Baja</mat-option>

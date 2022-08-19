@@ -50,7 +50,7 @@ export class NewContactComponent implements OnInit {
     nombre: [this.data.nombre ? this.data.nombre: '', Validators.required],
     paterno: [this.data.apPaterno ?this.data.apPaterno: '', Validators.required],
     materno: [this.data.apMaterno ? this.data.apMaterno: '', Validators.required],
-    estatus: [this.data.estatus  != 0? this.data.estatus.toString() : '', Validators.required],
+    estatus: [this.data.estatus  != 0? this.data.estatus : '', Validators.required],
     cveRol: [this.data.idRol  != 0? this.data.idRol : '', Validators.required],
     telefono: [this.data.telefono ? this.data.telefono : '', Validators.required],
     celular: [this.data.celular ? this.data.celular : '', Validators.required],

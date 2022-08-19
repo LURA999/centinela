@@ -21,6 +21,7 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatRadioButton } from '@angular/material/radio';
 import { createVerify } from 'crypto';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { Router } from '@angular/router';
 
 export interface ticket {
   idTicket: Number,
@@ -64,7 +65,7 @@ export class AllTicketsComponent implements OnInit{
   //variables para los inputs con opciones y con autocomplete
   separatorKeysCodes: number[] = [ENTER, COMMA];
   estadoControl = new FormControl('');
-  filteredEstado: Observable<string[]>;
+  filteredEstado!: Observable<string[]>;
   estados: string[] = [];
   estadosCve : number [] = [];
   todoEstado: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
@@ -112,8 +113,8 @@ export class AllTicketsComponent implements OnInit{
     agenteTabla:[""]
   })
   metodos = new RepeteadMethods();
-  tituloAllTickets : string= "Todos los tickets";
-  condicion2: Number = 2;
+  tituloAllTickets : string= "";
+  condicion2: Number = 0;
 
   //variables para controlar los checkbox de angular
   cBox : FormControl = new FormControl() 
@@ -121,14 +122,28 @@ export class AllTicketsComponent implements OnInit{
   banderaCheckbox : boolean = true;
   elTicket : number =0
 
+
+  //iniciador de filtro primer grado
+  filtroPGrado : boolean = true
   constructor(
     private fb : FormBuilder,
     private userServ: UsuarioService,
     private auth : AuthService,
     private search: SearchService, 
     private usarioservice : UsuarioService,
-    private ticketService: TicketService) { 
+    private ticketService: TicketService,
+    private ruta: Router) { 
+      
+      if(ruta.url.split("/")[3] == "general"){
+        this.condicion2 = 1;
+        this.tituloAllTickets = "Mis Tickets";
+        this.filtroPGrado = false;
+      }else{
+        this.condicion2 = 2
+        this.tituloAllTickets= "Todos los tickets";
+        this.filtroPGrado = true;
 
+      }
     ///variables para los inputs con opciones
     this.filteredEstado = this.estadoControl.valueChanges.pipe(
       startWith(null),
@@ -380,10 +395,7 @@ export class AllTicketsComponent implements OnInit{
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;    
         this.paginator.length =  this.tickets.length;  
-    })
-    console.log(this.tickets);
-    
-        
+    })    
   }
 
   //filtros de tercer grado
@@ -401,7 +413,6 @@ export class AllTicketsComponent implements OnInit{
     this.ticketsAbiertosNuevos.disabled = false;
     this.ticketsSinResolver.disabled = false;
     this.todosTickets.disabled = false;
-
     this.condicion2 = opc;
     switch (opc) {
       case 1:

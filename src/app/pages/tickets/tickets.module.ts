@@ -9,6 +9,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { NewContactComponent } from './popup/new-contact/new-contact.component';
 import { AllTicketsComponent } from './all-tickets/all-tickets.component';
 import { VistaTicketComponent } from './vista-ticket/vista-ticket.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { VistaTicketComponent } from './vista-ticket/vista-ticket.component';
     CommonModule,
     TicketsRoutingModule,
     SharedModule,
-    MatRadioModule
+    MatRadioModule,
+    MatGridListModule
   ]
 })
 export class TicketsModule { }

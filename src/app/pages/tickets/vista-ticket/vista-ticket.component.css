@@ -1,0 +1,84 @@
+/*TABLA*/
+.tabla{
+    overflow-x:auto ;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+table{
+    width: 100%;
+}
+
+td.mat-cell.cdk-cell {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/** Sidenav*/
+.sidenav-child{
+    padding:10px;
+    background-color: #f3f3f3;    
+}
+
+.sidenav-content {
+    text-align: right;
+} 
+
+.sidenav-child mat-card {
+    height: 100%;
+    overflow: auto;
+}
+
+.sidenav-child mat-card mat-divider {
+    width: 80%;
+    margin-left: 10%;
+}
+
+.datoC {
+    margin-top: 20px;
+}
+
+.input{
+    font-size: 12px;
+}
+
+/* container child */
+
+mat-drawer-container {
+    background: #f3f3f3;
+    height: 72vh ;
+}
+
+/**Dentro del mat-drawer-container */
+
+#seccionComentarios {
+    height: 100%;
+}
+
+#navNoDesplagable {
+    background: white;
+    overflow-y: auto;
+    width: 22%;
+    height: 100%;
+    padding:20px;
+    text-align: center;
+    float: right;
+    /*box-shadow: 62px 28px 74px 32px;*/
+
+}
+
+#box-c {
+    overflow-y: auto;
+    height: 100%;
+}
+
+
+/*Comentarios*/
+
+.comentario {
+    display: flex;
+    text-align: start;
+}
+.mat-grid-list {
+    z-index: -1;
+}

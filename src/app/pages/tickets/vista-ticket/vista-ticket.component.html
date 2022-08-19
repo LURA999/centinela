@@ -1,1 +1,114 @@
-<p>vista-ticket works!</p>
+<div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop">
+    <div fxFlex="95%">
+        <mat-card >
+            <mat-card-content >
+              <div class="sidenav-content">
+                <button type="button" mat-button (click)="drawer.toggle()">
+                  <mat-icon>toc</mat-icon>
+                </button>
+                </div>
+               
+                <mat-drawer-container class="container-child" autosize>
+                    <mat-drawer #drawer class="sidenav-child" mode="side" position="end" opened>
+                        <mat-card >
+                            <h4>Datos de contacto
+                                <mat-divider ></mat-divider>
+                            </h4>
+                            
+                            <div id="datos">
+                                <label class="datoC">Nombre:</label>
+                                <br/>
+                                <label class="datoC">Coordinador:</label>
+                                <br/>
+                                <label class="datoC">Correo electronico:</label>
+                                <br/>
+                                <label class="datoC">Telefono del trabajo:</label>
+                                <br/>
+                                <label class="datoC">Telefono celular:</label>
+                            </div>
+                        </mat-card>
+                    </mat-drawer>
+                    <div id="seccionComentarios">
+                    <div id="navNoDesplagable">
+                        <form >
+                            <div class="form-sideNav">
+                              <h3>Propiedades</h3>
+                              <div class="input">
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>Etiquetas</mat-label>
+                                  <input formControlName="buscar" matInput placeholder="busqueda general..." value="Sushi">
+                                </mat-form-field>
+                              </div>
+                              <div class="input" >
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Tipo</mat-label>
+                                    <mat-select formControlName="tipo">
+                                      <mat-option value=0>Ninguno</mat-option>
+                                        <mat-option value=1>Soporte</mat-option>
+                                        <mat-option value=2>Atencion</mat-option>
+                                        <mat-option value=3>Solicitud</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                              </div>
+                             
+                              <div class="input">
+                                <mat-form-field class="example-chip-list" appearance="fill">
+                                  <mat-label>Estado</mat-label>
+                                  <mat-chip-list #chipList aria-label="estado seleccion">
+                                    <input
+                                      placeholder="Cualquier estado..."
+                                      #estadoInput
+                                      [matAutocomplete]="auto6"
+                                      [matChipInputFor]="chipList">
+                                  </mat-chip-list>
+                                  <mat-autocomplete #auto6="matAutocomplete">
+                                  </mat-autocomplete>
+                                </mat-form-field>
+                              </div>
+                              <div class="input">
+                                <mat-form-field appearance="fill">
+                                  <mat-label>Prioridad</mat-label>
+                                  <mat-select formControlName="prioridad">
+                                      <mat-option value=0>Ninguno</mat-option>
+                                      <mat-option value=1>Baja</mat-option>
+                                      <mat-option value=2>Media</mat-option>
+                                      <mat-option value=3>Alta</mat-option>
+                                      <mat-option value=4>Urgente</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                              <div class="input">
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>Agente</mat-label>
+                                  <input type="text"
+                                        placeholder="Pick one"
+                                        aria-label="Creado"
+                                        matInput
+                                        [matAutocomplete]="auto4">
+                                  <mat-autocomplete autoActiveFirstOption  #auto4="matAutocomplete">
+                                  
+                                  </mat-autocomplete>
+                                </mat-form-field>
+                              </div>
+                              <button mat-raised-button color="primary" >Actualizar</button>
+                            </div>
+                          </form>
+                        </div>
+                        
+
+                        <div id="box-c">
+                            
+                            
+                            <mat-grid-list *ngFor="let com of comment" cols="4" 
+                            [style.background] = "'#FFFFFF'" rowHeight="100px">
+                                <mat-divider></mat-divider>
+                                <h2>{{com.title}}</h2>
+                                <p>{{com.text}}</p>
+                              </mat-grid-list>
+                        </div>
+                    </div>
+                </mat-drawer-container>
+            </mat-card-content>  
+        </mat-card>
+    </div>
+</div>
