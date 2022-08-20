@@ -10,13 +10,11 @@ import { SearchService } from 'src/app/core/services/search.service';
 import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
-
 @Component({
     selector: 'app-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.css']
 })
-
 export class LayoutComponent implements OnInit, AfterViewInit {
     booleantodos:boolean=true
     booleanservicio:boolean=true
@@ -33,7 +31,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     botoncontacto:boolean=false
     botontickets:boolean=false
     cargando : boolean=false
-
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
             new Date().toTimeString().split(" ")[0]), 1000);
@@ -51,12 +48,10 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     options: string[] = [];
     contacts:string[]=[]
     tickets:string[]=[]
-
     array: string[] = [];
     filteredOptions: Observable<string[]> | undefined;
     filteredContacts: Observable<string[]> | undefined;
     filteredTickets: Observable<string[]> | undefined;
-
     constructor( 
         notifierService: NotifierService,
        private auth : AuthService,
@@ -65,7 +60,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         private router : Router,
         private configservice:ConfigService,
         private Search:SearchService
-        
       ) {
         this.notifier = notifierService;
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
@@ -73,7 +67,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         // tslint:disable-next-line: deprecation
         this.mobileQuery.addListener(this._mobileQueryListener);
     }
-
     ngOnInit(): void {
           
         // tslint:disable-next-line: deprecation
@@ -83,7 +76,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         this.logo=result.container[0]["logo"]
         });    
     }
-
     acceso(){
         if(this.auth.getCveRol() == 4){
             return "none"
@@ -91,17 +83,13 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             return "block"
         }  
     }
-
-
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
     }
-
     private _filter(value: string): string[] {
         const filterValue :string= value.toLowerCase();
         return this.options.filter((option :string) => option.toLowerCase().includes(filterValue));
       }
-
       private _filterContacts(value: string): string[] {
         const filterValue = value.toLowerCase();
         return this.contacts.filter((option :string) => option.toLowerCase().includes(filterValue));
@@ -110,7 +98,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         const filterValue = value.toLowerCase();
         return this.tickets.filter((option :string) => option.toLowerCase().includes(filterValue));
       }
-
     salir(){
         if(this.auth.getTipo()==1){
             this.auth.cerrarSesion();
@@ -120,38 +107,25 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             this.router.navigateByUrl("/usuario");
         }
     }
-
-
-
     
   
-
     todosbutton(id:string,event : any){
-this.botontodos=true
-
-this.botonservicio=false
-this.botoncontacto=false
-this.botontickets=false
-
+  this.botontodos=true
+  this.botonservicio=false
+  this.botoncontacto=false
+  this.botontickets=false
   this.servicio(id,event);
   this.contacto(id,event);
   this.ticket(id,event);
-
     }
-
 serviciobutton(id:string,event : any){
-
   this.botontodos=false
-
    if(this.botoncontacto==false){
     this.filteredContacts = new FormControl('').valueChanges;
    }
-
    if(this.botontickets==false){
     this.filteredTickets = new FormControl('').valueChanges;
-
    }
-
    if(this.botonservicio==false){
     this.botonservicio=true
     this.servicio(id,event);
@@ -161,13 +135,10 @@ serviciobutton(id:string,event : any){
     this.botonservicio=false
     console.log("servicio es true");
    }
-
-
    
 }
 contactobutton(id:string,event : any){
   this.botontodos=false
-
   if(this.botonservicio==false){
     this.filteredOptions = new FormControl('').valueChanges;
    }
@@ -179,56 +150,40 @@ contactobutton(id:string,event : any){
     console.log(this.botoncontacto+"contacto");
     this.contacto(id,event);
    
-
    }else{
     this.filteredContacts = new FormControl('').valueChanges;
     this.botoncontacto=false
-
     console.log("servicio es true");
-
    }
 }
-
 ticketbutton(id:string,event : any){
   this.botontodos=false
-
   if(this.botonservicio==false){
     this.filteredOptions = new FormControl('').valueChanges;
-
    }
-
    if(this.botoncontacto==false){
     this.filteredContacts = new FormControl('').valueChanges;
-
    }
-
    if(this.botontickets==false){
     this.botontickets=true
     this.ticket(id,event);
  
-
    }else{
     this.filteredTickets = new FormControl('').valueChanges;
     this.botontickets=false
-
     console.log("servicio es true");
-
    }
 }
-
     async servicio(id:string,event : any){
       this.cargando=true
       
 if(this.botonservicio==true||this.botontodos==true){
         
         id = id.split(" ")[0]
-
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
-
         || id == "" || Number(id) > 0){
           await lastValueFrom(this.Search.searchService(id)).then( (result : responseService) =>{
-
           if(result.status !== "not found"){
             this.serviciosbooleanlabel=true
           
@@ -242,33 +197,20 @@ if(this.botonservicio==true||this.botontodos==true){
             
           }
         });
-
         this.filteredOptions = this.myControl.valueChanges.pipe(
           
           startWith(''),
           map((value: any) =>  this._filter(value || '')) );
         }
-
     }else{
         this.serviciosbooleanlabel=false
         this.options=[]
     }
     this.cargando=false
-
-
     }
-
-
-
-
-
-
     async contacto(id:string,event : any){
-
-
         if(this.botoncontacto==true||this.botontodos==true){
         id = id.split(" ")[0]
-
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         || id == "" || Number(id) > 0){
@@ -291,18 +233,10 @@ if(this.botonservicio==true||this.botontodos==true){
             this.contactosbooleanlabel=false
             this.contacts=[]  
         }
-
-
     }
-
-
-
-
-
     async ticket(id:string,event : any){
         if(this.botontickets==true||this.botontodos==true){
         id = id.split(" ")[0]
-
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
         && event.key !=="ArrowLeft" && event.key !=="ArrowRight" && event.key !=="Enter" 
         || id == "" || Number(id) > 0){
@@ -323,15 +257,12 @@ if(this.botonservicio==true||this.botontodos==true){
         this.filteredTickets = this.myControl.valueChanges.pipe(
           startWith(''),
           map((value: any) =>  this._filterTickets(value || '')) );
-
         }
     }else{
         this.ticketsbooleanlabel=false
             this.tickets=[]
     }
     }
-
-
     async irServicio (id : string){
         console.log(id);
         

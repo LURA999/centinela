@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 
+import { NotifierService } from 'angular-notifier';
 
 export interface Comment {
-  cols: number;
-  rows: number;
-  text: string;
-  title : string;
+  mensaje: string;
+  usuarioPrincipal : string;
+  creado? : string;
+  asunto? : string;
+  fecha : string;
+
 }
 
 @Component({
@@ -15,25 +20,78 @@ export interface Comment {
 })
 
 
-export class VistaTicketComponent implements OnInit {
+export class VistaTicketComponent implements AfterViewInit {
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
+  private readonly notifier: NotifierService;
+  position : boolean = false
+  moveProp : boolean = false
+  moveDatos : boolean = false
+  open : number = 0
 
-  constructor() { }
+  @ViewChild("propiedades") side! : MatSidenav;
 
-  ngOnInit(): void {
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private media: MediaMatcher,
+    notifierService: NotifierService,
+    private renderer2 : Renderer2) { 
+      
+    this.notifier = notifierService;
+    this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+
+  }
+
+  desplazarNavPropiedades(){    
+    if ( Number(window.innerWidth) >= 1000) {
+      if(this.moveProp == false){
+        this.moveProp = true;
+      }else{
+        this.moveProp = false;
+      }
+    }
+  }
+
+  desplazarNavDatosContacto(){
+    if ( Number(window.innerWidth) >= 1000) {
+      if(this.moveDatos == false){
+        this.moveDatos = true;
+      }else{
+        this.moveDatos = false;
+      }      
+    }
+  }
+
+  cambiarResponsive() :Number{
+    if ( Number(window.innerWidth) >= 1000 && screen.width >= 1000) {
+      this.position = false
+    } else {
+      this.moveDatos = false;
+      this.moveProp = false;
+      this.position = true
+    }
+    this.open = window.innerWidth
+  return window.innerWidth    
+  }
+
+
+  ngAfterViewInit(): void {
+    this.changeDetectorRef.detectChanges();    
   }
   
   comment: Comment[] = [
-    {text: 'One',title:"Problema 1", cols: 4, rows: 1 },
-    {text: 'Two',title:"Problema 2", cols: 4, rows: 1 },
-    {text: 'Three',title:"Problema 3", cols: 4, rows: 1 },
-    {text: 'Four',title:"Problema 4", cols: 4, rows: 1},
-    {text: 'One',title:"Problema 1", cols: 4, rows: 1 },
-    {text: 'Two',title:"Problema 2", cols: 4, rows: 1 },
-    {text: 'Three',title:"Problema 3", cols: 4, rows: 1 },
-    {text: 'Four',title:"Problema 4", cols: 4, rows: 1},
-    {text: 'One',title:"Problema 1", cols: 4, rows: 1 },
-    {text: 'Two',title:"Problema 2", cols: 4, rows: 1 },
-    {text: 'Three',title:"Problema 3", cols: 4, rows: 1 },
-    {text: 'Four',title:"Problema 4", cols: 4, rows: 1},
+    {mensaje: 'One',asunto:"Problema 1 ", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two',asunto:"Problema 2", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Three',asunto:"Problema 3", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four',asunto:"Problema 4", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One',asunto:"Problema 1", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two',asunto:"Problema 2", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Three',asunto:"Problema 3", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four',asunto:"Problema 4", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One',asunto:"Problema 1", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two',asunto:"Problema 2" , usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'Three',asunto:"Problema 3", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four',asunto:"Problema 4", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
   ];
 }

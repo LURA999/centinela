@@ -1,15 +1,21 @@
-<div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop">
+<div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop" [class.example-is-mobile]="mobileQuery.matches">
     <div fxFlex="95%">
         <mat-card >
             <mat-card-content >
               <div class="sidenav-content">
-                <button type="button" mat-button (click)="drawer.toggle()">
+                <button type="button" mat-button (click)="propiedades.toggle()" (click)="desplazarNavPropiedades()">
+                  <mat-icon>toc</mat-icon>
+                </button>
+                <button  type="button" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()">
                   <mat-icon>toc</mat-icon>
                 </button>
                 </div>
-               
-                <mat-drawer-container class="container-child" autosize>
-                    <mat-drawer #drawer class="sidenav-child" mode="side" position="end" opened>
+
+                <mat-sidenav-container class="container-child" autosize>
+                    <mat-sidenav #datosContacto  [opened]="cambiarResponsive() >= 1000 " [mode]="mobileQuery.matches ? 'over' : 'side'"
+                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"  class="sidenav" position="end">
+                      
+                    <!-- fixedTopGap=145-->
                         <mat-card >
                             <h4>Datos de contacto
                                 <mat-divider ></mat-divider>
@@ -27,9 +33,10 @@
                                 <label class="datoC">Telefono celular:</label>
                             </div>
                         </mat-card>
-                    </mat-drawer>
-                    <div id="seccionComentarios">
-                    <div id="navNoDesplagable">
+                    </mat-sidenav>
+                      <mat-sidenav #propiedades  [opened]="open >= 1000" [mode]="mobileQuery.matches ? 'push' : 'side'"
+                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav" [position]="position ===false ? 'end':'start'"  [style.margin-right]="moveProp ===false && moveDatos === false?'178px': '0px' "> 
+                    <mat-card>
                         <form >
                             <div class="form-sideNav">
                               <h3>Propiedades</h3>
@@ -80,7 +87,7 @@
                               <div class="input">
                                 <mat-form-field class="example-full-width" appearance="fill">
                                   <mat-label>Agente</mat-label>
-                                  <input type="text"
+                                  <input type="mensaje"
                                         placeholder="Pick one"
                                         aria-label="Creado"
                                         matInput
@@ -93,21 +100,17 @@
                               <button mat-raised-button color="primary" >Actualizar</button>
                             </div>
                           </form>
-                        </div>
-                        
-
-                        <div id="box-c">
-                            
-                            
-                            <mat-grid-list *ngFor="let com of comment" cols="4" 
-                            [style.background] = "'#FFFFFF'" rowHeight="100px">
-                                <mat-divider></mat-divider>
-                                <h2>{{com.title}}</h2>
-                                <p>{{com.text}}</p>
-                              </mat-grid-list>
-                        </div>
-                    </div>
-                </mat-drawer-container>
+                        </mat-card>
+                      </mat-sidenav>
+                      <div id="box-c" [style.margin-right]="moveProp ===false && moveDatos === false?'178px':'auto' || moveProp === true && moveDatos === false ? '220':'auto'">
+                          <mat-grid-list *ngFor="let com of comment" cols="4" 
+                          [style.background] = "'#FFFFFF'" rowHeight="100px">
+                              <mat-divider></mat-divider>
+                              <h2>{{com.asunto}}</h2>
+                              <p>{{com.mensaje}}</p>
+                            </mat-grid-list>
+                      </div>
+                </mat-sidenav-container>
             </mat-card-content>  
         </mat-card>
     </div>
