@@ -13,8 +13,7 @@
 
                 <mat-sidenav-container class="container-child" autosize>
                     <mat-sidenav #datosContacto  [opened]="cambiarResponsive() >= 1000 " [mode]="mobileQuery.matches ? 'over' : 'side'"
-                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"  class="sidenav" position="end">
-                      
+                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"   position="end">
                     <!-- fixedTopGap=145-->
                         <mat-card >
                             <h4>Datos de contacto
@@ -35,7 +34,9 @@
                         </mat-card>
                     </mat-sidenav>
                       <mat-sidenav #propiedades  [opened]="open >= 1000" [mode]="mobileQuery.matches ? 'push' : 'side'"
-                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav" [position]="position ===false ? 'end':'start'"  [style.margin-right]="moveProp ===false && moveDatos === false?'178px': '0px' "> 
+                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [style.z-index]=" open >1000?1:3"
+                    [style.margin-left]="open < 1000? '-52px':''"
+                    class="sidenav" [position]="position ===false ? 'end':'start'"  [style.margin-right]="moveProp ===false && moveDatos === false?'160px': '0px' "> 
                     <mat-card>
                         <form >
                             <div class="form-sideNav">
@@ -102,7 +103,11 @@
                           </form>
                         </mat-card>
                       </mat-sidenav>
-                      <div id="box-c" [style.margin-right]="moveProp ===false && moveDatos === false?'178px':'auto' || moveProp === true && moveDatos === false ? '220':'auto'">
+                      <!--Se maneja la logica de los dos sidevar, la primera parte es cuando se trata de 
+                      dispositivos mas pequeños y si no es asi, entonces se va a la segunda parte-->
+                      <div id="box-c" 
+                      [style.margin-right]=" (open <1000?'auto' :(moveProp === true && moveDatos === true ?
+                      '0px':(moveDatos ===true && moveProp === false? '0px': '160px')))" >
                           <mat-grid-list *ngFor="let com of comment" cols="4" 
                           [style.background] = "'#FFFFFF'" rowHeight="100px">
                               <mat-divider></mat-divider>

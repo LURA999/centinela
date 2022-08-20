@@ -79,3 +79,7 @@ mat-form-field {
     display: flex;
     text-align: start;
 }
+
+mat-card {
+    height: 100%;
+}
