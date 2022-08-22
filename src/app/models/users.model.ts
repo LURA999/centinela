@@ -1,11 +1,11 @@
 export class UsersModel {
     id:number=0
-    nombre:string=""
-    apellidop:string=""
-    apellidom:string=""
+    nombres:string=""
+    usuario:string=""
+    apellidoPaterno:string=""
+    apellidoMaterno:string=""
     correo:string=""
-    contraseña:string=""
+    contrasena:string=""
     estatus:number=0
-    rol:number=0
-    grupo:number=0
+    cveGroup:number=0
 }

@@ -255,14 +255,17 @@
   <p mat-line> Ordenes </p>
 </a>
 
-<a mat-list-item [routerLink]="['/admin/users/']" routerLinkActive="active" >
-  <mat-icon mat-list-icon>
-     group
-  </mat-icon>
-  <p mat-line> Usuarios </p>
-</a>
+<mat-expansion-panel >  
+  <mat-expansion-panel-header >
+      <mat-icon mat-list-icon style="margin-top: 8px;">group</mat-icon> 
+      <p mat-line style="margin-top: 11px;"> Gestion</p>
+  </mat-expansion-panel-header>
 
-
+  <a mat-list-item [routerLink]="['/admin/users/usuarios']" routerLinkActive="active" mat-line>
+    Usuarios</a>
+    <a mat-list-item [routerLink]="['/admin/users/grupos']" routerLinkActive="active" mat-line>
+      Grupos </a>
+</mat-expansion-panel>
 
 <a mat-list-item (click)="salir()" routerLinkActive="active">
   <mat-icon mat-list-icon>

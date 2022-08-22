@@ -7,10 +7,7 @@ import { max } from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 import { UsersModel } from 'src/app/models/users.model';
-interface Rol {
-  value: number;
-  viewValue: string;
-}
+
 interface Grupo {
   value: number;
   viewValue: string;
@@ -23,7 +20,6 @@ interface Grupo {
 export class NewUserComponent implements OnInit {
   count:string=""
   usermodel=new UsersModel()
-  Roles: Rol[] = [];
   Grupos: Grupo[] = [];
 
   selectedasunto:number =0;
@@ -35,27 +31,29 @@ export class NewUserComponent implements OnInit {
     }
   
     async llamarCve(){
-    await this.userservice.llamarCve().toPromise().then( (result : any) =>{
+    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      console.log(result.container);
+      
     for(let i=0;i<result.container.length;i++){
       
-    this.Roles.push({value:result.container[i]["idRol"], viewValue:result.container[i]["nombre"] })
+    
     this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
     }
     })
   }
   
-  subir(nombre:string,apellidop:string,apellidom:string,correo:string,contraseña:string,estatus:number,rol:number,grupo:number){
-    
-    this.usermodel.nombre=nombre
-    this.usermodel.apellidop=apellidop
-    this.usermodel.apellidom=apellidom
+  subir(usuario:string,nombre:string,apellidop:string,apellidom:string,correo:string,contraseña:string,estatus:number,grupo:number){
+    this.usermodel.usuario=usuario
+    this.usermodel.nombres=nombre
+    this.usermodel.apellidoPaterno=apellidop
+    this.usermodel.apellidoMaterno=apellidom
     this.usermodel.correo=correo
-    this.usermodel.contraseña=contraseña
+    this.usermodel.contrasena=contraseña
     this.usermodel.estatus=estatus
-    this.usermodel.rol=rol
-    this.usermodel.grupo=grupo
-    lastValueFrom(this.userservice.insertarUser(this.usermodel)); 
+    this.usermodel.cveGroup=grupo
     console.log(this.usermodel);
+
+    lastValueFrom(this.userservice.insertarUser(this.usermodel)); 
   
     }
     

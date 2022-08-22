@@ -115,22 +115,27 @@ cargando : boolean=false
     }
 
   close(){
-    console.log(this.dentro+"Fuera<----->Dentro"+this.fuera);
+
+    try{
+      this.fuera=true
+      if(this.fuera==true&&this.dentro==true){
+  console.log("SE MIRA");
+        this._renderer.setStyle(document.getElementById("ocultar"),"visibility","visible")
+        this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","visible")
+  
+  }else{
+    console.log("NO SE MIRA");
+    this._renderer.setStyle(document.getElementById("ocultar"),"visibility","hidden")
+    this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","hidden")
+  
+  }
+  this.fuera=false
+  this.dentro=false
+    }catch(Exception){
+      
+    }
     
-this.fuera=true
-    if(this.fuera==true&&this.dentro==true){
-console.log("SE MIRA");
-      this._renderer.setStyle(document.getElementById("ocultar"),"visibility","visible")
-      this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","visible")
 
-}else{
-  console.log("NO SE MIRA");
-  this._renderer.setStyle(document.getElementById("ocultar"),"visibility","hidden")
-  this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","hidden")
-
-}
-this.fuera=false
-this.dentro=false
   }
 
  close2(){

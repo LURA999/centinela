@@ -3,21 +3,21 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { RepeteadMethods } from '../RepeteadMethods';
-import { MyCustomPaginatorIntl } from '../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
-import { NewUserComponent } from './popup/new-user/new-user.component';
-import { EditUserComponent } from './popup/edit-user/edit-user.component';
-import { DeleteUserComponent } from './popup/delete-user/delete-user.component';
+import { NewUserComponent } from './../popup/new-user/new-user.component';
+import { EditUserComponent } from './../popup/edit-user/edit-user.component';
+import { DeleteUserComponent } from './../popup/delete-user/delete-user.component';
+import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
+import { RepeteadMethods } from '../../RepeteadMethods';
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.css'],
+  selector: 'app-usuarios',
+  templateUrl: './usuarios.component.html',
+  styleUrls: ['./usuarios.component.css'],
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
-export class UsersComponent implements OnInit {
+export class UsuariosComponent implements OnInit {
   cargando : boolean = false;
   mayorNumero : number =0;
   @ViewChild ("paginator") paginator2:any;
@@ -174,5 +174,6 @@ estatus:string=""
   
   }
   
+
 
 
