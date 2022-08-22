@@ -5,8 +5,11 @@
               <div class="botonesPrincipales">
                 <button mat-raised-button color="primary">Responder</button> 
                 <button mat-raised-button color="primary">Añadir nota</button>
-                <button mat-raised-button color="primary">Eliminar</button>
-                <button mat-menu mat-raised-button color="primary">...</button >
+                <button mat-raised-button color="primary">Eliminar <i class="bi bi-trash"></i></button>
+                <button mat-button [matMenuTriggerFor]="menu">...</button>
+                <mat-menu #menu="matMenu" mat-raised-button color="primary">
+                <!--  <button mat-menu-item >...</button> -->
+                </mat-menu>
               </div>
 
               <div class="sidenav-content" [hidden]="open > 1000">
