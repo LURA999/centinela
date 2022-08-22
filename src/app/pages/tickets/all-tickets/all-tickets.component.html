@@ -23,7 +23,6 @@
             <div id="container-paginator">
               <div id="main">
                 <ng-container *ngIf="borrar===true; else elseTemplate">
-                  
                     <div>
                      <mat-form-field  appearance="fill" id="buscarCreacion">
                         <mat-label>Ordenar por</mat-label>
@@ -72,7 +71,7 @@
                           </mat-form-field>
                           <mat-icon>search</mat-icon>
                         </div>
-                        <div class="input" >
+                        <div class="input">
                           <mat-form-field appearance="fill">
                             <mat-label>Grupo</mat-label>
                             <mat-select formControlName="grupo" (selectionChange)="buscarUsuarionav(grupoNav.value)" #grupoNav>

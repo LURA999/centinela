@@ -1,15 +1,36 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Router } from '@angular/router';
 
 import { NotifierService } from 'angular-notifier';
 
 export interface Comment {
   mensaje: string;
-  usuarioPrincipal : string;
+  usuarioRespondido : string;
   creado? : string;
   asunto? : string;
+  informado? : string;
+  dispositivo? : string;
   fecha : string;
+  grupo? : string;
+  agente? : string;
+
+}
+
+export interface cerrado {
+
+}
+
+export interface respondiendo {
+
+}
+
+export interface escalado {
+
+}
+
+export interface asunto {
 
 }
 
@@ -22,25 +43,22 @@ export interface Comment {
 
 export class VistaTicketComponent implements AfterViewInit {
   mobileQuery: MediaQueryList;
-  private _mobileQueryListener: () => void;
-  private readonly notifier: NotifierService;
   position : boolean = false
   moveProp : boolean = false
   moveDatos : boolean = false
   open : number = 0
+  date : Date = new Date()
+  idTicket : number = Number(this.ruta.url.split("/")[4]) 
+  optionsDate :any = { year: 'numeric', month: 'long', day: 'numeric' };
 
   @ViewChild("propiedades") side! : MatSidenav;
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
-    notifierService: NotifierService,
-    private renderer2 : Renderer2) { 
-      
-    this.notifier = notifierService;
+    private ruta: Router) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-
+    
   }
 
   desplazarNavPropiedades(){    
@@ -81,17 +99,17 @@ export class VistaTicketComponent implements AfterViewInit {
   }
   
   comment: Comment[] = [
-    {mensaje: 'One',asunto:"Problema 1 ", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two',asunto:"Problema 2", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Three',asunto:"Problema 3", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four',asunto:"Problema 4", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'One',asunto:"Problema 1", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two',asunto:"Problema 2", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Three',asunto:"Problema 3", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four',asunto:"Problema 4", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'One',asunto:"Problema 1", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two',asunto:"Problema 2" , usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'Three',asunto:"Problema 3", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four',asunto:"Problema 4", usuarioPrincipal:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
   ];
 }

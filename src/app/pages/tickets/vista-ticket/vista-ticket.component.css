@@ -83,3 +83,41 @@ mat-form-field {
 mat-card {
     height: 100%;
 }
+
+ button{
+    margin: 3px;
+}
+
+.botonesComentarios {
+    margin: 3px; 
+    background-color: white;
+}
+
+#res {
+    outline: none;
+    border: 2px solid rgb(188, 188, 188);
+    background-color: transparent;
+    resize: none;
+}
+
+.botonRes{
+    text-align: end;
+}
+
+.sidenav-dc {
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+}
+/* buton para abrir contactos*/
+.bDato{
+    display: flex;
+    justify-content: end;
+}
+
+/**blockquote*/
+blockquote {
+    margin: 0px 1rem 1rem;
+}
