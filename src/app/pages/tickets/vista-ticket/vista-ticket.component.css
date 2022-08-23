@@ -43,7 +43,16 @@ td.mat-cell.cdk-cell {
     font-size: 12px;
 }
 
-/* container child */
+/**Datos de imagen*/
+.datosPerfil {
+    display: flex;
+}
+
+.datosPerfil img {
+    margin-right: 10px;
+}
+
+/** container child */
 
 mat-drawer-container {
     background: #f3f3f3;
@@ -73,7 +82,7 @@ mat-form-field {
 }
 
 
-/*Comentarios*/
+/**Comentarios*/
 
 .comentario {
     display: flex;
@@ -84,8 +93,13 @@ mat-card {
     height: 100%;
 }
 
- button{
-    margin: 3px;
+button {
+    margin-right: 5px;
+}
+
+.boton {
+    width: 100%;
+    text-align: end;
 }
 
 .botonesComentarios {
@@ -111,7 +125,7 @@ mat-card {
 textarea {
     width: 100%;
 }
-/* buton para abrir contactos*/
+/** buton para abrir contactos*/
 .bDato{
     display: flex;
     justify-content: end;
@@ -131,7 +145,34 @@ blockquote {
     display: inline-block;
 }
 
-@media (max-width:500px) {
+
+/**mat-sidenav**/
+
+#sidenavContacto{
+    width: 210px;
+}
+
+/** PING */
+.circulo{
+    border: 1px solid black;
+    border-radius: 30px;
+    margin-left: 5px;
+}
+
+.device{
+    display: flex;
+    align-items: center;
+}
+
+.circulo {
+    border: 1px solid black;
+    background: grey;
+    width: max-content;
+    border-radius: 50px;
+    padding: 5px;
+}
+
+@media (max-width:542px) {
     .botonesPrincipales{
         display: grid;
     }

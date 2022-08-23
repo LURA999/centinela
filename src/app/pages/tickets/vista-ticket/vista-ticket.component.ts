@@ -3,10 +3,14 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, Renderer2, ViewChi
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
-import { lastValueFrom, map, Observable, startWith } from 'rxjs';
+import { lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { UsuarioService } from 'src/app/core/services/user.service';
+import { IpService } from 'src/app/core/services/ip.service';
+import { DeviceService } from 'src/app/core/services/device.service';
+import { pingDatos } from 'src/app/interfaces/pingDatos.interface';
+import { RepeteadMethods } from '../../RepeteadMethods';
 
 export interface Comment {
   mensaje: string;
@@ -43,7 +47,6 @@ export interface datosUsuario {
   styleUrls: ['./vista-ticket.component.css']
 })
 
-
 export class VistaTicketComponent implements AfterViewInit,OnInit {
   mobileQuery: MediaQueryList;
   position : boolean = false
@@ -68,6 +71,33 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     estado : [''],
     prioridad : ['']
   })
+  //Para guardar los repetidores de los diferentes dispositivos
+  repetidoras : Array<string> = new Array()
+
+  //INTERFACES O MODELOS
+  pingOtro : pingDatos[] = []
+  pingRouter : pingDatos[] = []
+  pingRadio : pingDatos[] = []
+
+  metodos = new RepeteadMethods()
+  $sub = new Subscription()
+
+
+  comment: Comment[] = [
+    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
+    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+  ];
+
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -75,7 +105,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     private servTicket:TicketService,
     private ruta: Router,
     private fb:FormBuilder,
-    private usarioservice : UsuarioService) {       
+    private usarioservice : UsuarioService, 
+    private ipService : IpService,
+    private deviceService : DeviceService,
+    ) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
     
   }
@@ -85,12 +118,74 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   }
 
  async llamarUnTicket(){
+  
   this.datosTicket = (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
-  console.log(this.datosTicket);
-  this.load = true;
-  this.buscarUsuarios(this.datosTicket.cveGrupo)
 
-     
+  /**Pidiendo pings para los otros equipos*/
+  this.ipService.selectIpOneEquipament(0,this.datosTicket.identificador,3,this.datosTicket.contador).subscribe(async(resp:responseService) =>{      
+    if(resp.status === "not found"){
+    }else{
+      for (let i =0; i<resp.container.length; i++) {
+        if(Number(this.repetidoras.indexOf(resp.container[i].repetidora)) == -1){
+          this.repetidoras.push(resp.container[i].repetidora)
+        }
+
+        this.monitoreoPing(resp.container[i].ip, i,this.pingOtro)  
+        this.pingOtro.push( {
+          idDevice :resp.container[i].idOtro,
+          nombre : resp.container[i].nombre,
+          ip :  resp.container[i].ip,
+          ping:"cargando",
+          color : ""
+        })
+      }
+      
+    }
+    
+  })
+
+  //pidiendo ping para routers
+  this.ipService.selectIpOneRouter(0,this.datosTicket.identificador,3,this.datosTicket.contador).subscribe(async(resp:responseService) =>{
+    if(resp.status === "not found"){
+    }else{
+      for (let i =0; i<resp.container.length; i++) {
+        if(Number(this.repetidoras.indexOf(resp.container[i].repetidora)) == -1){
+          this.repetidoras.push(resp.container[i].repetidora)
+        }
+
+        this.monitoreoPing(resp.container[i].ip, i,this.pingRouter)  
+          this.pingRouter.push( {
+            idDevice :resp.container[i].idRouter,
+            nombre : resp.container[i].nombre,
+            ip :  resp.container[i].ip,
+            ping: "cargando",
+            color : ""
+        })
+      }
+    }
+  })
+
+  //pidiendo ping para radios
+  this.deviceService.todosRadios(this.datosTicket.identificador,this.datosTicket.contador).subscribe(async (resp:responseService)=>{
+    if(resp.status === "not found"){
+    }else{  
+      for (let i =0; i<resp.container.length; i++) { 
+        if(Number(this.repetidoras.indexOf(resp.container[i].repetidora)) == -1){
+          this.repetidoras.push(resp.container[i].repetidora)
+        }
+        this.monitoreoPing(resp.container[i].ip, i,this.pingRadio)  
+          this.pingRadio.push( {
+            idDevice :resp.container[i].idRadio,
+            nombre : resp.container[i].radio,
+            ip :  resp.container[i].ip,
+            ping:"cargando",
+            color:""
+        })
+      }
+    }      
+  })
+  this.load = true;
+  this.buscarUsuarios(this.datosTicket.cveGrupo)  
   }
 
   buscarUsuarios(cve:number){
@@ -107,9 +202,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
        return nombre ? this._filter(nombre as string) : this.usuarios.slice();
       }),
     );     
-    
     this.myControl.setValue(this.datosTicket.usuario)   
-
     })
 
     
@@ -156,18 +249,25 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     this.changeDetectorRef.detectChanges();    
   }
   
-  comment: Comment[] = [
-    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-  ];
+  /** Monitreo de ping */
+  async monitoreoPing( ip : string, i : number,array:pingDatos[]) { 
+    let ping : string = ""
+    this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
+      ping = resp.container.time
+      
+      try{
+        array[i].ping = ping; 
+        if(resp.container.status == "200"){
+        if(Number(ping.replace(/[A-Za-z]+/,"")) <=40){
+          array[i].color = "green";
+        }else{
+          array[i].color = "orange";
+        }
+      }else{
+        array[i].color = "red";
+      }
+      return array[i]
+      }catch(Exception){}
+    })) 
+  }
 }

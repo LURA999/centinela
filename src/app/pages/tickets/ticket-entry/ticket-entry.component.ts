@@ -20,6 +20,7 @@ import { contactsEmailTicket } from "../../../models/contactsEmailTicket.model"
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { formTicketInterface } from "../../../interfaces/formTicketInterface.interface"
+import { pingDatos }from "../../../interfaces/pingDatos.interface"
 import { ActivatedRoute, Router } from '@angular/router';
 interface datosServicio {
   cliente : string,
@@ -29,13 +30,7 @@ interface datosServicio {
   idServicio : number
 }
 
-interface pingDatos {
-  idDevice : number;
-  nombre : string;
-  ip : string;
-  ping:string;
-  color : string;
-}
+
 
 export interface datosContacto {
   apellidoMaterno: string
@@ -99,9 +94,10 @@ export class TicketEntryComponent implements OnInit {
   metodos = new RepeteadMethods() 
 
   //Para guardar los repetidores de los diferentes dispositivos
-  repetidorRouter : Array<string> = new Array()
+  /*repetidorRouter : Array<string> = new Array()
   repetidorOtro : Array<string> = new Array()
-  repetidorRadio : Array<string> = new Array()
+  repetidorRadio : Array<string> = new Array()*/
+  repetidoras : Array<string> = new Array()
 
  
   //maticon para crear variable de angular y idGrupo, para acceder a aun valor de select
@@ -131,7 +127,7 @@ export class TicketEntryComponent implements OnInit {
   constructor(private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
   ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService,
-    private ruta : Router,private route: ActivatedRoute) {  }
+    private ruta : Router,private route: ActivatedRoute ) {  }
 
   ngOnInit(): void {
     this.llamarAsuntos();
@@ -232,14 +228,17 @@ export class TicketEntryComponent implements OnInit {
     this.pingOtro = []
     this.pingRadio = []
     this.pingRouter = []
-
+    this.contactoPrincipal = undefined
+   // this.repetidorOtro = []
+   // this.repetidorRadio = []
+   // this.repetidorRadio = []
     /**Pidiendo pings para los otros equipos*/
     this.ipService.selectIpOneEquipament(0,this.id,3,this.contador).subscribe(async(resp:responseService) =>{      
       if(resp.status === "not found"){
       }else{
         for (let i =0; i<resp.container.length; i++) {
-          if(Number(this.repetidorOtro.indexOf(resp.container[i].repetidor)) !== -1){
-            this.repetidorOtro.push(resp.container[i].repetidor)
+          if(Number(this.repetidoras.indexOf(resp.container[i].repetidora)) == -1){
+            this.repetidoras.push(resp.container[i].repetidora)
           }
 
           this.monitoreoPing(resp.container[i].ip, i,this.pingOtro)  
@@ -261,8 +260,8 @@ export class TicketEntryComponent implements OnInit {
       if(resp.status === "not found"){
       }else{
         for (let i =0; i<resp.container.length; i++) {
-          if(Number(this.repetidorRouter.indexOf(resp.container[i].repetidor)) !== -1){
-            this.repetidorRouter.push(resp.container[i].repetidor)
+          if(Number(this.repetidoras.indexOf(resp.container[i].repetidora)) == -1){
+            this.repetidoras.push(resp.container[i].repetidora)
           }
 
           this.monitoreoPing(resp.container[i].ip, i,this.pingRouter)  
@@ -281,9 +280,9 @@ export class TicketEntryComponent implements OnInit {
     this.deviceService.todosRadios(this.id,this.contador).subscribe(async (resp:responseService)=>{
       if(resp.status === "not found"){
       }else{  
-        for (let i =0; i<resp.container.length; i++) { 
-          if(Number(this.repetidorRadio.indexOf(resp.container[i].repetidor)) !== -1){
-            this.repetidorRadio.push(resp.container[i].repetidor)
+        for (let i =0; i<resp.container.length; i++) {           
+          if(Number(this.repetidoras.indexOf(resp.container[i].repetidora)) == -1){
+            this.repetidoras.push(resp.container[i].repetidora)
           }
           this.monitoreoPing(resp.container[i].ip, i,this.pingRadio)  
             this.pingRadio.push( {

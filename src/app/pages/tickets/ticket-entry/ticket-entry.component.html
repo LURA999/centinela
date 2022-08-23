@@ -170,17 +170,31 @@
                                 {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
                             </div>
                             <br/>
-                            Repetidora: <br/>
+                            Repetidoras: <br/>
+                            <div *ngFor="let i of repetidoras; let o =index" class="device">
+                                {{i}}
+                            </div>  
                         </div>
                         <hr/>
                         <div class="bSecundario">
                             <h3>Datos Extras:</h3>
                             <img src="../../../../assets/avatar.png" id="imgDatoExtra"/>
-                            <div>Gustavo Martinez Yungo</div>
-                            <p>
-                                Correo:<br/>
-                                Numero:<br/>
-                                Puesto:<br/>
+                            <p *ngIf="contactoPrincipal !== undefined">
+                                {{contactoLista[contactoPrincipal!].nombre+" "+contactoLista[contactoPrincipal!].apellidoPaterno+" "+contactoLista[contactoPrincipal!].apellidoMaterno}}<br>
+                                <ng-container *ngIf="contactoLista[contactoPrincipal!].length > 23; else elseTemplate">
+                                    <span [title]="contactoLista[contactoPrincipal!].correo">Correo: {{contactoLista[contactoPrincipal!].correo.substring(0,18)+"..."}}</span>
+                                  </ng-container>
+                                  <ng-template #elseTemplate>
+                                    <span > Correo: {{contactoLista[contactoPrincipal!].correo}}</span>
+                                  </ng-template>
+                                <br/>
+                                Numero: {{contactoLista[contactoPrincipal!].celular}}<br/>
+                                Puesto: {{contactoLista[contactoPrincipal!].puesto}}<br/>
+                            </p>
+                            <p *ngIf="contactoPrincipal === undefined">
+                                Correo: <br/>
+                                Numero: <br/>
+                                Puesto: <br/>
                             </p>
                         </div>
                         <hr/>

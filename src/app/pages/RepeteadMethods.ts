@@ -1,10 +1,9 @@
 import { formatDate } from "@angular/common";
-import { format } from "util";
 
 
 export class RepeteadMethods {
 
-	constructor(){ }
+  constructor(){ }
 
   /**Este es un ayudante para poder insertar datos y que este pueda reflejarse segun su id respectivo */
   buscandoIndice(id:number,ELEMENT_DATA :any, nombreId : string) : number{
@@ -164,4 +163,7 @@ export class RepeteadMethods {
        return  "";
     }
   }
+
+
+  
 }

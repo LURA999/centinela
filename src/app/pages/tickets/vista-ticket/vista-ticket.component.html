@@ -20,69 +20,88 @@
                 <button  type="button" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()"><mat-icon>toc</mat-icon> </button>
                 </div>
               <div class="bDato" [hidden]="open < 1000">
-                <button  type="button" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()"><mat-icon>toc</mat-icon> </button>
+                <button  type="button" mat-button (click)="propiedades.toggle()" (click)="desplazarNavPropiedades()"><mat-icon>toc</mat-icon> </button>
                 </div>
                 <mat-sidenav-container class="container-child" autosize>
                     <mat-sidenav #datosContacto  [opened]="cambiarResponsive() >= 1000 " [mode]="mobileQuery.matches ? 'over' : 'side'"
-                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" style="background-color: #FFFFFF; padding-left: 16px; padding-right: 16px; overflow-y: auto;"  position="end">
+                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" id="sidenavContacto" style="background-color: #FFFFFF; padding-left: 16px; padding-right: 16px; overflow-y: auto;"  position="end">
                     <!-- fixedTopGap=145-->
                       <br>
-                            <h4>Datos de servicio </h4>
-                            <div id="datos">
-                                <div>
-                                <span class="datoC">Empresa: {{datosTicket.cliente}}</span>
-                                </div>
-                                <div>
-                                <span class="datoC">Nombre del Servicio: {{datosTicket.servicio}}</span>
-                                </div>
-                                <div>
-                                <span class="datoC">Plan: {{datosTicket.plan}}</span>
-                                </div>
-                                <div>
-                                <span class="datoC">Ping Radio:</span>
-                                </div>
-                                <div>   
-                                <span class="datoC">Ping Router:</span>
-                                </div>
-                                <div>   
-                                  <span class="datoC">Repetidoras:</span>
-                                  </div>
-                            </div>
-                            <br>
-                            <mat-divider></mat-divider>
-                            <br>
-                            <div class="datos-extras">
-                              
-                              <h4>Datos de contacto</h4>
+                          <h4>Datos de servicio </h4>
+                          <div id="datos">
                               <div >
-
-                                <div >
-                                  <img src="../../../../assets/alonso.jpg" width="50px" height="50px">
-                  
-                                </div>
-                                <br>
-                                <div>
-                                  <span>Correo: {{datosTicket.correo}}</span>
-                                </div>
-                                <div>
-                                  <span>Numero: {{datosTicket.celular}}</span>
-                                </div>
-                                <div>
-                                  <span>Puesto: {{datosTicket.puesto}}</span>
-                                </div>
+                              <span ><b>Empresa: </b> {{datosTicket.cliente}}</span>
+                              </div>
+                              <div >
+                              <span ><b>Nombre del Servicio: </b> {{datosTicket.servicio}}</span>
+                              </div>
+                              <div >
+                              <span ><b>Plan: </b> {{datosTicket.plan}}</span>
                               </div>
 
+                              <div >
+                                <b>Ping radio:</b> <br/>
+                                <div *ngFor="let i of pingRadio; let o =index" class="device">
+                                    {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                                </div>
+                              </div>
+                              <br/>   
+                              <div >
+                                <b>Ping router:</b> <br/>
+                                <div *ngFor="let i of pingRouter; let o =index" class="device">
+                                    {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                                </div>
+                              </div>
+                              <br/>
+                              <div >
+                              <b>Ping otro:</b> <br/>
+                              <div *ngFor="let i of pingOtro; let o =index" class="device">
+                                  {{i.ping}} ({{i.ip}})<div><div [ngStyle]="{background: i.color}" class="circulo"></div></div>
+                              </div>
                             </div>
-                          <div class="button"   [hidden]="open < 1000" style="margin-top: 90px;">
-                             <button type="button" mat-button (click)="propiedades.toggle()" (click)="desplazarNavPropiedades()">
-                              <mat-icon>navigate_before</mat-icon>             
-                            </button>
+                            <div > <br>
+                              <b>Repetidoras: </b> <br/>
+                              <div *ngFor="let i of repetidoras; let o =index" class="device">
+                                  {{i}}
+                              </div>
+                            </div>
                           </div>
+                          <br>
+                          <mat-divider></mat-divider>
+                          <br>
+                          <div class="datos-extras">
+                            <h4>Datos de contacto</h4>
+                            <div >
+                              <div class="datosPerfil">
+                                <div><img src="../../../../assets/alonso.jpg" width="50px" height="50px"></div>
+                                <div>
+                                  {{datosTicket.contacto}}<br>
+                                  {{datosTicket.cliente}}
+                                </div>
+                              </div>
+                              <br>
+                              <div>
+                                <ng-container *ngIf="datosTicket.correo.length > 27; else elseTemplate">
+                                  <span [title]="datosTicket.correo"><b>Correo: </b>{{datosTicket.correo.substring(0,22)+"..."}}</span>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                  <span ><b>Correo: </b>{{datosTicket.correo}}</span>
+                                </ng-template>
+                              </div>
+                              <div>
+                                <b>Numero: </b><span>{{datosTicket.celular}}</span>
+                              </div>
+                              <div>
+                                <b>Puesto: </b><span>{{datosTicket.puesto}}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
                     </mat-sidenav>
                       <mat-sidenav #propiedades  [opened]="open >= 1000" [mode]="mobileQuery.matches ? 'over' :'side'"
                     [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [style.z-index]=" open >1000?1:3"
                     [style.margin-left]="open < 1000? '-52px':''"
-                    class="sidenav-dc"  style="background-color: #FFFFFF; padding-left: 20px; padding-right:20px; " [position]="position ===false ? 'end':'start'"  [style.margin-right]="moveProp ===false && moveDatos === false?'160px': '0px' "> 
+                    id="sidenavProp"  style="background-color: #FFFFFF; padding-left:40px; padding-right:40px; " [position]="position ===false ? 'end':'start'"  [style.margin-right]="moveProp ===false && moveDatos === false?'210px': '0px' "> 
                       <br>
                       <form [formGroup]="form">
                               <h3>Actualizar Ticket</h3>
@@ -141,13 +160,19 @@
                                 </mat-form-field>
                               </div>
                               <button mat-raised-button color="primary" >Actualizar <mat-icon>update</mat-icon></button>
-                          </form>
+                              <div class="boton"   >
+                                <button type="button" [hidden]="open < 1000" style="margin-top: 90px;" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()">
+                                  <mat-icon>keyboard_tab</mat-icon>          
+                               </button>
+                             </div>
+                            </form>
+                          
                       </mat-sidenav>
                       <!--Se maneja la logica de los dos sidevar, la primera parte es cuando se trata de 
                       dispositivos mas pequeños y si no es asi, entonces se va a la segunda parte-->
                       <div id="box-c"  [style.background] = "'#FFFFFF'"
                       [style.margin-right]=" (open <1000?'auto' :(moveProp === true && moveDatos === true ?
-                      '0px':(moveDatos ===true && moveProp === false? '0px': '160px')))" >
+                      '0px':(moveDatos ===true && moveProp === false? '0px': '210px')))" >
                           <mat-grid-list *ngFor="let com of comment" cols="4" 
                           >
                               <mat-divider></mat-divider>
@@ -168,8 +193,8 @@
                           </div>
                         </div>
                       <div [style.width]="open<1000?'100%':
-                      (moveProp === false && moveDatos === false ?'calc(100% - 160px)':
-                      (moveDatos === false && moveProp === true? 'calc(100% - 162px)':'100%'))">
+                      (moveProp === false && moveDatos === false ?'calc(100% - 210px)':
+                      (moveDatos === false && moveProp === true? 'calc(100% - 212px)':'100%'))">
                         <div class="botonesComentarios">
                           <button mat-stroked-button color="primary">Responder</button> <button mat-stroked-button color="primary"> Añadir Nota <mat-icon>note</mat-icon></button>
                         </div>
