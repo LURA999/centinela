@@ -15,6 +15,10 @@ export class TicketService {
 
     constructor(private http:HttpClient){}
 
+    llamarTicket(cve:number) : Observable<responseService>{
+        return this.http.get<responseService>(this.local+"Tickets/tickets.php?cve="+cve);
+    }
+
     tickets(cond : number,cve:number) : Observable<responseService>{
         return this.http.get<responseService>(this.local+"Tickets/tickets.php?cond="+cond+"&cve="+cve);
     }

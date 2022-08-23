@@ -121,3 +121,26 @@ textarea {
 blockquote {
     margin: 0px 1rem 1rem;
 }
+
+.cabecera {
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu {
+    display: inline-block;
+}
+
+@media (max-width:500px) {
+    .botonesPrincipales{
+        display: grid;
+    }
+    .cabecera {
+        display: block;
+    }
+    .menu{
+        text-align: end;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+}

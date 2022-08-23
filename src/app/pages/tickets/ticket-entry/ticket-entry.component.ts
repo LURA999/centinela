@@ -37,11 +37,10 @@ interface pingDatos {
   color : string;
 }
 
-interface datosContacto {
+export interface datosContacto {
   apellidoMaterno: string
   apellidoPaterno: string
   celular: number
-  contrasena: string
   correo: string
   cveRol: number
   estatus: number
@@ -142,11 +141,11 @@ export class TicketEntryComponent implements OnInit {
   }
 
   date(date:string){
-    let dateArray = date.split("-")    
-    return new Date (Number(dateArray[0]),Number(dateArray[1])-1,Number(dateArray[2]))
+    let dateArray = date.split("-")            
+    return new Date (Number(dateArray[0]),Number(dateArray[2].split(",")[0]),Number(dateArray[1])).toLocaleDateString("es-ES",this.optionsDate)
   }
 
-  contactoArray(ev : any){
+  contactoArray(ev : any){    
     this.indicesAcomu.push(Number(ev.option.id.split("_")[0]))
     this.acomuladorContactos.push(ev.option.value.correo)
   
@@ -371,6 +370,8 @@ export class TicketEntryComponent implements OnInit {
 
   agregarContacto(datos : number){        
     this.contactoPrincipal = datos
+    console.log(this.contactoLista[this.contactoPrincipal!]);
+    
   }
 
   vistaPreviaTickets(){
@@ -462,6 +463,7 @@ export class TicketEntryComponent implements OnInit {
       form.abiertoUsuario = this.guarduser.getCveId()
       form.cveCliente = this.cveCliente!
       form.cveServicio = this.datosServicio?.idServicio!
+      form.cveContacto = this.contactoLista[this.contactoPrincipal!].idContacto
       
       await lastValueFrom(this.ticketService.insertTickets(form))
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))

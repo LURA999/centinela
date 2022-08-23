@@ -9,5 +9,6 @@ export interface formTicketInterface {
     abiertoUsuario : number,
     cveUsuario : number,
     cveCliente : number,
+    cveContacto : string,
     tipo : number
 }

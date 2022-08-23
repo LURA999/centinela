@@ -204,7 +204,7 @@
                                 <li *ngFor="let i of arrayPrevTicket">
                                     <mat-divider vertical class="dividerLi"></mat-divider>
                                     #{{i.idTicket}}<br>
-                                    {{ date(i.fechaAbierta).toLocaleDateString("es-ES",optionsDate)}}, {{i.horaAbierta}}<br/>
+                                    {{ date(i.fechaAbierta)}}, {{i.horaAbierta}}<br/>
                                     Estado: Activo<br/></li>
                                 <li><a href="#">Ver toda la actividad</a></li>
                             </ul>         

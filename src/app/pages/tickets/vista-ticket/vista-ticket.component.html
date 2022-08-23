@@ -1,17 +1,20 @@
 <div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop" [class.example-is-mobile]="mobileQuery.matches">
     <div fxFlex="95%">
-        <mat-card >
+        <mat-card *ngIf="load">
             <mat-card-content >
-              <div class="botonesPrincipales">
-                <button mat-raised-button color="primary">Responder</button> 
-                <button mat-raised-button color="primary">Añadir nota</button>
-                <button mat-raised-button color="primary">Eliminar <i class="bi bi-trash"></i></button>
-                <button mat-button [matMenuTriggerFor]="menu">...</button>
-                <mat-menu #menu="matMenu" mat-raised-button color="primary">
-                <!--  <button mat-menu-item >...</button> -->
-                </mat-menu>
+              <div class="cabecera">
+                <div class="botonesPrincipales">
+                  <button mat-raised-button color="primary">Responder<mat-icon>subdirectory_arrow_left</mat-icon></button> 
+                  <button mat-raised-button color="primary">Añadir nota<mat-icon>note</mat-icon></button>
+                  <button mat-raised-button color="primary">Eliminar <mat-icon>delete</mat-icon></button>
+                </div>
+                <div class="menu">
+                  <button mat-button [matMenuTriggerFor]="menu">...</button>
+                  <mat-menu #menu="matMenu" mat-raised-button color="primary">
+                  <!--  <button mat-menu-item >...</button> -->
+                  </mat-menu>
+                </div>
               </div>
-
               <div class="sidenav-content" [hidden]="open > 1000">
                 <button type="button"  mat-button (click)="propiedades.toggle()" (click)="desplazarNavPropiedades()"><mat-icon>toc</mat-icon> </button>
                 <button  type="button" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()"><mat-icon>toc</mat-icon> </button>
@@ -24,18 +27,16 @@
                     [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" style="background-color: #FFFFFF; padding-left: 16px; padding-right: 16px; overflow-y: auto;"  position="end">
                     <!-- fixedTopGap=145-->
                       <br>
-                            <h4>Datos de contacto
-                                <mat-divider ></mat-divider>
-                            </h4>
+                            <h4>Datos de servicio </h4>
                             <div id="datos">
                                 <div>
-                                <span class="datoC">Empresa:</span>
+                                <span class="datoC">Empresa: {{datosTicket.cliente}}</span>
                                 </div>
                                 <div>
-                                <span class="datoC">Nombre del Servicio:</span>
+                                <span class="datoC">Nombre del Servicio: {{datosTicket.servicio}}</span>
                                 </div>
                                 <div>
-                                <span class="datoC">Plan:</span>
+                                <span class="datoC">Plan: {{datosTicket.plan}}</span>
                                 </div>
                                 <div>
                                 <span class="datoC">Ping Radio:</span>
@@ -43,34 +44,38 @@
                                 <div>   
                                 <span class="datoC">Ping Router:</span>
                                 </div>
+                                <div>   
+                                  <span class="datoC">Repetidoras:</span>
+                                  </div>
                             </div>
                             <br>
                             <mat-divider></mat-divider>
                             <br>
                             <div class="datos-extras">
+                              
+                              <h4>Datos de contacto</h4>
                               <div >
+
                                 <div >
-                                  <img src="../../alonso.jpg" width="50px" height="50px">
+                                  <img src="../../../../assets/alonso.jpg" width="50px" height="50px">
                   
                                 </div>
                                 <br>
                                 <div>
-                                  <span>Correo:</span>
+                                  <span>Correo: {{datosTicket.correo}}</span>
                                 </div>
                                 <div>
-                                  <span>Numero:</span>
+                                  <span>Numero: {{datosTicket.celular}}</span>
                                 </div>
                                 <div>
-                                  <span>Puesto:</span>
+                                  <span>Puesto: {{datosTicket.puesto}}</span>
                                 </div>
                               </div>
 
                             </div>
                           <div class="button"   [hidden]="open < 1000" style="margin-top: 90px;">
                              <button type="button" mat-button (click)="propiedades.toggle()" (click)="desplazarNavPropiedades()">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
-                              </svg>                
+                              <mat-icon>navigate_before</mat-icon>             
                             </button>
                           </div>
                     </mat-sidenav>
@@ -79,7 +84,7 @@
                     [style.margin-left]="open < 1000? '-52px':''"
                     class="sidenav-dc"  style="background-color: #FFFFFF; padding-left: 20px; padding-right:20px; " [position]="position ===false ? 'end':'start'"  [style.margin-right]="moveProp ===false && moveDatos === false?'160px': '0px' "> 
                       <br>
-                      <form >
+                      <form [formGroup]="form">
                               <h3>Actualizar Ticket</h3>
                               <div>
                                 <b>Numero de ticket: {{idTicket}}</b>
@@ -88,8 +93,7 @@
                               <div class="input" >
                                 <mat-form-field appearance="fill">
                                   <mat-label>Grupo</mat-label>
-                                  <mat-select formControlName="grupo" #grupoNav>
-                                    <mat-option value="0">Ninguno</mat-option>
+                                  <mat-select [value]="datosTicket.cveGrupo.toString()" (selectionChange)="buscarUsuarios($event.value)" #grupoNav>
                                       <mat-option value="1">Administrador</mat-option>
                                         <mat-option value="2">Soporte</mat-option>
                                         <mat-option value="3">Comercial</mat-option>
@@ -104,15 +108,20 @@
                                         placeholder="Pick one"
                                         aria-label="Creado"
                                         matInput
+                                        [value]="variable"
+                                        [formControl]="myControl"
                                         [matAutocomplete]="auto4">
                                   <mat-autocomplete autoActiveFirstOption  #auto4="matAutocomplete">   
+                                    <mat-option  *ngFor="let option of filteredOptions  | async"  [value]="option.usuario" >
+                                      {{option.usuario}}
+                                    </mat-option>
                                   </mat-autocomplete>
                                 </mat-form-field>
                               </div>
                               <div class="input" >
                                 <mat-form-field appearance="fill">
                                     <mat-label>Tipo</mat-label>
-                                    <mat-select formControlName="tipo">
+                                    <mat-select [value]="datosTicket.tipo.toString()">
                                       <mat-option value=0>Ninguno</mat-option>
                                         <mat-option value=1>Soporte</mat-option>
                                         <mat-option value=2>Atencion</mat-option>
@@ -121,32 +130,17 @@
                                 </mat-form-field>
                               </div>
                               <div class="input">
-                                <mat-form-field class="example-chip-list" appearance="fill">
-                                  <mat-label>Estado</mat-label>
-                                  <mat-chip-list #chipList aria-label="estado seleccion">
-                                    <input
-                                      placeholder="Cualquier estado..."
-                                      #estadoInput
-                                      [matAutocomplete]="auto6"
-                                      [matChipInputFor]="chipList">
-                                  </mat-chip-list>
-                                  <mat-autocomplete #auto6="matAutocomplete">
-                                  </mat-autocomplete>
-                                </mat-form-field>
-                              </div>
-                              <div class="input">
                                 <mat-form-field appearance="fill">
                                   <mat-label>Prioridad</mat-label>
-                                  <mat-select formControlName="prioridad">
-                                      <mat-option value=0>Ninguno</mat-option>
-                                      <mat-option value=1>Baja</mat-option>
-                                      <mat-option value=2>Media</mat-option>
-                                      <mat-option value=3>Alta</mat-option>
-                                      <mat-option value=4>Urgente</mat-option>
+                                  <mat-select [value]="datosTicket.prioridad.toString()">
+                                    <mat-option value="1">Baja</mat-option>
+                                    <mat-option value="2">Media</mat-option>
+                                    <mat-option value="3">Alta</mat-option>
+                                    <mat-option value="4">Urgente</mat-option>
                                   </mat-select>
                                 </mat-form-field>
                               </div>
-                              <button mat-raised-button color="primary" >Actualizar</button>
+                              <button mat-raised-button color="primary" >Actualizar <mat-icon>update</mat-icon></button>
                           </form>
                       </mat-sidenav>
                       <!--Se maneja la logica de los dos sidevar, la primera parte es cuando se trata de 
@@ -157,17 +151,17 @@
                           <mat-grid-list *ngFor="let com of comment" cols="4" 
                           >
                               <mat-divider></mat-divider>
-                              <h2 [hidden]="com.asunto == undefined "><b>{{com.asunto}}</b></h2>
-                              <span [hidden]="com.creado == undefined ">Creado por <b>{{com.creado}}</b></span>
+                              <h2 [hidden]="com.asunto===undefined "><b>{{com.asunto}}</b></h2>
+                              <span [hidden]="com.creado===undefined ">Creado por <b>{{com.creado}}</b></span>
 
-                              <p [hidden]="com.informado == undefined "><b>{{com.informado}}</b> Informado por {{com.dispositivo}}</p>
-                              <div [hidden]="com.usuarioRespondido == undefined "><b>{{com.usuarioRespondido}}</b> Respondio</div>
-                              <div [hidden]="com.grupo == undefined && com.agente == undefined"><b>{{com.usuarioRespondido}}</b> escalo el ticket a <b>Grupo:</b> {{com.grupo}} <b>Agente:</b> {{com.agente}}</div>
+                              <p [hidden]="com.informado===undefined "><b>{{com.informado}}</b> Informado por {{com.dispositivo}}</p>
+                              <div [hidden]="com.usuarioRespondido===undefined "><b>{{com.usuarioRespondido}}</b> Respondio</div>
+                              <div [hidden]="com.grupo===undefined && com.agente===undefined"><b>{{com.usuarioRespondido}}</b> escalo el ticket a <b>Grupo:</b> {{com.grupo}} <b>Agente:</b> {{com.agente}}</div>
                               <div>{{date.toLocaleDateString("es-ES",optionsDate)}}</div> 
                               <br>
                               
                               <blockquote >
-                                <p [hidden]="com.mensaje == undefined">{{com.mensaje}}</p>
+                                <p [hidden]="com.mensaje===undefined">{{com.mensaje}}</p>
                               </blockquote>
                             </mat-grid-list>
                             <div> 
@@ -177,12 +171,12 @@
                       (moveProp === false && moveDatos === false ?'calc(100% - 160px)':
                       (moveDatos === false && moveProp === true? 'calc(100% - 162px)':'100%'))">
                         <div class="botonesComentarios">
-                          <button mat-stroked-button color="primary">Responder</button> <button mat-stroked-button color="primary"> Añadir Nota </button>
+                          <button mat-stroked-button color="primary">Responder</button> <button mat-stroked-button color="primary"> Añadir Nota <mat-icon>note</mat-icon></button>
                         </div>
                         <textarea placeholder="Escribe un comentario..." id="res" 
                           rows="10"></textarea>
                         <div class="botonRes">
-                          <button mat-raised-button color="primary">Responder</button>
+                          <button mat-raised-button color="primary">Responder <mat-icon>send</mat-icon></button>
                         </div>
                       </div>
                       </mat-sidenav-container>
