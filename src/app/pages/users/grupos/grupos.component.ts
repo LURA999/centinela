@@ -13,6 +13,7 @@ import { RepeteadMethods } from '../../RepeteadMethods';
 import { DeleteGroupComponent } from '../popup/delete-group/delete-group.component';
 import { EditGroupComponent } from '../popup/edit-group/edit-group.component';
 import { NewGroupComponent } from '../popup/new-group/new-group.component';
+import { UsersListComponent } from '../popup/users-list/users-list.component';
 
 @Component({
   selector: 'app-grupos',
@@ -44,6 +45,29 @@ estatus:string=""
   }
 
 
+  async irlista(id:number){
+    let dialogRef = await this.dialog.open(UsersListComponent,
+      {data: {idGrupo: id},
+      animation: { to: "bottom" },
+        height:"auto", width:"300px",
+      });
+      
+      await dialogRef.afterClosed().subscribe((result : any) => {
+        try{
+        if(result.length > 0  ){
+       
+  
+          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+          this.dataSource.paginator = this.paginator2;
+          this.dataSource.sort = this.sort;
+  
+        setTimeout(()=>{
+          this.notificationService.openSnackBar("Se elimino con exito");
+        })
+      }
+      }catch(Exception){}
+      });
+  }
   
     numeroMayor(numero : number){
       if (this.mayorNumero <numero){
@@ -131,7 +155,7 @@ estatus:string=""
   
       for (let i=0; i<result.container.length; i++){
       this.ELEMENT_DATA.push(
-        {nombre: result.container[i]["nombre"],agentes: result.container[i]["agentes"]
+        {id: result.container[i]["idGrupo"],nombre: result.container[i]["nombre"],agentes: result.container[i]["agentes"]
       });
     this.numeroMayor(result.container[i]["idGrupo"]);
     }

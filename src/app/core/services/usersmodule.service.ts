@@ -43,6 +43,12 @@ export class UsersmoduleService {
         return this.http.post(this.local+"Users/UsersModule.php?Group=",input, {headers});
       }
 
+      llamarListaAgentes(id:number){ 
+        console.log(id);
+        
+        return this.http.get(this.local+"Users/usersModule.php?id="+id);
+      }
+
 
       }
   

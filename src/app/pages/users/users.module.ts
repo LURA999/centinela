@@ -12,6 +12,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { NewGroupComponent } from './popup/new-group/new-group.component';
 import { EditGroupComponent } from './popup/edit-group/edit-group.component';
 import { DeleteGroupComponent } from './popup/delete-group/delete-group.component';
+import { UsersListComponent } from './popup/users-list/users-list.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { DeleteGroupComponent } from './popup/delete-group/delete-group.componen
    UsuariosComponent,
    DeleteGroupComponent,
    EditGroupComponent,
-   NewGroupComponent
+   NewGroupComponent,
+   UsersListComponent
     
   ],
   imports: [
