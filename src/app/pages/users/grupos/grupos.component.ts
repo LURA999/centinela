@@ -45,11 +45,11 @@ estatus:string=""
   }
 
 
-  async irlista(id:number){
+  async irlista(id:number,nombregrupo:string){
     let dialogRef = await this.dialog.open(UsersListComponent,
-      {data: {idGrupo: id},
+      {data: {idGrupo: id ,nombregrupo:nombregrupo},
       animation: { to: "bottom" },
-        height:"auto", width:"300px",
+        height:"400px", width:"500px",
       });
       
       await dialogRef.afterClosed().subscribe((result : any) => {

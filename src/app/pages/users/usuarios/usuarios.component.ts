@@ -77,7 +77,7 @@ estatus:string=""
 
   async editar(id:number,nombre:string){
     let dialogRef = await this.dialog.open(EditUserComponent,
-      {data: {idManual: id,nombre:nombre},
+      {data: {idUsuario: id},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });

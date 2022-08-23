@@ -48,7 +48,11 @@ export class UsersmoduleService {
         
         return this.http.get(this.local+"Users/usersModule.php?id="+id);
       }
-
+llamarUserInfo(id:number){
+  
+        
+  return this.http.get(this.local+"Users/usersModule.php?Info="+id);
+}
 
       }
   
