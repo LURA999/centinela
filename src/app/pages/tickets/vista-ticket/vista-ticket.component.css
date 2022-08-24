@@ -86,7 +86,14 @@ mat-form-field {
 
 .comentario {
     display: flex;
-    text-align: start;
+}
+
+.cuerpo {
+    margin: 20px;
+
+}
+.img {
+    margin: 20px;
 }
 
 mat-card {
@@ -124,6 +131,15 @@ button {
 
 textarea {
     width: 100%;
+}
+
+mat-grid-list {
+    margin-bottom: 3px;
+    padding-bottom: 15px;
+}
+
+.date {
+    font-size: x-small;
 }
 /** buton para abrir contactos*/
 .bDato{

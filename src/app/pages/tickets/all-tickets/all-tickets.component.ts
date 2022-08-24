@@ -1,8 +1,7 @@
-import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { elementAt, lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
+import { lastValueFrom, map, Observable, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatTableDataSource } from '@angular/material/table';
@@ -17,9 +16,6 @@ import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.inte
 import { SearchService } from 'src/app/core/services/search.service';
 import { MatButton } from '@angular/material/button';
 import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { MatRadioButton } from '@angular/material/radio';
-import { createVerify } from 'crypto';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
 

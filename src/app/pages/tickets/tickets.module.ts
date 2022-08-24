@@ -10,6 +10,7 @@ import { NewContactComponent } from './popup/new-contact/new-contact.component';
 import { AllTicketsComponent } from './all-tickets/all-tickets.component';
 import { VistaTicketComponent } from './vista-ticket/vista-ticket.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
     TicketsRoutingModule,
     SharedModule,
     MatRadioModule,
-    MatGridListModule
+    MatGridListModule,
+    ScrollingModule
   ]
 })
 export class TicketsModule { }

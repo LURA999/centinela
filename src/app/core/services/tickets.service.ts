@@ -47,7 +47,9 @@ export class TicketService {
     actualizarGrupo(input : dosParamsNum) : Observable<responseService>{
         return this.http.patch<responseService>(this.local+"Tickets/tickets.php?grupo=true",input);
     }
-
+    actualizarTipo(input : dosParamsNum) : Observable<responseService>{
+        return this.http.patch<responseService>(this.local+"Tickets/tickets.php?tipo=true",input);
+    }
     insertTickets(ticket:formTicketInterface) : Observable<responseService> {
         return this.http.post<responseService>(this.local+"Tickets/tickets.php",ticket);
     }

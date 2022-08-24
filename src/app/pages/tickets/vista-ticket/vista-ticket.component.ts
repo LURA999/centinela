@@ -1,7 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { TicketService } from 'src/app/core/services/tickets.service';
@@ -11,9 +10,11 @@ import { IpService } from 'src/app/core/services/ip.service';
 import { DeviceService } from 'src/app/core/services/device.service';
 import { pingDatos } from 'src/app/interfaces/pingDatos.interface';
 import { RepeteadMethods } from '../../RepeteadMethods';
+import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
+import { usuario } from '../all-tickets/all-tickets.component';
 
 export interface Comment {
-  mensaje: string;
+  mensaje?: string;
   usuarioRespondido : string;
   creado? : string;
   asunto? : string;
@@ -22,7 +23,10 @@ export interface Comment {
   fecha : string;
   grupo? : string;
   agente? : string;
-
+  color : string;
+  cerrar? : boolean;
+  actualizar? : boolean;
+  normal?:boolean;
 }
 export interface datosUsuario {
   apellidoMaterno: string
@@ -58,12 +62,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   idTicket : number = Number(this.ruta.url.split("/")[4]) 
   optionsDate :any = { year: 'numeric', month: 'long', day: 'numeric' };
   filteredOptions: Observable<datosUsuario[]> | undefined;
-  usuarios : any
+  usuarios : any [] = []
   options: string[] = [];
   myControl = new FormControl('');
-  @ViewChild("propiedades") side! : MatSidenav;
-  load : boolean = false
-  variable : string = "hola";
+  
   form: FormGroup = this.fb.group({
     cveGrupo : [''],
     cveUsuario : [''],
@@ -71,6 +73,11 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     estado : [''],
     prioridad : ['']
   })
+
+  //agente seleccionado nuevo y viejo
+  agenteNuevo! : usuario 
+  usuarioSinEditar! : usuario
+
   //Para guardar los repetidores de los diferentes dispositivos
   repetidoras : Array<string> = new Array()
 
@@ -82,22 +89,19 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   metodos = new RepeteadMethods()
   $sub = new Subscription()
 
-
   comment: Comment[] = [
-    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'One', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Two', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
-    {mensaje: 'Three', usuarioRespondido:"Alonso Luna",fecha:"3-03-22" },
-    {mensaje: 'Four', usuarioRespondido:"Alonso Luna",fecha:"3-03-22"},
+    { mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
+    { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
+    { usuarioRespondido: "Ruben garcia garcia", fecha:'1-3-4',cerrar:true,color:"#DBFAFF"}, //cuando se cierra ticket
+    { mensaje: 'Comentario privado', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",normal:false }, //comentario privado
+    { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }
   ];
 
+  /*{ mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
+  { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
+  { usuarioRespondido: "Ruben garcia garcia", fecha:'1-3-4',cerrar:true,color:"#DBFAFF"}, //cuando se cierra ticket
+  { mensaje: 'Comentario privado', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",normal:false }, //comentario privado
+  { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }, // ticket actualizado*/
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -108,18 +112,31 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     private usarioservice : UsuarioService, 
     private ipService : IpService,
     private deviceService : DeviceService,
+    private ticketService: TicketService
     ) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
-    
+  
   }
 
   ngOnInit(): void {
     this.llamarUnTicket()
+    
   }
 
+ 
+scrollComentarios(event : any){  
+  if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
+    
+  }
+  
+}
  async llamarUnTicket(){
   
   this.datosTicket = (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
+  this.form.controls["cveGrupo"].setValue(this.datosTicket.cveGrupo.toString())
+  this.form.controls["tipo"].setValue(this.datosTicket.tipo.toString())
+  this.form.controls["prioridad"].setValue(this.datosTicket.prioridad.toString())
+  this.form.controls["estado"].setValue(this.datosTicket.estado.toString())
 
   /**Pidiendo pings para los otros equipos*/
   this.ipService.selectIpOneEquipament(0,this.datosTicket.identificador,3,this.datosTicket.contador).subscribe(async(resp:responseService) =>{      
@@ -184,16 +201,18 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       }
     }      
   })
-  this.load = true;
+
   this.buscarUsuarios(this.datosTicket.cveGrupo)  
   }
 
   buscarUsuarios(cve:number){
-    this.usarioservice.usuariosGrupo(cve).subscribe((resp:responseService)=>{
+    this.usarioservice.usuariosGrupo(cve).subscribe(async(resp:responseService)=>{
       if(resp.status === "not found"){
         this.usuarios = []
-      }else{
-       this.usuarios = resp.container;
+      }else{        
+        for await (const usuario of resp.container) {
+          this.usuarios.push(usuario)        
+        }
       }    
       this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
@@ -210,7 +229,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
 
   private _filter(value: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.usuarios.filter((option: any) => option.nombre.toLowerCase().includes(filterValue));
+    return this.usuarios.filter((option: any) => option.usuario.toLowerCase().includes(filterValue));
   }
   desplazarNavPropiedades(){    
     if ( Number(window.innerWidth) >= 1000) {
@@ -247,6 +266,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
 
   ngAfterViewInit(): void {
     this.changeDetectorRef.detectChanges();    
+   
   }
   
   /** Monitreo de ping */
@@ -269,5 +289,112 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       return array[i]
       }catch(Exception){}
     })) 
+  }
+
+
+  async guardarGrupo(cve:StringConstructor){ 
+    let dosParamsNumGrupo:dosParamsNum = {
+      cve : Number(cve),
+      cve2 : this.idTicket
+    } 
+  
+    let dosParamsNumAgente:dosParamsNum = {
+      cve : 0,
+      cve2 : this.idTicket 
+    } 
+      await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
+      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
+      
+    }  
+
+  async agenteGuardar(cve:number){
+    if(cve > 0){
+    let dosParamsNum:dosParamsNum = {
+      cve : cve,
+      cve2 : this.idTicket
+    } 
+    console.log(cve);
+    
+      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
+    }
+  }
+
+  async guardarEstado(cve:string){
+    if(Number(cve) > 0){
+      let dosParamsNum:dosParamsNum = {
+        cve : Number(cve),
+        cve2 : this.idTicket
+      } 
+        await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
+      }
+  }
+
+  async guardarPrioridad(cve:string){
+    if(Number(cve) > 0){
+      let dosParamsNum:dosParamsNum = {
+        cve : Number(cve),
+        cve2 : this.idTicket
+      } 
+        await lastValueFrom(this.ticketService.actualizarPropiedad(dosParamsNum))
+      }
+  }
+
+  async guardarTipo(cve:string){
+    if(Number(cve) > 0){
+      let dosParamsNum:dosParamsNum = {
+        cve : Number(cve),
+        cve2 : this.idTicket
+      } 
+        await lastValueFrom(this.ticketService.actualizarTipo(dosParamsNum))
+      }
+  }
+
+  async eliminarTicket(){
+    let eliminarTicket : dosParamsNum ={
+      cve:this.idTicket,
+      cve2:0
+    }
+    await lastValueFrom(this.ticketService.deleteTickets(eliminarTicket))
+  }
+
+  async cerrarTicket(){
+    let dosParamsNum : dosParamsNum = {
+      cve:4,
+      cve2:this.idTicket
+    }
+    await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
+  }
+
+
+  autoCompleteAgente(e : usuario){
+    this.agenteNuevo = e
+    this.myControl.setValue(e.usuario)
+  }
+
+  actualizar4params(){    
+    this.usuarioSinEditar = this.datosTicket.tipo
+    
+
+    if(this.agenteNuevo !== undefined){      
+      this.agenteGuardar(this.agenteNuevo.idUsuario)  
+    }
+
+    if(this.datosTicket.tipo.toString() !== this.form.controls["tipo"].value.toString()){
+      this.guardarTipo(this.form.controls["tipo"].value)
+    }
+
+    if(this.datosTicket.prioridad.toString() !== this.form.controls["prioridad"].value.toString()){
+      this.guardarPrioridad(this.form.controls["prioridad"].value)
+    }
+    
+    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
+      this.guardarGrupo(this.form.controls["cveGrupo"].value)
+    }
+
+    if(this.datosTicket.estado !== this.form.controls["estado"].value){
+      this.guardarEstado(this.form.controls["estado"].value)
+    }
+
+
   }
 }
