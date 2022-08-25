@@ -45,11 +45,12 @@
         </mat-form-field>
          
     </div>
-    <div>
+   
+    <div  >
         <mat-form-field appearance="standard">
           <mat-label> Contraseña
           </mat-label>
-          <input matInput   placeholder="Ingrese apellido paterno" #contrasena>   
+          <input matInput    placeholder="Ingrese apellido paterno" #contrasena>   
         </mat-form-field>
          
     </div>
@@ -61,7 +62,7 @@
         </mat-form-field>
          
     </div>
-   
+    
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
@@ -90,7 +91,7 @@
   
   <mat-dialog-actions align="center">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-    <button mat-button style="background-color:#3f51b5; color: white;" mat-dialog-close (click)="subir(usuario.value,nombre.value,apellidop.value,apellidom.value,correo.value,contrasena.value,estatus.value,grupo.value)" cdkFocusInitial>
+    <button mat-button style="background-color:#3f51b5; color: white;"  (click)="subir(usuario.value,nombre.value,apellidop.value,apellidom.value,correo.value,contrasena.value,estatus.value,grupo.value,Rcontrasena.value)" cdkFocusInitial>
       <ng-container *ngIf="data.opc == false; else elseTemplate">
         Crear
       </ng-container>

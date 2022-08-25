@@ -78,7 +78,7 @@ estatus:string=""
 
   async eliminar(id:number){
     let dialogRef = await this.dialog.open(DeleteGroupComponent,
-      {data: {idManual: id},
+      {data: {idGrupo: id},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
@@ -102,32 +102,16 @@ estatus:string=""
   }
   
 
-  async editar(id:number,nombre:string){
+  async editar(id:number){
     let dialogRef = await this.dialog.open(EditGroupComponent,
-      {data: {idManual: id,nombre:nombre},
+      {data: {idGrupo: id},
       animation: { to: "bottom" },
         height:"auto", width:"300px",
       });
       
       await dialogRef.afterClosed().subscribe((result : any) => {
         this.llenarTabla();
-        /** 
-        try{
-        if(result.length > 0  ){
-          this.ELEMENT_DATA = this.ELEMENT_DATA, this.metodos.buscandoIndice(id,this.ELEMENT_DATA)
-       
-  
-          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-          this.dataSource.paginator = this.paginator2;
-          this.dataSource.sort = this.sort;
-  
-        setTimeout(()=>{
-          this.notificationService.openSnackBar("Se actualizo con exito");
-        })
-      }
-      }catch(Exception){}
-  
-    */});
+       });
   }
 
   newGroup(){

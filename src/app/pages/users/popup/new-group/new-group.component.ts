@@ -45,7 +45,7 @@ export class NewGroupComponent implements OnInit {
     })
   }
   
-  subir(nombre:string,rol:number,estatus:number){
+  async subir(nombre:string,rol:number,estatus:number){
     if(nombre==undefined||rol==undefined||estatus==undefined||nombre==""){
       alert("Por favor llene todos los campos");
     }else{
@@ -56,8 +56,9 @@ export class NewGroupComponent implements OnInit {
 this.groupmodel.estatus=estatus
     console.log(this.groupmodel);
 
-    lastValueFrom(this.userservice.insertarGroup(this.groupmodel)); 
-    this.dialogRef.close()
+    await lastValueFrom(this.userservice.insertarGroup(this.groupmodel)); 
+    this.dialogRef.close('Se ha Ingresado con exito');
+    
     }
     }
     

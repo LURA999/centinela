@@ -81,14 +81,12 @@
         </mat-form-field>
         </div>
 
-    <div id="botones">
-     
-    </div>
+    
   </mat-dialog-content>
   
   <mat-dialog-actions align="center">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
-    <button mat-button style="background-color:#3f51b5; color: white;" mat-dialog-close  cdkFocusInitial>
+    <button mat-button style="background-color:#3f51b5; color: white;" (click)="enviar(usuarios.value, nombre.value, correos.value, apellidom.value, apellidop.value, estatus2.value, grupos.value)"   cdkFocusInitial>
       Actualizar </button>
   </mat-dialog-actions>
   </form>

@@ -20,7 +20,7 @@ export class UsersmoduleService {
         return this.http.get(this.local+"Users/usersModule.php?Group="+Group);
       }
       llamarRol(Rol:string){ 
-        console.log(Rol+"Entro al servicio");
+        
         
         return this.http.get(this.local+"Users/usersModule.php?Rol="+Rol);
         
@@ -54,6 +54,37 @@ llamarUserInfo(id:number){
   return this.http.get(this.local+"Users/usersModule.php?Info="+id);
 }
 
+llamarGroupInfo(id:number){
+  
+        
+  return this.http.get(this.local+"Users/usersModule.php?InfoGroup="+id);
+}
+
+
+updateUser(input:UsersModel){
+  
+  let headers = new HttpHeaders().set('Content-type','Application/json')
+  return this.http.patch(this.local+"Users/UsersModule.php?UpdateUser=",input, {headers});
+}
+
+updateGroup(input:GroupModel){
+  console.log(input);
+  
+  let headers = new HttpHeaders().set('Content-type','Application/json')
+  return this.http.patch(this.local+"Users/UsersModule.php?UpdateGroup=",input, {headers});
+}
+
+deleteUser(id:number){
+  
+        
+  return this.http.delete(this.local+"Users/usersModule.php?DeleteUser="+id);
+}
+
+deleteGroup(id:number){
+console.log(id);
+
+  return this.http.delete(this.local+"Users/usersModule.php?DeleteGroup="+id);
+}
       }
   
      

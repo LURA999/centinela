@@ -7,6 +7,7 @@ import { max } from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 import { UsersModel } from 'src/app/models/users.model';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 interface Grupo {
   value: number;
@@ -30,8 +31,17 @@ export class NewUserComponent implements OnInit {
     this.llamarCve();
     }
   
+
+
+ 
+      
+    
+  
+    
+
     async llamarCve(){
     await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
       console.log(result.container);
       
     for(let i=0;i<result.container.length;i++){
@@ -42,7 +52,13 @@ export class NewUserComponent implements OnInit {
     })
   }
   
-  subir(usuario:string,nombre:string,apellidop:string,apellidom:string,correo:string,contraseña:string,estatus:number,grupo:number){
+  subir(usuario:string,nombre:string,apellidop:string,apellidom:string,correo:string,contraseña:string,estatus:number,grupo:number,Rcontrasena:string){
+    if(nombre==undefined||usuario==undefined||estatus==undefined||apellidop==""||apellidom==""||correo==""||contraseña==""||grupo==undefined){
+      alert("Por favor llene todos los campos");
+    }else if(Rcontrasena!=contraseña){
+      alert("Contraseñas no coinciden");
+
+    }else  {
     this.usermodel.usuario=usuario
     this.usermodel.nombres=nombre
     this.usermodel.apellidoPaterno=apellidop
@@ -54,7 +70,9 @@ export class NewUserComponent implements OnInit {
     console.log(this.usermodel);
 
     lastValueFrom(this.userservice.insertarUser(this.usermodel)); 
-  
+    this.dialogRef.close('Se ha Ingresado con exito');
     }
-    
+   
+
+  }
   }

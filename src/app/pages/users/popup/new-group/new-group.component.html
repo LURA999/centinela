@@ -46,12 +46,8 @@
   <mat-dialog-actions align="center">
     <button mat-button style="background-color:brown; color: white;" mat-dialog-close>Cancel</button>
     <button mat-button style="background-color:#3f51b5; color: white;"  (click)="subir(nombre.value,rol.value,estatus.value)" cdkFocusInitial>
-      <ng-container *ngIf="data.opc == false; else elseTemplate">
+      
         Crear
-      </ng-container>
-      <ng-template #elseTemplate>
-        Actualizar
-      </ng-template>
       </button>
   </mat-dialog-actions>
   </form>

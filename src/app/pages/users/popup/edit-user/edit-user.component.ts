@@ -1,10 +1,12 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { lastValueFrom } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+import { UsersModel } from 'src/app/models/users.model';
 import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
 interface Grupo {
   value: number;
@@ -16,6 +18,7 @@ interface Grupo {
   styleUrls: ['./edit-user.component.css']
 })
 export class EditUserComponent implements OnInit {
+  usermodel=new UsersModel();
   cargando : boolean = false;
   mayorNumero : number =0;
   @ViewChild ("paginator") paginator2:any;
@@ -35,7 +38,7 @@ estatus:number=0;
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
  grupo:number=0;
   constructor(  @Inject(MAT_DIALOG_DATA) public data: any,   private notificationService: NotificationService
-    ,   private dialog : NgDialogAnimationService, private userservice : UsersmoduleService) { }
+    ,   private dialog : NgDialogAnimationService, private userservice : UsersmoduleService,public dialogRef: MatDialogRef<EditUserComponent>) { }
 
   ngOnInit(): void {
     this.llamarCve();
@@ -75,5 +78,22 @@ this.llenarlista();
   });
   
   }
+
+ async enviar(usuario:string,nombres:string,correo:string,apellidom:string,apellidop:string,estatus:number,cveGroup:number){
+  this.usermodel.usuario=usuario
+  this.usermodel.nombres=nombres
+  this.usermodel.correo=correo
+  this.usermodel.apellidoMaterno=apellidom
+  this.usermodel.apellidoPaterno=apellidop
+  this.usermodel.estatus=estatus
+  this.usermodel.cveGroup=cveGroup
+  this.usermodel.id=this.data.idUsuario
+await lastValueFrom(this.userservice.updateUser(this.usermodel));
+
+this.dialogRef.close('Se ha Actualizado con exito');
+}
+
+
+
 }
   
