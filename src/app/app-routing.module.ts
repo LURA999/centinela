@@ -15,7 +15,7 @@ const appRoutes: Routes = [
   { path: 'usuario/dashboard',canActivate:[DashUsuarioGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'admin/red',canActivate:[DashAdminGuard], loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },
   { path: 'admin/configuracion',canActivate:[DashAdminGuard], loadChildren: () => import('./pages/configuracion/configuracion.module').then(m => m.ConfiguracionModule) },
-  { path: '',canActivate:[InicioGuard],component: LoginUsuarioComponent},
+  { path: '',canActivate:[InicioGuard],component: LoginContactoComponent},
   { path: 'admin/report', loadChildren: () => import('./pages/report/report.module').then(m => m.ReportsModule) },
   { path: 'admin/manual', loadChildren: () => import('./pages/manual/manual.module').then(m => m.ManualModule) },
   { path: 'admin/tickets', loadChildren: () => import('./pages/tickets/tickets.module').then(m => m.TicketsModule) },

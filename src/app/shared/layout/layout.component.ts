@@ -81,10 +81,17 @@ cargando : boolean=false
         });    
     }
     acceso(){
-        if(this.auth.getCveRol() == 4){
-            return "none"
-        }else{
-            return "block"
+      console.log(this.auth.getCveRol());
+
+        if(this.auth.getCveRol() == 1){
+         
+         return "block"
+
+  }else{
+   
+    return "none"
+          
+           
         }  
     }
     ngOnDestroy(): void {

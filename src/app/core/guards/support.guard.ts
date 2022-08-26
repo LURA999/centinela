@@ -5,19 +5,17 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DashAdminGuard implements CanActivate {
+export class SupportGuard implements CanActivate {
   constructor(private route:Router, private auth:AuthService){}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1  ){
-      console.log("Entra AdminGuard");
+    
+console.log();
 
+    if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1 && this.auth.getCveRol() == 4 ){
       return true
     }else{
-     
         this.route.navigateByUrl('/usuario/dashboard')
-        
-      
       return false;
     }
   }

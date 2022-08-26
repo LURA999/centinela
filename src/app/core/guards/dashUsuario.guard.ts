@@ -8,14 +8,14 @@ import { AuthService } from '../services/auth.service';
 export class DashUsuarioGuard implements CanActivate {
   constructor(private route:Router, private auth:AuthService){}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-      if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 0){
+      if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 0 && this.auth.getCveRol()==5){
+       console.log("Entra GuardUsuario");
+       
         return true
       }else{
-        if(localStorage.getItem('sesion') == undefined){
-          this.route.navigateByUrl('/usuario')
-        }else{
+      
           this.route.navigateByUrl('/admin/dashboard')
-        }
+        
         return false;
       }
   }
