@@ -15,6 +15,9 @@ export class TicketService {
 
     constructor(private http:HttpClient){}
 
+    llamarHistorial(cve:number) : Observable<responseService> {
+        return this.http.get<responseService>(this.local+"Tickets/tickets.php?historial="+cve);
+    }
     llamarTicket(cve:number) : Observable<responseService>{
         return this.http.get<responseService>(this.local+"Tickets/tickets.php?cve="+cve);
     }

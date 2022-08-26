@@ -13,6 +13,7 @@ import { RepeteadMethods } from '../../RepeteadMethods';
 import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
 import { usuario } from '../all-tickets/all-tickets.component';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { threadId } from 'worker_threads';
 
 export interface Comment {
   mensaje?: string;
@@ -89,13 +90,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   metodos = new RepeteadMethods()
   $sub = new Subscription()
 
-  comment: Comment[] = [
-    { mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
-    { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
-    { usuarioRespondido: "Ruben garcia garcia", fecha:'1-3-4',cerrar:true,color:"#DBFAFF"}, //cuando se cierra ticket
-    { mensaje: 'Comentario privado', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",normal:false }, //comentario privado
-    { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }
-  ];
+  comment: Comment[] = [ ];
 
   /*{ mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
   { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
@@ -126,6 +121,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   async procedimiento(){
     await this.llamarUnTicket()
     await this.llamarVariantesDeTicket()
+    await this.imprimirComentarios()
   }
 
  // codigo reservado para el futuro, lista con scroll infinito
@@ -317,7 +313,9 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       cve2 : this.idTicket 
     } 
      this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max
-      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
+    console.log(this.varDetalle);
+    
+     await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
 
       
       
@@ -382,11 +380,12 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       cveUsuario: this.auth.getCveId()
     }
     await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
+    await this.imprimirComentarios()
   }
 
 
-  autoCompleteAgente(e : usuario ){
-    if(typeof e === "string"){
+  autoCompleteAgente(e : any){
+    if( e.toString() === "Sin asignar"){
       this.agenteNuevo = {
         apellidoPaterno :"",
         appelidoMaterno : "",
@@ -399,12 +398,11 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     }else{
     this.agenteNuevo = e
     this.myControl.setValue(e.usuario)
-    }
+    }    
     
   }
 
   async actualizar4params(){    
-    console.log(this.agenteNuevo);
     
     if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){      
       await this.guardarGrupo(this.form.controls["cveGrupo"].value)
@@ -434,5 +432,29 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     this.varDetalle = undefined
     this.agenteNuevo = undefined
     await this.llamarUnTicket();
+    await this.imprimirComentarios();
+  }
+
+  async imprimirComentarios(){  
+    this.comment = []
+    this.ticketService.llamarHistorial(this.idTicket).subscribe(async (resp:responseService)=>{
+      for await (const i of resp.container) {
+        if(i.tipo ==1){
+          this.comment.push({mensaje:i.comentario_normal, usuarioRespondido:"Alonso Luna",fecha:i.fechaComentario , color:"#F5F8FA"});
+        }else if(i.tipo >=2 && i.tipo <=4){
+          this.comment.push({mensaje:i.comentario,usuarioRespondido:i.usuario,fecha:i.fechaUpdate, color:"#F5F8FA",actualizar:true });
+        }else if(i.tipo == 5){
+          this.comment.push({ usuarioRespondido:i.usuario,fecha:i.fechaUpdate,grupo:i.grupo,agente:i.agente, color:"#E6FFDE" });
+        }else if(i.tipo == 6){
+          this.comment.push({ usuarioRespondido: i.usuario, fecha:i.fechaUpdate,cerrar:true,color:"#DBFAFF"});
+        }
+      }
+    })
+
+    /*{ mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
+  { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
+  { usuarioRespondido: "Ruben garcia garcia", fecha:'1-3-4',cerrar:true,color:"#DBFAFF"}, //cuando se cierra ticket
+  { mensaje: 'Comentario privado', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",normal:false }, //comentario privado
+  { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }, // ticket actualizado*/
   }
 }

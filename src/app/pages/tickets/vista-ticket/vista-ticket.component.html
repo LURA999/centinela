@@ -6,7 +6,7 @@
                 <div class="botonesPrincipales">
                   <button mat-raised-button color="primary">Responder<mat-icon>subdirectory_arrow_left</mat-icon></button> 
                   <button mat-raised-button color="primary">Añadir nota<mat-icon>note</mat-icon></button>
-                  <button mat-raised-button color="primary">Eliminar <mat-icon>delete</mat-icon></button>
+                  <button mat-raised-button color="primary" (click)="cerrarTicket()">Eliminar <mat-icon>delete</mat-icon></button>
                 </div>
                 <div class="menu">
                   <button mat-button [matMenuTriggerFor]="menu">...</button>
@@ -237,7 +237,19 @@
                                 </svg></div>
                               </div>
                               <div class="cuerpo">
-                                <span [hidden]="com.creado===undefined ">Creado por <b>{{com.creado}}</b></span>
+                                <p [hidden]="com.informado===undefined "><b>{{com.informado}}</b> Informado por {{com.dispositivo}}</p>
+                                <div [hidden]="com.usuarioRespondido===undefined || com.grupo !== undefined || com.cerrar !== undefined || com.actualizar !== undefined "><b>{{com.usuarioRespondido}}</b> Respondio</div>
+                                <div [hidden]="com.cerrar === undefined  || com.actualizar !==undefined" ><b>{{com.usuarioRespondido}}</b> cerro ticket</div>
+                                <div [hidden]="com.cerrar !== undefined  || com.actualizar ===undefined" ><b>{{com.usuarioRespondido}}</b> actualizo ticket</div>
+                                <div [hidden]="com.grupo===undefined && com.agente===undefined"><b>{{com.usuarioRespondido}}</b> escalo el ticket a <b>Grupo:</b> {{com.grupo}} <b>Agente:</b> {{com.agente}}</div>
+                                <span class="date">{{com.fecha}}</span> 
+                                <br>
+                                <br>
+                                <blockquote >
+                                  <div [hidden]="com.normal === undefined"> Privado</div>
+                                  <p [hidden]="com.mensaje===undefined">{{com.mensaje}}</p>
+                                </blockquote>
+                               <!-- <span [hidden]="com.creado===undefined ">Creado por <b>{{com.creado}}</b></span>
 
                                 <p [hidden]="com.informado===undefined "><b>{{com.informado}}</b> Informado por {{com.dispositivo}}</p>
                                 <div [hidden]="com.usuarioRespondido===undefined || com.grupo !== undefined || com.cerrar !== undefined || com.actualizar !== undefined "><b>{{com.usuarioRespondido}}</b> Respondio</div>
@@ -250,7 +262,7 @@
                                 <blockquote >
                                   <div [hidden]="com.normal === undefined"> Privado</div>
                                   <p [hidden]="com.mensaje===undefined">{{com.mensaje}}</p>
-                                </blockquote>
+                                </blockquote>-->
                               </div>
                             </div>
                             </mat-grid-list>
