@@ -12,6 +12,7 @@ import { pingDatos } from 'src/app/interfaces/pingDatos.interface';
 import { RepeteadMethods } from '../../RepeteadMethods';
 import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
 import { usuario } from '../all-tickets/all-tickets.component';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 export interface Comment {
   mensaje?: string;
@@ -65,7 +66,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   usuarios : any [] = []
   options: string[] = [];
   myControl = new FormControl('');
-  
+  varDetalle : number | undefined  //Guarda una variable de la tabla detalle log_ticket_det
   form: FormGroup = this.fb.group({
     cveGrupo : [''],
     cveUsuario : [''],
@@ -75,8 +76,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   })
 
   //agente seleccionado nuevo y viejo
-  agenteNuevo! : usuario 
-  usuarioSinEditar! : usuario
+  agenteNuevo : usuario | undefined
 
   //Para guardar los repetidores de los diferentes dispositivos
   repetidoras : Array<string> = new Array()
@@ -112,32 +112,41 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     private usarioservice : UsuarioService, 
     private ipService : IpService,
     private deviceService : DeviceService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private auth : AuthService
     ) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
   
   }
 
   ngOnInit(): void {
-    this.llamarUnTicket()
-    
+    this.procedimiento()
   }
 
- 
-scrollComentarios(event : any){  
+  async procedimiento(){
+    await this.llamarUnTicket()
+    await this.llamarVariantesDeTicket()
+  }
+
+ // codigo reservado para el futuro, lista con scroll infinito
+ scrollComentarios(event : any){  
   if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
     
   }
   
 }
- async llamarUnTicket(){
-  
-  this.datosTicket = (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
-  this.form.controls["cveGrupo"].setValue(this.datosTicket.cveGrupo.toString())
-  this.form.controls["tipo"].setValue(this.datosTicket.tipo.toString())
-  this.form.controls["prioridad"].setValue(this.datosTicket.prioridad.toString())
-  this.form.controls["estado"].setValue(this.datosTicket.estado.toString())
 
+  async llamarUnTicket(){
+    this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
+    this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo.toString())
+    this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
+    this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
+    this.form.controls["estado"].setValue(await this.datosTicket.estado.toString())
+    this.form.controls["cveUsuario"].setValue(await this.datosTicket.cveUsuario.toString())
+
+  }
+
+ async llamarVariantesDeTicket(){
   /**Pidiendo pings para los otros equipos*/
   this.ipService.selectIpOneEquipament(0,this.datosTicket.identificador,3,this.datosTicket.contador).subscribe(async(resp:responseService) =>{      
     if(resp.status === "not found"){
@@ -156,9 +165,7 @@ scrollComentarios(event : any){
           color : ""
         })
       }
-      
     }
-    
   })
 
   //pidiendo ping para routers
@@ -202,11 +209,13 @@ scrollComentarios(event : any){
     }      
   })
 
-  this.buscarUsuarios(this.datosTicket.cveGrupo)  
+  this.buscarUsuarios(this.datosTicket.cveGrupo,true)  
   }
 
-  buscarUsuarios(cve:number){
+  buscarUsuarios(cve:number,inicio :boolean){
+
     this.usarioservice.usuariosGrupo(cve).subscribe(async(resp:responseService)=>{
+      this.usuarios = []
       if(resp.status === "not found"){
         this.usuarios = []
       }else{        
@@ -221,7 +230,11 @@ scrollComentarios(event : any){
        return nombre ? this._filter(nombre as string) : this.usuarios.slice();
       }),
     );     
-    this.myControl.setValue(this.datosTicket.usuario)   
+    if(inicio){
+      this.myControl.setValue(this.datosTicket.usuario)   
+    }else{
+      this.myControl.reset()
+    } 
     })
 
     
@@ -295,35 +308,37 @@ scrollComentarios(event : any){
   async guardarGrupo(cve:StringConstructor){ 
     let dosParamsNumGrupo:dosParamsNum = {
       cve : Number(cve),
-      cve2 : this.idTicket
+      cve2 : this.idTicket,
+      cveUsuario : this.auth.getCveId()
     } 
   
     let dosParamsNumAgente:dosParamsNum = {
       cve : 0,
       cve2 : this.idTicket 
     } 
-      await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
+     this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max
       await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
+
+      
       
     }  
 
   async agenteGuardar(cve:number){
-    if(cve > 0){
     let dosParamsNum:dosParamsNum = {
       cve : cve,
-      cve2 : this.idTicket
-    } 
-    console.log(cve);
-    
-      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
+      cve2 : this.idTicket,
+      cveUsuario: this.auth.getCveId(),
+      cveLogDet: this.varDetalle 
     }
+      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
   }
 
   async guardarEstado(cve:string){
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
-        cve2 : this.idTicket
+        cve2 : this.idTicket,
+        cveUsuario: this.auth.getCveId()
       } 
         await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       }
@@ -333,7 +348,8 @@ scrollComentarios(event : any){
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
-        cve2 : this.idTicket
+        cve2 : this.idTicket,
+        cveUsuario: this.auth.getCveId()
       } 
         await lastValueFrom(this.ticketService.actualizarPropiedad(dosParamsNum))
       }
@@ -343,7 +359,8 @@ scrollComentarios(event : any){
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
-        cve2 : this.idTicket
+        cve2 : this.idTicket,
+        cveUsuario: this.auth.getCveId()
       } 
         await lastValueFrom(this.ticketService.actualizarTipo(dosParamsNum))
       }
@@ -352,7 +369,8 @@ scrollComentarios(event : any){
   async eliminarTicket(){
     let eliminarTicket : dosParamsNum ={
       cve:this.idTicket,
-      cve2:0
+      cve2:0,
+      cveUsuario: this.auth.getCveId()
     }
     await lastValueFrom(this.ticketService.deleteTickets(eliminarTicket))
   }
@@ -360,41 +378,61 @@ scrollComentarios(event : any){
   async cerrarTicket(){
     let dosParamsNum : dosParamsNum = {
       cve:4,
-      cve2:this.idTicket
+      cve2:this.idTicket,
+      cveUsuario: this.auth.getCveId()
     }
     await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
   }
 
 
-  autoCompleteAgente(e : usuario){
+  autoCompleteAgente(e : usuario ){
+    if(typeof e === "string"){
+      this.agenteNuevo = {
+        apellidoPaterno :"",
+        appelidoMaterno : "",
+        correo : "",
+        nombres : "Sin asignar",
+        idUsuario : 0,
+        usuario : ""
+      }
+      this.myControl.setValue(e)
+    }else{
     this.agenteNuevo = e
     this.myControl.setValue(e.usuario)
+    }
+    
   }
 
-  actualizar4params(){    
-    this.usuarioSinEditar = this.datosTicket.tipo
+  async actualizar4params(){    
+    console.log(this.agenteNuevo);
     
+    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){      
+      await this.guardarGrupo(this.form.controls["cveGrupo"].value)
+    }
 
-    if(this.agenteNuevo !== undefined){      
-      this.agenteGuardar(this.agenteNuevo.idUsuario)  
+    if(this.agenteNuevo !== undefined && this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){           
+      await this.agenteGuardar(this.agenteNuevo.idUsuario)  
+    }else{
+      if(this.datosTicket.cveGrupo.toString() === this.form.controls["cveGrupo"].value.toString()
+       && this.agenteNuevo !== undefined){        
+        await this.guardarGrupo(this.form.controls["cveGrupo"].value)
+        await this.agenteGuardar(this.agenteNuevo!.idUsuario )  
+      }
     }
 
     if(this.datosTicket.tipo.toString() !== this.form.controls["tipo"].value.toString()){
-      this.guardarTipo(this.form.controls["tipo"].value)
+      await this.guardarTipo(this.form.controls["tipo"].value)
     }
 
     if(this.datosTicket.prioridad.toString() !== this.form.controls["prioridad"].value.toString()){
-      this.guardarPrioridad(this.form.controls["prioridad"].value)
-    }
-    
-    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
-      this.guardarGrupo(this.form.controls["cveGrupo"].value)
+      await this.guardarPrioridad(this.form.controls["prioridad"].value)
     }
 
-    if(this.datosTicket.estado !== this.form.controls["estado"].value){
-      this.guardarEstado(this.form.controls["estado"].value)
+    if(this.datosTicket.estado.toString() !== this.form.controls["estado"].value.toString()){
+      await this.guardarEstado(this.form.controls["estado"].value)
     }
-
-
+    this.varDetalle = undefined
+    this.agenteNuevo = undefined
+    await this.llamarUnTicket();
   }
 }

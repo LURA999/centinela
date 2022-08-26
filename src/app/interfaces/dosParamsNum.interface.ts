@@ -1,4 +1,6 @@
 export interface dosParamsNum{
-    cve:Number,
-    cve2:Number
+    cve:number,
+    cve2:number,
+    cveUsuario?:number
+    cveLogDet? : number
 }

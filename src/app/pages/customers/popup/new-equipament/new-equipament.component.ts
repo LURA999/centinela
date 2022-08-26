@@ -217,16 +217,16 @@ export class NewEquipamentComponent implements OnInit {
       if(this.data.opc == false){
         this.newModel.idDevice =  this.idAuto;
         if(this.data.abrirForm == true){
-          const  cveOtro : Number = (await lastValueFrom(this.deviceService.insertarOtros(this.newModel))).container[0]       
-          for (const iterator of this.newModel.idIp2) {
-            iterator.map(async (el:Number) => {
+          const  cveOtro : number = (await lastValueFrom(this.deviceService.insertarOtros(this.newModel))).container[0]       
+          for (const iterator of this.newModel.idIp2) {            
+            iterator.map(async (el:number) => {
               await lastValueFrom(this.deviceService.insertarOtrosP2({cve2:el,cve:cveOtro}));
             });
           }
         }else{
-          const  cveRouter : Number = (await lastValueFrom(this.deviceServicio.insertarRouter(this.newModel))).container[0];
+          const  cveRouter : number = (await lastValueFrom(this.deviceServicio.insertarRouter(this.newModel))).container[0];
           for (const iterator of this.newModel.idIp2) {
-            iterator.map(async (el:Number) => {
+            iterator.map(async (el:number) => {
               await lastValueFrom(this.deviceService.insertarRouterP2({cve2:el,cve:cveRouter}));
             });
           }

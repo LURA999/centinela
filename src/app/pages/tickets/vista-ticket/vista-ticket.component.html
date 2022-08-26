@@ -112,7 +112,7 @@
                               <div class="input" >
                                 <mat-form-field appearance="fill">
                                   <mat-label>Grupo</mat-label>
-                                  <mat-select  formControlName="cveGrupo" (selectionChange)="buscarUsuarios($event.value)" #grupoNav>
+                                  <mat-select  formControlName="cveGrupo" (selectionChange)="buscarUsuarios($event.value,false)" #grupoNav>
                                       <mat-option value="1">Administrador</mat-option>
                                         <mat-option value="2">Soporte</mat-option>
                                         <mat-option value="3">Comercial</mat-option>
@@ -130,6 +130,9 @@
                                         [formControl]="myControl"
                                         [matAutocomplete]="auto4">
                                   <mat-autocomplete autoActiveFirstOption (optionSelected)="autoCompleteAgente($event.option.value)" #auto4="matAutocomplete">   
+                                    <mat-option id="0" value="Sin asignar">
+                                      Sin asignar
+                                    </mat-option>
                                     <mat-option  *ngFor="let option of filteredOptions | async ; let i = index"  [value]="option" [id]="i.toString()">
                                       {{option.usuario}}
                                     </mat-option>
@@ -168,7 +171,7 @@
                                   </mat-select>
                                 </mat-form-field>
                               </div>
-                              <button mat-raised-button color="primary" (click)="actualizar4params()">Actualizar <mat-icon>update</mat-icon></button>
+                              <button mat-raised-button color="primary" (click)="actualizar4params()" aria-busy="true">Actualizar <mat-icon>update</mat-icon></button>
                               <div class="boton"   >
                                 <button type="button" [hidden]="open < 1000" style="margin-top: 90px;" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()">
                                   <mat-icon>keyboard_tab</mat-icon>          

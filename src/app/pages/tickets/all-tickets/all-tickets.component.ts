@@ -206,20 +206,23 @@ export class AllTicketsComponent implements OnInit{
   }
 
   async agenteGuardar(cve:string,cveTicket:string){
-    if(Number(cve) > 0){
-    let dosParamsNum:dosParamsNum = {
-      cve : Number(cve),
-      cve2 : Number(cveTicket)
-    } 
-      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
-    }
+   
+  let dosParamsNum:dosParamsNum = {
+    cve : Number(cve),
+    cve2 : Number(cveTicket),
+    cveUsuario: this.auth.getCveId()
+  }
+  
+  await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
+    
   }
 
   async guardarEstado(cve:string,cveTicket:string){
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
-        cve2 : Number(cveTicket)
+        cve2 : Number(cveTicket),
+        cveUsuario: this.auth.getCveId()
       } 
         await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       }
@@ -229,7 +232,8 @@ export class AllTicketsComponent implements OnInit{
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
-        cve2 : Number(cveTicket)
+        cve2 : Number(cveTicket),
+        cveUsuario: this.auth.getCveId()
       } 
         await lastValueFrom(this.ticketService.actualizarPropiedad(dosParamsNum))
       }
@@ -249,7 +253,8 @@ export class AllTicketsComponent implements OnInit{
  
       let dosParamsNum : dosParamsNum = {
         cve:4,
-        cve2:Number(this.elTicket)
+        cve2:Number(this.elTicket),
+        cveUsuario: this.auth.getCveId()
       }
       await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       this.procedimiento(false)
