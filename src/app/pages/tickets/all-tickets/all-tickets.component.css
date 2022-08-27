@@ -21,7 +21,7 @@ td.mat-cell.cdk-cell {
     text-align: center;    
 }
 
-.sidenav-content {
+.buttonNuevoTicket {
     text-align: right;
 } 
 
@@ -82,6 +82,10 @@ mat-paginator {
     width: 100%;
 }
 
+#paginatorBTicket {
+    display: contents;
+}
+
 /** Boton para buscar por creacion*/
 
 #buscarCreacion {
@@ -103,3 +107,23 @@ mat-paginator {
     width: 113px !important;
 }
 
+
+@media (max-width:700px) {
+    #container-paginator{
+        display: block;
+        text-align: center;
+    }
+    .buttonNuevoTicket button{
+        text-align: center;
+        width: 100%;
+    }
+    #main .ng-star-inserted {
+        width: 100%;
+    }
+
+    #paginatorBTicket{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}

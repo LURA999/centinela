@@ -88,9 +88,15 @@ mat-form-field {
     display: flex;
 }
 
+mat-grid-list{
+    border-radius: 15px;
+    margin-bottom: 3px;
+}
+
 .cuerpo {
     margin: 20px;
-
+    width: 100%;
+    margin-bottom: auto;
 }
 .img {
     margin: 20px;
@@ -138,13 +144,18 @@ textarea {
     width: 100%;
 }
 
-mat-grid-list {
-    margin-bottom: 3px;
-    padding-bottom: 15px;
-}
 
 .date {
     font-size: x-small;
+    display: flex;
+    justify-content: space-between;
+}
+
+.privadoMsj{
+    border: 1px solid black;
+    border-radius: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 /** buton para abrir contactos*/
 .bDato{

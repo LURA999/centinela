@@ -51,21 +51,23 @@
                   </div>
                 </ng-template>
               </div>
-              <div class="sidenav-content">
+              <div class="buttonNuevoTicket">
                 <button mat-raised-button class="bNuevo" color="primary" [routerLink]="['../ticket-entry']">Nuevo ticket</button>
               </div>
-              <div id="paginator">
-                <mat-paginator #paginator class="all-tickets"
-                [pageSize]="15"
-                hidePageSize="true"
-                aria-label="Select page">
-                </mat-paginator>
+              <div id="paginatorBTicket">
+                <div id="paginator">
+                  <mat-paginator #paginator class="all-tickets"
+                  [pageSize]="15"
+                  hidePageSize="true"
+                  aria-label="Select page">
+                  </mat-paginator>
+                </div>
+                <div class="sidenav-content">
+                  <button type="button" mat-button (click)="drawer.toggle()">
+                    <mat-icon>toc</mat-icon>
+                  </button>
+                </div>
               </div>
-              <div class="sidenav-content">
-                <button type="button" mat-button (click)="drawer.toggle()">
-                  <mat-icon>toc</mat-icon>
-                </button>
-            </div>
             </div>
                
                 <mat-drawer-container class="container-child" autosize>
@@ -263,7 +265,7 @@
                         </ng-container>
                         <ng-container matColumnDef="prioridad">
                           <th mat-header-cell *matHeaderCellDef> Prioridad </th>
-                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]">
+                          <td mat-cell *matCellDef="let element">
                             <mat-form-field appearance="standard" class="matformfield">
                               <mat-select [value]="element.prioridad.toString()" (selectionChange)="guardarPrioridad(prioridadTable.value,element.idTicket)" #prioridadTable>
                                   <mat-option value="1">Baja</mat-option>
