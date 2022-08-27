@@ -1,6 +1,15 @@
 <div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop">
     <div fxFlex="95%">
         <mat-card >
+          <div class="cabecera-link" >       
+            <div id="link" [hidden]="filtroPGrado !== false"> 
+            <a  style="text-decoration: none;">Mis Tickets > </a>
+            </div>
+            <div id="link" [hidden]="filtroPGrado !== true"> 
+              <a [routerLink]="['./../ticket-entry']" style="text-decoration: none;">Solicitud ticket > </a>
+              <a style="text-decoration: none;"> Tickets > </a>
+              </div>
+          </div>
             <mat-card-header>
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                 <mat-icon>filter_list</mat-icon>

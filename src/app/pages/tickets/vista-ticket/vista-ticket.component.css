@@ -122,7 +122,12 @@ button {
 }
 
 .botonRes{
-    text-align: end;
+    float: right;
+    display: flex;
+}
+
+.botonRes #icon{
+    margin-right: 5px;
 }
 
 .sidenav-dc {
@@ -188,10 +193,22 @@ blockquote {
     padding: 5px;
 }
 
+.botonesPrincipales a {
+    outline: none;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+}
 @media (max-width:542px) {
     .botonesPrincipales{
         display: grid;
     }
+
+    .botonesPrincipales button{
+        margin-top: 5px;
+        width: 100%;
+    }
+
     .cabecera {
         display: block;
     }

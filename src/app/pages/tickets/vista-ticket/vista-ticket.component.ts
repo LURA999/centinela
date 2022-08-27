@@ -1,7 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { responseService } from 'src/app/models/responseService.model';
@@ -13,7 +12,9 @@ import { RepeteadMethods } from '../../RepeteadMethods';
 import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
 import { usuario } from '../all-tickets/all-tickets.component';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { threadId } from 'worker_threads';
+import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.interface';
+import { Router, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
 
 export interface Comment {
   mensaje?: string;
@@ -58,14 +59,16 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   position : boolean = false
   moveProp : boolean = false
   moveDatos : boolean = false
+  tipoComentario : boolean = true
   open : number = 0
   datosTicket : any 
   date : Date = new Date()
-  idTicket : number = Number(this.ruta.url.split("/")[4]) 
+  idTicket : number = Number(this.ruta.url.split("/")[4].replace(/#Ancla/g, "")) 
   optionsDate :any = { year: 'numeric', month: 'long', day: 'numeric' };
   filteredOptions: Observable<datosUsuario[]> | undefined;
   usuarios : any [] = []
   options: string[] = [];
+  textArea = new FormControl()
   myControl = new FormControl('');
   varDetalle : number | undefined  //Guarda una variable de la tabla detalle log_ticket_det
   form: FormGroup = this.fb.group({
@@ -108,13 +111,18 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     private ipService : IpService,
     private deviceService : DeviceService,
     private ticketService: TicketService,
-    private auth : AuthService
+    private auth : AuthService, 
+    public regresar : Location
     ) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
-  
+    this.idTicket = this.idTicket
+    console.log(window);
+    console.log(window.history);
+    
+    
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.procedimiento()
   }
 
@@ -312,9 +320,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       cve : 0,
       cve2 : this.idTicket 
     } 
-     this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max
-    console.log(this.varDetalle);
-    
+     this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max    
      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
 
       
@@ -439,22 +445,44 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     this.comment = []
     this.ticketService.llamarHistorial(this.idTicket).subscribe(async (resp:responseService)=>{
       for await (const i of resp.container) {
-        if(i.tipo ==1){
-          this.comment.push({mensaje:i.comentario_normal, usuarioRespondido:"Alonso Luna",fecha:i.fechaComentario , color:"#F5F8FA"});
-        }else if(i.tipo >=2 && i.tipo <=4){
+       if(i.tipo >=2 && i.tipo <=4){
+         // Actualizacion de cual quiera de las opciones
           this.comment.push({mensaje:i.comentario,usuarioRespondido:i.usuario,fecha:i.fechaUpdate, color:"#F5F8FA",actualizar:true });
         }else if(i.tipo == 5){
+          //mensaje de escalado
           this.comment.push({ usuarioRespondido:i.usuario,fecha:i.fechaUpdate,grupo:i.grupo,agente:i.agente, color:"#E6FFDE" });
         }else if(i.tipo == 6){
+          //mensaje de que se cerro el ticket
           this.comment.push({ usuarioRespondido: i.usuario, fecha:i.fechaUpdate,cerrar:true,color:"#DBFAFF"});
+        }else if(i.tipo ==7){
+          // comentario privado
+          this.comment.push({ mensaje: i.comentario, usuarioRespondido:i.usuario,fecha:i.fechaUpdate, color:"#F5F8FA",normal:false });
+        }else if(i.tipo == 8){
+          // comentario publico
+          this.comment.push({ mensaje: i.comentario, usuarioRespondido:i.usuario,fecha:i.fechaUpdate, color:"#F5F8FA"});
         }
       }
     })
+  }
 
-    /*{ mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
-  { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
-  { usuarioRespondido: "Ruben garcia garcia", fecha:'1-3-4',cerrar:true,color:"#DBFAFF"}, //cuando se cierra ticket
-  { mensaje: 'Comentario privado', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",normal:false }, //comentario privado
-  { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }, // ticket actualizado*/
+  comentarioPrivado(){
+    this.tipoComentario = false
+  }
+
+  comentarioPublico(){
+    this.tipoComentario = true
+  }
+
+  async enviarMensaje(){
+    let form : enviarComentarioInterface ={
+      cveTicket: this.idTicket,
+      comentario: this.textArea.value,
+      cveUsuario: this.auth.getCveId(),
+      estatus: 1,
+      tipo: this.tipoComentario ===false?7:8
+    }
+    this.textArea.reset()
+    await lastValueFrom(this.ticketService.insertarComentario(form))
+    await this.imprimirComentarios()
   }
 }

@@ -1,19 +1,25 @@
-<div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop" [class.example-is-mobile]="mobileQuery.matches">
-    <div fxFlex="95%">
+<div  fxLayout="row" fxLayoutAlign="center none" class="matCardTop" [class.example-is-mobile]="mobileQuery.matches" >
+   
+  <div fxFlex="95%">
         <mat-card >
+          <div class="cabecera-link" >       
+            <div id="link"> 
+            <a  (click)="regresar.back()" style="text-decoration: none;"> < Volver </a>
+            </div>
+        </div>
             <mat-card-content >
               <div class="cabecera">
                 <div class="botonesPrincipales">
-                  <button mat-raised-button color="primary">Responder<mat-icon>subdirectory_arrow_left</mat-icon></button> 
-                  <button mat-raised-button color="primary">Añadir nota<mat-icon>note</mat-icon></button>
+                  <a [href]="'/admin/tickets/edit-ticket/'+idTicket+'#Ancla'"><button mat-raised-button color="primary" (click)="comentarioPublico()">Responder<mat-icon>subdirectory_arrow_left</mat-icon></button></a>
+                  <a [href]="'/admin/tickets/edit-ticket/'+idTicket+'#Ancla'"><button mat-raised-button color="primary" (click)="comentarioPrivado()">Añadir nota<mat-icon>note</mat-icon></button></a>
                   <button mat-raised-button color="primary" (click)="cerrarTicket()">Eliminar <mat-icon>delete</mat-icon></button>
                 </div>
-                <div class="menu">
+               <!--  <div class="menu">
                   <button mat-button [matMenuTriggerFor]="menu">...</button>
                   <mat-menu #menu="matMenu" mat-raised-button color="primary">
-                  <!--  <button mat-menu-item >...</button> -->
+                   <button mat-menu-item >...</button> 
                   </mat-menu>
-                </div>
+                </div>-->
               </div>
               <div class="sidenav-content" [hidden]="open > 1000">
                 <button type="button"  mat-button (click)="propiedades.toggle()" (click)="desplazarNavPropiedades()"><mat-icon>toc</mat-icon> </button>
@@ -171,6 +177,7 @@
                                   </mat-select>
                                 </mat-form-field>
                               </div>
+                              
                               <button mat-raised-button color="primary" (click)="actualizar4params()" aria-busy="true">Actualizar <mat-icon>update</mat-icon></button>
                               <div class="boton"   >
                                 <button type="button" [hidden]="open < 1000" style="margin-top: 90px;" mat-button (click)="datosContacto.toggle()" (click)="desplazarNavDatosContacto()">
@@ -273,15 +280,22 @@
                       (moveProp === false && moveDatos === false ?'calc(100% - 210px)':
                       (moveDatos === false && moveProp === true? 'calc(100% - 212px)':'100%'))"
                       >
-                        <div class="botonesComentarios">
-                          <button mat-stroked-button color="primary">Responder</button> <button mat-stroked-button color="primary"> Añadir Nota <mat-icon>note</mat-icon></button>
+                        <div class="botonesComentarios" id="Ancla">
+                          <button mat-stroked-button color="primary" (click)="comentarioPublico()">Responder<mat-icon>subdirectory_arrow_left</mat-icon></button>
+                          <button mat-stroked-button color="primary" (click)="comentarioPrivado()">Añadir nota<mat-icon>note</mat-icon></button>
                         </div>
-                        <textarea placeholder="Escribe un comentario..." id="res" 
+                        <textarea placeholder="Escribe un comentario..." [formControl]="textArea" id="res" 
                           rows="10"></textarea>
                         <div class="botonRes">
-                          <button mat-raised-button color="primary">Responder <mat-icon>send</mat-icon></button>
+                          <div [hidden]="tipoComentario" id="icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-x-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z"/>
+                          </svg>
+                          </div>
+                          <div>
+                            <button mat-raised-button color="primary" (click)="enviarMensaje()">Responder <mat-icon>send</mat-icon></button>
+                          </div>
                         </div>
-                      </div>
+                      </div>                  
                     </mat-sidenav-container>
             </mat-card-content>  
         </mat-card>

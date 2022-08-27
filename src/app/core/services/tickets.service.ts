@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { formTicketInterface } from "src/app/interfaces/formTicketInterface.interface";
@@ -6,6 +6,7 @@ import { dosParamsNum } from "src/app/interfaces/dosParamsNum.interface";
 import { responseService } from "src/app/models/responseService.model";
 import { environment } from 'src/environments/environment';
 import {  contactsEmailTicket } from "../../models/contactsEmailTicket.model"
+import { enviarComentarioInterface } from "src/app/interfaces/enviarComentario.interface";
 
 @Injectable({
     providedIn:'root'
@@ -20,6 +21,11 @@ export class TicketService {
     }
     llamarTicket(cve:number) : Observable<responseService>{
         return this.http.get<responseService>(this.local+"Tickets/tickets.php?cve="+cve);
+    }
+
+    insertarComentario(input : enviarComentarioInterface){
+        let headers = new HttpHeaders().set('Content-type','Application/json');
+        return this.http.post<responseService>(this.local+"Tickets/tickets.php",input, {headers});
     }
 
     tickets(cond : number,cve:number) : Observable<responseService>{

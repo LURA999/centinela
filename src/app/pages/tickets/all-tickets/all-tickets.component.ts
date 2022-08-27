@@ -18,6 +18,8 @@ import { MatButton } from '@angular/material/button';
 import { dosParamsNum } from 'src/app/interfaces/dosParamsNum.interface';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
+import { MatSelect } from '@angular/material/select';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 export interface ticket {
   idTicket: Number,
@@ -81,6 +83,7 @@ export class AllTicketsComponent implements OnInit{
   @ViewChild ("todosTickets") todosTickets!:MatButton;
   @ViewChild ("ticketsSinResolver") ticketsSinResolver!:MatButton;
   @ViewChild ("ticketsAbiertosNuevos") ticketsAbiertosNuevos!:MatButton;
+  @ViewChild ("grupoTable") grupoTable!:MatSelect;
 
   //autocomplete
   agenteControl = new FormControl('');
@@ -121,6 +124,13 @@ export class AllTicketsComponent implements OnInit{
 
   //iniciador de filtro primer grado
   filtroPGrado : boolean = true
+
+
+  varDetalle : number | undefined  //Guarda una variable de la tabla detalle log_ticket_det
+  mobileQuery: MediaQueryList;
+
+
+  link : boolean = false
   constructor(
     private fb : FormBuilder,
     private userServ: UsuarioService,
@@ -128,8 +138,12 @@ export class AllTicketsComponent implements OnInit{
     private search: SearchService, 
     private usarioservice : UsuarioService,
     private ticketService: TicketService,
-    private ruta: Router) { 
-      
+    private ruta: Router,
+    private media: MediaMatcher,
+    ) { 
+
+      this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
+
       if(ruta.url.split("/")[3] == "general"){
         this.condicion2 = 1;
         this.tituloAllTickets = "Mis Tickets";
@@ -164,16 +178,16 @@ export class AllTicketsComponent implements OnInit{
   async guardarGrupo(cve:string,cveTicket:string){ 
   let dosParamsNumGrupo:dosParamsNum = {
     cve : Number(cve),
-    cve2 : Number(cveTicket)
+    cve2 : Number(cveTicket),
+    cveUsuario : this.auth.getCveId()
   } 
 
   let dosParamsNumAgente:dosParamsNum = {
     cve : 0,
     cve2 : Number(cveTicket)
   } 
-    await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
-    await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
-    
+  await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
+  await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
   }  
 
   async buscarUsuarionav(cve:string){
@@ -206,12 +220,20 @@ export class AllTicketsComponent implements OnInit{
   }
 
   async agenteGuardar(cve:string,cveTicket:string){
-   
+  let dosParamsNumGrupo:dosParamsNum = {
+    cve : Number(this.grupoTable.value),
+    cve2 : Number(cveTicket),
+    cveUsuario : this.auth.getCveId()
+  } 
+
+  this.varDetalle = await( await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max
   let dosParamsNum:dosParamsNum = {
     cve : Number(cve),
     cve2 : Number(cveTicket),
-    cveUsuario: this.auth.getCveId()
+    cveUsuario: this.auth.getCveId(),
+    cveLogDet: this.varDetalle 
   }
+  console.log(this.varDetalle);
   
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
     
