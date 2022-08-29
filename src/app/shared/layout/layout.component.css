@@ -158,16 +158,16 @@ font-size: 1.7vw;
 font-family: Arial, Helvetica, sans-serif;
 margin-right: 2.5rem;
 font-size: 1vw;
-margin-top: 1.5%;
+margin-top: 1.7%;
 width: 30%;
-margin-left: 20%;
-
+margin-left: auto;
 }
 
 .rigth{
   
   display: flex;
   float: right;
+
 }
 
 .top{
@@ -183,8 +183,8 @@ margin-left: 20%;
 
 #buscador{
 width: 100%;
-border-radius: 12px;
-height: 60%;
+border-radius: 7px;
+height: 50%;
 
 }
 
@@ -296,6 +296,13 @@ text-align: center;
 
 }
 
+.spacer{
+  padding: 0px; 
+  margin: 0px; 
+  width: 100%;  
+  display: inline-flex; 
+  align-self: center; 
+}
 
 mat-option{
 font-size: 10px;
@@ -324,36 +331,161 @@ background-color: rgb(164, 196, 196);
 
 
 
-@media screen and (max-width:610px) {
-
-mat-form-field{
-  width: 80%;
-}
-.time-date{
-display: none;
-}
-
-
-}
 
 
 
-@media screen and (max-width:500px) {
-  .time-date{
-    display: none;
-    }
- 
-  
-  }
-  
 
-@media screen and (max-width:390px) {
-  .time-date{
-    display: none;
-    }
-    .search{
-width: 30%;      }
-  
+
+@media screen and (max-width:1225px) {
+  .filtros{    background-color: #2b3779 ; 
+  color: white;
+  margin: 3px;
+  font-size: 10px;
+  border-radius: 12px;
+  width: 10%;
+  padding: 0;
   }
 
+  .search{
+    margin-left: auto;
+  }
+  }
 
+  
+
+      @media screen and (max-width:948px) {
+       
+  .time-date{
+    display: none;
+  }
+
+  #buscador{
+    font-size: 10px;
+  }
+        .search{
+width: 37%;  
+  }
+        .rigth{
+    margin-left: 12%;
+        }
+    
+        }
+
+
+
+
+        @media screen and (max-width:848px) {
+
+          
+
+          .time-date{
+            display: none;
+          }
+                .search{
+        width: 42%;  
+      
+          }
+                .rigth{
+            margin-left: 10%;
+                }
+            .person{
+              display: none;
+            }
+                }
+
+
+                @media screen and (max-width:725px) {
+
+                  img{
+                    display: none;
+                  }
+
+                  .filtros{    background-color: #2b3779 ; 
+                    color: white;
+                    margin: 1px;
+                    font-size: 9px;
+                    border-radius: 12px;
+                    min-width: 23%;
+                    height:24px ;
+                    padding: 0;
+                    line-height: 21px
+                    }
+                                    .time-date{
+                                      display: none;
+                                    }
+                                          .search{
+                                  width: 55%;  
+                                  margin-left: 0;  
+                                    }
+                                          .rigth{
+                                      margin-left: 5%;
+                                          }
+                                      .person{
+                                        display: none;
+                                      }
+                                          }
+
+                @media screen and (max-width:500px) {
+                  #ticket{
+                    position: absolute;
+                    margin-left: 20%;
+                    margin-top: -13%;
+                    font-weight: bold;
+                  }
+                  
+                  #tipo{
+                    margin-left: 20%;
+                    margin-top: -3%;
+                    position: absolute;
+                  }
+                  
+                  #asunto{
+                    margin-left: 20%;
+                    margin-top: -8%;
+                    position: absolute;
+                    
+                  }
+                  #servicio{
+                    position: absolute;
+                    margin-left: 20%;
+                    margin-top: -12%;
+                    font-weight: bold;
+                  }
+                  #empresa{
+                    margin-left: 20%;
+                    margin-top: -6%;
+                    position: absolute;
+                  }
+                  
+                  #correoynumero{
+                  
+                    margin-left: 20%;
+                    margin-top: -6%;
+                    position: absolute;
+                  
+                  }
+                  
+                  
+                  #nombre{
+                    position: absolute;
+                    margin-left: 20%;
+                    margin-top: -12%;
+                    font-weight: bold;
+                  }
+img{
+  display: none;
+}
+                  .time-date{
+                    display: none;
+                  }
+                        .search{
+                width: 50%;  
+                margin-left: 0;  
+                  }
+                        .rigth{
+                    margin-left: 8%;
+                        }
+                    .person{
+                      display: none;
+                    }
+                        }

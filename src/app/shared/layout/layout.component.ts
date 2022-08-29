@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit, Input, Renderer2 } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import {  lastValueFrom, Observable, Observer, Subscription } from 'rxjs';
 import { startWith,map } from 'rxjs/operators';
@@ -9,28 +9,37 @@ import { FormControl } from '@angular/forms';
 import { SearchService } from 'src/app/core/services/search.service';
 import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
+
+import { stringToKeyValue } from '@angular/flex-layout/extended/style/style-transforms';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
 @Component({
     selector: 'app-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.css']
 })
+
 export class LayoutComponent implements OnInit, AfterViewInit {
+dentro:boolean=false
+fuera:boolean=false
+  nombre: string =""
     booleantodos:boolean=true
     booleanservicio:boolean=true
     booleancontactos:boolean=true
     booleantickets:boolean=true
+    ocultar:boolean=true
     mostrar:string="on"
     metodos = new RepeteadMethods();
     private readonly notifier: NotifierService;
-    serviciosbooleanlabel:boolean=false
-    contactosbooleanlabel:boolean=false
-    ticketsbooleanlabel:boolean=false
-    botontodos:boolean=true
-    botonservicio:boolean=false
-    botoncontacto:boolean=false
-    botontickets:boolean=false
-    cargando : boolean=false
+
+serviciosbooleanlabel:boolean=false
+contactosbooleanlabel:boolean=false
+ticketsbooleanlabel:boolean=false
+botontodos:boolean=true
+botonservicio:boolean=false
+botoncontacto:boolean=false
+botontickets:boolean=false
+cargando : boolean=false
     time = new Observable<string>((observer: Observer<string>) => {
         setInterval(() => observer.next(
             new Date().toTimeString().split(" ")[0]), 1000);
@@ -59,7 +68,9 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         private media: MediaMatcher,
         private router : Router,
         private configservice:ConfigService,
-        private Search:SearchService
+
+        private Search:SearchService,
+        private _renderer : Renderer2
       ) {
         this.notifier = notifierService;
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
@@ -77,12 +88,20 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         });    
     }
     acceso(){
-        if(this.auth.getCveRol() == 4){
-            return "none"
-        }else{
-            return "block"
+      console.log(this.auth.getCveRol());
+
+        if(this.auth.getCveRol() == 1){
+         
+         return "block"
+
+  }else{
+   
+    return "none"
+          
+           
         }  
     }
+
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
     }
@@ -107,9 +126,35 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             this.router.navigateByUrl("/usuario");
         }
     }
-    
+
+  close(){
+
+    try{
+      this.fuera=true
+      if(this.fuera==true&&this.dentro==true){
+  console.log("SE MIRA");
+        this._renderer.setStyle(document.getElementById("ocultar"),"visibility","visible")
+        this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","visible")
   
-    todosbutton(id:string,event : any){
+  }else{
+    console.log("NO SE MIRA");
+    this._renderer.setStyle(document.getElementById("ocultar"),"visibility","hidden")
+    this._renderer.setStyle(document.getElementById("mat-autocomplete-0"),"visibility","hidden")
+  
+  }
+  this.fuera=false
+  this.dentro=false
+    }catch(Exception){
+      
+    }
+    
+
+  }
+
+ close2(){
+  this.dentro=true
+}
+todosbutton(id:string,event : any){
   this.botontodos=true
   this.botonservicio=false
   this.botoncontacto=false
@@ -135,6 +180,7 @@ serviciobutton(id:string,event : any){
     this.botonservicio=false
     console.log("servicio es true");
    }
+
    
 }
 contactobutton(id:string,event : any){
@@ -187,14 +233,13 @@ if(this.botonservicio==true||this.botontodos==true){
           if(result.status !== "not found"){
             this.serviciosbooleanlabel=true
           
-          this.options= result.container;
-          console.log(this.options);
           
+          this.options= result.container;
+
           }else{
             this.serviciosbooleanlabel=false
             this.options=[]
-           
-            
+  
           }
         });
         this.filteredOptions = this.myControl.valueChanges.pipe(
@@ -207,6 +252,7 @@ if(this.botonservicio==true||this.botontodos==true){
         this.options=[]
     }
     this.cargando=false
+
     }
     async contacto(id:string,event : any){
         if(this.botoncontacto==true||this.botontodos==true){
@@ -223,6 +269,8 @@ if(this.botonservicio==true||this.botontodos==true){
           }else{
             this.contactosbooleanlabel=false
             this.contacts=[]
+            console.log(this.contacts);
+            
           }
         });
         this.filteredContacts = this.myControl.valueChanges.pipe(
@@ -233,7 +281,11 @@ if(this.botonservicio==true||this.botontodos==true){
             this.contactosbooleanlabel=false
             this.contacts=[]  
         }
+
+
     }
+
+
     async ticket(id:string,event : any){
         if(this.botontickets==true||this.botontodos==true){
         id = id.split(" ")[0]
@@ -263,28 +315,25 @@ if(this.botonservicio==true||this.botontodos==true){
             this.tickets=[]
     }
     }
-    async irServicio (id : string){
-        console.log(id);
+
+
+
+    async irServicio (servicio : string){
+    var onlyservice =servicio.split(" ")[0];
+var number=servicio.split(" | ")[2]
         
-        await lastValueFrom(this.Search.llamarServicioEstatus(this.options.indexOf(id)+1)).then( (result : any) =>{
-           console.log(result);
-           
-            var estatus=result.container[0]["estatus"]
-        
-            if(estatus!=2){
-                id = id.split(" ")[0]
-                var identificador=id.replace(/([0-9]{4})\S/,"");
-                identificador= identificador.substring(0,identificador.length-1)
-                
-                this.router.navigateByUrl("/admin/client/"+identificador+"/"+id).then(() => {
-                    window.location.reload();
-                  });
-                 
-                     
-                } else{
-                    this.notifier.notify('warning', 'Servicio Inactivo');    
-                
-                }     
-            }); 
-    }
+      
+          
+      
+            var estatus=servicio.split(" | ")[3]
+      
+            if(Number(estatus)!=2){
+     this.router.navigateByUrl("/admin/client/"+Number(number)+"/"+onlyservice).then(() => {
+                    window.location.reload();            
+     });
+               } else{
+                 this.notifier.notify('warning', 'Servicio Inactivo');            
+    }    
+          
+  }
 }

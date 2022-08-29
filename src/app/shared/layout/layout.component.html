@@ -1,7 +1,8 @@
-<div class="navbar-container " [class.example-is-mobile]="mobileQuery.matches">
+
+<div (click)="close()" class="navbar-container " [class.example-is-mobile]="mobileQuery.matches">
   <mat-toolbar class="navbar" color="primary">
 
-<div  style=" padding: 0px; margin: 0px; width: 100%;  display: inline-flex; justify-content: space-between; align-self: center; ">
+<div  class="spacer">
   <div class="left">
   <div class="top">
     <button mat-icon-button (click)="snav.toggle()">
@@ -19,16 +20,16 @@
   </div>
 </div>
 
-<div class="search">
+<div class="search"  >
 
-      <input  id="buscador" type="text"
+      <input (click)="close2()" id="buscador" type="text" 
              [formControl]="myControl"
              (keyup)="servicio(id.value,$event)"
              (keyup)="contacto(id.value,$event)"
              (keyup)="ticket(id.value,$event)"
              [matAutocomplete]="auto" #id >
-      <mat-autocomplete  autoActiveFirstOption #auto="matAutocomplete" >
-        <mat-option  [disabled]="true" style="height: 50px;">
+      <mat-autocomplete   autoActiveFirstOption #auto="matAutocomplete" >
+        <mat-option id="ocultar" [disabled]="true" style="height: 50px;">
         <div id="botones">
         <button mat-button  [ngClass]="{'true': this.botontodos===true,   'false': this.botontodos===false}" class="filtros" (click)="todosbutton(id.value,$event)" >Todos</button>
           <button mat-button  [ngClass]="{'true': this.botonservicio===true,   'false': this.botonservicio===false}" class="filtros" (click)="serviciobutton(id.value,$event)">Servicios</button>
@@ -43,7 +44,7 @@
         <mat-label [hidden]="serviciosbooleanlabel === false || this.botonservicio===false&&this.botontodos===false "  class="tipo">Servicios</mat-label>
         <mat-divider></mat-divider>
         
-        <mat-option [(ngModel)]="filteredOptions"  *ngFor="let option of filteredOptions  | async" [value]="option" >
+        <mat-option   (click)="irServicio(option)" [(ngModel)]="filteredOptions"  *ngFor="let option of filteredOptions  | async" [value]="option" >
           
           <mat-icon  id="lan" > lan</mat-icon>
           <div id="servicio">
@@ -56,7 +57,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="contactosbooleanlabel===false || this.botoncontacto===false&&this.botontodos===false " class="tipo">Contactos</mat-label>
         <mat-divider></mat-divider>
-        <mat-option  *ngFor="let option of filteredContacts  | async" [value]="option" >
+        <mat-option  *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
           <mat-icon id="account_box"> account_box</mat-icon>
           <div id="nombre">
           {{option.split(" ")[0]}}
@@ -89,7 +90,8 @@
       </div>
       </mat-autocomplete> 
           
-      <mat-icon>search</mat-icon>
+      <mat-icon style="position:absolute; margin-top: 5px;
+      margin-left: 4px;">search</mat-icon>
  
   </div>
   <div class="rigth">
@@ -161,7 +163,7 @@
               <p mat-line style="margin-top: 11px;"> Dashboard </p>
            
           </mat-expansion-panel-header>
-          <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+          <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-home']" routerLinkActive="active" mat-line>
              General</a>
           <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-red']" routerLinkActive="active" mat-line>
              Red</a>
@@ -169,7 +171,7 @@
               Tickets</a>
         </mat-expansion-panel>
 
-        <a mat-list-item [routerLink]="['/admin/client']" [ngStyle]="{'display': acceso()}">
+        <a mat-list-item [routerLink]="['/admin/client']" >
           <mat-icon mat-list-icon >person</mat-icon>
           <p mat-line > Clientes  </p>
         </a>
@@ -251,7 +253,17 @@
   <p mat-line> Ordenes </p>
 </a>
 
+<mat-expansion-panel  [style.display]="acceso()">  
+  <mat-expansion-panel-header >
+      <mat-icon mat-list-icon style="margin-top: 8px;">group</mat-icon> 
+      <p mat-line style="margin-top: 11px;"> Gestion</p>
+  </mat-expansion-panel-header>
 
+  <a mat-list-item [routerLink]="['/admin/users/usuarios']" routerLinkActive="active" mat-line>
+    Usuarios</a>
+    <a mat-list-item [routerLink]="['/admin/users/grupos']" routerLinkActive="active" mat-line>
+      Grupos </a>
+</mat-expansion-panel>
 
 <a mat-list-item (click)="salir()" routerLinkActive="active">
   <mat-icon mat-list-icon>

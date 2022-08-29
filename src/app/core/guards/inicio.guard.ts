@@ -14,7 +14,7 @@ export class InicioGuard implements CanActivate {
     if(localStorage.getItem('sesion') == undefined ){
       return true
     }else{
-      if(this.auth.getTipo() == 1){
+      if(this.auth.getTipo() == 0){
         this.route.navigateByUrl('/usuario/dashboard')
       }else{
         this.route.navigateByUrl('/admin/dashboard')
