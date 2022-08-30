@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashAdminGuard } from 'src/app/core/guards/dashAdmin.guard';
+import { billing } from 'src/app/core/guards/billing.guard';
 import { LayoutComponent } from 'src/app/shared/layout/layout.component';
 import { ControlipsComponent } from './controlips/controlips.component';
 import { RepetearComponent } from './repetear/repetear.component';
@@ -12,11 +12,11 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'segments', canActivate:[DashAdminGuard], component: SegmentsComponent },
-      { path: 'segments/:id', canActivate:[DashAdminGuard], component: SegmentsComponent },
-      { path: 'controlips',canActivate:[DashAdminGuard], component: ControlipsComponent },
-      { path: 'repeater', canActivate:[DashAdminGuard], component: RepetearComponent },
-      { path: 'repeater/:id',canActivate:[DashAdminGuard], component: RepetearContactComponent},
+      { path: 'segments', canActivate:[billing], component: SegmentsComponent },
+      { path: 'segments/:id', canActivate:[billing], component: SegmentsComponent },
+      { path: 'controlips',canActivate:[billing], component: ControlipsComponent },
+      { path: 'repeater', canActivate:[billing], component: RepetearComponent },
+      { path: 'repeater/:id',canActivate:[billing], component: RepetearContactComponent},
     ]
   }
 ];

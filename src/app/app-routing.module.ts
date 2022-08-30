@@ -20,8 +20,6 @@ const appRoutes: Routes = [
   { path: 'admin/manual', loadChildren: () => import('./pages/manual/manual.module').then(m => m.ManualModule) },
   { path: 'admin/tickets', loadChildren: () => import('./pages/tickets/tickets.module').then(m => m.TicketsModule) },
   { path: 'admin/users', loadChildren: () => import('./pages/users/users.module').then(m => m.UsersModule) },
-  
-
   { path: '**',canActivate:[InicioGuard], component: LoginUsuarioComponent},  
 
 ];

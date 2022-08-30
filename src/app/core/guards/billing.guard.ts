@@ -5,17 +5,16 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DashUsuarioGuard implements CanActivate {
+export class billing implements CanActivate {
   constructor(private route:Router, private auth:AuthService){}
+
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-      if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 0 && this.auth.getCveRol()==5){       
-        return true
-      }else{
-      
-          this.route.navigateByUrl('/usuario/dashboard')
-        
-        return false;
-      }
+    if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1  && this.auth.getCveRol() != 3 ){
+      return true
+    }else{
+        this.route.navigateByUrl('/admin/dashboard')
+      return false;
+    }
   }
   
 }

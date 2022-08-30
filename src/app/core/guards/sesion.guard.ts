@@ -10,13 +10,9 @@ export class SesionGuard implements CanActivate {
   constructor(private route:Router, private auth:AuthService){}
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
       if(localStorage.getItem('sesion') !== undefined ){
-        if(this.auth.getTipo() == 0 ){
-          console.log("Entra usuario");
-          
+        if(this.auth.getTipo() == 0 ){          
           this.route.navigateByUrl('/usuario')
         }else{
-          console.log("Entra Admin");
-
           this.route.navigateByUrl('/admin')
         }
         return true

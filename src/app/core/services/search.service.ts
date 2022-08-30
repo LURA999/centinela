@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { responseService } from "src/app/models/responseService.model";
-import { serviceModel } from "src/app/models/service.model";
 import { environment } from 'src/environments/environment';
 import { formNavSearchTicket } from 'src/app/interfaces/formNavSearchTicket.interface';
 

@@ -5,17 +5,15 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SupportGuard implements CanActivate {
+export class support_billing implements CanActivate {
   constructor(private route:Router, private auth:AuthService){}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    
-console.log();
-
-    if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1 && this.auth.getCveRol() == 4 ){
+    if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1  && this.auth.getCveRol() != 4
+    && localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1  && this.auth.getCveRol() != 3 ){
       return true
     }else{
-        this.route.navigateByUrl('/usuario/dashboard')
+        this.route.navigateByUrl('/admin/dashboard')
       return false;
     }
   }

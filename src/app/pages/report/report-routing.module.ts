@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashAdminGuard } from 'src/app/core/guards/dashAdmin.guard';
+import { billing } from 'src/app/core/guards/billing.guard';
 import { LayoutComponent } from 'src/app/shared/layout/layout.component';
 import { ServiceComponent } from './service/service.component';
 import { TicketAdviserComponent } from './ticket-adviser/ticket-adviser.component';
@@ -11,9 +11,9 @@ const routes: Routes = [
   {  path: '',
   component: LayoutComponent,
   children:[
-    { path: 'ticket-adviser', canActivate:[DashAdminGuard], component: TicketAdviserComponent },
-    { path: 'service',canActivate:[DashAdminGuard], component: ServiceComponent },
-    { path: 'ticket-support',canActivate:[DashAdminGuard], component: TicketSopportComponent },
+    { path: 'ticket-adviser', canActivate:[billing], component: TicketAdviserComponent },
+    { path: 'service',canActivate:[billing], component: ServiceComponent },
+    { path: 'ticket-support',canActivate:[billing], component: TicketSopportComponent },
 
   ]
 }

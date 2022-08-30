@@ -143,32 +143,26 @@
         <span>Cerrar sesion</span>
       </a>
     </mat-menu>
-
   </mat-toolbar>
   <mat-sidenav-container class="navbar-sidenav-container">
     <!-- Side nav -->
     <mat-sidenav #snav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'"
-      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav"
-     >
-
+      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
       <mat-nav-list>
         <div  id="header-nav">
-          <p> Menu  </p>
+          <p> Menu </p>
         </div>
-
         <mat-expansion-panel >  
           <mat-expansion-panel-header>
-            
-              <mat-icon mat-list-icon style="margin-top: 8px;">dashboard </mat-icon> 
-              <p mat-line style="margin-top: 11px;"> Dashboard </p>
-           
+            <mat-icon mat-list-icon style="margin-top: 8px;">dashboard </mat-icon> 
+            <p mat-line style="margin-top: 11px;"> Dashboard </p>
           </mat-expansion-panel-header>
           <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-home']" routerLinkActive="active" mat-line>
-             General</a>
+            General</a>
           <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-red']" routerLinkActive="active" mat-line>
-             Red</a>
-            <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-tickets']" routerLinkActive="active" mat-line>
-              Tickets</a>
+            Red</a>
+          <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-tickets']" routerLinkActive="active" mat-line>
+            Tickets</a>
         </mat-expansion-panel>
 
         <a mat-list-item [routerLink]="['/admin/client']" >
@@ -176,99 +170,91 @@
           <p mat-line > Clientes  </p>
         </a>
 
-<mat-expansion-panel >  
-  <mat-expansion-panel-header>
-    
-      <mat-icon mat-list-icon style="margin-top: 8px;">wifi_tethering </mat-icon> 
-      <p mat-line style="margin-top: 11px;"> Red </p>
-   
+<mat-expansion-panel [style.display]="accesoAdminFacturacion()">  
+  <mat-expansion-panel-header >
+  <mat-icon mat-list-icon style="margin-top: 8px;">wifi_tethering </mat-icon> 
+  <p mat-line style="margin-top: 11px;"> Red </p>
   </mat-expansion-panel-header>
   <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
     Ping</a>
   <a mat-list-item [routerLink]="['/admin/red/repeater']" routerLinkActive="active" mat-line>
     Repetidores</a>
-    <a mat-list-item [routerLink]="['/admin/red/segments']" routerLinkActive="active" mat-line>
-      Segmentos</a>
-      <a mat-list-item [routerLink]="['/admin/red/controlips']" routerLinkActive="active" mat-line>
-        Control de Ips</a>
+  <a mat-list-item [routerLink]="['/admin/red/segments']" routerLinkActive="active" mat-line>
+    Segmentos</a>
+  <a mat-list-item [routerLink]="['/admin/red/controlips']" routerLinkActive="active" mat-line>
+    Control de Ips</a>
 </mat-expansion-panel>
 
 
 
 
-<a mat-list-item [routerLink]="['/admin/manual']" routerLinkActive="active" mat-line>
+<a mat-list-item [routerLink]="['/admin/manual']" routerLinkActive="active" mat-line [style.display]="accesoAdminFacturacion()">
   <mat-icon mat-list-icon>
     sticky_note_2
   </mat-icon>
   <p mat-line> Manuales </p>
 </a>
-<mat-expansion-panel >  
-  <mat-expansion-panel-header>
-    
-      <mat-icon mat-list-icon style="margin-top: 8px;">account_tree</mat-icon> 
-      <p mat-line style="margin-top: 11px;"> Incidencias</p>
-    
-  </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-    Externas</a>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-    Internas</a>
-</mat-expansion-panel>
 
-<mat-expansion-panel >  
-  <mat-expansion-panel-header>
-    
-      <mat-icon mat-list-icon style="margin-top: 8px;">confirmation_number</mat-icon> 
-      <p mat-line style="margin-top: 11px;">Tickets</p>
-   
-  </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/admin/tickets/general']" routerLinkActive="active" mat-line>
-      General</a>
+  <mat-expansion-panel [style.display]="accesoAdminFacturacion()">  
+    <mat-expansion-panel-header >
+        <mat-icon mat-list-icon style="margin-top: 8px;">account_tree</mat-icon> 
+        <p mat-line style="margin-top: 11px;"> Incidencias</p>
+    </mat-expansion-panel-header>
     <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-      Informacion</a>
+      Externas</a>
+    <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+      Internas</a>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel >  
+    <mat-expansion-panel-header>
+        <mat-icon mat-list-icon style="margin-top: 8px;">confirmation_number</mat-icon> 
+        <p mat-line style="margin-top: 11px;">Tickets</p>
+    </mat-expansion-panel-header>
+      <a mat-list-item [routerLink]="['/admin/tickets/general']" routerLinkActive="active" mat-line>
+        General</a>
+      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+        Informacion</a>
       <a mat-list-item [routerLink]="['/admin/tickets/ticket-entry']" routerLinkActive="active" mat-line>
         Altas de ticket</a>
-</mat-expansion-panel>
+  </mat-expansion-panel>
 
 
-<mat-expansion-panel >  
+<mat-expansion-panel  [style.display]="accesoAdminFacturacion()">  
   <mat-expansion-panel-header >
-      <mat-icon mat-list-icon style="margin-top: 8px;">folder</mat-icon> 
-      <p mat-line style="margin-top: 11px;"> Reportes</p>
+    <mat-icon mat-list-icon style="margin-top: 8px;">folder</mat-icon> 
+    <p mat-line style="margin-top: 11px;"> Reportes</p>
   </mat-expansion-panel-header>
-
   <a mat-list-item [routerLink]="['/admin/report/ticket-adviser']" routerLinkActive="active" mat-line>
     Tickets asesor</a>
-    <a mat-list-item [routerLink]="['/admin/report/ticket-support']" routerLinkActive="active" mat-line>
-      Tickets soporte</a>
+  <a mat-list-item [routerLink]="['/admin/report/ticket-support']" routerLinkActive="active" mat-line>
+    Tickets soporte</a>
   <a mat-list-item [routerLink]="['/admin/report/service']" routerLinkActive="active" mat-line>
     Servicios</a>
 </mat-expansion-panel>
 
 
-<a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" >
+<a mat-list-item [routerLink]="['/typography']" routerLinkActive="active" [style.display]="accesoAdminFacturacion()" >
   <mat-icon mat-list-icon>
     assignment_turned_in
   </mat-icon>
   <p mat-line> Ordenes </p>
 </a>
 
-<mat-expansion-panel  [style.display]="acceso()">  
+<mat-expansion-panel  [style.display]="accesoAdminSoporte()">  
   <mat-expansion-panel-header >
       <mat-icon mat-list-icon style="margin-top: 8px;">group</mat-icon> 
       <p mat-line style="margin-top: 11px;"> Gestion</p>
   </mat-expansion-panel-header>
-
-  <a mat-list-item [routerLink]="['/admin/users/usuarios']" routerLinkActive="active" mat-line>
+    <a mat-list-item [routerLink]="['/admin/users/usuarios']" routerLinkActive="active" mat-line>
     Usuarios</a>
     <a mat-list-item [routerLink]="['/admin/users/grupos']" routerLinkActive="active" mat-line>
-      Grupos </a>
-</mat-expansion-panel>
-
-<a mat-list-item (click)="salir()" routerLinkActive="active">
-  <mat-icon mat-list-icon>
+    Grupos </a>
+  </mat-expansion-panel>
+    <a mat-list-item (click)="salir()" routerLinkActive="active">
+    <mat-icon mat-list-icon>
     exit_to_app
-  </mat-icon>
+    </mat-icon>
   <p mat-line> Salir </p>
 </a>
 

@@ -186,6 +186,7 @@ export class AllTicketsComponent implements OnInit{
     cve : 0,
     cve2 : Number(cveTicket)
   } 
+  
   await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
   }  
@@ -193,6 +194,8 @@ export class AllTicketsComponent implements OnInit{
   async buscarUsuarionav(cve:string){
     this.optionsAgente = []
     this.usarioservice.usuariosGrupo(Number(cve)).subscribe(async (resp:responseService)=>{
+      console.log(resp.container);
+      
       for await (const usuario of resp.container) {
           this.optionsAgente.push(usuario)
       }
@@ -285,7 +288,9 @@ export class AllTicketsComponent implements OnInit{
 
   //metodo utilizado cuando entras a la pagina
   llenarUsuarios(){
-    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{            
+    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{    
+      console.log(resp);
+              
       for await (const usuario of resp.container) {
         this.optionsCreado.push(usuario)        
       }
@@ -401,9 +406,10 @@ export class AllTicketsComponent implements OnInit{
       form.condicion2 = this.condicion2;
 
     }
-    form.cveGrupo = this.auth.getCveGrupo()    
+    form.cveGrupo = this.auth.getCveGrupo()  
     form.cve = this.auth.getCveId()
-
+    console.log(form);
+    
     this.ELEMENT_DATA=[];
     this.dataSource = new MatTableDataSource();
 
@@ -462,3 +468,7 @@ export class AllTicketsComponent implements OnInit{
 
 
 }
+
+
+
+

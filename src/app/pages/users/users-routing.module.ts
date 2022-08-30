@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashAdminGuard } from 'src/app/core/guards/dashAdmin.guard';
-import { SupportGuard } from 'src/app/core/guards/support.guard';
+import { support_billing } from 'src/app/core/guards/support_billing.guard';
 import { LayoutComponent } from 'src/app/shared/layout/layout.component';
 import { GruposComponent } from './grupos/grupos.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
@@ -12,8 +11,8 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent, 
     children: [
-      { path: 'usuarios', canActivate:[SupportGuard], component: UsuariosComponent },
-      { path: 'grupos', canActivate:[SupportGuard], component: GruposComponent },
+      { path: 'usuarios', canActivate:[support_billing], component: UsuariosComponent },
+      { path: 'grupos', canActivate:[support_billing], component: GruposComponent },
 
     ]}]
 
