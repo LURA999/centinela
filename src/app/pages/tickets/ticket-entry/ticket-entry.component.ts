@@ -356,9 +356,11 @@ export class TicketEntryComponent implements OnInit {
   }
 
   buscarUsuarios(){
-    let cve : number = this.idGrupo.value
+    let cve : number = this.idGrupo.value    
     this.formTicket.controls["cveUsuario"].reset();
     this.usarioservice.usuariosGrupo(cve).subscribe((resp:responseService)=>{
+      console.log(resp);
+      
       if(resp.status === "not found"){
         this.usuarios = []
       }else{

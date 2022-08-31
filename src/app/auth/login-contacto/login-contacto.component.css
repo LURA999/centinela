@@ -7,9 +7,9 @@
 .col figure img {
     max-width: 100%;
 }
-  
+
 body {
-    background-image: url("../../../assets/admin.jpg");
+    background-image: url("../../../assets/Mesa.jpg");
     background-size: cover !important;
     background-repeat: no-repeat;
     background-position: center center;
@@ -17,19 +17,15 @@ body {
 }
 
 .container {
-  /*background-image: url("../../../assets/centinelaAdmin.jpg");
     background-size: cover !important;
     background-repeat: no-repeat;
     background-position: center center;
-    background-attachment: fixed;*/
+    background-attachment: fixed;
     height: 100%;
  margin-top: 0;
     margin-right:0;
     padding-right: 0;
 }
-
-/**Definiendo formulario*/
-
 
 .containerform  {
     float: right;
@@ -74,7 +70,6 @@ mat-form-field {
 }
 
 
-/** Modificando los colores detallistas de angular */
 .mat-form-field-ripple {
     background-color: transparent !important;
 }
@@ -84,14 +79,19 @@ mat-form-field {
 }
 .mat-icon {
     opacity: 0.5;
-    
+
 }
 #btn-iniciar{
-    background-color: #0f2245;
+    background-color: #3498db;
     color: white;
     width: 100%;
     font-size: 1vw;
 }
+
+.mat-form-field-underline {
+    display: none;
+  }
+
 
 @media (max-width: 850px) {
     .titulo h1 {

@@ -186,6 +186,7 @@ export class AllTicketsComponent implements OnInit{
     cve : 0,
     cve2 : Number(cveTicket)
   } 
+  console.log();
   
   await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
@@ -193,9 +194,7 @@ export class AllTicketsComponent implements OnInit{
 
   async buscarUsuarionav(cve:string){
     this.optionsAgente = []
-    this.usarioservice.usuariosGrupo(Number(cve)).subscribe(async (resp:responseService)=>{
-      console.log(resp.container);
-      
+    this.usarioservice.usuariosGrupo(Number(cve)).subscribe(async (resp:responseService)=>{      
       for await (const usuario of resp.container) {
           this.optionsAgente.push(usuario)
       }
@@ -288,9 +287,7 @@ export class AllTicketsComponent implements OnInit{
 
   //metodo utilizado cuando entras a la pagina
   llenarUsuarios(){
-    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{    
-      console.log(resp);
-              
+    this.userServ.todosUsuarios().subscribe( async (resp:responseService) =>{            
       for await (const usuario of resp.container) {
         this.optionsCreado.push(usuario)        
       }
