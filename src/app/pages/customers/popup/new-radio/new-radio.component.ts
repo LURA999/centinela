@@ -58,7 +58,6 @@ export class NewRadioComponent implements OnInit {
     this.inicio();
     this.idMax();
    this.ips = []
-   console.log(this.newModel);
      
      
 
@@ -154,7 +153,6 @@ export class NewRadioComponent implements OnInit {
         if(Number(this.radioForm.value.idIp) >= 0 && this.data.opc === true){ 
           this.newModel.idIp = this.radioForm.value.idIp
           this.newModel.idDevice = this.data.model.idDevice;        
-          console.log(this.newModel);
           
           await lastValueFrom(this.deviceService.actualizarRadio(this.newModel))
           this.dialogRef.close(this.newModel) 

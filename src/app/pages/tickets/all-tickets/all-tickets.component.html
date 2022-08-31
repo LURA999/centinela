@@ -224,13 +224,9 @@
                         <ng-container matColumnDef="grupo">
                           <th mat-header-cell *matHeaderCellDef> Grupo </th>
                           <td mat-cell *matCellDef="let element"> 
-                          <mat-form-field appearance="standard" class="matformfield" >
-                            <mat-select [value]="element.grupo.toString() "  (selectionChange)="buscarUsuariosTabla(grupoTable.value,element)" (selectionChange)="guardarGrupo(grupoTable.value,element.idTicket)" #grupoTable>
-                              <mat-option value="1">Administrador</mat-option>
-                                  <mat-option value="2">Soporte</mat-option>
-                                 <!--<mat-option value="3">Comercial</mat-option>
-                                  <mat-option value="4">Administracion</mat-option>-->
-                                  <mat-option value="5">Facturacion</mat-option>
+                          <mat-form-field  appearance="standard" class="matformfield" >
+                            <mat-select [id]="element.idTicket+'g'"  [value]="element.grupo"  (selectionChange)="buscarUsuariosTabla(grupoTable.value,element)" (selectionChange)="guardarGrupo(grupoTable.value,element.idTicket)" #grupoTable>
+                              <mat-option [value]="option.value" *ngFor="let option of Grupos" >{{ option.viewValue }} </mat-option>
                           </mat-select>
                         </mat-form-field>
                           </td>
@@ -246,7 +242,7 @@
                           <td mat-cell *matCellDef="let element" >
                           <mat-form-field  appearance="standard" class="matformfield">
                             <mat-label>Agente</mat-label>
-                            <mat-select [id]="element.idTicket" [value]="element.idUsuario.toString()" (selectionChange)="agenteGuardar(agenteTable.value,element.idTicket)" #agenteTable>
+                            <mat-select [id]="element.idTicket" [value]="element.idUsuario.toString()" (selectionChange)="agenteGuardar(element,agenteTable.value,element.idTicket)" #agenteTable>
                                 <mat-option [value] ="0"> No asignado </mat-option>
                                 <mat-option *ngFor="let i of usuariosGrupo[element.grupoModificado===undefined? gruposCve.indexOf(element.grupo):element.grupoModificado]" [value]="i.idUsuario.toString()">{{i.usuario}}</mat-option>
                             </mat-select>

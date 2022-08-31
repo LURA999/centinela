@@ -177,7 +177,6 @@ constructor(private dialog:NgDialogAnimationService, private contactService : Co
           this.ELEMENT_DATA_SEGMENTOS.splice(this.buscandoIndice(id,this.ELEMENT_DATA_SEGMENTOS)
             ,1,{id:id,nom:result.nombre, seg: result.segmento,x:result.diagonal,
               tipo:this.tipo(result.tipo),estatus:this.estatus(result.estatus)})
-              console.log("ENTRO");
               
           this.dataSource2 =  new MatTableDataSource(this.ELEMENT_DATA_SEGMENTOS)
           this.dataSource2.paginator = this.paginator2;  

@@ -44,19 +44,15 @@ llamarDatos :  Observable<responseService> | undefined
 
       
     if(result.container[0]["fecha"]==undefined || result.container[0]["fecha"]=="0000-00-00") {
-      console.log("entro" );
       
       let date=  (new Date()).toLocaleDateString('en-US');
       var fecha=date.split("/",3)
     if(Number(fecha[0])<=9 && Number(fecha[1])<=9 ){
       this.fecha=fecha[2]+"-"+"0"+fecha[0]+"-"+"0"+fecha[1];
-      console.log(this.fecha);
     }else if(Number(fecha[0])<=9){
       this.fecha=fecha[2]+"-"+"0"+fecha[0]+"-"+fecha[1];
-      console.log(this.fecha);
     }else if(Number(fecha[1])<=9){
       this.fecha=fecha[2]+"-"+fecha[0]+"-"+"0"+fecha[1];
-      console.log(this.fecha);
     }
     }else{
       this.fecha=result.container[0]["fecha"]
@@ -68,14 +64,11 @@ llamarDatos :  Observable<responseService> | undefined
           let minute=  (new Date()).getMinutes()
           if(minute<=9){
             this.hora=hour+":"+"0"+minute+":00";
-            console.log(minute+"1");
             
           }else{
             this.hora=hour+":"+minute+":00";
-            console.log(minute+"2");
           }
         }else{
-          console.log();
           
           this.hora=result.container[0]["hora"]
         }

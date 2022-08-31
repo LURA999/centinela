@@ -34,13 +34,11 @@ export class EditLogoComponent implements OnInit {
   }
   
   fileChangeEvent(event: any) {
-    console.log("Entra al metodo");
     
     this.imageChangedEvent = event;  
   }
 
   imageCropped(event: CroppedEvent) {
-    console.log("entra al metodo");
     
     this.base64 = event.base64;
     this.logomodel.logo=this.base64

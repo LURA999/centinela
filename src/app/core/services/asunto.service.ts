@@ -28,7 +28,6 @@ export class AsuntoService {
   }
 
   deleteAsunto(id:number){
-    console.log(id);
     
     return this.http.delete(this.local+"Asunto/asunto.php?id="+id,{responseType: 'text'});  }
 

@@ -22,13 +22,11 @@ nombre:string=""
 
 
     async confirmar(nombre:string){
-      console.log(this.data.idManual);
       
       this.manualmodel.nombre = nombre
       this.manualmodel.id = this.data.idManual
      
           await lastValueFrom(this.manualservice.updateManual(this.manualmodel)); 
-          console.log(this.manualmodel);
           
           this.dialogRef.close('Se ha Actualizado con exito');
         

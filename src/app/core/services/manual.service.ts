@@ -36,7 +36,6 @@ export class ManualService {
   }
 
   deleteManual(id:number){
-    console.log(id);
     
     return this.http.delete(this.local+"Manual/manual.php?id="+id,{responseType: 'text'});  }
 

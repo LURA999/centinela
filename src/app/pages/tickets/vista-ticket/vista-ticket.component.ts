@@ -15,7 +15,11 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.interface';
 import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
-
+import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+interface Grupo{
+value:number
+viewValue:string
+}
 export interface Comment {
   mensaje?: string;
   usuarioRespondido : string;
@@ -55,6 +59,7 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
+  Grupos:Grupo[]=[]
   mobileQuery: MediaQueryList;
   position : boolean = false
   moveProp : boolean = false
@@ -102,6 +107,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }, // ticket actualizado*/
 
   constructor(
+    private userservice:UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private servTicket:TicketService,
@@ -123,7 +129,21 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   }
 
   ngOnInit(): void {    
+    this.llamarCve();
     this.procedimiento()
+  }
+  
+  //Metodo llamar Grupo
+  async llamarCve(){
+    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
+      
+    for(let i=0;i<result.container.length;i++){
+      
+    
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    }
+    })
   }
 
   async procedimiento(){
@@ -142,7 +162,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
 
   async llamarUnTicket(){
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
-    this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo.toString())
+    this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
     this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
     this.form.controls["estado"].setValue(await this.datosTicket.estado.toString())

@@ -112,7 +112,6 @@ port=""
     /**this.smtp_secure=result.container[0]["smtp_secure"]*/
     this.smtModel.port=result.container[0]["port"]
     lastValueFrom(this.smtpservice.smtpMail(this.smtModel));  
-    console.log(this.smtModel);
      });
   
  

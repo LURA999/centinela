@@ -23,7 +23,6 @@ export class DateService {
     return this.http.post<responseService>(this.local+"Config/date.php",input,{headers});
   }
   updateDate(input:DateModel){
-    console.log(input);
     
     return this.http.patch(this.local+"Config/date.php",input,{responseType: 'text'});
 
