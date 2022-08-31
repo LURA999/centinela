@@ -314,16 +314,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           
   }
 
-<<<<<<< HEAD
-  async irTicket (ticket : string){
-    ticket=ticket.split(" ")[0]
-      this.router.navigateByUrl("/admin/tickets/edit-ticket/"+ticket).then(() => {
-      window.location.reload();
-     });
-  }
-
-
-=======
 
   async irTicket (ticket : string){
   
@@ -345,5 +335,4 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
 
   
->>>>>>> dba9854 (busqueda ticket , contactos y linkn)
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {COMMA, ENTER, I} from '@angular/cdk/keycodes';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { lastValueFrom, map, Observable, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -21,10 +21,9 @@ import { Router } from '@angular/router';
 import { MatSelect } from '@angular/material/select';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
-
-interface Grupo {
-  value: number;
-  viewValue: string;
+interface Grupo{
+  value:number
+viewValue:string
 }
 export interface ticket {
   idTicket: Number,
@@ -56,8 +55,7 @@ export interface usuario {
 })
 export class AllTicketsComponent implements OnInit{
 
-  Grupos: Grupo[] = [];
-
+  Grupos :Grupo []=[]
   //var para borrar tickets
   borrar:boolean = true
   
@@ -129,7 +127,7 @@ export class AllTicketsComponent implements OnInit{
   banderaCheckbox : boolean = true;
   elTicket : number =0
 
-  inicio = true
+
   //iniciador de filtro primer grado
   filtroPGrado : boolean = true
 
@@ -140,8 +138,7 @@ export class AllTicketsComponent implements OnInit{
 
   link : boolean = false
   constructor(
-
-    private userservice:UsersmoduleService,
+    private userservice: UsersmoduleService,
     private fb : FormBuilder,
     private userServ: UsuarioService,
     private auth : AuthService,
@@ -177,16 +174,9 @@ export class AllTicketsComponent implements OnInit{
     this.llenarUsuarios();
   
   }
- 
-
-//metodo para llamar grupo
+  //Grupos 
   async llamarCve(){
     await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
-<<<<<<< HEAD
-=======
-      
-      
->>>>>>> 018e6e0 (juntando alonso ruben part 1 autocmplete y mas)
     for(let i=0;i<result.container.length;i++){
     this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
     }
@@ -197,15 +187,14 @@ export class AllTicketsComponent implements OnInit{
   async procedimiento(limpieza: Boolean){
     this.cBox.reset()
     this.borrar = true;
-   await this.llenadoInicial(limpieza,true)
+   await this.llenadoInicial(limpieza)
   }
 
-  //Actuaizando elementos de cada ticket y un poco mas
+  //Actualizando elementos de cada ticket y un poco mas
   async guardarGrupo(ticket:ticket,cve:string,cveTicket:string){ 
   this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo = Number(cve)    
-
   let dosParamsNumGrupo:dosParamsNum = {
-    cve :Number(cve),
+    cve : Number(cve),
     cve2 : Number(cveTicket),
     cveUsuario : this.auth.getCveId()
   } 
@@ -217,8 +206,6 @@ export class AllTicketsComponent implements OnInit{
   
   await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
-  await this.llenadoInicial(false,false)
-
   }  
 
   async buscarUsuarionav(cve:string){
@@ -253,8 +240,10 @@ export class AllTicketsComponent implements OnInit{
 
   async agenteGuardar(ticket:ticket,cve:string,cveTicket:string){
 
+        
+
   let dosParamsNumGrupo:dosParamsNum = {
-    cve : Number(this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo),
+    cve :  Number(this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo),
     cve2 : Number(cveTicket),
     cveUsuario : this.auth.getCveId()
   } 
@@ -413,7 +402,7 @@ export class AllTicketsComponent implements OnInit{
     this.agenteControl.setValue(u.usuario)
   }
 
-  async llenadoInicial( limpieza:Boolean,inicio : Boolean){
+  async llenadoInicial( limpieza:Boolean){
     let form :formNavSearchTicket = this.formNav.value 
     if(limpieza == false){
       form.agente = this.agenteControl.value==="" || this.agenteControl.value===undefined?0:this.agente?.idUsuario!
@@ -439,10 +428,7 @@ export class AllTicketsComponent implements OnInit{
     console.log(form);
     
     this.ELEMENT_DATA=[];
-
-    if(inicio == true){
-      this.dataSource = new MatTableDataSource();
-    }
+    this.dataSource = new MatTableDataSource();
 
      this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{
         for await (const iterator of resp.container) {
@@ -452,11 +438,9 @@ export class AllTicketsComponent implements OnInit{
             this.buscarUsuariosTabla(iterator.grupo.toString()) 
           } 
         }
-        if(inicio == true){
-          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-          this.dataSource.paginator = this.paginator;    
-          this.paginator.length =  this.tickets.length; 
-        } 
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource.paginator = this.paginator;    
+        this.paginator.length =  this.tickets.length;  
     })    
   }
 
@@ -501,7 +485,3 @@ export class AllTicketsComponent implements OnInit{
 
 
 }
-
-
-
-

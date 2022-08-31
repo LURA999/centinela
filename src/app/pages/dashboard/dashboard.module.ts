@@ -7,7 +7,6 @@ import { DashboardTicketsComponent } from './dashboard-tickets/dashboard-tickets
 import { DashboardRedComponent } from './dashboard-red/dashboard-red.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { NgxPaginationModule } from "ngx-pagination";
 import { ViewTicketsEnterpriseComponent } from './forms/view-tickets-enterprise/view-tickets-enterprise.component';
 import { ViewEstatusEnterpriseComponent } from './forms/view-estatus-enterprise/view-estatus-enterprise.component';
 import { TableTicketsComponent } from './table/table-tickets/table-tickets.component';
@@ -19,7 +18,6 @@ import { TableTicketsComponent } from './table/table-tickets/table-tickets.compo
     DashboardRoutingModule,
     SharedModule,
     MatGridListModule,
-    NgxPaginationModule
   ],
   entryComponents: []
 })

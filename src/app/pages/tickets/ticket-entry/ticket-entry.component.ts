@@ -24,7 +24,6 @@ import { pingDatos }from "../../../interfaces/pingDatos.interface"
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 interface Grupo{
-
 value:number
 viewValue:string
 }
@@ -85,8 +84,8 @@ export class TicketEntryComponent implements OnInit {
   asuntosArray: any [] = []
   usuarios : any [] = []
   arrayRol : any [] = []
-
   Grupos : Grupo [] = []
+
 
  
   //variables globales importantes
@@ -133,9 +132,7 @@ export class TicketEntryComponent implements OnInit {
 
   desacBtnCrear : boolean = false
 
-
-  constructor(
-    private userservice: UsersmoduleService,
+  constructor(     private userservice:UsersmoduleService,
     private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
   ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService,
@@ -148,10 +145,12 @@ export class TicketEntryComponent implements OnInit {
     this.vistaPreviaTickets()
     
   }
+ 
+
+//MetodoParallamar Grupos
   async llamarCve(){
     await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
       
-      console.log(result.container);
       
     for(let i=0;i<result.container.length;i++){
       
@@ -160,7 +159,6 @@ export class TicketEntryComponent implements OnInit {
     }
     })
   }
-
 
   date(date:string){
     let dateArray = date.split("-")            

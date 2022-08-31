@@ -29,6 +29,9 @@ export class NewEquipamentComponent implements OnInit {
 
   identificador :string = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
   contadorIdenti :string = this.sepId[2];
+  IpsNuevas :number[]=[]
+  IpsEliminados :number[]=[]
+  ipsControl :number[]=[]
 
   cadenaDeIps : string =""
   repetidoras : any [] =[];
@@ -237,7 +240,9 @@ export class NewEquipamentComponent implements OnInit {
       }else{        
         this.newModel.idDevice = this.data.model.idDevice;
         if(this.data.abrirForm == true){
+
         await lastValueFrom(this.deviceService.actualizarotros(this.newModel));
+
         }else{
         await lastValueFrom(this.deviceServicio.actualizarRouter(this.newModel));
         }
@@ -286,7 +291,6 @@ export class NewEquipamentComponent implements OnInit {
     this.IpSeleccionadas[this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos)].push(num)
   }
   this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"");
-  
   /**title: el texto del select, id: el id del IP,
    * state_checkbox: 1  cuando es de select a checkbox y 2 es para inyectarlo directo al checkbox (cuando editas),
    * index: indice del array (segmentos)  en donde se encuentra el segmento */
@@ -296,12 +300,17 @@ export class NewEquipamentComponent implements OnInit {
   {
     
     case 1:
+    //arra para enviar a mysql (array de solo los ips modificados) INSERTAR
+    this.IpsNuevas.push(Number(num))
+    this.IpsEliminados.splice(this.IpsEliminados.indexOf(Number(num)),1)
+    
     this.createComponent(
         { title: this.ip?._selectionModel.selected[0].viewValue?this.ip?._selectionModel.selected[0].viewValue:"", id: num.toString(),
           state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) },event.source._keyManager._activeItem
          )
         break;
     case 2:
+      
       this.createComponent(
         { title: ip?ip:"", id: num.toString(),
           state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) }, event
@@ -335,21 +344,31 @@ export class NewEquipamentComponent implements OnInit {
       if(box.id !== undefined){
         box._disabled = false;
         box._selected = false;
+        this.IpsEliminados.push(id)
+        this.IpsNuevas.splice(this.IpsNuevas.indexOf(id),1)
+        
         this._renderer.removeAttribute(box._element.nativeElement,"hidden")
       }else{
+        this.IpsEliminados.push(id)
+        this.IpsNuevas.splice(this.IpsNuevas.indexOf(id),1)
+
         this.ipsGuardadas.unshift(box)
         this.tabChangeSegmento(); 
       }
       let array = this.IpSeleccionadas[index].toString().split(",");
       this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
+      console.log(this.IpSeleccionadas);
+      
       event.destroy()
 
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"").replace(/([,]+)*/,"");     
       this.cadenaDeIps = this.cadenaDeIps.replace(/[,][,]/,",");
+      
       if((this.cadenaDeIps[this.cadenaDeIps.length-1] === "," ? true : false) === true) 
       {
         this.cadenaDeIps=this.cadenaDeIps.substring(0, this.cadenaDeIps.length - 1);
-      }
+      }      console.log(this.cadenaDeIps);
+
     }
   }
 
@@ -369,24 +388,34 @@ export class NewEquipamentComponent implements OnInit {
 
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   async ipsEditarRouter(id:number){    
-    
+
     this.ipService.selectIpOneRouter(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {
-       this.ipsDefault = resp.container;          
+       this.ipsDefault = resp.container; 
+         console.log(this.ipsDefault);
+         
        for await (let y of this.ipsDefault){
        this.indicesSegmentos= y.idSegmento
         this.guardarIp(y.idIp,2,y.ip,y);
       }
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
+
     })
   }
   async ipsEditarEquipamento(id:number){    
-    this.ipService.selectIpOneEquipament(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {
+    this.ipService.selectIpOneEquipament(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {      
       this.ipsDefault = resp.container;          
       for await (let y of this.ipsDefault){
+        console.log(this.ipsDefault);
+
+        this.IpsNuevas.push( Number(await y.idIp))
        this.indicesSegmentos= y.idSegmento
         this.guardarIp(y.idIp,2,y.ip,y);
+        console.log(this.IpSeleccionadas);
+        
       }
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
     })
+    console.log(this.IpSeleccionadas);
+    
   }
 }
