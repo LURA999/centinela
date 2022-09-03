@@ -20,12 +20,14 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent, 
     children: [
+
       { path: '', component: CustomerListComponent },
       { path: ':id', component: CustomerCompanyComponent,
         children : [
           {path: "",component:TableServiceComponent},
           {path: "ticket", component:TableTicketsComponent},
           {path: "contact", component:TableContactComponent},
+          {path: "contact/:correo", component:TableContactComponent},
           {path: "rs", component:TableRsComponent},
           {path: "log", component:TableLogComponent}
         ]
