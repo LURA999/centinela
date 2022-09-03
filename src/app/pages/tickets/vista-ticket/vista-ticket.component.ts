@@ -16,6 +16,7 @@ import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.i
 import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+import { contains } from 'jquery';
 interface Grupo{
 value:number
 viewValue:string
@@ -156,7 +157,10 @@ async llamarCve(){
 }
 
   async llamarUnTicket(){
+   
+    
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
+    console.log(this.datosTicket);
     this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
     this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())

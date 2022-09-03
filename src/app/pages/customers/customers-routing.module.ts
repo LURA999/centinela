@@ -20,6 +20,7 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent, 
     children: [
+
       { path: '', component: CustomerListComponent },
       { path: ':id', component: CustomerCompanyComponent,
         children : [
