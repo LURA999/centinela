@@ -15,7 +15,8 @@ import { DataService } from 'src/app/core/services/data.service';
   styleUrls: ['./customer-company.component.css']
 })
 export class CustomerCompanyComponent implements OnInit {
-  clickDownload: number = 0
+  correolink:string=""
+    clickDownload: number = 0
   clickAdd : number = 0
   padre : string = ""
   nombreEmpresa : string  = ""
@@ -25,7 +26,9 @@ export class CustomerCompanyComponent implements OnInit {
   $sub = new Subscription()
   load : boolean = false
   buttonAgregar : Boolean = false
-  
+  link : boolean  = true
+
+
   ELEMENT_DATA_TICKETS : any = [
     {
     id:"1",
@@ -61,6 +64,8 @@ export class CustomerCompanyComponent implements OnInit {
 
   background: ThemePalette = undefined;
   id :number = this.rutaActiva.snapshot.params["id"];
+  correo :string = this.rutaActiva.snapshot.params["correo"];
+
 
   toggleBackground() {
     this.background = this.background ? undefined : 'primary';
@@ -88,10 +93,27 @@ export class CustomerCompanyComponent implements OnInit {
 
   ngOnInit(): void {
     this.datosCliente()
+    this.Link()
+    
+    
+  } 
+        
 
-  }
+  
 
-  filtrarTabla(event:Event){
+Link(){
+ this.correolink=window.location.href.split("/")[7] 
+ document.getElementById("boton")?.addEventListener("change",this.filtrarLink)
+}
+filtrarLink(){
+  console.log("entra");
+  
+  this.DataService.open.emit({palabraBuscar:this.correolink})
+
+}
+
+  filtrarTabla(event:any){
+
     const filterValue = (event.target as HTMLInputElement).value;
     this.DataService.open.emit({palabraBuscar:filterValue})
   }

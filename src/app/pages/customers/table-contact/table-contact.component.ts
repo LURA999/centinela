@@ -76,8 +76,11 @@ export class TableContactComponent implements OnInit {
     
     this.inicio();    
     this.$sub.add(this.DataService.open.subscribe(res => {     
+      console.log(res.palabraBuscar);
 
       if(res.palabraBuscar !=undefined){
+        console.log(res.palabraBuscar);
+        
         this.filtrar(res.palabraBuscar)
       }else{
         if(res.abrir ==true || res == "contactoAgregar"){

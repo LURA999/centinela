@@ -16,6 +16,7 @@ import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.i
 import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+import { contains } from 'jquery';
 interface Grupo{
 value:number
 viewValue:string
@@ -151,7 +152,10 @@ async llamarCve(){
 }
 
   async llamarUnTicket(){
+   
+    
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
+<<<<<<< HEAD
 <<<<<<< HEAD
     this.form.controls["cveGrupo"].setValue(this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(this.datosTicket.tipo.toString())
@@ -159,6 +163,9 @@ async llamarCve(){
     this.form.controls["estado"].setValue(this.datosTicket.estado.toString())
     this.form.controls["cveUsuario"].setValue(this.datosTicket.cveUsuario.toString())
 =======
+=======
+    console.log(this.datosTicket);
+>>>>>>> 475b359 (busqueda ticket , contactos y linkn)
     this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
     this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
