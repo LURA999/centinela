@@ -33,7 +33,6 @@ export class TableServiceComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort = new MatSort;  
   @Input() hijoService :string ="";
   nombreEmpresa :string ="";
-
   id :number = this.rutaActiva.snapshot.params["id"];
   mayorNumero : number = 0
   ultimoId : number = 0

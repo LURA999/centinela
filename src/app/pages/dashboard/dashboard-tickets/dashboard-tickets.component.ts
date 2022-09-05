@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints, MediaMatcher } from '@angular/cdk/layout';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { offset } from '@popperjs/core';
+import { AfterViewInit, Component, Inject, Input, LOCALE_ID, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -23,6 +23,9 @@ import { EventEmitter } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { DataLayoutService } from 'src/app/core/services/dataLayout.service';
 import { Subscription } from 'rxjs';
+import { formatDate } from '@angular/common';
+import {  dashboardTicketsService } from 'src/app/core/services/dashboardTickets.service';
+import { responseService } from 'src/app/models/responseService.model';
 
 export type ChartOptionsLine = {
   series: ApexAxisChartSeries;
@@ -68,7 +71,7 @@ export type ChartOptionsPie = {
   totalTicket: number;
 }
 
- interface topServicio {
+ interface estadoServicio {
   nombre: string;
   empresa: string;
   totalTicket: number;
@@ -116,16 +119,26 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
 
   empresa: topEmpresa[] = [ ];
   agente: topAgente[] = [ ];
-  servicio: topServicio[] = [ ];
+  estadoServicio: estadoServicio[] = [ ];
   tickets: tickets [] = [];
 
 
   //variables apra manipular graficas (responsive)
-  widthPie : number = 340
-
   $sub = new Subscription()
   @Output() mobile = new EventEmitter<number>();
+
+  //variables para capturar las fechas
+  date : Date = new Date();
+  primerDia :Date= new Date(this.date.getFullYear(), this.date.getMonth(), 1);
+  ultimoDia :Date= new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0);
+
+  primerDiaString :string = formatDate(this.primerDia,'yyyy-MM-dd',"en-US");
+  ultimoDiaString :string= formatDate(this.ultimoDia,'yyyy-MM-dd',"en-US");
+
   graficaDeBarras(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,6).subscribe((res : responseService)=>{
+      console.log(res.container); 
+    })
     this.chartOptionsBar! = {
       title:{
         text:"Servicios con mas tickets"
@@ -198,6 +211,9 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
 
 
   graficaDeLineas(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe((res : responseService)=>{
+      console.log(res.container); 
+    })
     this.chartOptionsLine = {
       series: [
         {
@@ -245,12 +261,13 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   }
 
 
-  constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,private dataService:DataLayoutService) {
-    
-    const mediaQueryList = mediaMatcher.matchMedia('(max-width: 1200px)');
-    //mediaQueryList?.eventListeners("change",this.metodo)
+  constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
+    private dataService:DataLayoutService, private serviceDash : dashboardTicketsService) {
     this.graficaDeLineas()
     this.graficaDeBarras()
+
+      
+
   }
 
 ngAfterViewInit(): void {
@@ -260,7 +277,6 @@ ngAfterViewInit(): void {
    if (result.matches) {    
    this.dataService.open.emit(1200)
     }
-
   })) ;
 }
 
@@ -268,8 +284,7 @@ ngOnDestroy(): void {
  this.$sub.unsubscribe()
 }
   ngOnInit(): void {
-    this.llenarListaServicios()
-    this.llenarListaAgentes()
+    this.llenarListaEstadoTicket()
     this.llenarListaEmpresas()
     this.llenarListaTickets()
     this.llenarPieTipos()
@@ -277,6 +292,9 @@ ngOnDestroy(): void {
   }
 
   llenarPieAgentes(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,2).subscribe((res : responseService)=>{
+      console.log(res.container); 
+    })
     this.chartOptionsPieAgentes = {
       dataLabels:{
         enabled: false
@@ -325,6 +343,9 @@ ngOnDestroy(): void {
   }
 
   llenarPieTipos(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,1).subscribe((res : responseService)=>{
+      console.log(res.container); 
+    })
     this.chartOptionsPieTipos = {
       dataLabels:{
         enabled: false
@@ -374,44 +395,42 @@ ngOnDestroy(): void {
   }
 
   async llenarListaTickets(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,7).subscribe((res : responseService)=>{
+      console.log(res.container); 
+    })
     this.tickets.push({idTicket:3,asunto:"VPN",descripcion:"este es un ticket",tipo:"Solicitud"})
     this.tickets.push({idTicket:4,asunto:"Tunel",descripcion:"es otro ticket",tipo:"Atencion"})
     this.tickets.push({idTicket:5,asunto:"Control de radios",descripcion:"otro tro tickeet",tipo:"Soporte"})
   }
   async llenarListaEmpresas(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,3).subscribe((res : responseService)=>{
+      console.log(res.container); 
+    })
     this.empresa.push({nombre:"la mejor ",totalTicket: 3})
     this.empresa.push({nombre:"la mejor ",totalTicket: 3})
     this.empresa.push({nombre:"lamejor ",totalTicket: 3})
   }
 
-  async llenarListaAgentes(){
-    this.agente.push({empresa:"la mejor",nombre:"agente 1",totalTicket: 3})
-    this.agente.push({empresa:"la mejor",nombre:"agente 2",totalTicket: 3})
-    this.agente.push({empresa:"la mejor",nombre:"agente 3",totalTicket: 3})
-  }
-
-  async llenarListaServicios(){
-    this.servicio.push({empresa:"la mejor",nombre:"servicio 1",totalTicket: 3})
-    this.servicio.push({empresa:"la mejor",nombre:"servicio 2",totalTicket: 3})
-    this.servicio.push({empresa:"la mejor",nombre:"servicio 3",totalTicket: 3})
-
-   /* for await (const iterator of object) {
-      
-    }*/
+  async llenarListaEstadoTicket(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,4).subscribe(async (res : responseService)=>{
+     /* for await (const iterator of object) {
+        
+      }*/
+      console.log(res.container); 
+    })
+    this.estadoServicio.push({empresa:"la mejor",nombre:"servicio 1",totalTicket: 3})
+    this.estadoServicio.push({empresa:"la mejor",nombre:"servicio 2",totalTicket: 3})
+    this.estadoServicio.push({empresa:"la mejor",nombre:"servicio 3",totalTicket: 3})
   }
 
   cambiarFecha1(selected : Date){
     let dateNew = new Date(selected);
-    this.selectedFake = dateNew.toLocaleDateString('en-US');
-    console.log(this.selectedFake);
-    
+    this.selectedFake =  formatDate(dateNew,'yyyy-MM-dd',"en-US");    
   }
 
   cambiarFecha2(selected : Date){
     let dateNew = new Date(selected);
-    this.selectedFake2 = dateNew.toLocaleDateString('en-US');
-    console.log(this.selectedFake2);
-    
+    this.selectedFake2 = formatDate(dateNew,'yyyy-MM-dd',"en-US");    
   }
 
   cambiarCalendario(){
