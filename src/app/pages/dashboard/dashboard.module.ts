@@ -6,7 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardTicketsComponent } from './dashboard-tickets/dashboard-tickets.component';
 import { DashboardRedComponent } from './dashboard-red/dashboard-red.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
-
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [DashboardHomeComponent, DashboardTicketsComponent, DashboardRedComponent],
@@ -14,8 +14,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     NgApexchartsModule,
     CommonModule,
     DashboardRoutingModule,
-    SharedModule
-    
+    SharedModule,
+    MatGridListModule
   ],
   entryComponents: []
 })

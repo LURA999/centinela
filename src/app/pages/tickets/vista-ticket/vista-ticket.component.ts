@@ -15,7 +15,11 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.interface';
 import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
-
+import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+interface Grupo{
+  value:number
+viewValue:string
+}
 export interface Comment {
   mensaje?: string;
   usuarioRespondido : string;
@@ -55,6 +59,8 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
+  Grupos :Grupo []=[]
+
   mobileQuery: MediaQueryList;
   position : boolean = false
   moveProp : boolean = false
@@ -95,13 +101,8 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
 
   comment: Comment[] = [ ];
 
-  /*{ mensaje: 'Este es un comentario de prueba', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA" }, // comentario normal
-  { usuarioRespondido:"Jorge Alonso Luna Rivera",fecha:"3-03-22",grupo:"soporte",agente:"luis mariano", color:"#E6FFDE" }, //escalado
-  { usuarioRespondido: "Ruben garcia garcia", fecha:'1-3-4',cerrar:true,color:"#DBFAFF"}, //cuando se cierra ticket
-  { mensaje: 'Comentario privado', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",normal:false }, //comentario privado
-  { mensaje: 'Actualizo', usuarioRespondido:"Alonso Luna",fecha:"3-03-22", color:"#F5F8FA",actualizar:true }, // ticket actualizado*/
-
   constructor(
+    private userservice: UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private servTicket:TicketService,
@@ -116,16 +117,27 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     ) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
     this.idTicket = this.idTicket
-    console.log(window);
-    console.log(window.history);
     
     
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
+    this.llamarCve();
     this.procedimiento()
   }
-
+//Grupos select
+async llamarCve(){
+  await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+    
+    console.log(result.container);
+    
+  for(let i=0;i<result.container.length;i++){
+    
+  
+  this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+  }
+  })
+}
   async procedimiento(){
     await this.llamarUnTicket()
     await this.llamarVariantesDeTicket()

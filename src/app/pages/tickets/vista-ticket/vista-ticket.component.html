@@ -119,10 +119,7 @@
                                 <mat-form-field appearance="fill">
                                   <mat-label>Grupo</mat-label>
                                   <mat-select  formControlName="cveGrupo" (selectionChange)="buscarUsuarios($event.value,false)" #grupoNav>
-                                      <mat-option value="1">Administrador</mat-option>
-                                        <mat-option value="2">Soporte</mat-option>
-                                        <mat-option value="3">Comercial</mat-option>
-                                        <mat-option value="4">Administracion</mat-option>
+                                    <mat-option [value]="option.value" *ngFor="let option of Grupos" >{{ option.viewValue }} </mat-option>
                                   </mat-select>
                                 </mat-form-field>
                               </div>

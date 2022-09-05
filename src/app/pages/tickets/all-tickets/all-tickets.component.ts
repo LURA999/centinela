@@ -20,14 +20,18 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
 import { MatSelect } from '@angular/material/select';
 import { MediaMatcher } from '@angular/cdk/layout';
-
+import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+interface Grupo{
+  value:number
+viewValue:string
+}
 export interface ticket {
   idTicket: Number,
   servicio : String,
   fechaAbierta: String,
   fechaCerrada: String,
   grupo: Number,
-  grupoModificado:Number,
+  grupoModificado:Number|undefined,
   tipo: Number,
   agente: Number,
   estado: Number,
@@ -50,6 +54,8 @@ export interface usuario {
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class AllTicketsComponent implements OnInit{
+
+  Grupos :Grupo []=[]
   //var para borrar tickets
   borrar:boolean = true
   
@@ -132,6 +138,7 @@ export class AllTicketsComponent implements OnInit{
 
   link : boolean = false
   constructor(
+    private userservice: UsersmoduleService,
     private fb : FormBuilder,
     private userServ: UsuarioService,
     private auth : AuthService,
@@ -143,7 +150,7 @@ export class AllTicketsComponent implements OnInit{
     ) { 
 
       this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
-
+      
       if(ruta.url.split("/")[3] == "general"){
         this.condicion2 = 1;
         this.tituloAllTickets = "Mis Tickets";
@@ -162,9 +169,23 @@ export class AllTicketsComponent implements OnInit{
   }
  
   ngOnInit(): void {
+    this.llamarCve();
     this.procedimiento(false);
     this.llenarUsuarios();
   
+  }
+  //Grupos 
+  async llamarCve(){
+    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
+      console.log(result.container);
+      
+    for(let i=0;i<result.container.length;i++){
+      
+    
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    }
+    })
   }
 
 //Metodo utilizado para hacer todos los filtros
@@ -175,7 +196,8 @@ export class AllTicketsComponent implements OnInit{
   }
 
   //Actualizando elementos de cada ticket y un poco mas
-  async guardarGrupo(cve:string,cveTicket:string){ 
+  async guardarGrupo(ticket:ticket,cve:string,cveTicket:string){ 
+  this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo = Number(cve)    
   let dosParamsNumGrupo:dosParamsNum = {
     cve : Number(cve),
     cve2 : Number(cveTicket),
@@ -186,7 +208,6 @@ export class AllTicketsComponent implements OnInit{
     cve : 0,
     cve2 : Number(cveTicket)
   } 
-  console.log();
   
   await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
@@ -206,6 +227,7 @@ export class AllTicketsComponent implements OnInit{
       );
     })
   }
+
   async buscarUsuariosTabla(cve:string,ticket? :ticket){
     this.usarioservice.usuariosGrupo(Number(cve)).subscribe((resp:responseService)=>{
       if(resp.status === "not found"){
@@ -221,9 +243,12 @@ export class AllTicketsComponent implements OnInit{
     })
   }
 
-  async agenteGuardar(cve:string,cveTicket:string){
+  async agenteGuardar(ticket:ticket,cve:string,cveTicket:string){
+
+        
+
   let dosParamsNumGrupo:dosParamsNum = {
-    cve : Number(this.grupoTable.value),
+    cve :  Number(this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo),
     cve2 : Number(cveTicket),
     cveUsuario : this.auth.getCveId()
   } 

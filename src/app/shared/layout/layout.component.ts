@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit, Renderer2, Input, Output } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import {  lastValueFrom, Observable, Observer, Subscription } from 'rxjs';
 import { startWith,map } from 'rxjs/operators';
@@ -10,6 +10,8 @@ import { SearchService } from 'src/app/core/services/search.service';
 import { NotifierService } from 'angular-notifier';
 import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
+import { DataService } from 'src/app/core/services/data.service';
+import { DataLayoutService } from 'src/app/core/services/dataLayout.service';
 @Component({
     selector: 'app-layout',
     templateUrl: './layout.component.html',
@@ -66,7 +68,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         private router : Router,
         private configservice:ConfigService,
         private Search:SearchService,
-        private _renderer : Renderer2
+        private _renderer : Renderer2,
+        private dataService : DataLayoutService
       ) {
         this.notifier = notifierService;
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
@@ -76,6 +79,9 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
+      this.dataService.open.subscribe(resp=>{
+        this.mobileQuery = this.media.matchMedia('(max-width: 1200px)');        
+      })
         // tslint:disable-next-line: deprecation
         this.mobileQuery.removeListener(this._mobileQueryListener);
         this.autoLogoutSubscription.unsubscribe();
@@ -310,4 +316,5 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     }    
           
   }
+
 }
