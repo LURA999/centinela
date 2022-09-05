@@ -68,14 +68,15 @@
                           </svg>
                     </div>
                       </div>
-                    </div>
-                    <div id="fecha"> 
+                      <div id="fecha"> 
                         <div [hidden]="fechaRango === false" id="dosfechas"> 
                             <div id="fecha1" [style]="ocultarDate === true || selectedFake === '' ? 'border: none;' : 'border: 1px dashed #000; padding:2px; '">{{selected !==undefined?selectedFake:""}} </div> <div> &nbsp;&nbsp;</div> 
                             <div id="fecha2" [style]="ocultarDate === false || selectedFake2 === '' ? ' border: none; ': 'border: 1px dashed #000; padding: 2px; '">{{selected2 !==undefined?selectedFake2:""}}</div>
                         </div>
                         <span  [hidden]="fechaRango === true">{{selected !==undefined?selectedFake:""}}</span>
                     </div>
+                    </div>
+                    
               </mat-card>
             </div>
           </div>
