@@ -24,7 +24,8 @@ import { pingDatos }from "../../../interfaces/pingDatos.interface"
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 interface Grupo{
-  value:number
+
+value:number
 viewValue:string
 }
 interface datosServicio {
@@ -84,7 +85,8 @@ export class TicketEntryComponent implements OnInit {
   asuntosArray: any [] = []
   usuarios : any [] = []
   arrayRol : any [] = []
-  Grupos :Grupo []=[]
+
+  Grupos : Grupo [] = []
 
  
   //variables globales importantes
@@ -131,6 +133,7 @@ export class TicketEntryComponent implements OnInit {
 
   desacBtnCrear : boolean = false
 
+
   constructor(
     private userservice: UsersmoduleService,
     private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
@@ -157,6 +160,7 @@ export class TicketEntryComponent implements OnInit {
     }
     })
   }
+
 
   date(date:string){
     let dateArray = date.split("-")            

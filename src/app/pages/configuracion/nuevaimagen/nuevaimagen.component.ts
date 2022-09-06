@@ -40,7 +40,6 @@ export class  NuevaimagenComponent implements OnInit {
 
   // Submit Form
   submit() {
-    console.log(this.uploadForm.value)
   }
 
 }

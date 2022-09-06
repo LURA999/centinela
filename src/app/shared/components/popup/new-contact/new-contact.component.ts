@@ -112,7 +112,6 @@ export class NewContactComponent implements OnInit {
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
       this.modelLog.cveCliente = Number(this.id);
-      console.log(this.contactoModel);
       
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
@@ -289,7 +288,6 @@ export class NewContactComponent implements OnInit {
     }else{
       this.cveContactos.push(box)
     }   
-    console.log(this.cveContactos);
     
     
   }

@@ -67,11 +67,8 @@ subir(cveAsunto:number){
   }
   this.manualmodel.cveAsunto=cveAsunto
   lastValueFrom(this.manualservice.insertarManual(this.manualmodel)); 
-  console.log(this.manualmodel);
   this.manualservice.llamarManualbycount(this.count).toPromise().then( (result : any) =>{
-    console.log(result.container);
     this.manualmodel.id=result.container[0]["max"]
-    console.log(result.container[0]["max"]);
     this.dialogRef.close(this.manualmodel)
   });
 
@@ -86,7 +83,6 @@ input(evt:any){
   let i
 for( i=0;target.files.length>i;i++){
   this.arr.push(target.files[i])
-  console.log(this.arr);
  
   }
   this.onFileChange(this.arr)
@@ -98,21 +94,17 @@ for( i=0;target.files.length>i;i++){
 }
 
   onFileChange(pFileList: File[]){
-    console.log(this.files);
     for(let i=0;i<pFileList.length;i++){
     let file=pFileList[i]
     this.files.push(file)
     const reader= new FileReader()
     reader.readAsDataURL(file);
-    console.log(file);
     reader.onload = () => {
     this.lector.push(reader.result)
-      console.log(reader.result);
     }
    
 
   }
-  console.log(this.lector);
   }
 
   deleteFile(f:any){

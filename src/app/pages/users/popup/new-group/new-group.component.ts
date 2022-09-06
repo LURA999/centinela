@@ -32,14 +32,11 @@ export class NewGroupComponent implements OnInit {
   
     async llamarRol(){
     await this.userservice.llamarRol("Rol").toPromise().then( (result : any) =>{
-      console.log(result.container);
       
     for(let i=0;i<result.container.length;i++){
       
-    console.log(typeof(result.container[i]["idRol"]));
     
     this.Roles.push({value:result.container[i]["idRol"], viewValue:result.container[i]["nombre"] })
-    console.log(this.Roles);
     
     }
     })
@@ -50,11 +47,9 @@ export class NewGroupComponent implements OnInit {
       alert("Por favor llene todos los campos");
     }else{
     this.groupmodel.nombre=nombre
-    console.log(rol+"ESTE ES EL ROL VALUE");
     
     this.groupmodel.cveRol=rol
 this.groupmodel.estatus=estatus
-    console.log(this.groupmodel);
 
     await lastValueFrom(this.userservice.insertarGroup(this.groupmodel)); 
     this.dialogRef.close('Se ha Ingresado con exito');

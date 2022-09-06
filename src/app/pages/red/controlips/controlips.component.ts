@@ -170,7 +170,6 @@ async cargarInicio(){
 
     this.ips = await lastValueFrom(this.ipService.selectIp(this.segmentoFiltro1, this.segmentoFiltro2,2)) 
     this.ips = await this.ips.container
-    console.log(this.ips);
     await this.cargarInicio();
   }
 
@@ -266,7 +265,6 @@ async cargarInicio(){
     let worksheet = workbook.addWorksheet("Employee Data");
     let header : string[]= ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping'];
     worksheet.addRow(header);
-    console.log(this.ips);
     
     for  (let x1=0; x1<this.ips.length; x1++ )
     {

@@ -197,7 +197,6 @@ export class TableEquipamentComponent implements OnInit {
     this.guardandoPrimerIndice.push(id)
     this.ipSelect.selectIpOneEquipament(id,this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp:responseService)=>{
       this.IpSeleccionadas[this.guardandoPrimerIndice.indexOf(id)] = resp.container
-      console.log(this.IpSeleccionadas);
       
     })
    }

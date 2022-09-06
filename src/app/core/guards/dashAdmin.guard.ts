@@ -10,7 +10,6 @@ export class DashAdminGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if(localStorage.getItem('sesion') != undefined && this.auth.getTipo() == 1  ){
-      console.log("Entra AdminGuard");
 
       return true
     }else{

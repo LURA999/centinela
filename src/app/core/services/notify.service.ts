@@ -19,7 +19,6 @@ export class NotifyService {
     return this.http.post(this.local+"Config/notify.php",input, {responseType:"text"});
   }
   updateNotify(input:NotificationModel){
-    console.log(input);
     
     return this.http.patch(this.local+"Config/notify.php",input,{responseType: 'text'});
 

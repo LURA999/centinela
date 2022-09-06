@@ -52,7 +52,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
     await this.repeater.llamarRepitdores().toPromise().then( (result : any) =>{
-      console.log(result)
 
       for (let i=0; i<result.container.length; i++){
       this.ELEMENT_DATA.push(
@@ -100,7 +99,6 @@ buscandoIndice(id:number){
 
 
 Newregister(){
-  console.log(this.ciudades);
   
   let dialogRef  = this.dialog.open(NewRepeaterComponent,
     {data: {opc : false, ciudades: this.ciudades },
