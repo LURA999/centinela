@@ -116,8 +116,11 @@ export class NewContactComponent implements OnInit {
       this.modelLog.cveCliente = Number(this.id);      
 =======
       this.modelLog.cveCliente = Number(this.id);
+<<<<<<< HEAD
       
 >>>>>>> 018e6e0 (juntando alonso ruben part 1 autocmplete y mas)
+=======
+>>>>>>> ed52ede (commit prueba)
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
             this.contactoModel.cveContacto = this.idAuto;
