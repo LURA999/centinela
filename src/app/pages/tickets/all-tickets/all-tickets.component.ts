@@ -21,7 +21,10 @@ import { Router } from '@angular/router';
 import { MatSelect } from '@angular/material/select';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
 interface Grupo {
   value: number;
   viewValue: string;
@@ -55,7 +58,10 @@ export interface usuario {
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class AllTicketsComponent implements OnInit{
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
   Grupos: Grupo[] = [];
 
   //var para borrar tickets
@@ -140,7 +146,10 @@ export class AllTicketsComponent implements OnInit{
 
   link : boolean = false
   constructor(
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
     private userservice:UsersmoduleService,
     private fb : FormBuilder,
     private userServ: UsuarioService,
@@ -192,6 +201,19 @@ export class AllTicketsComponent implements OnInit{
     })
   }
 
+//metodo para llamar grupo
+  async llamarCve(){
+    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
+      
+    for(let i=0;i<result.container.length;i++){
+      
+    
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    }
+    })
+  }
+
 //Metodo utilizado para hacer todos los filtros
   async procedimiento(limpieza: Boolean){
     this.cBox.reset()
@@ -199,10 +221,16 @@ export class AllTicketsComponent implements OnInit{
    await this.llenadoInicial(limpieza,true)
   }
 
+<<<<<<< HEAD
   //Actuaizando elementos de cada ticket y un poco mas
   async guardarGrupo(ticket:ticket,cve:string,cveTicket:string){ 
   this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo = Number(cve)    
 
+=======
+  //Actualizando elementos de cada ticket y un poco mas
+  async guardarGrupo(cve:string,cveTicket:string){ 
+    
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
   let dosParamsNumGrupo:dosParamsNum = {
     cve :Number(cve),
     cve2 : Number(cveTicket),
@@ -251,7 +279,11 @@ export class AllTicketsComponent implements OnInit{
   }
 
   async agenteGuardar(ticket:ticket,cve:string,cveTicket:string){
+<<<<<<< HEAD
 
+=======
+    let Element_DATA_recent : any
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
   let dosParamsNumGrupo:dosParamsNum = {
     cve : Number(this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo),
     cve2 : Number(cveTicket),

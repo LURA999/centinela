@@ -60,7 +60,10 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
   Grupos:Grupo[]=[]
   mobileQuery: MediaQueryList;
   position : boolean = false
@@ -103,7 +106,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   comment: Comment[] = [ ];
 
   constructor(
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
     private userservice:UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
@@ -123,6 +129,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     
   }
 
+<<<<<<< HEAD
   ngOnInit(): void {
     this.llamarCve();
     this.procedimiento()
@@ -141,6 +148,25 @@ async llamarCve(){
   })
 }
 
+=======
+  ngOnInit(): void {    
+    this.llamarCve();
+    this.procedimiento()
+  }
+  
+  //Metodo llamar Grupo
+  async llamarCve(){
+    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
+      
+    for(let i=0;i<result.container.length;i++){
+      
+    
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    }
+    })
+  }
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
 
   async procedimiento(){
     await this.llamarUnTicket()

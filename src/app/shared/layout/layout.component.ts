@@ -315,6 +315,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   async irTicket (ticket : string){
     ticket=ticket.split(" ")[0]
       this.router.navigateByUrl("/admin/tickets/edit-ticket/"+ticket).then(() => {
@@ -324,6 +325,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
 
 =======
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
 
   async irTicket (ticket : string){
   
@@ -345,5 +348,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
 
   
+<<<<<<< HEAD
 >>>>>>> dba9854 (busqueda ticket , contactos y linkn)
+=======
+>>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
 }
