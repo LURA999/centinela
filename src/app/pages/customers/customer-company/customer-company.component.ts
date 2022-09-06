@@ -103,7 +103,9 @@ export class CustomerCompanyComponent implements OnInit {
 
 Link(){
  this.correolink=window.location.href.split("/")[7] 
- document.getElementById("boton")?.addEventListener("change",this.filtrarLink)
+ document.getElementById("boton")?.addEventListener("click",function(){
+  
+ })
 }
 filtrarLink(){
   console.log("entra");
