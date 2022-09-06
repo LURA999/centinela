@@ -73,7 +73,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="ticketsbooleanlabel === false || this.botontickets===false&&this.botontodos===false "   class="tipo">Tickets</mat-label>
         <mat-divider></mat-divider>
-        <mat-option (click)="irTicket(option)" *ngFor="let option of filteredTickets  | async" [value]="option" >
+        <mat-option (click)="irTicket()" *ngFor="let option of filteredTickets  | async" [value]="option" >
           <mat-icon id="confirmation_number">confirmation_number </mat-icon>
           <div id="ticket">
             {{option.split(" ")[0]}}
