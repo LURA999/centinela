@@ -86,7 +86,6 @@ export class TicketEntryComponent implements OnInit {
   arrayRol : any [] = []
   Grupos : Grupo [] = []
 
-
  
   //variables globales importantes
   contador : number | undefined;
@@ -132,7 +131,7 @@ export class TicketEntryComponent implements OnInit {
 
   desacBtnCrear : boolean = false
 
-  constructor(     private userservice:UsersmoduleService,
+  constructor(private userservice:UsersmoduleService,
     private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
   ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService,
@@ -145,7 +144,7 @@ export class TicketEntryComponent implements OnInit {
     this.vistaPreviaTickets()
     
   }
- 
+
 
 //MetodoParallamar Grupos
   async llamarCve(){
