@@ -24,10 +24,7 @@ import { pingDatos }from "../../../interfaces/pingDatos.interface"
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 interface Grupo{
-<<<<<<< HEAD
 
-=======
->>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
 value:number
 viewValue:string
 }
@@ -90,7 +87,6 @@ export class TicketEntryComponent implements OnInit {
   arrayRol : any [] = []
   Grupos : Grupo [] = []
 
-  Grupos : Grupo [] = []
 
  
   //variables globales importantes
@@ -137,13 +133,8 @@ export class TicketEntryComponent implements OnInit {
 
   desacBtnCrear : boolean = false
 
-<<<<<<< HEAD
 
-  constructor(
-    private userservice: UsersmoduleService,
-=======
   constructor(     private userservice:UsersmoduleService,
->>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
     private fb : FormBuilder,private dialog:NgDialogAnimationService,  private Search:SearchService,  private contactoService : ContactService, 
     private asuntoService : AsuntoService, private serviceService : ServiceService, private usarioservice : UsuarioService, private deviceService : DeviceService
   ,  private renderer : Renderer2, private ipService : IpService,private rol: RolService,private ticketService:TicketService, private guarduser: AuthService,
@@ -156,19 +147,7 @@ export class TicketEntryComponent implements OnInit {
     this.vistaPreviaTickets()
     
   }
-  async llamarCve(){
-    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
-      
-      console.log(result.container);
-      
-    for(let i=0;i<result.container.length;i++){
-      
-    
-    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
-    }
-    })
-  }
-
+ 
 
 //MetodoParallamar Grupos
   async llamarCve(){

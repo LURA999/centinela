@@ -220,18 +220,8 @@
                         <ng-container matColumnDef="grupo">
                           <th mat-header-cell *matHeaderCellDef> Grupo </th>
                           <td mat-cell *matCellDef="let element"> 
-<<<<<<< HEAD
-<<<<<<< HEAD
                           <mat-form-field appearance="standard" class="matformfield" >
                             <mat-select [value]="element.grupo "  (selectionChange)="buscarUsuariosTabla(grupoTable.value,element)" (selectionChange)="guardarGrupo(element,grupoTable.value,element.idTicket)" #grupoTable>
-=======
-                          <mat-form-field  appearance="standard" class="matformfield" >
-                            <mat-select [id]="element.idTicket+'g'"  [value]="element.grupo"  (selectionChange)="buscarUsuariosTabla(grupoTable.value,element)" (selectionChange)="guardarGrupo(grupoTable.value,element.idTicket)" #grupoTable>
->>>>>>> ecf68c5 (Union mejoras)
-=======
-                          <mat-form-field  appearance="standard" class="matformfield" >
-                            <mat-select [id]="element.idTicket+'g'"  [value]="element.grupo"  (selectionChange)="buscarUsuariosTabla(grupoTable.value,element)" (selectionChange)="guardarGrupo(grupoTable.value,element.idTicket)" #grupoTable>
->>>>>>> a8d322d841dd85bb82898bc076afe6eb2fe210a1
                               <mat-option [value]="option.value" *ngFor="let option of Grupos" >{{ option.viewValue }} </mat-option>
                           </mat-select>
                         </mat-form-field>
