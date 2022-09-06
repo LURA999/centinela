@@ -26,6 +26,7 @@ const routes: Routes = [
           {path: "",component:TableServiceComponent},
           {path: "ticket", component:TableTicketsComponent},
           {path: "contact", component:TableContactComponent},
+          {path: "contact/:correo", component:TableContactComponent},
           {path: "rs", component:TableRsComponent},
           {path: "log", component:TableLogComponent}
         ]

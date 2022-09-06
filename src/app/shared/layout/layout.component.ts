@@ -317,4 +317,12 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           
   }
 
+  async irTicket (ticket : string){
+    ticket=ticket.split(" ")[0]
+      this.router.navigateByUrl("/admin/tickets/edit-ticket/"+ticket).then(() => {
+      window.location.reload();
+     });
+  }
+
+
 }

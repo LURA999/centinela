@@ -23,7 +23,9 @@ export class NewContactComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>
   ,private contacto : ContactService, private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router
   , private contactService : ContactService,private _renderer: Renderer2,
-  private logService :LogService,private serviceAuth :AuthService ) {  }
+  private logService :LogService,private serviceAuth :AuthService ) { 
+   }
+  
   hide = true;
   seleccionar : number=0;
   contactoModel = new ContactServiceModel();
@@ -69,7 +71,8 @@ export class NewContactComponent implements OnInit {
   @ViewChild('placeholder3', {read: ViewContainerRef, static: false}) placeholder3!: ViewContainerRef;
   @ViewChild('servicio') servicio!: MatSelect;
 
-  ngOnInit(): void {       
+  ngOnInit(): void {    
+         
     this.maxid()
     this.load = true;
     this.editarTab()        
@@ -105,6 +108,7 @@ export class NewContactComponent implements OnInit {
       this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";
       this.contactoModel.cveServicioArray = this.cveServicios
       this.contactoModel.cveContactoArray = this.cveContactos   
+      this.contactoModel.idCliente = this.data.idCliente;
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
       this.modelLog.cveCliente = Number(this.id);
@@ -207,7 +211,6 @@ export class NewContactComponent implements OnInit {
 
   async guardarServicio(num: number, primeraOp: number, ip? : string,event?:any,boxIdSegmento?:number)  {   
     this.cveServicios.push(num)
-    console.log(this.cveServicios);
     
     if(this.data.idServicio == num){
       this.eliminarServicio = -1

@@ -22,7 +22,10 @@ export class NewContactComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<NewContactComponent>,
    private fb :FormBuilder , private fb2 :FormBuilder, private ruta : Router,private serviceAuth :AuthService,
-   private contacto: ContactService, private logService : LogService ) {  }
+   private contacto: ContactService, private logService : LogService ) { 
+    console.log(this.data);
+
+    }
   hide = true;
   seleccionar : number=0;
   contactoModel = new ContactServiceModel();
@@ -75,7 +78,8 @@ export class NewContactComponent {
       this.contactoModel.servicio = document.getElementById("selectServicio")?.innerText+"";
       this.contactoModel.rol = document.getElementById("selectRol")?.innerText+"";
       this.contactoModel.cveServicioArray = this.cveServicios;
-      this.contactoModel.cveContactoArray = this.cveContactos   
+      this.contactoModel.cveContactoArray = this.cveContactos  
+      this.contactoModel.idCliente = this.data.datosServicio.idCliente; 
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
       this.modelLog.cveCliente = Number(this.id);

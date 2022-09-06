@@ -1,4 +1,3 @@
-
 <div (click)="close()" class="navbar-container " [class.example-is-mobile]="mobileQuery.matches">
   <mat-toolbar class="navbar" color="primary">
 
@@ -57,7 +56,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="contactosbooleanlabel===false || this.botoncontacto===false&&this.botontodos===false " class="tipo">Contactos</mat-label>
         <mat-divider></mat-divider>
-        <mat-option  *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
+        <mat-option [routerLink]="['/admin/client/'+option.split(' | ')[2]+'/contact/'+option.split(' | ')[1]]" *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
           <mat-icon id="account_box"> account_box</mat-icon>
           <div id="nombre">
           {{option.split(" ")[0]}}
@@ -65,7 +64,7 @@
           {{option.split(" ")[2]}}
         </div>
         <div id="correoynumero">
-          {{option.split(" | ")[1]}}-{{option.split(" | ")[2].split(" - ")[1]}}
+          {{option.split(" | ")[1]}}
           </div>
       
        
@@ -74,7 +73,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="ticketsbooleanlabel === false || this.botontickets===false&&this.botontodos===false "   class="tipo">Tickets</mat-label>
         <mat-divider></mat-divider>
-        <mat-option  *ngFor="let option of filteredTickets  | async" [value]="option" >
+        <mat-option (click)="irTicket(option)" *ngFor="let option of filteredTickets  | async" [value]="option" >
           <mat-icon id="confirmation_number">confirmation_number </mat-icon>
           <div id="ticket">
             {{option.split(" ")[0]}}
@@ -267,7 +266,7 @@
 
 <mat-sidenav-content class="sidenav-content">
 
-  <router-outlet ></router-outlet>
+  <router-outlet></router-outlet>
  <!-- <router-outlet name="auxName"></router-outlet>-->
 
 </mat-sidenav-content>

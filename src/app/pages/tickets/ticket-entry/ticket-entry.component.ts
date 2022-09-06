@@ -28,6 +28,7 @@ interface Grupo{
 viewValue:string
 }
 interface datosServicio {
+  idCliente:number|undefined,
   cliente : string,
   servicio : string,
   plan : string,
@@ -236,8 +237,10 @@ export class TicketEntryComponent implements OnInit {
     /**Llenando datos laterales del servicio */
      this.serviceService.selectVistaServicio(this.id,this.contador,2).subscribe((resp : responseService)=>{      
       
+      console.log(resp.container);
       
       this.datosServicio = {
+        idCliente : resp.container[0].idCliente,
       cliente : resp.container[0].cliente,
       servicio : resp.container[0].servicio,
       plan : resp.container[0].plan,
@@ -427,6 +430,8 @@ export class TicketEntryComponent implements OnInit {
   async llamarDatosDelServicio(result :string,opc : number, buscarVentana:boolean){
     
     await lastValueFrom(this.Search.searchTicketEntry(result,opc)).then( (result : responseService) =>{    
+      console.log(result.container);
+      
       if(result.status !== "not there Services"){
       this.options= result.container;      
       if(buscarVentana == true){
@@ -434,6 +439,7 @@ export class TicketEntryComponent implements OnInit {
       }
 
       this.datosServicio = {
+        idCliente : undefined,
         cliente : "",
         servicio : "",
         plan : "",

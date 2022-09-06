@@ -14,5 +14,7 @@ export class ContactServiceModel {
     rol : string = ""
     servicio : string =""
     contrasena : string = ""
+    idCliente?:number = 0
+
 
 }
