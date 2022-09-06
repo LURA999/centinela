@@ -42,7 +42,6 @@ export class NewUserComponent implements OnInit {
     async llamarCve(){
     await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
       
-      console.log(result.container);
       
     for(let i=0;i<result.container.length;i++){
       
@@ -67,7 +66,6 @@ export class NewUserComponent implements OnInit {
     this.usermodel.contrasena=contraseña
     this.usermodel.estatus=estatus
     this.usermodel.cveGroup=grupo
-    console.log(this.usermodel);
 
     lastValueFrom(this.userservice.insertarUser(this.usermodel)); 
     this.dialogRef.close('Se ha Ingresado con exito');

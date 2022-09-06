@@ -40,7 +40,6 @@ export class EditAddressComponent implements OnInit {
     this.mapsModel.id = this.data.idServicio
     this.mapsModel.ciudad = this.ciudadSelect?._selectionModel.selected[0].viewValue    
     this.mapsModel.cveCiudad = Number(this.ciudadSelect.value)
-    console.log(this.mapsModel);
     await lastValueFrom(this.maps.updateManual(this.mapsModel));
     this.dialogRef.close(this.mapsModel)
     }

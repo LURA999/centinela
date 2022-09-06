@@ -16,10 +16,8 @@ export class DeleteManualComponent implements OnInit {
   ngOnInit(): void {
   }
   async confirmar(){
-    console.log(this.data.idManual);
     
         await lastValueFrom(this.manualservice.deleteManual(this.data.idManual)); 
-        console.log(this.data.idManual);
         
         this.dialogRef.close('Se ha eliminado con exito');
       

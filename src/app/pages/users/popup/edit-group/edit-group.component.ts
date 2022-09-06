@@ -35,7 +35,6 @@ this.llenarlista();
 
   async llamarCve(){
     await this.userservice.llamarRol("Rol").toPromise().then( (result : any) =>{
-      console.log(result.container);
       
     for(let i=0;i<result.container.length;i++){
       
@@ -47,7 +46,6 @@ this.llenarlista();
 
   async llenarlista(){
     await this.userservice.llamarGroupInfo(this.data.idGrupo).toPromise().then( (result : any) =>{
-      console.log(result.container);
       
     this.nombre=result.container[0]["nombre"]
     this.estatus=result.container[0]["estatus"]

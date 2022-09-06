@@ -80,7 +80,6 @@ export class NewSegmentComponent implements OnInit {
   }
 
   patternSegmento(){
-    console.log(this.segmentoFormControl.valid);
     
     if (this.segmentoFormControl.hasError('required')) {
       return 'Debes de escribir un segmento';

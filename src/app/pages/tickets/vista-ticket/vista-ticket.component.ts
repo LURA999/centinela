@@ -17,7 +17,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 interface Grupo{
-  value:number
+value:number
 viewValue:string
 }
 export interface Comment {
@@ -59,8 +59,8 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
-  Grupos :Grupo []=[]
 
+  Grupos:Grupo[]=[]
   mobileQuery: MediaQueryList;
   position : boolean = false
   moveProp : boolean = false
@@ -102,7 +102,8 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   comment: Comment[] = [ ];
 
   constructor(
-    private userservice: UsersmoduleService,
+
+    private userservice:UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private servTicket:TicketService,
@@ -133,6 +134,8 @@ async llamarCve(){
     }
   })
 }
+
+
   async procedimiento(){
     await this.llamarUnTicket()
     await this.llamarVariantesDeTicket()
@@ -149,11 +152,20 @@ async llamarCve(){
 
   async llamarUnTicket(){
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
+<<<<<<< HEAD
     this.form.controls["cveGrupo"].setValue(this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(this.datosTicket.tipo.toString())
     this.form.controls["prioridad"].setValue(this.datosTicket.prioridad.toString())
     this.form.controls["estado"].setValue(this.datosTicket.estado.toString())
     this.form.controls["cveUsuario"].setValue(this.datosTicket.cveUsuario.toString())
+=======
+    this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
+    this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
+    this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
+    this.form.controls["estado"].setValue(await this.datosTicket.estado.toString())
+    this.form.controls["cveUsuario"].setValue(await this.datosTicket.cveUsuario.toString())
+
+>>>>>>> 018e6e0 (juntando alonso ruben part 1 autocmplete y mas)
   }
 
  async llamarVariantesDeTicket(){

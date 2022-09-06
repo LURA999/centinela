@@ -89,13 +89,11 @@ export class NewServiceComponent implements OnInit {
         this.serviceM.identificador2 = this.data.Empresa+"-"+selectCiudad+"-"+ this.serviceM.plan;
         /**Insertamos todo el modal ya listo */
         /**dentro de esta insercion, acompletamos el identificador con la ciudad especificada y su contador especifico */
-        console.log(this.serviceM);
         
         await lastValueFrom(this.service.insertService(this.serviceM));
         /**Insertamos el registro de esta actividad, con sus respectivas variables*/
         this.logModel.tipo[0]=1;
         this.logModel.cve = this.data.Empresa+"-"+selectCiudad+"-"+this.serviceM.contador.toString().padStart(4,"0")+"-"+ this.serviceM.plan
-        console.log(this.logModel.cve);
         
         await lastValueFrom(this.logService.insertLog(this.logModel,2))
         this.dialogRef.close(this.serviceM)

@@ -21,7 +21,7 @@ export class NewContactComponent implements OnInit {
     await this.contactService.insertarContacto({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora}).toPromise()
     this.dialogRef.close({telefono:+telefono, correo:correo, estatus:select,nombre:nombre,repetidora:selectRep, mensaje:"se pudo"});
     }else{
-      console.log({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora,id:this.data.id})
+     
       await this.contactService.updateContacto({telefono:telefono, correo:correo, estatus:select,nombre:nombre,repetidora:this.data.cveRepetidora,id:this.data.id}).toPromise()
       this.dialogRef.close({telefono:+telefono, correo:correo, estatus:select,nombre:nombre,repetidora:selectRep, mensaje:"se pudo"});   
     }
