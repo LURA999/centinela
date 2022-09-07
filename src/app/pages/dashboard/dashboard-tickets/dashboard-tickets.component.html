@@ -83,13 +83,36 @@
           <div class="mat2">
             <mat-card class="cardList" id="estadosTickets" >
                 <h3>Tickets abiertos, pausados, cerrados</h3>
-                <mat-grid-list *ngFor="let com of estadoServicio"  >
+                <mat-grid-list >
                     <div class="seccion">
                         <mat-divider></mat-divider>
-                        <div class="cuerpo">
-                            <div>Empresa: {{com.empresa}}</div>
-                            <div>Nombre: {{com.nombre}}</div>
-                            <div>Servicio: {{com.totalTicket}}</div>
+                        <div class="cuerpo">    
+                            <div><b>Estado</b>: Abierto</div>
+                            <div><b>Total</b>: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===1?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===1?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===1?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===1?estadoServicio[3].totalTicket:0}}</div>
+                            <mat-divider></mat-divider>
+                            <div><b>Estado</b>: En Progreso</div>
+                            <div><b>Total</b>: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===2?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===2?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===2?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===2?estadoServicio[3].totalTicket:0}}</div>
+                            <mat-divider></mat-divider>
+                            <div><b>Estado</b>: Pausado</div>
+                            <div><b>Total</b>: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===3?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===3?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===3?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===3?estadoServicio[3].totalTicket:0}}</div>
+                            <mat-divider></mat-divider>
+                            <div><b>Estado</b>: Cerrado</div>
+                            <div><b>Total</b>: {{estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===4?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===4?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===4?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===4?estadoServicio[3].totalTicket:0}}</div>
                         </div>
                     </div>
                 </mat-grid-list>
