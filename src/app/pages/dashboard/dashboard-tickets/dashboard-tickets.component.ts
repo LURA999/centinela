@@ -42,9 +42,13 @@ export type ChartOptionsLine = {
   grid: ApexGrid;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
+<<<<<<< HEAD
   tooltip:ApexTooltip;
     yaxis:ApexYAxis;
 
+=======
+  toolbar:ApexTooltip
+>>>>>>> da69146 (grafica commit)
 };
 export type ChartOptionsBar = {
   series: ApexAxisChartSeries;
@@ -76,6 +80,15 @@ export type ChartOptionsPie = {
   nombre: string;
   totalTicket: number;
 }
+<<<<<<< HEAD
+
+
+=======
+interface grupo{
+name:string
+data :number[]
+}
+>>>>>>> da69146 (grafica commit)
 
 
 
@@ -105,22 +118,33 @@ interface servicioTicket {
   totalTicket: number
 }
 
+<<<<<<< HEAD
 interface grupo{
   name:string
   data :number[]
   }
 
+=======
+>>>>>>> da69146 (grafica commit)
 @Component({
   selector: 'app-dashboard-tickets',
   templateUrl: './dashboard-tickets.component.html',
   styleUrls: ['./dashboard-tickets.component.css']
 })
 export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy {
+ 
+  dias:string[]=[]
+  semanas:string[]=[]
+  meses:string[]=[]
+name:string=""
   selected : Date | undefined;
   selected2 : Date | undefined;
   
   selectedFake : string ="";
   selectedFake2 : string ="";
+
+
+  grupos: grupo[]=[]
 
   //Configuracion de calendario
   ocultarDate : boolean = false
@@ -161,6 +185,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   primerDiaString :string = formatDate(this.primerDia,'yyyy-MM-dd',"en-US");
   ultimoDiaString :string= formatDate(this.ultimoDia,'yyyy-MM-dd',"en-US");
 
+<<<<<<< HEAD
   //Para la tabla
   ELEMENT_DATA:  any[] = [ ];
   displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
@@ -211,6 +236,9 @@ ngOnDestroy(): void {
   }
   
   graficaDeBarras(selectedFake:string,selectedFake2:string){
+=======
+  graficaDeBarras(){
+>>>>>>> da69146 (grafica commit)
     this.chartOptionsBar = {
       title:{
         text:"Servicios con mas tickets"
@@ -264,6 +292,7 @@ ngOnDestroy(): void {
       }
     };
 
+<<<<<<< HEAD
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,6,this.auth.getCveGrupo()).subscribe(async (res : responseService)=>{
       let maxY : number = 0
       let estructura : any []= []
@@ -277,10 +306,44 @@ ngOnDestroy(): void {
             name:"Fecha: ",
             value:i.fecha,
             strokeColor:"none",
+=======
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,6).subscribe(async (res : responseService)=>{
+      let totalTickets : number []= []
+      let categorias : string []= []
+      let fecha : string []= []
+      let estructura : any []= []
+
+//      categorias.push(this.primerDiaString)
+  //    totalTickets.push(0)
+      for await (const i of res.container) {
+        totalTickets.push(i.totalTicket)
+        categorias.push(i.nombre)
+        fecha.push(i.fecha)
+        this.servicioTicket.push(i)
+        estructura.push({
+          x:i.fecha,
+          y:i.totalTicket,
+          goals:[
+            {
+            name:"Servicio: ",
+            value:i.nombre,
+            strokeColor:"transparent",
+            },{
+            name:"Fecha: ",
+            value:i.fecha,
+            strokeColor:"transparent",
+>>>>>>> da69146 (grafica commit)
             }
           ]
         })
       }
+<<<<<<< HEAD
+=======
+    //  totalTickets.push(0)
+    //  categorias.push(this.ultimoDiaString)
+
+      console.log(totalTickets);
+>>>>>>> da69146 (grafica commit)
       
       this.chartOptionsBar = {
         title:{
@@ -312,6 +375,7 @@ ngOnDestroy(): void {
         },
         xaxis: {
           title:{
+<<<<<<< HEAD
             text:"Servicios"
           }
         },
@@ -320,15 +384,32 @@ ngOnDestroy(): void {
             text: "Tickets"
           },
           max:Math.ceil(maxY/10)*10
+=======
+            text:"FILA X"
+          },
+          categories: categorias,
+        },
+        yaxis: {
+          title: {
+            text: "FILA Y"
+          }
+>>>>>>> da69146 (grafica commit)
         },
         fill: {
           opacity: 1
         }
+<<<<<<< HEAD
       };      
+=======
+        
+      };
+  
+>>>>>>> da69146 (grafica commit)
     })
   }
 
 
+<<<<<<< HEAD
   graficaDeLineas(selectedFake:string,selectedFake2:string){
     this.grupos = []
     this.fechaLabel = []
@@ -406,6 +487,183 @@ ngOnDestroy(): void {
         
       }
       console.log(this.fechaLabel);
+=======
+  graficaDeLineas(){
+ 
+
+var fecha=1
+    if(fecha==1){
+      for(let i=0;i<7;i++){
+      
+    
+        this.grupos.push({name:"Administrador"+i, data:[] })
+        }
+        console.log(this.grupos);
+        
+      
+      //Chartoption para dias
+      for(let i=1;i<=30;i++){
+        this.dias.push(i+"")
+      
+      
+      this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe(async (res : responseService)=>{
+        //aqui va el if//
+       this.chartOptionsLine = {
+         series: this.grupos,
+         chart: {
+           height: 350,
+           type: "line",
+           zoom: {
+             enabled: false
+           }
+         },
+         dataLabels: {
+           enabled: false
+         },
+         stroke: {
+           curve: "straight"
+         },
+         title: {
+           text: "Tickets por departamento",
+           align: "left"
+         },
+         grid: {
+           row: {
+             colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+             opacity: 0.5
+           }
+         },
+         xaxis: {
+           categories: this.dias
+         }
+       };
+     })
+      
+      
+      }
+        }else if(fecha ==2)
+        //Chartoption para semanas
+        {
+          console.log("Entra");
+          
+          for(let i=1;i<=12;i++){
+            this.semanas.push(i+"")
+            }
+
+
+            this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe(async (res : responseService)=>{
+              //aqui va el if//
+             this.chartOptionsLine = {
+               series: [
+                 
+                   {
+                     name: "Administracion:",
+                     data:[1,10,15,1,10,15,10,15,1,10,15,10]
+                   },
+                   {
+                     name: "Soporte:",
+                     data:[2,3,22,1,10,15,10,15,1,43,15,10]
+                   }
+                 
+                 
+               ],
+               chart: {
+                 height: 350,
+                 type: "line",
+                 zoom: {
+                   enabled: false
+                 }
+               },
+               dataLabels: {
+                 enabled: false
+               },
+               stroke: {
+                 curve: "straight"
+               },
+               title: {
+                 text: "Tickets por departamento",
+                 align: "left"
+               },
+               grid: {
+                 row: {
+                   colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+                   opacity: 0.5
+                 }
+               },
+               xaxis: {
+                 categories: this.semanas
+               }
+             };
+           })
+
+
+
+
+        }else if(fecha==3){
+//Chartoption para meses
+          for(let i=1;i<=12;i++){
+            this.meses.push(i+"")
+            }
+
+            this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe(async (res : responseService)=>{
+              //aqui va el if//
+             this.chartOptionsLine = {
+               series: [
+                 
+                   {
+                     name: "Administracion:",
+                     data:[1,10,15,1,10,15,10,15,1,10,15,10]
+                   },
+                   {
+                     name: "Soporte:",
+                     data:[2,3,22,1,10,15,10,15,1,43,15,10]
+                   }
+                 
+                 
+               ],
+               chart: {
+                 height: 350,
+                 type: "line",
+                 zoom: {
+                   enabled: false
+                 }
+               },
+               dataLabels: {
+                 enabled: false
+               },
+               stroke: {
+                 curve: "straight"
+               },
+               title: {
+                 text: "Tickets por departamento",
+                 align: "left"
+               },
+               grid: {
+                 row: {
+                   colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+                   opacity: 0.5
+                 }
+               },
+               xaxis: {
+                 categories: this.meses
+               }
+             };
+           })
+
+        }
+
+    
+
+   
+  }
+
+
+  constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
+    private dataService:DataLayoutService, private serviceDash : dashboardTicketsService) {
+    this.graficaDeLineas()
+    this.graficaDeBarras()
+
+>>>>>>> da69146 (grafica commit)
       
     }
   
@@ -573,16 +831,24 @@ ngOnDestroy(): void {
     
   }
 
+<<<<<<< HEAD
   llenarPieAgentes(selectedFake:string,selectedFake2:string){
+=======
+  llenarPieAgentes(){
+>>>>>>> da69146 (grafica commit)
     
     this.chartOptionsPieAgentes = {
       dataLabels:{
         enabled: false
       },
+<<<<<<< HEAD
       legend:{
         position:"bottom"
       },
       series: [],
+=======
+      series: [ ],
+>>>>>>> da69146 (grafica commit)
       chart: {
         width: 340,
         type: "pie",
@@ -617,7 +883,11 @@ ngOnDestroy(): void {
         }
       ]
     };
+<<<<<<< HEAD
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,2,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{      
+=======
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,2).subscribe(async(res : responseService)=>{      
+>>>>>>> da69146 (grafica commit)
       for await (const i of res.container) {
         this.chartOptionsPieAgentes.labels.push(i.nombre)
         this.chartOptionsPieAgentes.series!.push(Number(i.totalTicket))
@@ -630,8 +900,13 @@ ngOnDestroy(): void {
     
   }
 
+<<<<<<< HEAD
   llenarPieTipos(selectedFake : string,selectedFake2 : string){
     this.tiposTickets = []
+=======
+  llenarPieTipos(){
+
+>>>>>>> da69146 (grafica commit)
     this.chartOptionsPieTipos = {
       dataLabels:{
         enabled: false
@@ -678,6 +953,7 @@ ngOnDestroy(): void {
     };
 
     
+<<<<<<< HEAD
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,1,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{
       for await (const i of res.container) {
         this.tiposTickets.push({idTipoTicket:i.idTipoTicket,nombre:i.nombre,totalTicket:i.totalTicket})
@@ -739,6 +1015,27 @@ ngOnDestroy(): void {
       };
       this.chartOptionsPieTipos.series![0]=this.chartOptionsPieTipos.series![1]>0?0:
       this.chartOptionsPieTipos.series![2]>0?0:this.chartOptionsPieTipos.series![3]>0?0:1
+=======
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,1).subscribe(async(res : responseService)=>{
+      for await (const i of res.container) {
+        this.tiposTickets.push({idTipoTicket:i.idTipoTicket,nombre:i.nombre,totalTicket:i.totalTicket})
+      }
+      
+    this.chartOptionsPieTipos.series= 
+    [0,this.tiposTickets[0] !== undefined && this.tiposTickets[0].idTipoTicket === 1? this.tiposTickets[0].totalTicket:
+    this.tiposTickets[1] !== undefined && this.tiposTickets[1].idTipoTicket === 1? this.tiposTickets[1].totalTicket:
+    this.tiposTickets[2] !== undefined && this.tiposTickets[2].idTipoTicket === 1? this.tiposTickets[2].totalTicket:0
+    ,this.tiposTickets[0] !== undefined && this.tiposTickets[0].idTipoTicket === 2? this.tiposTickets[0].totalTicket:
+    this.tiposTickets[1] !== undefined && this.tiposTickets[1].idTipoTicket === 2? this.tiposTickets[1].totalTicket:
+    this.tiposTickets[2] !== undefined && this.tiposTickets[2].idTipoTicket === 2? this.tiposTickets[2].totalTicket:0
+    ,this.tiposTickets[0] !== undefined && this.tiposTickets[0].idTipoTicket === 3? this.tiposTickets[0].totalTicket:
+    this.tiposTickets[1] !== undefined && this.tiposTickets[1].idTipoTicket === 3? this.tiposTickets[1].totalTicket:
+    this.tiposTickets[2] !== undefined && this.tiposTickets[2].idTipoTicket === 3? this.tiposTickets[2].totalTicket:0] 
+
+    this.chartOptionsPieTipos.series[0]=this.chartOptionsPieTipos.series[1]>0?0:
+    this.chartOptionsPieTipos.series[2]>0?0:this.chartOptionsPieTipos.series[3]>0?0:1
+    
+>>>>>>> da69146 (grafica commit)
     }) 
   }
 
@@ -767,6 +1064,7 @@ ngOnDestroy(): void {
     })
   }
 
+<<<<<<< HEAD
   async llenarListaEstadoTicket(selectedFake:string,selectedFake2:string){
  this.estadoServicio = []    
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,4,this.auth.getCveGrupo()).subscribe(async (res : responseService)=>{
@@ -774,6 +1072,13 @@ ngOnDestroy(): void {
         this.estadoServicio.push({idEstadoTicket:Number(i.idEstadoTicket),estado:i.estado,totalTicket:i.totalTicket})    
       }
       
+=======
+  async llenarListaEstadoTicket(){
+    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,4).subscribe(async (res : responseService)=>{
+      for await (const iterator of res.container) {
+        this.estadoServicio.push({idEstadoTicket:Number(res.container[0].idEstadoTicket),estado:res.container[0].estado,totalTicket:res.container[0].totalTicket})    
+      }
+>>>>>>> da69146 (grafica commit)
     })
   }
 
@@ -839,6 +1144,7 @@ ngOnDestroy(): void {
     }
   }
 
+<<<<<<< HEAD
 
   complementoAbrirForm(){
     if (this.selectedFake.length === 0 && this.selectedFake2.length === 0) {
@@ -888,3 +1194,6 @@ ngOnDestroy(): void {
     return res;
   }
 }
+=======
+}
+>>>>>>> da69146 (grafica commit)
