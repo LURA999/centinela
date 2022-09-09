@@ -1,6 +1,6 @@
 <div fxLayout="row" style="margin: 1%;" fxLayoutAlign="center none">
 
-    <div fxFlex="100%">
+    <div fxFlex="100%" >
       <mat-card id="mat-principal">
         <mat-card-header>
             <mat-card-title>Dashboard - Tickets</mat-card-title>
@@ -8,15 +8,29 @@
           <div class="mat2 primerFila">
             <mat-card class="cardList" id="top10Empresas" >
                 <h3>Top de las 10 empresas con mas tickets</h3>
-                <mat-grid-list *ngFor="let com of empresa" cols="4" >
-                <div class="seccion">
-                    <mat-divider></mat-divider>
+                <ng-container *ngIf="empresa.length === 0; else elseTemplate">
+                    <mat-grid-list  cols="4" >
+                    <div class="seccion">
+                        <mat-divider></mat-divider>
                         <div class="cuerpo">
-                            <div>Nombre: {{com.nombre}}</div>
-                            <div>Servicio: {{com.totalTicket}}</div>
+                            <span><b style="text-align: center;">No hay empresas</b></span>
                         </div>
-                </div>
-                </mat-grid-list>
+                    </div>
+                    </mat-grid-list>
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <mat-grid-list *ngFor="let com of empresa"  cols="4" >
+                        <div class="seccion" (click)="abrirTopEmpresaTicket(com)">
+                            <mat-divider></mat-divider>
+                                <div class="cuerpo" >
+                                    <div><b>Empresa</b>: {{com.nombre}}</div>
+                                    <div><b>Servicio</b>: {{com.totalTicket}}</div>
+                                </div>
+                        </div>
+                        </mat-grid-list>
+                </ng-template>
+                
+                
             </mat-card >
             <div class="responsivePrimerFila">
               <mat-card id="graficaLineal">
@@ -28,6 +42,7 @@
                 [grid]="chartOptionsLine.grid!"
                 [stroke]="chartOptionsLine.stroke!"
                 [title]="chartOptionsLine.title!"
+                [tooltip]="chartOptionsLine.tooltip!"
               ></apx-chart>
               </mat-card>
               
@@ -83,15 +98,43 @@
           <div class="mat2">
             <mat-card class="cardList" id="estadosTickets" >
                 <h3>Tickets abiertos, pausados, cerrados</h3>
-                <mat-grid-list *ngFor="let com of estadoServicio"  >
-                    <div class="seccion">
+                <mat-grid-list >
+                    
                         <mat-divider></mat-divider>
-                        <div class="cuerpo">
-                            <div>Empresa: {{com.empresa}}</div>
-                            <div>Nombre: {{com.nombre}}</div>
-                            <div>Servicio: {{com.totalTicket}}</div>
-                        </div>
-                    </div>
+                            <div class="seccion" (click)="abrirEstadoEmpresas(1)">
+                            <div><b>Estado</b>: Abierto</div>
+                            <div ><b>Total</b>: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===1?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===1?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===1?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===1?estadoServicio[3].totalTicket:0}}</div>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div class="seccion" (click)="abrirEstadoEmpresas(2)">
+                            <div><b>Estado</b>: En Progreso</div>
+                            <div ><b>Total</b>: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===2?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===2?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===2?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===2?estadoServicio[3].totalTicket:0}}</div>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div class="seccion" (click)="abrirEstadoEmpresas(3)">
+                            <div><b>Estado</b>: Pausado</div>
+                            <div ><b>Total</b>: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===3?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===3?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===3?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===3?estadoServicio[3].totalTicket:0}}</div>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div class="seccion"  (click)="abrirEstadoEmpresas(4)">
+                            <div><b>Estado</b>: Cerrado</div>
+                            <div><b>Total</b>: {{estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===4?estadoServicio[0].totalTicket:
+                                estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===4?estadoServicio[1].totalTicket:
+                                estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===4?estadoServicio[2].totalTicket:
+                                estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===4?estadoServicio[3].totalTicket:0}}</div>      
+                            </div>              
                 </mat-grid-list>
             </mat-card>
             <div class="responsivePrimerFila">
@@ -104,6 +147,7 @@
                 [title]="chartOptionsPieAgentes.title!"
                 [theme]="chartOptionsPieAgentes.theme!"
                 [responsive]="chartOptionsPieAgentes.responsive!"
+                [legend]="chartOptionsPieAgentes.legend!"
               ></apx-chart>
             </mat-card>
             
@@ -124,20 +168,48 @@
           </mat-card>
         </div>
         </div>
-
+        <div id="paginator">
+            <mat-paginator #paginator class="all-tickets"
+            [pageSize]="6"
+            hidePageSize="true"
+            aria-label="Select page">
+            </mat-paginator>
+          </div>
           <div class="mat2">
             <mat-card id="listaTickets">
-                <h3>Lista de tickets</h3>
-                <mat-grid-list *ngFor="let com of tickets" cols="4" >
-                    <div class="seccion">
-                        <mat-divider></mat-divider>
-                            <div class="cuerpo">
-                                <div>Id: {{com.idTicket}}</div>
-                                <div>Servicio: {{com.asunto}}</div>
-                                <div>descripcion: {{com.descripcion}}</div>
-                                <div>tipo: {{com.tipo}}</div>
-                            </div>
-                    </div>
+                <mat-grid-list>
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                    <ng-container matColumnDef="idTicket">
+                      <th mat-header-cell *matHeaderCellDef> Ticket </th>
+                      <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.idTicket}} </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="servicio">
+                      <th mat-header-cell *matHeaderCellDef> servicio </th>
+                      <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.servicio}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaAbierta">
+                        <th mat-header-cell *matHeaderCellDef> Fecha abierta </th>
+                        <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.fechaAbierta}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaCerrada">
+                        <th mat-header-cell *matHeaderCellDef> Fecha cerrada </th>
+                        <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]">{{element.fechaCerrada !== undefined? "No asignada": element.fechaCerrada}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grupo">
+                        <th mat-header-cell *matHeaderCellDef> Grupo </th>
+                        <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.grupo}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                        <th mat-header-cell *matHeaderCellDef> Estado </th>
+                        <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.estado}} </td>
+                    </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
                 </mat-grid-list>
             </mat-card>
             <mat-card class="pie" id="pieTipos">

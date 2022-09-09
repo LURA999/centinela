@@ -1,7 +1,16 @@
 table {
     width: 100%;
+    box-shadow: none;
+}
+.tabla{
+    overflow-x:auto ;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
+mat-paginator {
+    width: 194px;
+}
 
 /**modificacion extra*/
 .contenedorHead1 {
@@ -63,7 +72,13 @@ mat-card#pieAgentes {
 }
 
 .seccion {
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    overflow-y: auto;
+}
+
+.seccion:hover{
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
 
 /*configuracion del calendario*/

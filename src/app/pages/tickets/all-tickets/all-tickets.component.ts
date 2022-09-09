@@ -177,12 +177,7 @@ export class AllTicketsComponent implements OnInit{
   //Grupos 
   async llamarCve(){
     await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
-      
-      console.log(result.container);
-      
     for(let i=0;i<result.container.length;i++){
-      
-    
     this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
     }
     })

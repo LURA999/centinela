@@ -7,15 +7,18 @@ import { DashboardTicketsComponent } from './dashboard-tickets/dashboard-tickets
 import { DashboardRedComponent } from './dashboard-red/dashboard-red.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatGridListModule } from '@angular/material/grid-list';
-
+import { NgxPaginationModule } from "ngx-pagination";
+import { ViewTicketsEnterpriseComponent } from './forms/view-tickets-enterprise/view-tickets-enterprise.component';
+import { ViewEstatusEnterpriseComponent } from './forms/view-estatus-enterprise/view-estatus-enterprise.component';
 @NgModule({
-  declarations: [DashboardHomeComponent, DashboardTicketsComponent, DashboardRedComponent],
+  declarations: [DashboardHomeComponent, DashboardTicketsComponent, DashboardRedComponent, ViewTicketsEnterpriseComponent, ViewEstatusEnterpriseComponent],
   imports: [
     NgApexchartsModule,
     CommonModule,
     DashboardRoutingModule,
     SharedModule,
-    MatGridListModule
+    MatGridListModule,
+    NgxPaginationModule
   ],
   entryComponents: []
 })

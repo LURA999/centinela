@@ -21,7 +21,7 @@ MatTabsModule
   declarations: [
     AppComponent,
     LoginContactoComponent,
-    LoginUsuarioComponent,
+    LoginUsuarioComponent
   ],
   imports: [
     NgbModule,

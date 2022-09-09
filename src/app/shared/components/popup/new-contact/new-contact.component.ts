@@ -72,7 +72,8 @@ export class NewContactComponent implements OnInit {
   @ViewChild('servicio') servicio!: MatSelect;
 
   ngOnInit(): void {    
-         
+    console.log(this.data);
+    
     this.maxid()
     this.load = true;
     this.editarTab()        
@@ -81,7 +82,7 @@ export class NewContactComponent implements OnInit {
       this.selectService = false    
        
       try{
-      this.serviciosFaltantes(this.data.idContacto,this.data.arrayServicios[0].identificador)
+      this.serviciosFaltantes(this.data.idContacto,this.data.arrayServicios[0].identificador)      
       this.servicios(this.data.idContacto,this.data.arrayServicios[0].identificador)
       }catch(Exception){  }
       }else{       
@@ -111,9 +112,7 @@ export class NewContactComponent implements OnInit {
       this.contactoModel.idCliente = this.data.idCliente;
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
-      this.modelLog.cveCliente = Number(this.id);
-      console.log(this.contactoModel);
-      
+      this.modelLog.cveCliente = Number(this.id);      
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
             this.contactoModel.cveContacto = this.idAuto;
@@ -288,10 +287,8 @@ export class NewContactComponent implements OnInit {
       this.cveContactos.splice(this.cveContactos.indexOf(id),1);    
     }else{
       this.cveContactos.push(box)
-    }   
-    console.log(this.cveContactos);
-    
-    
+    }       
+  
   }
 
   servicios(idContacto : number, identificador : string){  
@@ -303,8 +300,12 @@ export class NewContactComponent implements OnInit {
   }
 
   serviciosFaltantes(idContacto : number, identificador : string){
+    console.log(idContacto+"   "+identificador);
+    
     this.contactService.selectServicioPorContacto(identificador,idContacto,1).subscribe(async (resp:responseService)=>{
-      this.Servicios = resp.container               
+      this.Servicios = resp.container      
+
+      
     })
   }
 

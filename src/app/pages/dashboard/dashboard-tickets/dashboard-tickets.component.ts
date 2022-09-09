@@ -26,6 +26,12 @@ import { Subscription } from 'rxjs';
 import { formatDate } from '@angular/common';
 import {  dashboardTicketsService } from 'src/app/core/services/dashboardTickets.service';
 import { responseService } from 'src/app/models/responseService.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { DeviceModel } from 'src/app/models/device.model';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { ViewTicketsEnterpriseComponent } from '../forms/view-tickets-enterprise/view-tickets-enterprise.component';
+import { ViewEstatusEnterpriseComponent } from '../forms/view-estatus-enterprise/view-estatus-enterprise.component';
 
 export type ChartOptionsLine = {
   series: ApexAxisChartSeries;
@@ -35,6 +41,7 @@ export type ChartOptionsLine = {
   grid: ApexGrid;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
+  tooltip:ApexTooltip;
 };
 export type ChartOptionsBar = {
   series: ApexAxisChartSeries;
@@ -58,6 +65,7 @@ export type ChartOptionsPie = {
   theme: ApexTheme;
   title: ApexTitleSubtitle;
   dataLabels:ApexDataLabels;
+  legend:ApexLegend;
 };
 
  interface topEmpresa {
@@ -65,25 +73,38 @@ export type ChartOptionsPie = {
   totalTicket: number;
 }
 
- interface topAgente {
-  nombre: string;
-  empresa: string;
-  totalTicket: number;
-}
+
 
  interface estadoServicio {
-  nombre: string;
-  empresa: string;
+  idEstadoTicket: number;
+  estado: string;
   totalTicket: number;
+}
+interface tiposTickets {
+  idTipoTicket:number,
+  nombre:string,
+  totalTicket : number
 }
 
 
 interface tickets {
   idTicket: number;
-  asunto:string;
-  descripcion:string;
-  tipo:string;
+  servicio:string;
+  fechaAbierta:string;
+  fechaCerrada:string | undefined;
+  grupo:string;
 }
+
+interface servicioTicket {
+  idServicio?: number,
+  nombre: string,
+  totalTicket: number
+}
+
+interface grupo{
+  name:string
+  data :number[]
+  }
 
 @Component({
   selector: 'app-dashboard-tickets',
@@ -94,8 +115,8 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   selected : Date | undefined;
   selected2 : Date | undefined;
   
-  selectedFake : String ="";
-  selectedFake2 : String ="";
+  selectedFake : string ="";
+  selectedFake2 : string ="";
 
   //Configuracion de calendario
   ocultarDate : boolean = false
@@ -118,9 +139,10 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   public chartOptionsPieAgentes!: Partial<ChartOptionsPie>;
 
   empresa: topEmpresa[] = [ ];
-  agente: topAgente[] = [ ];
-  estadoServicio: estadoServicio[] = [ ];
+  tiposTickets: tiposTickets[] = [ ];
+  estadoServicio: estadoServicio [] = [];
   tickets: tickets [] = [];
+  servicioTicket: servicioTicket [] = [];
 
 
   //variables apra manipular graficas (responsive)
@@ -135,26 +157,30 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   primerDiaString :string = formatDate(this.primerDia,'yyyy-MM-dd',"en-US");
   ultimoDiaString :string= formatDate(this.ultimoDia,'yyyy-MM-dd',"en-US");
 
-  graficaDeBarras(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,6).subscribe((res : responseService)=>{
-      console.log(res.container); 
-    })
-    this.chartOptionsBar! = {
+  //
+  ELEMENT_DATA:  any[] = [ ];
+  displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
+  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  @ViewChild ("paginator") paginator!:MatPaginator;
+
+  //
+  grupos : grupo []=[]
+  dias : Array<number> = []
+
+  buscarFecha(){
+    this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
+
+  }
+  
+  graficaDeBarras(selectedFake:string,selectedFake2:string){
+    this.chartOptionsBar = {
       title:{
         text:"Servicios con mas tickets"
       },
       series: [
         {
-          name: "Net Profit",
-          data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-        },
-        {
-          name: "Revenue",
-          data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-        },
-        {
-          name: "Free Cash Flow",
-          data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+          name: "fecha",
+          data: []
         }
       ],
       chart: {
@@ -180,15 +206,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
           text:"FILA X"
         },
         categories: [
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct"
+            this.primerDiaString
         ]
       },
       yaxis: {
@@ -207,19 +225,100 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
         }
       }
     };
+
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,6).subscribe(async (res : responseService)=>{
+      let categorias : string []= []
+      let estructura : any []= []
+      for await (const i of res.container) {
+        categorias.push(i.nombre)
+        estructura.push({
+          x:i.nombre,
+          y:i.totalTicket,
+          goals:[
+            {
+            name:"Fecha: ",
+            value:i.fecha,
+            strokeColor:"transparent",
+              
+            }
+          ]
+        })
+      }
+      
+      this.chartOptionsBar = {
+        title:{
+          text:"Servicios con mas tickets"
+        },
+        series: [
+          {
+            name: "Total de tickets: ",
+            data:estructura
+          }
+        ],
+        chart: {
+          type: "bar",
+          height: 350,
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "55%"
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: false,
+          width: 2,
+          colors: ["transparent"]
+        },
+        xaxis: {
+          title:{
+            text:"Servicios"
+          }
+        },
+        yaxis: {
+          title: {
+            text: "Tickets"
+          }
+        },
+        fill: {
+          opacity: 1
+        }
+        
+      };
+  
+    })
   }
 
 
-  graficaDeLineas(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe((res : responseService)=>{
-      console.log(res.container); 
-    })
+  graficaDeLineas(selectedFake:string,selectedFake2:string){
+ 
+    this.grupos = []
+    this.dias = []
+      
+    var fechaInicio = new Date(selectedFake).getTime();
+    var fechaFin    = new Date(selectedFake2).getTime();
+    
+    var diff = fechaFin - fechaInicio;
+    
+    let dias = (diff/(1000*60*60*24))+1;
+    let dataGrupo : number []= []
+    let dataGrupoAux : number []= []
+   
+    let arrayDias : number []= []
+    let grupoCambiar : string = ""
+  
     this.chartOptionsLine = {
       series: [
-        {
-          name: "Desktops",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-        }
+        
+          {
+            name: "No hay tickets",
+            data:[0]
+          }
+        
+        
       ],
       chart: {
         height: 350,
@@ -245,29 +344,181 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
         }
       },
       xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep"
-        ]
+        categories: ["No hay tickets"]
       }
     };
-  }
+  
+    for (let i = 0; i < (dias<=30&&dias>0?dias:dias<=90?Math.ceil(dias/7):dias<=365?Math.ceil(dias/30):dias>365?Math.ceil(dias/365):0); i++) {
+      dataGrupoAux.push(0)
+      arrayDias.push(i+1)
+    }  
+  
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,5).subscribe(async (res : responseService)=>{
+      if(dias<=30 && res.container.length > 0){
+        dataGrupo = dataGrupoAux  
+        grupoCambiar = res.container[0].nombre;      
+        for await (const i of res.container) {        
+          if(grupoCambiar.toString() === i.nombre.toString()){      
+            dataGrupo[Number(i.fecha.split("-")[2])-1] = i.totalTicket;
+          }else{          
+            this.grupos.push({name:grupoCambiar, data:dataGrupo })
+            grupoCambiar = i.nombre;  
+            dataGrupo = Array<number>(dataGrupo.length).fill(0)          
+            dataGrupo[Number(i.fecha.split("-")[2])-1] = i.totalTicket;
+  
+          }
+        }
+        this.grupos.push({name:grupoCambiar, data:dataGrupo })
+        console.log(this.grupos);
+        
+        //Chartoption para dias
+       
+         this.chartOptionsLine = {
+           series: this.grupos,
+           chart: {
+             height: 350,
+             type: "line",
+             zoom: {
+               enabled: false
+             }
+           },
+           tooltip: {
+            shared: false,
+            intersect: false,
+            followCursor:true,
+            x: {
+              show: true
+            }
+          },
+           dataLabels: {
+             enabled: false
+           },
+           stroke: {
+             curve: "straight"
+           },
+           title: {
+             text: "Tickets por departamento",
+             align: "left"
+           },
+           grid: {
+             row: {
+               colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+               opacity: 0.5
+             }
+           },
+           xaxis: {
+             categories: this.dias,
+           }
+         };
+    
+        
+          }else if(dias <=90 && res.container.length> 0)
+          //Chartoption para semanas
+          {
+                //aqui va el if//
+               this.chartOptionsLine = {
+                 series: [
+                   
+                     {
+                       name: "Administracion:",
+                       data:[1,10,15,1,10,15,10,15,1,10,15,10]
+                     },
+                     {
+                       name: "Soporte:",
+                       data:[2,3,22,1,10,15,10,15,1,43,15,10]
+                     }
+                   
+                   
+                 ],
+                 chart: {
+                   height: 350,
+                   type: "line",
+                   zoom: {
+                     enabled: false
+                   }
+                 },
+                 dataLabels: {
+                   enabled: false
+                 },
+                 stroke: {
+                   curve: "straight"
+                 },
+                 title: {
+                   text: "Tickets por departamento",
+                   align: "left"
+                 },
+                 grid: {
+                   row: {
+                     colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+                     opacity: 0.5
+                   }
+                 },
+                 xaxis: {
+                   categories: []
+                 }
+               };
+  
+  
+  
+  
+          }else if(dias<=365 && res.container.length > 0){
+  //Chartoption para meses
+
+  
+                //aqui va el if//
+               this.chartOptionsLine = {
+                 series: [
+                   
+                     {
+                       name: "Administracion:",
+                       data:[1,10,15,1,10,15,10,15,1,10,15,10]
+                     },
+                     {
+                       name: "Soporte:",
+                       data:[2,3,22,1,10,15,10,15,1,43,15,10]
+                     }
+                   
+                   
+                 ],
+                 chart: {
+                   height: 350,
+                   type: "line",
+                   zoom: {
+                     enabled: false
+                   }
+                 },
+                 dataLabels: {
+                   enabled: false
+                 },
+                 stroke: {
+                   curve: "straight"
+                 },
+                 title: {
+                   text: "Tickets por departamento",
+                   align: "left"
+                 },
+                 grid: {
+                   row: {
+                     colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+                     opacity: 0.5
+                   }
+                 },
+                 xaxis: {
+                   categories: []
+                 }
+               };
+            }
+  
+            })
+     
+    }
 
 
   constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
-    private dataService:DataLayoutService, private serviceDash : dashboardTicketsService) {
-    this.graficaDeLineas()
-    this.graficaDeBarras()
-
-      
-
+    private dataService:DataLayoutService, private serviceDash : dashboardTicketsService,
+    private dialog:NgDialogAnimationService) {
+      this.graficaDeLineas(this.primerDiaString,this.ultimoDiaString)
+      this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
   }
 
 ngAfterViewInit(): void {
@@ -284,34 +535,29 @@ ngOnDestroy(): void {
  this.$sub.unsubscribe()
 }
   ngOnInit(): void {
-    this.llenarListaEstadoTicket()
-    this.llenarListaEmpresas()
-    this.llenarListaTickets()
-    this.llenarPieTipos()
-    this.llenarPieAgentes()
+    this.llenarListaEstadoTicket(this.primerDiaString,this.ultimoDiaString)
+    this.llenarListaEmpresas(this.primerDiaString,this.ultimoDiaString)
+    this.llenarListaTickets(this.primerDiaString,this.ultimoDiaString)
+    this.llenarPieTipos(this.primerDiaString,this.ultimoDiaString)
+    this.llenarPieAgentes(this.primerDiaString,this.ultimoDiaString)
   }
 
-  llenarPieAgentes(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,2).subscribe((res : responseService)=>{
-      console.log(res.container); 
-    })
+  llenarPieAgentes(selectedFake:string,selectedFake2:string){
+    
     this.chartOptionsPieAgentes = {
       dataLabels:{
         enabled: false
       },
-      series: [25, 15, 44, 55, 41, 17],
+      legend:{
+        position:"bottom"
+      },
+      series: [],
       chart: {
         width: 340,
-        type: "pie"
+        type: "pie",
+         
       },
-      labels: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ],
+      labels: [ ],
       title: {
         text: "Tickets de agentes"
       },
@@ -320,7 +566,7 @@ ngOnDestroy(): void {
           breakpoint: 1427,
           options: {
             chart: {
-              width: 320
+              width: 330
             },
             legend: {
               position: "bottom"
@@ -331,7 +577,7 @@ ngOnDestroy(): void {
           breakpoint: 1100,
           options: {
             chart: {
-              width: 280
+              width: 320
             },
             legend: {
               position: "bottom"
@@ -340,29 +586,36 @@ ngOnDestroy(): void {
         }
       ]
     };
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,2).subscribe(async(res : responseService)=>{      
+      for await (const i of res.container) {
+        this.chartOptionsPieAgentes.labels.push(i.nombre)
+        this.chartOptionsPieAgentes.series!.push(Number(i.totalTicket))
+      }
+      if (this.chartOptionsPieAgentes.series!.length == 0) {
+        this.chartOptionsPieAgentes.labels.push("No hay agentes este mes")
+        this.chartOptionsPieAgentes.series!.push(1)
+      }
+    })
+    
   }
 
-  llenarPieTipos(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,1).subscribe((res : responseService)=>{
-      console.log(res.container); 
-    })
+  llenarPieTipos(selectedFake : string,selectedFake2 : string){
+    this.tiposTickets = []
     this.chartOptionsPieTipos = {
       dataLabels:{
         enabled: false
       },
-      series: [25, 15, 44, 55, 41, 17],
+      series: [0,0,0,0],
       chart: {
         width: "340",
         type: "pie"
       },
       labels: 
       [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
+        "No hay tickets",
+        "Soporte",
+        "Atencion",
+        "Solicitud"
       ],
       title: {
         text: "Tipos de tickets"
@@ -392,45 +645,161 @@ ngOnDestroy(): void {
         }
       ]
     };
+
+    
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,1).subscribe(async(res : responseService)=>{
+      for await (const i of res.container) {
+        this.tiposTickets.push({idTipoTicket:i.idTipoTicket,nombre:i.nombre,totalTicket:i.totalTicket})
+      }
+          
+      this.chartOptionsPieTipos = {
+        dataLabels:{
+          enabled: false
+        },
+        series:
+        [0,this.tiposTickets[0] !== undefined && this.tiposTickets[0].idTipoTicket === 1? this.tiposTickets[0].totalTicket:
+        this.tiposTickets[1] !== undefined && this.tiposTickets[1].idTipoTicket === 1? this.tiposTickets[1].totalTicket:
+        this.tiposTickets[2] !== undefined && this.tiposTickets[2].idTipoTicket === 1? this.tiposTickets[2].totalTicket:0
+        ,this.tiposTickets[0] !== undefined && this.tiposTickets[0].idTipoTicket === 2? this.tiposTickets[0].totalTicket:
+        this.tiposTickets[1] !== undefined && this.tiposTickets[1].idTipoTicket === 2? this.tiposTickets[1].totalTicket:
+        this.tiposTickets[2] !== undefined && this.tiposTickets[2].idTipoTicket === 2? this.tiposTickets[2].totalTicket:0
+        ,this.tiposTickets[0] !== undefined && this.tiposTickets[0].idTipoTicket === 3? this.tiposTickets[0].totalTicket:
+        this.tiposTickets[1] !== undefined && this.tiposTickets[1].idTipoTicket === 3? this.tiposTickets[1].totalTicket:
+        this.tiposTickets[2] !== undefined && this.tiposTickets[2].idTipoTicket === 3? this.tiposTickets[2].totalTicket:0] 
+    ,
+        chart: {
+          width: "340",
+          type: "pie"
+        },
+        labels: 
+        [
+          "No hay tickets",
+          "Soporte",
+          "Atencion",
+          "Solicitud"
+        ],
+        title: {
+          text: "Tipos de tickets"
+        },
+        responsive: [
+          {
+            breakpoint: 1427,
+            options: {
+              chart: {
+                width: 320
+              },
+              legend: {
+                position: "bottom"
+              }
+            }
+          },
+          {
+            breakpoint: 1100,
+            options: {
+              chart: {
+                width: 280
+              },
+              legend: {
+                position: "bottom"
+              }
+            }
+          }
+        ]
+      };
+      this.chartOptionsPieTipos.series![0]=this.chartOptionsPieTipos.series![1]>0?0:
+      this.chartOptionsPieTipos.series![2]>0?0:this.chartOptionsPieTipos.series![3]>0?0:1
+    }) 
   }
 
-  async llenarListaTickets(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,7).subscribe((res : responseService)=>{
-      console.log(res.container); 
+  async llenarListaTickets(selectedFake:string,selectedFake2:string){
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,7).subscribe(async(res : responseService)=>{    
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource();
+      for await (const i of res.container) {
+        this.ELEMENT_DATA.push({idTicket:i.idTicket,servicio:i.servicio,fechaAbierta:i.fechaAbierta,fechaCerrada:i.fechaCerrada,grupo:i.grupo,estado:i.estado})
+      }      
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;    
+      this.paginator.length =  this.tickets.length;  
     })
-    this.tickets.push({idTicket:3,asunto:"VPN",descripcion:"este es un ticket",tipo:"Solicitud"})
-    this.tickets.push({idTicket:4,asunto:"Tunel",descripcion:"es otro ticket",tipo:"Atencion"})
-    this.tickets.push({idTicket:5,asunto:"Control de radios",descripcion:"otro tro tickeet",tipo:"Soporte"})
   }
-  async llenarListaEmpresas(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,3).subscribe((res : responseService)=>{
-      console.log(res.container); 
+  async llenarListaEmpresas(selectedFake:string,selectedFake2:string){
+    this.empresa = []
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3).subscribe(async(res : responseService)=>{      
+      for await (const i of res.container) {
+        this.empresa.push({nombre:i.cliente,totalTicket: i.totalTicket})
+      }
     })
-    this.empresa.push({nombre:"la mejor ",totalTicket: 3})
-    this.empresa.push({nombre:"la mejor ",totalTicket: 3})
-    this.empresa.push({nombre:"lamejor ",totalTicket: 3})
   }
 
-  async llenarListaEstadoTicket(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,4).subscribe(async (res : responseService)=>{
-     /* for await (const iterator of object) {
-        
-      }*/
-      console.log(res.container); 
+  async llenarListaEstadoTicket(selectedFake:string,selectedFake2:string){
+ this.estadoServicio = []    
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,4).subscribe(async (res : responseService)=>{
+      for await (const i of res.container) {
+        this.estadoServicio.push({idEstadoTicket:Number(i.idEstadoTicket),estado:i.estado,totalTicket:i.totalTicket})    
+      }
+      
     })
-    this.estadoServicio.push({empresa:"la mejor",nombre:"servicio 1",totalTicket: 3})
-    this.estadoServicio.push({empresa:"la mejor",nombre:"servicio 2",totalTicket: 3})
-    this.estadoServicio.push({empresa:"la mejor",nombre:"servicio 3",totalTicket: 3})
   }
 
   cambiarFecha1(selected : Date){
     let dateNew = new Date(selected);
     this.selectedFake =  formatDate(dateNew,'yyyy-MM-dd',"en-US");    
+    if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
+      this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake)
+      this.llenarListaEmpresas(this.selectedFake,this.selectedFake)
+      this.llenarListaTickets(this.selectedFake,this.selectedFake)
+      this.llenarPieTipos(this.selectedFake,this.selectedFake)
+      this.llenarPieAgentes(this.selectedFake,this.selectedFake)
+      this.graficaDeLineas(this.selectedFake,this.selectedFake)
+      this.graficaDeBarras(this.selectedFake,this.selectedFake)
+    }else  if(this.selectedFake === "" || this.selectedFake ===undefined){
+        this.llenarListaEstadoTicket(this.selectedFake2,this.selectedFake2)
+        this.llenarListaEmpresas(this.selectedFake2,this.selectedFake2)
+        this.llenarListaTickets(this.selectedFake2,this.selectedFake2)
+        this.llenarPieTipos(this.selectedFake2,this.selectedFake2)
+        this.llenarPieAgentes(this.selectedFake2,this.selectedFake2)
+        this.graficaDeLineas(this.selectedFake2,this.selectedFake2)
+        this.graficaDeBarras(this.selectedFake2,this.selectedFake2)
+      }else{
+          this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
+          this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
+          this.llenarListaTickets(this.selectedFake,this.selectedFake2)
+          this.llenarPieTipos(this.selectedFake,this.selectedFake2)
+          this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
+          this.graficaDeLineas(this.selectedFake,this.selectedFake2)
+          this.graficaDeBarras(this.selectedFake,this.selectedFake2)
+      }
   }
 
   cambiarFecha2(selected : Date){
     let dateNew = new Date(selected);
     this.selectedFake2 = formatDate(dateNew,'yyyy-MM-dd',"en-US");    
+    if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
+      this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake)
+      this.llenarListaEmpresas(this.selectedFake,this.selectedFake)
+      this.llenarListaTickets(this.selectedFake,this.selectedFake)
+      this.llenarPieTipos(this.selectedFake,this.selectedFake)
+      this.llenarPieAgentes(this.selectedFake,this.selectedFake)
+      this.graficaDeLineas(this.selectedFake,this.selectedFake)
+      this.graficaDeBarras(this.selectedFake,this.selectedFake)
+    }else  if(this.selectedFake === ""||  this.selectedFake ===undefined){
+        this.llenarListaEstadoTicket(this.selectedFake2,this.selectedFake2)
+        this.llenarListaEmpresas(this.selectedFake2,this.selectedFake2)
+        this.llenarListaTickets(this.selectedFake2,this.selectedFake2)
+        this.llenarPieTipos(this.selectedFake2,this.selectedFake2)
+        this.llenarPieAgentes(this.selectedFake2,this.selectedFake2)
+        this.graficaDeLineas(this.selectedFake2,this.selectedFake2)
+        this.graficaDeBarras(this.selectedFake2,this.selectedFake2)
+      }else{
+          this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
+          this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
+          this.llenarListaTickets(this.selectedFake,this.selectedFake2)
+          this.llenarPieTipos(this.selectedFake,this.selectedFake2)
+          this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
+          this.graficaDeLineas(this.selectedFake,this.selectedFake2)
+          this.graficaDeBarras(this.selectedFake,this.selectedFake2)
+      }
   }
 
   cambiarCalendario(){
@@ -453,6 +822,30 @@ ngOnDestroy(): void {
       this.fechaRango = false;
 
     }
+  }
+
+  abrirTopEmpresaTicket(empresa:topEmpresa){
+    let dialogRef  = this.dialog.open(ViewTicketsEnterpriseComponent,
+      {data: { empresa },
+      animation: { to: "bottom" },
+      height:"auto", width:"70%"
+     });
+
+     this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+     }))
+  
+  }
+
+  abrirEstadoEmpresas(estatus:number){
+    let dialogRef  = this.dialog.open(ViewEstatusEnterpriseComponent,
+      {data: { },
+      animation: { to: "bottom" },
+      height:"auto", width:"70%"
+     });
+
+     this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+     }))
+  
   }
 
 }

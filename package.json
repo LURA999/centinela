@@ -71,6 +71,7 @@
     "ng-dialog-animation": "^9.0.4",
     "ng2-charts": "^4.0.0",
     "ngx-logger": "^5.0.9",
+    "ngx-pagination": "^6.0.2",
     "ngx-photo-editor": "^0.3.8",
     "ngx-toastr": "^14.2.2",
     "nodemailer": "^6.7.5",

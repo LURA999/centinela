@@ -300,6 +300,10 @@ export class TableContactComponent implements OnInit {
   }
 
   insertar(){        
+    console.log(this.arrayServicios);
+    console.log(this.arrayServicios);
+    console.log(this.arrayServicios);
+    
     let dialogRef  = this.dialog.open(NewContactComponent,
       {data: {opc : false, arrayRol : this.arrayRol, arrayServicios: this.arrayServicios,arrayTabla:this.ELEMENT_DATA.length,
         idCliente: this.id, salir : true, arrayContactos: this.arrayContactos, idServicioDefault:this.idServicioDefault },
