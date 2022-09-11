@@ -15,4 +15,7 @@ export class dashboardTicketsService {
     return this.http.get<responseService>(this.api+"Tickets/ticketDashboard.php?fechaInicio="+fechaInicio+"&fechaFin="+fechaFinal+"&tipo="+condicion)
   }
 
+  rangoDeFechasForm(fechaInicio:string, fechaFinal : string, condicion:number,empresa:number):Observable<responseService>{
+    return this.http.get<responseService>(this.api+"Tickets/ticketDashboard.php?fechaInicio="+fechaInicio+"&fechaFin="+fechaFinal+"&filtro="+condicion+"&empresa="+empresa)
+  }
 }

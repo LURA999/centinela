@@ -10,17 +10,13 @@
                 <h3>Top de las 10 empresas con mas tickets</h3>
                 <ng-container *ngIf="empresa.length === 0; else elseTemplate">
                     <mat-grid-list  cols="4" >
-                    <div class="seccion">
                         <mat-divider></mat-divider>
-                        <div class="cuerpo">
-                            <span><b style="text-align: center;">No hay empresas</b></span>
-                        </div>
-                    </div>
+                            <span><b>No hay empresas</b></span>
                     </mat-grid-list>
                 </ng-container>
                 <ng-template #elseTemplate>
                     <mat-grid-list *ngFor="let com of empresa"  cols="4" >
-                        <div class="seccion" (click)="abrirTopEmpresaTicket(com)">
+                        <div class="seccion" (click)="abrirTopEmpresaTicket(com.idCliente)">
                             <mat-divider></mat-divider>
                                 <div class="cuerpo" >
                                     <div><b>Empresa</b>: {{com.nombre}}</div>
@@ -69,11 +65,11 @@
                           </svg>
                     </div>
                     <div  [hidden]="ocultarDate === true">
-                        <mat-calendar [(selected)]="selected" (selectedChange)="cambiarFecha1(selected!)"></mat-calendar>
+                        <mat-calendar [(selected)]="selected" [maxDate]="selected2" (selectedChange)="cambiarFecha1(selected!)"></mat-calendar>
 
                     </div>
                     <div  [hidden]="ocultarDate === false">  
-                        <mat-calendar [(selected)]="selected2" (selectedChange)="cambiarFecha2(selected2!)"></mat-calendar>
+                        <mat-calendar [(selected)]="selected2" [minDate]="selected" (selectedChange)="cambiarFecha2(selected2!)"></mat-calendar>
 
                     </div>
                     <div [hidden]="oCalendario === false"  (click)="otroCalendario()" id="bCalendario">
@@ -99,7 +95,6 @@
             <mat-card class="cardList" id="estadosTickets" >
                 <h3>Tickets abiertos, pausados, cerrados</h3>
                 <mat-grid-list >
-                    
                         <mat-divider></mat-divider>
                             <div class="seccion" (click)="abrirEstadoEmpresas(1)">
                             <div><b>Estado</b>: Abierto</div>

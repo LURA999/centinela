@@ -42,6 +42,8 @@ export type ChartOptionsLine = {
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
   tooltip:ApexTooltip;
+    yaxis:ApexYAxis;
+
 };
 export type ChartOptionsBar = {
   series: ApexAxisChartSeries;
@@ -69,6 +71,7 @@ export type ChartOptionsPie = {
 };
 
  interface topEmpresa {
+  idCliente:number;
   nombre: string;
   totalTicket: number;
 }
@@ -157,7 +160,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   primerDiaString :string = formatDate(this.primerDia,'yyyy-MM-dd',"en-US");
   ultimoDiaString :string= formatDate(this.ultimoDia,'yyyy-MM-dd',"en-US");
 
-  //
+  //Para la tabla
   ELEMENT_DATA:  any[] = [ ];
   displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -165,7 +168,11 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
 
   //
   grupos : grupo []=[]
-  dias : Array<number> = []
+  fechaLabel:string[]=[]
+
+  //variables para abrir el form
+  fecha1:string = ""
+  fecha2:string = ""
 
   buscarFecha(){
     this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
@@ -227,19 +234,18 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
     };
 
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,6).subscribe(async (res : responseService)=>{
-      let categorias : string []= []
+      let maxY : number = 0
       let estructura : any []= []
       for await (const i of res.container) {
-        categorias.push(i.nombre)
+        maxY = (Number(i.totalTicket) > maxY ? Number(i.totalTicket): maxY)
         estructura.push({
           x:i.nombre,
-          y:i.totalTicket,
+          y:Number(i.totalTicket),
           goals:[
             {
             name:"Fecha: ",
             value:i.fecha,
-            strokeColor:"transparent",
-              
+            strokeColor:"none",
             }
           ]
         })
@@ -257,7 +263,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
         ],
         chart: {
           type: "bar",
-          height: 350,
+          height: 350
         },
         plotOptions: {
           bar: {
@@ -281,44 +287,38 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
         yaxis: {
           title: {
             text: "Tickets"
-          }
+          },
+          max:Math.ceil(maxY/10)*10
         },
         fill: {
           opacity: 1
         }
-        
-      };
-  
+      };      
     })
   }
 
 
   graficaDeLineas(selectedFake:string,selectedFake2:string){
- 
     this.grupos = []
-    this.dias = []
-      
-    var fechaInicio = new Date(selectedFake).getTime();
-    var fechaFin    = new Date(selectedFake2).getTime();
-    
-    var diff = fechaFin - fechaInicio;
-    
-    let dias = (diff/(1000*60*60*24))+1;
+    this.fechaLabel = []
+    var fechaInicio :Date = new Date(selectedFake)
+    var fechaFin  :Date  = new Date(selectedFake2);
+    var diff = fechaFin.getTime() - fechaInicio.getTime();
+    let cantidadMeses :number = Number(fechaFin.getMonth()) + Number(fechaInicio.getMonth())
+    console.log("meses "+cantidadMeses+" fechaFin "+Number(fechaFin.getMonth())+", fechaInicio "+Number(fechaInicio.getMonth()));
+     
+    let diasCantidad :number = (diff/(1000*60*60*24))+1;
     let dataGrupo : number []= []
     let dataGrupoAux : number []= []
-   
-    let arrayDias : number []= []
     let grupoCambiar : string = ""
+    let pasarForAwait : boolean = false
   
     this.chartOptionsLine = {
       series: [
-        
           {
             name: "No hay tickets",
             data:[0]
           }
-        
-        
       ],
       chart: {
         height: 350,
@@ -348,170 +348,194 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
       }
     };
   
-    for (let i = 0; i < (dias<=30&&dias>0?dias:dias<=90?Math.ceil(dias/7):dias<=365?Math.ceil(dias/30):dias>365?Math.ceil(dias/365):0); i++) {
+    for (let i = 0; i < (
+    diasCantidad<=31&&diasCantidad>0?diasCantidad
+    :diasCantidad<=90?Math.ceil(diasCantidad/7)
+    :diasCantidad<=365?(new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?11:10)
+    :0); i++) {
       dataGrupoAux.push(0)
-      arrayDias.push(i+1)
-    }  
+    } 
+    console.log(dataGrupoAux);
+  
+    if (diasCantidad<=31) {
+      //insertar dias
+      for(let i=1;i<=diasCantidad;i++){                
+        this.fechaLabel.push(formatDate(this.addDaysToDate(selectedFake,i),'yyyy-MM-dd',"en-US"))
+      }
+    } else if (diasCantidad<=90) {
+      //insertar semanas
+      for(let i=1;i<=Math.ceil(diasCantidad/7);i++){
+        this.fechaLabel.push(formatDate(this.addDaysToDate(fechaInicio,i*7),'yyyy-MM-dd',"en-US")) 
+      }
+    } else if (new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?366:365) {
+      //insertar meses
+      for(let i=0;i<=12;i++){
+        this.fechaLabel.push(formatDate(this.addDaysToDate(new Date(this.date.getFullYear(), i, 1),
+        Number(new Date(this.date.getFullYear(), i + 1, 0).getDay())),'yyyy-MM-dd',"en-US")) 
+        
+      }
+      console.log(this.fechaLabel);
+      
+    }
   
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,5).subscribe(async (res : responseService)=>{
-      if(dias<=30 && res.container.length > 0){
+      
+      if(diasCantidad<=31 && res.container.length > 0){
         dataGrupo = dataGrupoAux  
         grupoCambiar = res.container[0].nombre;      
         for await (const i of res.container) {        
-          if(grupoCambiar.toString() === i.nombre.toString()){      
-            dataGrupo[Number(i.fecha.split("-")[2])-1] = i.totalTicket;
+          if(grupoCambiar.toString() === i.nombre.toString()){ 
+            /*linea 375 y 381, buscamos el indice que le pertenece a cada dia seleccionado del calendario, para llenarlo
+            con sus respectivos tickets*/
+            dataGrupo[this.fechaLabel.indexOf(i.fecha) ] = i.totalTicket;
           }else{          
             this.grupos.push({name:grupoCambiar, data:dataGrupo })
             grupoCambiar = i.nombre;  
             dataGrupo = Array<number>(dataGrupo.length).fill(0)          
-            dataGrupo[Number(i.fecha.split("-")[2])-1] = i.totalTicket;
-  
+            dataGrupo[this.fechaLabel.indexOf(i.fecha)] = i.totalTicket;
           }
         }
         this.grupos.push({name:grupoCambiar, data:dataGrupo })
-        console.log(this.grupos);
-        
-        //Chartoption para dias
-       
-         this.chartOptionsLine = {
-           series: this.grupos,
-           chart: {
-             height: 350,
-             type: "line",
-             zoom: {
-               enabled: false
-             }
-           },
-           tooltip: {
-            shared: false,
-            intersect: false,
-            followCursor:true,
-            x: {
-              show: true
+  
+      }else if(diasCantidad <=90 && res.container.length> 0 &&diasCantidad>31){
+        dataGrupo = dataGrupoAux  
+        grupoCambiar = res.container[0].nombre;      
+        for await (const i of res.container) {   
+          if(grupoCambiar.toString() === i.nombre.toString()){ 
+            /**Lo que hacemos en los for await, es agarrar todas las fechas del eje X y las comparamos
+             * con las fechas de las consultas, el booleano, es para controlar las inseciones y para no
+             * insertar en mas fechas/categorias/eje x de la grafica
+             */
+            for await (const x of this.fechaLabel) {
+              console.log(new Date(i.fecha).getTime()+" <= "+new Date(x).getTime());
+              
+            if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+  
+              dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket) 
+              pasarForAwait =true
+              }
             }
-          },
-           dataLabels: {
-             enabled: false
-           },
-           stroke: {
-             curve: "straight"
-           },
-           title: {
-             text: "Tickets por departamento",
-             align: "left"
-           },
-           grid: {
-             row: {
-               colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-               opacity: 0.5
-             }
-           },
-           xaxis: {
-             categories: this.dias,
-           }
-         };
+            pasarForAwait =false
+          }else{  
+            
+            this.grupos.push({name:grupoCambiar, data:dataGrupo })
+            grupoCambiar = i.nombre;  
+            dataGrupo = Array<number>(dataGrupo.length).fill(0)   
+            for await (const x of this.fechaLabel) {
+              console.log(i.fecha+" <= "+x);
+  
+              console.log(new Date(i.fecha).getTime()+" <= "+new Date(x).getTime());
+  
+              if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+                dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket)      
+                pasarForAwait =true
+              }
+            }
+            pasarForAwait =false
+  
+         }
+        }
+  
+        this.grupos.push({name:grupoCambiar, data:dataGrupo })
+  
+  
+      }else if(new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?366:365 && res.container.length > 0 && diasCantidad >90){
+        pasarForAwait =false
+        console.log(dataGrupoAux);
+        
+        dataGrupo = dataGrupoAux  
+        grupoCambiar = res.container[0].nombre;      
+        for await (const i of res.container) {   
+          if(grupoCambiar.toString() === i.nombre.toString()){ 
+            
+            for await (const x of this.fechaLabel) {
+              console.log(i.fecha+" <= "+x);
+  
+              console.log(new Date(i.fecha).getTime() +" <= "+ new Date(x).getTime());
+              console.log(new Date(i.fecha).getTime() <= new Date(x).getTime());
+              
+            if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+              dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket) 
+              pasarForAwait =true
+              console.log("entro");
+              console.log(dataGrupo);
+              
+              }
+            }
+            pasarForAwait =false
+            
+          }else{  
+            this.grupos.push({name:grupoCambiar, data:dataGrupo })
+            grupoCambiar = i.nombre;  
+            dataGrupo = Array<number>(dataGrupo.length).fill(0)   
+            for await (const x of this.fechaLabel) {
+              console.log(i.fecha+" <= "+x);
+  
+              console.log(new Date(i.fecha).getTime() +" <= "+ new Date(x).getTime());
+              console.log(new Date(i.fecha).getTime() <= new Date(x).getTime());
+              if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+                
+                dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket)      
+                pasarForAwait =true
+                console.log("entro");
+                console.log(dataGrupo);
+                
+              }
+            }
+            pasarForAwait =false
+  
+         }
+        }
+  
+        this.grupos.push({name:grupoCambiar, data:dataGrupo })
+  
+      }  
+      console.log(dataGrupo);
+      
+      this.chartOptionsLine = {
+        series: this.grupos,
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            enabled: false
+          }
+        },
+        tooltip: {
+          shared: false,
+          intersect: false,
+          followCursor:true,
+          x: {
+            show: true
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: "straight"
+        },
+        title: {
+          text: "Tickets por departamento",
+          align: "left"
+        },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5
+          }
+        },
+        xaxis: {
+          categories: this.fechaLabel,
+        },
+        yaxis:{
+          show:true
+        }
+      };
+        
+    })
     
-        
-          }else if(dias <=90 && res.container.length> 0)
-          //Chartoption para semanas
-          {
-                //aqui va el if//
-               this.chartOptionsLine = {
-                 series: [
-                   
-                     {
-                       name: "Administracion:",
-                       data:[1,10,15,1,10,15,10,15,1,10,15,10]
-                     },
-                     {
-                       name: "Soporte:",
-                       data:[2,3,22,1,10,15,10,15,1,43,15,10]
-                     }
-                   
-                   
-                 ],
-                 chart: {
-                   height: 350,
-                   type: "line",
-                   zoom: {
-                     enabled: false
-                   }
-                 },
-                 dataLabels: {
-                   enabled: false
-                 },
-                 stroke: {
-                   curve: "straight"
-                 },
-                 title: {
-                   text: "Tickets por departamento",
-                   align: "left"
-                 },
-                 grid: {
-                   row: {
-                     colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-                     opacity: 0.5
-                   }
-                 },
-                 xaxis: {
-                   categories: []
-                 }
-               };
-  
-  
-  
-  
-          }else if(dias<=365 && res.container.length > 0){
-  //Chartoption para meses
-
-  
-                //aqui va el if//
-               this.chartOptionsLine = {
-                 series: [
-                   
-                     {
-                       name: "Administracion:",
-                       data:[1,10,15,1,10,15,10,15,1,10,15,10]
-                     },
-                     {
-                       name: "Soporte:",
-                       data:[2,3,22,1,10,15,10,15,1,43,15,10]
-                     }
-                   
-                   
-                 ],
-                 chart: {
-                   height: 350,
-                   type: "line",
-                   zoom: {
-                     enabled: false
-                   }
-                 },
-                 dataLabels: {
-                   enabled: false
-                 },
-                 stroke: {
-                   curve: "straight"
-                 },
-                 title: {
-                   text: "Tickets por departamento",
-                   align: "left"
-                 },
-                 grid: {
-                   row: {
-                     colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-                     opacity: 0.5
-                   }
-                 },
-                 xaxis: {
-                   categories: []
-                 }
-               };
-            }
-  
-            })
-     
-    }
+  }
 
 
   constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
@@ -712,12 +736,16 @@ ngOnDestroy(): void {
   }
 
   async llenarListaTickets(selectedFake:string,selectedFake2:string){
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,7).subscribe(async(res : responseService)=>{    
+    this.serviceDash.rangoDeFechasForm(selectedFake,selectedFake2,0,0).subscribe(async(res : responseService)=>{    
     this.ELEMENT_DATA=[];
+    console.log(res);
+    
     this.dataSource = new MatTableDataSource();
       for await (const i of res.container) {
         this.ELEMENT_DATA.push({idTicket:i.idTicket,servicio:i.servicio,fechaAbierta:i.fechaAbierta,fechaCerrada:i.fechaCerrada,grupo:i.grupo,estado:i.estado})
       }      
+      console.log(this.ELEMENT_DATA);
+      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator = this.paginator;    
       this.paginator.length =  this.tickets.length;  
@@ -727,7 +755,7 @@ ngOnDestroy(): void {
     this.empresa = []
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3).subscribe(async(res : responseService)=>{      
       for await (const i of res.container) {
-        this.empresa.push({nombre:i.cliente,totalTicket: i.totalTicket})
+        this.empresa.push({nombre:i.cliente,totalTicket: i.totalTicket,idCliente:i.cveCliente})
       }
     })
   }
@@ -742,9 +770,7 @@ ngOnDestroy(): void {
     })
   }
 
-  cambiarFecha1(selected : Date){
-    let dateNew = new Date(selected);
-    this.selectedFake =  formatDate(dateNew,'yyyy-MM-dd',"en-US");    
+  complementoCambioFechas(){
     if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
       this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake)
       this.llenarListaEmpresas(this.selectedFake,this.selectedFake)
@@ -761,45 +787,26 @@ ngOnDestroy(): void {
         this.llenarPieAgentes(this.selectedFake2,this.selectedFake2)
         this.graficaDeLineas(this.selectedFake2,this.selectedFake2)
         this.graficaDeBarras(this.selectedFake2,this.selectedFake2)
-      }else{
-          this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
-          this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
-          this.llenarListaTickets(this.selectedFake,this.selectedFake2)
-          this.llenarPieTipos(this.selectedFake,this.selectedFake2)
-          this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
-          this.graficaDeLineas(this.selectedFake,this.selectedFake2)
-          this.graficaDeBarras(this.selectedFake,this.selectedFake2)
-      }
+    }else{
+        this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
+        this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
+        this.llenarListaTickets(this.selectedFake,this.selectedFake2)
+        this.llenarPieTipos(this.selectedFake,this.selectedFake2)
+        this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
+        this.graficaDeLineas(this.selectedFake,this.selectedFake2)
+        this.graficaDeBarras(this.selectedFake,this.selectedFake2)
+    }
+  }
+  cambiarFecha1(selected : Date){
+    let dateNew = new Date(selected);
+    this.selectedFake =  formatDate(dateNew,'yyyy-MM-dd',"en-US");    
+    this.complementoCambioFechas()
   }
 
   cambiarFecha2(selected : Date){
     let dateNew = new Date(selected);
     this.selectedFake2 = formatDate(dateNew,'yyyy-MM-dd',"en-US");    
-    if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
-      this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake)
-      this.llenarListaEmpresas(this.selectedFake,this.selectedFake)
-      this.llenarListaTickets(this.selectedFake,this.selectedFake)
-      this.llenarPieTipos(this.selectedFake,this.selectedFake)
-      this.llenarPieAgentes(this.selectedFake,this.selectedFake)
-      this.graficaDeLineas(this.selectedFake,this.selectedFake)
-      this.graficaDeBarras(this.selectedFake,this.selectedFake)
-    }else  if(this.selectedFake === ""||  this.selectedFake ===undefined){
-        this.llenarListaEstadoTicket(this.selectedFake2,this.selectedFake2)
-        this.llenarListaEmpresas(this.selectedFake2,this.selectedFake2)
-        this.llenarListaTickets(this.selectedFake2,this.selectedFake2)
-        this.llenarPieTipos(this.selectedFake2,this.selectedFake2)
-        this.llenarPieAgentes(this.selectedFake2,this.selectedFake2)
-        this.graficaDeLineas(this.selectedFake2,this.selectedFake2)
-        this.graficaDeBarras(this.selectedFake2,this.selectedFake2)
-      }else{
-          this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
-          this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
-          this.llenarListaTickets(this.selectedFake,this.selectedFake2)
-          this.llenarPieTipos(this.selectedFake,this.selectedFake2)
-          this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
-          this.graficaDeLineas(this.selectedFake,this.selectedFake2)
-          this.graficaDeBarras(this.selectedFake,this.selectedFake2)
-      }
+    this.complementoCambioFechas()
   }
 
   cambiarCalendario(){
@@ -818,15 +825,34 @@ ngOnDestroy(): void {
       this.oCalendario = false
       this.selectedFake = ""
       this.selectedFake2 = ""
+      this.selected = undefined
+      this.selected2 = undefined
       this.ocultarDate = false;
       this.fechaRango = false;
-
     }
   }
 
-  abrirTopEmpresaTicket(empresa:topEmpresa){
+
+  complementoAbrirForm(){
+    if (this.selectedFake.length === 0 && this.selectedFake2.length === 0) {
+      this.fecha1 =this.primerDiaString
+      this.fecha2 = this.ultimoDiaString
+    } else  if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
+      this.fecha1 =this.selectedFake
+      this.fecha2 = this.selectedFake
+    }else  if(this.selectedFake === ""||  this.selectedFake ===undefined){
+      this.fecha1 =this.selectedFake2
+      this.fecha2 = this.selectedFake2
+    }else{
+      this.fecha1 =this.selectedFake
+      this.fecha2 = this.selectedFake2
+    }
+  }
+
+  abrirTopEmpresaTicket(empresa:number){   
+    this.complementoAbrirForm()
     let dialogRef  = this.dialog.open(ViewTicketsEnterpriseComponent,
-      {data: { empresa },
+      {data: {  fecha1:this.fecha1,fecha2:this.fecha2,empresa:empresa},
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
@@ -837,8 +863,9 @@ ngOnDestroy(): void {
   }
 
   abrirEstadoEmpresas(estatus:number){
+    this.complementoAbrirForm()
     let dialogRef  = this.dialog.open(ViewEstatusEnterpriseComponent,
-      {data: { },
+      {data: {  fecha1:this.fecha1,fecha2:this.fecha2,estatus:estatus },
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });
@@ -848,4 +875,9 @@ ngOnDestroy(): void {
   
   }
 
+  addDaysToDate(date:any, days:any) : Date{
+    var res = new Date(date);
+    res.setDate(res.getDate() + days);
+    return res;
+  }
 }

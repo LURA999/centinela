@@ -127,15 +127,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   }
 //Grupos select
 async llamarCve(){
-  await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
-    
-    console.log(result.container);
-    
-  for(let i=0;i<result.container.length;i++){
-    
-  
-  this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
-  }
+  await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{    
+    for(let i=0;i<result.container.length;i++){
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    }
   })
 }
   async procedimiento(){
@@ -154,12 +149,11 @@ async llamarCve(){
 
   async llamarUnTicket(){
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
-    this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo.toString())
-    this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
-    this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
-    this.form.controls["estado"].setValue(await this.datosTicket.estado.toString())
-    this.form.controls["cveUsuario"].setValue(await this.datosTicket.cveUsuario.toString())
-
+    this.form.controls["cveGrupo"].setValue(this.datosTicket.cveGrupo)
+    this.form.controls["tipo"].setValue(this.datosTicket.tipo.toString())
+    this.form.controls["prioridad"].setValue(this.datosTicket.prioridad.toString())
+    this.form.controls["estado"].setValue(this.datosTicket.estado.toString())
+    this.form.controls["cveUsuario"].setValue(this.datosTicket.cveUsuario.toString())
   }
 
  async llamarVariantesDeTicket(){

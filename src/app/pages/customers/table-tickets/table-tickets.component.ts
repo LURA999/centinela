@@ -13,6 +13,15 @@ import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 import { DataService } from 'src/app/core/services/data.service';
 
+
+interface tickets {
+  idTicket: number;
+  servicio:string;
+  fechaAbierta:string;
+  fechaCerrada:string | undefined;
+  grupo:string;
+}
+
 @Component({
   selector: 'app-table-tickets',
   templateUrl: './table-tickets.component.html',
@@ -20,6 +29,8 @@ import { DataService } from 'src/app/core/services/data.service';
 })
 export class TableTicketsComponent implements OnInit {
   @Input() hijoTickets :string ="";
+  tickets: tickets [] = [];
+
   identificador : string = this.ruta.url.split("/")[4];
   ELEMENT_DATA : any = []
   metodos = new RepeteadMethods()
