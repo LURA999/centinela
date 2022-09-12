@@ -26,6 +26,7 @@ import { Subscription } from 'rxjs';
 import { formatDate } from '@angular/common';
 import {  dashboardTicketsService } from 'src/app/core/services/dashboardTickets.service';
 import { responseService } from 'src/app/models/responseService.model';
+import { data } from 'jquery';
 
 export type ChartOptionsLine = {
   series: ApexAxisChartSeries;
@@ -35,7 +36,10 @@ export type ChartOptionsLine = {
   grid: ApexGrid;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
-  toolbar:ApexTooltip
+  toolbar:ApexTooltip,
+  yaxis:ApexYAxis,
+  tooltip:ApexTooltip
+
 };
 export type ChartOptionsBar = {
   series: ApexAxisChartSeries;
@@ -104,15 +108,12 @@ interface servicioTicket {
 })
 export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy {
  
-  dias:string[]=[]
-  semanas:string[]=[]
-  meses:string[]=[]
-name:string=""
+  fechaLabel:string[]=[]
   selected : Date | undefined;
   selected2 : Date | undefined;
   
-  selectedFake : String ="";
-  selectedFake2 : String ="";
+  selectedFake : string ="";
+  selectedFake2 : string ="";
 
 
   grupos: grupo[]=[]
@@ -156,7 +157,7 @@ name:string=""
   primerDiaString :string = formatDate(this.primerDia,'yyyy-MM-dd',"en-US");
   ultimoDiaString :string= formatDate(this.ultimoDia,'yyyy-MM-dd',"en-US");
 
-  graficaDeBarras(){
+  graficaDeBarras(primerDiaString:string,ultimoDiaString:string){
     this.chartOptionsBar = {
       title:{
         text:"Servicios con mas tickets"
@@ -210,7 +211,7 @@ name:string=""
       }
     };
 
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,6).subscribe(async (res : responseService)=>{
+    this.serviceDash.rangoDeFechas(primerDiaString, ultimoDiaString,6).subscribe(async (res : responseService)=>{
       let totalTickets : number []= []
       let categorias : string []= []
       let fecha : string []= []
@@ -241,8 +242,6 @@ name:string=""
       }
     //  totalTickets.push(0)
     //  categorias.push(this.ultimoDiaString)
-
-      console.log(totalTickets);
       
       this.chartOptionsBar = {
         title:{
@@ -293,184 +292,264 @@ name:string=""
   }
 
 
-  graficaDeLineas(){
- 
-
-var fecha=1
-    if(fecha==1){
-      for(let i=0;i<7;i++){
-      
-    
-        this.grupos.push({name:"Administrador"+i, data:[] })
-        }
-        console.log(this.grupos);
-        
-      
-      //Chartoption para dias
-      for(let i=1;i<=30;i++){
-        this.dias.push(i+"")
-      
-      
-      this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe(async (res : responseService)=>{
-        //aqui va el if//
-       this.chartOptionsLine = {
-         series: this.grupos,
-         chart: {
-           height: 350,
-           type: "line",
-           zoom: {
-             enabled: false
-           }
-         },
-         dataLabels: {
-           enabled: false
-         },
-         stroke: {
-           curve: "straight"
-         },
-         title: {
-           text: "Tickets por departamento",
-           align: "left"
-         },
-         grid: {
-           row: {
-             colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-             opacity: 0.5
-           }
-         },
-         xaxis: {
-           categories: this.dias
-         }
-       };
-     })
-      
-      
-      }
-        }else if(fecha ==2)
-        //Chartoption para semanas
-        {
-          console.log("Entra");
-          
-          for(let i=1;i<=12;i++){
-            this.semanas.push(i+"")
-            }
-
-
-            this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe(async (res : responseService)=>{
-              //aqui va el if//
-             this.chartOptionsLine = {
-               series: [
-                 
-                   {
-                     name: "Administracion:",
-                     data:[1,10,15,1,10,15,10,15,1,10,15,10]
-                   },
-                   {
-                     name: "Soporte:",
-                     data:[2,3,22,1,10,15,10,15,1,43,15,10]
-                   }
-                 
-                 
-               ],
-               chart: {
-                 height: 350,
-                 type: "line",
-                 zoom: {
-                   enabled: false
-                 }
-               },
-               dataLabels: {
-                 enabled: false
-               },
-               stroke: {
-                 curve: "straight"
-               },
-               title: {
-                 text: "Tickets por departamento",
-                 align: "left"
-               },
-               grid: {
-                 row: {
-                   colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-                   opacity: 0.5
-                 }
-               },
-               xaxis: {
-                 categories: this.semanas
-               }
-             };
-           })
-
-
-
-
-        }else if(fecha==3){
-//Chartoption para meses
-          for(let i=1;i<=12;i++){
-            this.meses.push(i+"")
-            }
-
-            this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,5).subscribe(async (res : responseService)=>{
-              //aqui va el if//
-             this.chartOptionsLine = {
-               series: [
-                 
-                   {
-                     name: "Administracion:",
-                     data:[1,10,15,1,10,15,10,15,1,10,15,10]
-                   },
-                   {
-                     name: "Soporte:",
-                     data:[2,3,22,1,10,15,10,15,1,43,15,10]
-                   }
-                 
-                 
-               ],
-               chart: {
-                 height: 350,
-                 type: "line",
-                 zoom: {
-                   enabled: false
-                 }
-               },
-               dataLabels: {
-                 enabled: false
-               },
-               stroke: {
-                 curve: "straight"
-               },
-               title: {
-                 text: "Tickets por departamento",
-                 align: "left"
-               },
-               grid: {
-                 row: {
-                   colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-                   opacity: 0.5
-                 }
-               },
-               xaxis: {
-                 categories: this.meses
-               }
-             };
-           })
-
-        }
-
-    
-
+  graficaDeLineas(selectedFake:string,selectedFake2:string){
+  this.grupos = []
+  this.fechaLabel = []
+  var fechaInicio :Date = new Date(selectedFake)
+  var fechaFin  :Date  = new Date(selectedFake2);
+  var diff = fechaFin.getTime() - fechaInicio.getTime();
+  let cantidadMeses :number = Number(fechaFin.getMonth()) + Number(fechaInicio.getMonth())
+  console.log("meses "+cantidadMeses+" fechaFin "+Number(fechaFin.getMonth())+", fechaInicio "+Number(fechaInicio.getMonth()));
    
+  let diasCantidad :number = (diff/(1000*60*60*24))+1;
+  let dataGrupo : number []= []
+  let dataGrupoAux : number []= []
+  let grupoCambiar : string = ""
+  let pasarForAwait : boolean = false
+
+  this.chartOptionsLine = {
+    series: [
+        {
+          name: "No hay tickets",
+          data:[0]
+        }
+    ],
+    chart: {
+      height: 350,
+      type: "line",
+      zoom: {
+        enabled: false
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: "straight"
+    },
+    title: {
+      text: "Tickets por departamento",
+      align: "left"
+    },
+    grid: {
+      row: {
+        colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+        opacity: 0.5
+      }
+    },
+    xaxis: {
+      categories: ["No hay tickets"]
+    }
+  };
+
+  for (let i = 0; i < (
+  diasCantidad<=31&&diasCantidad>0?diasCantidad
+  :diasCantidad<=90?Math.ceil(diasCantidad/7)
+  :diasCantidad<=365?(new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?11:10)
+  :0); i++) {
+    dataGrupoAux.push(0)
+  } 
+  console.log(dataGrupoAux);
+
+  if (diasCantidad<=31) {
+    //insertar dias
+    for(let i=1;i<=diasCantidad;i++){                
+      this.fechaLabel.push(formatDate(this.addDaysToDate(selectedFake,i),'yyyy-MM-dd',"en-US"))
+    }
+  } else if (diasCantidad<=90) {
+    //insertar semanas
+    for(let i=1;i<=Math.ceil(diasCantidad/7);i++){
+      this.fechaLabel.push(formatDate(this.addDaysToDate(fechaInicio,i*7),'yyyy-MM-dd',"en-US")) 
+    }
+  } else if (new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?366:365) {
+    //insertar meses
+    for(let i=0;i<=12;i++){
+      this.fechaLabel.push(formatDate(this.addDaysToDate(new Date(this.date.getFullYear(), i, 1),
+      Number(new Date(this.date.getFullYear(), i + 1, 0).getDay())),'yyyy-MM-dd',"en-US")) 
+      
+    }
+    console.log(this.fechaLabel);
+    
   }
 
+  this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,5).subscribe(async (res : responseService)=>{
+    
+    if(diasCantidad<=31 && res.container.length > 0){
+      dataGrupo = dataGrupoAux  
+      grupoCambiar = res.container[0].nombre;      
+      for await (const i of res.container) {        
+        if(grupoCambiar.toString() === i.nombre.toString()){ 
+          /*linea 375 y 381, buscamos el indice que le pertenece a cada dia seleccionado del calendario, para llenarlo
+          con sus respectivos tickets*/
+          dataGrupo[this.fechaLabel.indexOf(i.fecha) ] = i.totalTicket;
+        }else{          
+          this.grupos.push({name:grupoCambiar, data:dataGrupo })
+          grupoCambiar = i.nombre;  
+          dataGrupo = Array<number>(dataGrupo.length).fill(0)          
+          dataGrupo[this.fechaLabel.indexOf(i.fecha)] = i.totalTicket;
+        }
+      }
+      this.grupos.push({name:grupoCambiar, data:dataGrupo })
 
+    }else if(diasCantidad <=90 && res.container.length> 0 &&diasCantidad>31){
+      dataGrupo = dataGrupoAux  
+      grupoCambiar = res.container[0].nombre;      
+      for await (const i of res.container) {   
+        if(grupoCambiar.toString() === i.nombre.toString()){ 
+          /**Lo que hacemos en los for await, es agarrar todas las fechas del eje X y las comparamos
+           * con las fechas de las consultas, el booleano, es para controlar las inseciones y para no
+           * insertar en mas fechas/categorias/eje x de la grafica
+           */
+          for await (const x of this.fechaLabel) {
+            console.log(new Date(i.fecha).getTime()+" <= "+new Date(x).getTime());
+            
+          if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+
+            dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket) 
+            pasarForAwait =true
+            }
+          }
+          pasarForAwait =false
+        }else{  
+          
+          this.grupos.push({name:grupoCambiar, data:dataGrupo })
+          grupoCambiar = i.nombre;  
+          dataGrupo = Array<number>(dataGrupo.length).fill(0)   
+          for await (const x of this.fechaLabel) {
+            console.log(i.fecha+" <= "+x);
+
+            console.log(new Date(i.fecha).getTime()+" <= "+new Date(x).getTime());
+
+            if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+              dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket)      
+              pasarForAwait =true
+            }
+          }
+          pasarForAwait =false
+
+       }
+      }
+
+      this.grupos.push({name:grupoCambiar, data:dataGrupo })
+
+
+    }else if(new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?366:365 && res.container.length > 0 && diasCantidad >90){
+      pasarForAwait =false
+      console.log(dataGrupoAux);
+      
+      dataGrupo = dataGrupoAux  
+      grupoCambiar = res.container[0].nombre;      
+      for await (const i of res.container) {   
+        if(grupoCambiar.toString() === i.nombre.toString()){ 
+          
+          for await (const x of this.fechaLabel) {
+            console.log(i.fecha+" <= "+x);
+
+            console.log(new Date(i.fecha).getTime() +" <= "+ new Date(x).getTime());
+            console.log(new Date(i.fecha).getTime() <= new Date(x).getTime());
+            
+          if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+            dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket) 
+            pasarForAwait =true
+            console.log("entro");
+            console.log(dataGrupo);
+            
+            }
+          }
+          pasarForAwait =false
+          
+        }else{  
+          this.grupos.push({name:grupoCambiar, data:dataGrupo })
+          grupoCambiar = i.nombre;  
+          dataGrupo = Array<number>(dataGrupo.length).fill(0)   
+          for await (const x of this.fechaLabel) {
+            console.log(i.fecha+" <= "+x);
+
+            console.log(new Date(i.fecha).getTime() +" <= "+ new Date(x).getTime());
+            console.log(new Date(i.fecha).getTime() <= new Date(x).getTime());
+            if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
+              
+              dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket)      
+              pasarForAwait =true
+              console.log("entro");
+              console.log(dataGrupo);
+              
+            }
+          }
+          pasarForAwait =false
+
+       }
+      }
+
+      this.grupos.push({name:grupoCambiar, data:dataGrupo })
+
+    }  
+    console.log(dataGrupo);
+    
+    this.chartOptionsLine = {
+      series: this.grupos,
+      chart: {
+        height: 350,
+        type: "line",
+        zoom: {
+          enabled: false
+        }
+      },
+      tooltip: {
+        shared: false,
+        intersect: false,
+        followCursor:true,
+        x: {
+          show: true
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "straight"
+      },
+      title: {
+        text: "Tickets por departamento",
+        align: "left"
+      },
+      grid: {
+        row: {
+          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: this.fechaLabel,
+      },
+      yaxis:{
+        show:true
+      }
+    };
+      
+  })
+  
+  }
+
+  //min2 :Date = new Date("2022-09-30");
+ // min :Date = this.addDaysToDate(this.min2,5)
+   addDaysToDate(date:any, days:any) : Date{
+    var res = new Date(date);
+    res.setDate(res.getDate() + days);
+    return res;
+  }
   constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
     private dataService:DataLayoutService, private serviceDash : dashboardTicketsService) {
-    this.graficaDeLineas()
-    this.graficaDeBarras()
+     
+
+    this.graficaDeLineas(this.primerDiaString,this.ultimoDiaString)
+    this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
 
       
 
   }
+
+ 
 
 ngAfterViewInit(): void {
   this.$sub.add(this.breakpointObserver.observe([
@@ -486,14 +565,14 @@ ngOnDestroy(): void {
  this.$sub.unsubscribe()
 }
   ngOnInit(): void {
-    this.llenarListaEstadoTicket()
-    this.llenarListaEmpresas()
-    this.llenarListaTickets()
-    this.llenarPieTipos()
-    this.llenarPieAgentes()
+    this.llenarListaEstadoTicket(this.primerDiaString,this.ultimoDiaString)
+    this.llenarListaEmpresas(this.primerDiaString,this.ultimoDiaString)
+    this.llenarListaTickets(this.primerDiaString,this.ultimoDiaString)
+    this.llenarPieTipos(this.primerDiaString,this.ultimoDiaString)
+    this.llenarPieAgentes(this.primerDiaString,this.ultimoDiaString)
   }
 
-  llenarPieAgentes(){
+  llenarPieAgentes(selectedFake:string,selectedFake2:string){
     
     this.chartOptionsPieAgentes = {
       dataLabels:{
@@ -533,7 +612,7 @@ ngOnDestroy(): void {
         }
       ]
     };
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,2).subscribe(async(res : responseService)=>{      
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,2).subscribe(async(res : responseService)=>{      
       for await (const i of res.container) {
         this.chartOptionsPieAgentes.labels.push(i.nombre)
         this.chartOptionsPieAgentes.series!.push(Number(i.totalTicket))
@@ -546,8 +625,8 @@ ngOnDestroy(): void {
     
   }
 
-  llenarPieTipos(){
-
+  llenarPieTipos(selectedFake:string,selectedFake2:string){
+    this.tiposTickets = []
     this.chartOptionsPieTipos = {
       dataLabels:{
         enabled: false
@@ -594,7 +673,7 @@ ngOnDestroy(): void {
     };
 
     
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,1).subscribe(async(res : responseService)=>{
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,1).subscribe(async(res : responseService)=>{
       for await (const i of res.container) {
         this.tiposTickets.push({idTipoTicket:i.idTipoTicket,nombre:i.nombre,totalTicket:i.totalTicket})
       }
@@ -616,25 +695,26 @@ ngOnDestroy(): void {
     }) 
   }
 
-  async llenarListaTickets(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,7).subscribe((res : responseService)=>{
-      console.log(res.container); 
+  async llenarListaTickets(selectedFake:string,selectedFake2:string){
+    this.tickets = []
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,7).subscribe((res : responseService)=>{
     })
     this.tickets.push({idTicket:3,asunto:"VPN",descripcion:"este es un ticket",tipo:"Solicitud"})
     this.tickets.push({idTicket:4,asunto:"Tunel",descripcion:"es otro ticket",tipo:"Atencion"})
     this.tickets.push({idTicket:5,asunto:"Control de radios",descripcion:"otro tro tickeet",tipo:"Soporte"})
   }
-  async llenarListaEmpresas(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,3).subscribe((res : responseService)=>{
-      console.log(res.container); 
+  async llenarListaEmpresas(selectedFake:string,selectedFake2:string){
+    this.empresa = []
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3).subscribe((res : responseService)=>{
     })
     this.empresa.push({nombre:"la mejor ",totalTicket: 3})
     this.empresa.push({nombre:"la mejor ",totalTicket: 3})
     this.empresa.push({nombre:"lamejor ",totalTicket: 3})
   }
 
-  async llenarListaEstadoTicket(){
-    this.serviceDash.rangoDeFechas(this.primerDiaString,this.ultimoDiaString,4).subscribe(async (res : responseService)=>{
+  async llenarListaEstadoTicket(primerDiaString:string,ultimoDiaString:string){
+    this.estadoServicio = []
+    this.serviceDash.rangoDeFechas(primerDiaString,ultimoDiaString,4).subscribe(async (res : responseService)=>{
       for await (const iterator of res.container) {
         this.estadoServicio.push({idEstadoTicket:Number(res.container[0].idEstadoTicket),estado:res.container[0].estado,totalTicket:res.container[0].totalTicket})    
       }
@@ -642,13 +722,67 @@ ngOnDestroy(): void {
   }
 
   cambiarFecha1(selected : Date){
+
     let dateNew = new Date(selected);
-    this.selectedFake =  formatDate(dateNew,'yyyy-MM-dd',"en-US");    
+    this.selectedFake =  formatDate(dateNew,'yyyy-MM-dd',"en-US");   
+    
+    if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
+      this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake)
+      this.llenarListaEmpresas(this.selectedFake,this.selectedFake)
+      this.llenarListaTickets(this.selectedFake,this.selectedFake)
+      this.llenarPieTipos(this.selectedFake,this.selectedFake)
+      this.llenarPieAgentes(this.selectedFake,this.selectedFake)    
+      this.graficaDeLineas(this.selectedFake,this.selectedFake)
+      this.graficaDeBarras(this.selectedFake,this.selectedFake)
+    }else  if(this.selectedFake === "" || this.selectedFake ===undefined){
+        this.llenarListaEstadoTicket(this.selectedFake2,this.selectedFake2)
+        this.llenarListaEmpresas(this.selectedFake2,this.selectedFake2)
+        this.llenarListaTickets(this.selectedFake2,this.selectedFake2)
+        this.llenarPieTipos(this.selectedFake2,this.selectedFake2)
+        this.llenarPieAgentes(this.selectedFake2,this.selectedFake2)    
+        this.graficaDeLineas(this.selectedFake2,this.selectedFake2)
+        this.graficaDeBarras(this.selectedFake2,this.selectedFake2)
+      }else{
+          this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
+          this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
+          this.llenarListaTickets(this.selectedFake,this.selectedFake2)
+          this.llenarPieTipos(this.selectedFake,this.selectedFake2)
+          this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
+          this.graficaDeLineas(this.selectedFake,this.selectedFake2)
+          this.graficaDeBarras(this.selectedFake,this.selectedFake2)
+           }
   }
 
   cambiarFecha2(selected : Date){
     let dateNew = new Date(selected);
     this.selectedFake2 = formatDate(dateNew,'yyyy-MM-dd',"en-US");    
+
+    if(this.selectedFake2 === "" || this.selectedFake2 ===undefined){
+      this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake)
+      this.llenarListaEmpresas(this.selectedFake,this.selectedFake)
+      this.llenarListaTickets(this.selectedFake,this.selectedFake)
+      this.llenarPieTipos(this.selectedFake,this.selectedFake)
+      this.llenarPieAgentes(this.selectedFake,this.selectedFake)    
+      this.graficaDeLineas(this.selectedFake,this.selectedFake)
+      this.graficaDeBarras(this.selectedFake,this.selectedFake)
+    }else  if(this.selectedFake === "" || this.selectedFake ===undefined){
+        this.llenarListaEstadoTicket(this.selectedFake2,this.selectedFake2)
+        this.llenarListaEmpresas(this.selectedFake2,this.selectedFake2)
+        this.llenarListaTickets(this.selectedFake2,this.selectedFake2)
+        this.llenarPieTipos(this.selectedFake2,this.selectedFake2)
+        this.llenarPieAgentes(this.selectedFake2,this.selectedFake2)    
+        this.graficaDeLineas(this.selectedFake2,this.selectedFake2)
+        this.graficaDeBarras(this.selectedFake2,this.selectedFake2)
+      }else{
+          this.llenarListaEstadoTicket(this.selectedFake,this.selectedFake2)
+          this.llenarListaEmpresas(this.selectedFake,this.selectedFake2)
+          this.llenarListaTickets(this.selectedFake,this.selectedFake2)
+          this.llenarPieTipos(this.selectedFake,this.selectedFake2)
+          this.llenarPieAgentes(this.selectedFake,this.selectedFake2) 
+          this.graficaDeLineas(this.selectedFake,this.selectedFake2)
+          this.graficaDeBarras(this.selectedFake,this.selectedFake2)
+           }
+
   }
 
   cambiarCalendario(){
