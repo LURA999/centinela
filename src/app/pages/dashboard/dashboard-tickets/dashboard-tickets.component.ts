@@ -32,6 +32,7 @@ import { DeviceModel } from 'src/app/models/device.model';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { ViewTicketsEnterpriseComponent } from '../forms/view-tickets-enterprise/view-tickets-enterprise.component';
 import { ViewEstatusEnterpriseComponent } from '../forms/view-estatus-enterprise/view-estatus-enterprise.component';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 export type ChartOptionsLine = {
   series: ApexAxisChartSeries;
@@ -174,6 +175,36 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   fecha1:string = ""
   fecha2:string = ""
 
+
+
+  constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
+    private dataService:DataLayoutService, private serviceDash : dashboardTicketsService,
+    private dialog:NgDialogAnimationService, private auth : AuthService) {
+      this.graficaDeLineas(this.primerDiaString,this.ultimoDiaString)
+      this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
+  }
+
+ngAfterViewInit(): void {
+  this.$sub.add(this.breakpointObserver.observe([
+    '(max-width: 1200px)'
+  ]).subscribe(result => {      
+   if (result.matches) {    
+   this.dataService.open.emit(1200)
+    }
+  })) ;
+}
+
+ngOnDestroy(): void {
+ this.$sub.unsubscribe()
+}
+  ngOnInit(): void {
+    this.llenarListaEstadoTicket(this.primerDiaString,this.ultimoDiaString)
+    this.llenarListaEmpresas(this.primerDiaString,this.ultimoDiaString)
+    this.llenarListaTickets(this.primerDiaString,this.ultimoDiaString)
+    this.llenarPieTipos(this.primerDiaString,this.ultimoDiaString)
+    this.llenarPieAgentes(this.primerDiaString,this.ultimoDiaString)
+  }
+
   buscarFecha(){
     this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
 
@@ -233,7 +264,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
       }
     };
 
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,6).subscribe(async (res : responseService)=>{
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,6,this.auth.getCveGrupo()).subscribe(async (res : responseService)=>{
       let maxY : number = 0
       let estructura : any []= []
       for await (const i of res.container) {
@@ -378,14 +409,14 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
       
     }
   
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,5).subscribe(async (res : responseService)=>{
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,5,this.auth.getCveGrupo()).subscribe(async (res : responseService)=>{
       
       if(diasCantidad<=31 && res.container.length > 0){
         dataGrupo = dataGrupoAux  
         grupoCambiar = res.container[0].nombre;      
         for await (const i of res.container) {        
           if(grupoCambiar.toString() === i.nombre.toString()){ 
-            /*linea 375 y 381, buscamos el indice que le pertenece a cada dia seleccionado del calendario, para llenarlo
+            /*linea 388 y 395, buscamos el indice que le pertenece a cada dia seleccionado del calendario, para llenarlo
             con sus respectivos tickets*/
             dataGrupo[this.fechaLabel.indexOf(i.fecha) ] = i.totalTicket;
           }else{          
@@ -403,7 +434,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
         for await (const i of res.container) {   
           if(grupoCambiar.toString() === i.nombre.toString()){ 
             /**Lo que hacemos en los for await, es agarrar todas las fechas del eje X y las comparamos
-             * con las fechas de las consultas, el booleano, es para controlar las inseciones y para no
+             * con las fechas de las consultas, el booleano es para controlar las inserciones y para no
              * insertar en mas fechas/categorias/eje x de la grafica
              */
             for await (const x of this.fechaLabel) {
@@ -441,49 +472,54 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   
       }else if(new Date(this.date.getFullYear(), 2 + 1, 0).getDay() > 28?366:365 && res.container.length > 0 && diasCantidad >90){
         pasarForAwait =false
-        console.log(dataGrupoAux);
-        
         dataGrupo = dataGrupoAux  
         grupoCambiar = res.container[0].nombre;      
         for await (const i of res.container) {   
           if(grupoCambiar.toString() === i.nombre.toString()){ 
-            
-            for await (const x of this.fechaLabel) {
-              console.log(i.fecha+" <= "+x);
   
-              console.log(new Date(i.fecha).getTime() +" <= "+ new Date(x).getTime());
-              console.log(new Date(i.fecha).getTime() <= new Date(x).getTime());
-              
+           /*Se usaron dos opciones para controlar los insert en el array DataGroup, se decidio usar la
+            que no esta comentada, pero se dejo el otro metodo, por si al caso*/
+          pasarForAwait =false
+           let x =0;
+           while (!pasarForAwait) {
+            if(new Date(i.fecha).getTime() <= new Date(this.fechaLabel[x]).getTime()){
+              dataGrupo[x] +=Number(await i.totalTicket)      
+              pasarForAwait =true
+              }
+              x++;
+            }
+            /*for await (const x of this.fechaLabel) { 
             if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
               dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket) 
               pasarForAwait =true
-              console.log("entro");
-              console.log(dataGrupo);
-              
               }
             }
             pasarForAwait =false
+           */ 
             
           }else{  
             this.grupos.push({name:grupoCambiar, data:dataGrupo })
             grupoCambiar = i.nombre;  
             dataGrupo = Array<number>(dataGrupo.length).fill(0)   
+            
+           /*
             for await (const x of this.fechaLabel) {
-              console.log(i.fecha+" <= "+x);
-  
-              console.log(new Date(i.fecha).getTime() +" <= "+ new Date(x).getTime());
-              console.log(new Date(i.fecha).getTime() <= new Date(x).getTime());
               if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
-                
                 dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket)      
                 pasarForAwait =true
-                console.log("entro");
-                console.log(dataGrupo);
-                
               }
             }
             pasarForAwait =false
-  
+            */
+           let x =0;
+           pasarForAwait =false
+           while (!pasarForAwait) {
+            if(new Date(i.fecha).getTime() <= new Date( this.fechaLabel[x]).getTime()){
+              dataGrupo[x] +=Number(await i.totalTicket)      
+              pasarForAwait =true
+              }
+              x++;
+            }
          }
         }
   
@@ -537,35 +573,6 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
     
   }
 
-
-  constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
-    private dataService:DataLayoutService, private serviceDash : dashboardTicketsService,
-    private dialog:NgDialogAnimationService) {
-      this.graficaDeLineas(this.primerDiaString,this.ultimoDiaString)
-      this.graficaDeBarras(this.primerDiaString,this.ultimoDiaString)
-  }
-
-ngAfterViewInit(): void {
-  this.$sub.add(this.breakpointObserver.observe([
-    '(max-width: 1200px)'
-  ]).subscribe(result => {      
-   if (result.matches) {    
-   this.dataService.open.emit(1200)
-    }
-  })) ;
-}
-
-ngOnDestroy(): void {
- this.$sub.unsubscribe()
-}
-  ngOnInit(): void {
-    this.llenarListaEstadoTicket(this.primerDiaString,this.ultimoDiaString)
-    this.llenarListaEmpresas(this.primerDiaString,this.ultimoDiaString)
-    this.llenarListaTickets(this.primerDiaString,this.ultimoDiaString)
-    this.llenarPieTipos(this.primerDiaString,this.ultimoDiaString)
-    this.llenarPieAgentes(this.primerDiaString,this.ultimoDiaString)
-  }
-
   llenarPieAgentes(selectedFake:string,selectedFake2:string){
     
     this.chartOptionsPieAgentes = {
@@ -610,7 +617,7 @@ ngOnDestroy(): void {
         }
       ]
     };
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,2).subscribe(async(res : responseService)=>{      
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,2,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{      
       for await (const i of res.container) {
         this.chartOptionsPieAgentes.labels.push(i.nombre)
         this.chartOptionsPieAgentes.series!.push(Number(i.totalTicket))
@@ -671,7 +678,7 @@ ngOnDestroy(): void {
     };
 
     
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,1).subscribe(async(res : responseService)=>{
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,1,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{
       for await (const i of res.container) {
         this.tiposTickets.push({idTipoTicket:i.idTipoTicket,nombre:i.nombre,totalTicket:i.totalTicket})
       }
@@ -736,7 +743,7 @@ ngOnDestroy(): void {
   }
 
   async llenarListaTickets(selectedFake:string,selectedFake2:string){
-    this.serviceDash.rangoDeFechasForm(selectedFake,selectedFake2,0,0).subscribe(async(res : responseService)=>{    
+    this.serviceDash.rangoDeFechasForm(selectedFake,selectedFake2,0,0,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{    
     this.ELEMENT_DATA=[];
     console.log(res);
     
@@ -753,7 +760,7 @@ ngOnDestroy(): void {
   }
   async llenarListaEmpresas(selectedFake:string,selectedFake2:string){
     this.empresa = []
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3).subscribe(async(res : responseService)=>{      
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{      
       for await (const i of res.container) {
         this.empresa.push({nombre:i.cliente,totalTicket: i.totalTicket,idCliente:i.cveCliente})
       }
@@ -762,7 +769,7 @@ ngOnDestroy(): void {
 
   async llenarListaEstadoTicket(selectedFake:string,selectedFake2:string){
  this.estadoServicio = []    
-    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,4).subscribe(async (res : responseService)=>{
+    this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,4,this.auth.getCveGrupo()).subscribe(async (res : responseService)=>{
       for await (const i of res.container) {
         this.estadoServicio.push({idEstadoTicket:Number(i.idEstadoTicket),estado:i.estado,totalTicket:i.totalTicket})    
       }
@@ -849,10 +856,10 @@ ngOnDestroy(): void {
     }
   }
 
-  abrirTopEmpresaTicket(empresa:number){   
+  abrirTopEmpresaTicket(empresa:number,nombreEmpr:string){   
     this.complementoAbrirForm()
     let dialogRef  = this.dialog.open(ViewTicketsEnterpriseComponent,
-      {data: {  fecha1:this.fecha1,fecha2:this.fecha2,empresa:empresa},
+      {data: {  fecha1:this.fecha1,fecha2:this.fecha2,empresa:empresa,nombre:nombreEmpr},
       animation: { to: "bottom" },
       height:"auto", width:"70%"
      });

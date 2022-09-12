@@ -16,7 +16,7 @@
 
     <ng-container matColumnDef="fechaCerrada">
         <th mat-header-cell *matHeaderCellDef> Fecha cerrada </th>
-        <td mat-cell *matCellDef="let element" (click)="salirForm()" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]">{{element.fechaCerrada !== undefined? "No asignada": element.fechaCerrada}} </td>
+        <td mat-cell *matCellDef="let element" (click)="salirForm()" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]">{{element.fechaCerrada ? element.fechaCerrada  : "No asignada"}} </td>
     </ng-container>
 
     <ng-container matColumnDef="grupo">

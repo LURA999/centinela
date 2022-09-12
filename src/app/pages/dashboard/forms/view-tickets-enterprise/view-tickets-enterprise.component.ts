@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { dashboardTicketsService } from 'src/app/core/services/dashboardTickets.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { NewEquipamentComponent } from 'src/app/pages/customers/popup/new-equipament/new-equipament.component';
+import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
 
 
 
@@ -15,6 +16,7 @@ import { NewEquipamentComponent } from 'src/app/pages/customers/popup/new-equipa
 })
 export class ViewTicketsEnterpriseComponent{
 
+  public  metodos = new RepeteadMethods()
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,public dialogRef: MatDialogRef<ViewTicketsEnterpriseComponent>) { 
     

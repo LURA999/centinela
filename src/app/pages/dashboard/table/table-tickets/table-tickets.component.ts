@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from 'express';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { dashboardTicketsService } from 'src/app/core/services/dashboardTickets.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { NewEquipamentComponent } from 'src/app/pages/customers/popup/new-equipament/new-equipament.component';
@@ -36,12 +37,10 @@ export class TableTicketsComponent implements OnInit {
   displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   @ViewChild ("paginator") paginator!:MatPaginator;
-  constructor(private serviceDash : dashboardTicketsService) { }
+  constructor(private serviceDash : dashboardTicketsService,private auth :AuthService) { }
 
   ngOnInit(): void {    
-      console.log(this.selectedFake,this.selectedFake2);
-      
-    this.serviceDash.rangoDeFechasForm(this.selectedFake,this.selectedFake2,this.estatus,this.empresa).subscribe(async(res : responseService)=>{    
+    this.serviceDash.rangoDeFechasForm(this.selectedFake,this.selectedFake2,this.estatus,this.empresa,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{    
       if (res.container.length >0) {
       this.ELEMENT_DATA=[];
       this.dataSource = new MatTableDataSource();

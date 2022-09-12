@@ -11,11 +11,11 @@ export class dashboardTicketsService {
     api = environment.api;
     constructor(private http : HttpClient) { }
 
-  rangoDeFechas(fechaInicio:string, fechaFinal : string, condicion:number):Observable<responseService>{
-    return this.http.get<responseService>(this.api+"Tickets/ticketDashboard.php?fechaInicio="+fechaInicio+"&fechaFin="+fechaFinal+"&tipo="+condicion)
+  rangoDeFechas(fechaInicio:string, fechaFinal : string, condicion:number,cveGrupo : number):Observable<responseService>{
+    return this.http.get<responseService>(this.api+"Tickets/ticketDashboard.php?fechaInicio="+fechaInicio+"&fechaFin="+fechaFinal+"&tipo="+condicion+"&grupo="+cveGrupo)
   }
 
-  rangoDeFechasForm(fechaInicio:string, fechaFinal : string, condicion:number,empresa:number):Observable<responseService>{
-    return this.http.get<responseService>(this.api+"Tickets/ticketDashboard.php?fechaInicio="+fechaInicio+"&fechaFin="+fechaFinal+"&filtro="+condicion+"&empresa="+empresa)
+  rangoDeFechasForm(fechaInicio:string, fechaFinal : string, condicion:number,empresa:number,cveGrupo : number):Observable<responseService>{
+    return this.http.get<responseService>(this.api+"Tickets/ticketDashboard.php?fechaInicio="+fechaInicio+"&fechaFin="+fechaFinal+"&filtro="+condicion+"&empresa="+empresa+"&grupo="+cveGrupo)
   }
 }
