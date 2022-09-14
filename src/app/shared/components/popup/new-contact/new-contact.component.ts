@@ -112,12 +112,7 @@ export class NewContactComponent implements OnInit {
       this.contactoModel.idCliente = this.data.idCliente;
       this.modelLog.cveUsuario = this.serviceAuth.getCveId();
       this.modelLog.serviciosAltas = this.cveServicios.toString();
-<<<<<<< HEAD
-      this.modelLog.cveCliente = Number(this.id);      
-
-=======
       this.modelLog.cveCliente = Number(this.id);
->>>>>>> 34015760022bd1f6c3b6e3deff7961c029232d9e
       if(this.data.opc == false){
         if(this.agregarForm.valid !=false){
             this.contactoModel.cveContacto = this.idAuto;

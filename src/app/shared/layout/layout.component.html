@@ -1,6 +1,5 @@
 <div (click)="close()" class="navbar-container " [class.example-is-mobile]="mobileQuery.matches">
   <mat-toolbar class="navbar" color="primary">
-
 <div  class="spacer">
   <div class="left">
   <div class="top">
@@ -9,7 +8,7 @@
     </button>
   </div>
 <div class="top">
-  <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home">
+  <a class="navbar-brand" [routerLink]="['/admin/dashboard/dashboard-tickets']" matTooltip="Home">
     <div class="col">
       <figure>
   <img class="img-account-profile"  [src]="logo">
@@ -73,7 +72,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="ticketsbooleanlabel === false || this.botontickets===false&&this.botontodos===false "   class="tipo">Tickets</mat-label>
         <mat-divider></mat-divider>
-        <mat-option (click)="irTicket()" *ngFor="let option of filteredTickets  | async" [value]="option" >
+        <mat-option (click)="irTicket(option)" *ngFor="let option of filteredTickets  | async" [value]="option" >
           <mat-icon id="confirmation_number">confirmation_number </mat-icon>
           <div id="ticket">
             {{option.split(" ")[0]}}
@@ -151,7 +150,11 @@
         <div  id="header-nav">
           <p> Menu </p>
         </div>
-        <mat-expansion-panel >  
+        <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-tickets']" >
+          <mat-icon mat-list-icon >dashboard</mat-icon>
+          <p mat-line > Dashboard  </p>
+        </a>
+        <!--<mat-expansion-panel >  
           <mat-expansion-panel-header>
             <mat-icon mat-list-icon style="margin-top: 8px;">dashboard </mat-icon> 
             <p mat-line style="margin-top: 11px;"> Dashboard </p>
@@ -162,7 +165,7 @@
             Red</a>
           <a mat-list-item [routerLink]="['/admin/dashboard/dashboard-tickets']" routerLinkActive="active" mat-line>
             Tickets</a>
-        </mat-expansion-panel>
+        </mat-expansion-panel> -->
 
         <a mat-list-item [routerLink]="['/admin/client']" >
           <mat-icon mat-list-icon >person</mat-icon>
@@ -174,8 +177,8 @@
   <mat-icon mat-list-icon style="margin-top: 8px;">wifi_tethering </mat-icon> 
   <p mat-line style="margin-top: 11px;"> Red </p>
   </mat-expansion-panel-header>
-  <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-    Ping</a>
+  <!--<a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+    Ping</a>-->
   <a mat-list-item [routerLink]="['/admin/red/repeater']" routerLinkActive="active" mat-line>
     Repetidores</a>
   <a mat-list-item [routerLink]="['/admin/red/segments']" routerLinkActive="active" mat-line>
@@ -187,7 +190,7 @@
 
 
 
-<a mat-list-item [routerLink]="['/admin/manual']" routerLinkActive="active" mat-line [style.display]="accesoAdminFacturacion()">
+<!--<a mat-list-item [routerLink]="['/admin/manual']" routerLinkActive="active" mat-line [style.display]="accesoAdminFacturacion()">
   <mat-icon mat-list-icon>
     sticky_note_2
   </mat-icon>
@@ -203,7 +206,7 @@
       Externas</a>
     <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
       Internas</a>
-  </mat-expansion-panel>
+  </mat-expansion-panel>-->
 
   <mat-expansion-panel >  
     <mat-expansion-panel-header>
@@ -212,13 +215,13 @@
     </mat-expansion-panel-header>
       <a mat-list-item [routerLink]="['/admin/tickets/general']" routerLinkActive="active" mat-line>
         General</a>
-      <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
-        Informacion</a>
+      <!--<a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active" mat-line>
+        Informacion</a> -->
       <a mat-list-item [routerLink]="['/admin/tickets/ticket-entry']" routerLinkActive="active" mat-line>
         Altas de ticket</a>
   </mat-expansion-panel>
 
-
+<!--
 <mat-expansion-panel  [style.display]="accesoAdminFacturacion()">  
   <mat-expansion-panel-header >
     <mat-icon mat-list-icon style="margin-top: 8px;">folder</mat-icon> 
@@ -238,7 +241,7 @@
     assignment_turned_in
   </mat-icon>
   <p mat-line> Ordenes </p>
-</a>
+</a>-->
 
 <mat-expansion-panel  [style.display]="accesoAdminSoporte()">  
   <mat-expansion-panel-header >
