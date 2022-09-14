@@ -60,6 +60,10 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 34015760022bd1f6c3b6e3deff7961c029232d9e
   Grupos:Grupo[]=[]
   mobileQuery: MediaQueryList;
   position : boolean = false
@@ -102,6 +106,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   comment: Comment[] = [ ];
 
   constructor(
+<<<<<<< HEAD
+=======
+
+>>>>>>> 34015760022bd1f6c3b6e3deff7961c029232d9e
     private userservice:UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
@@ -121,6 +129,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 34015760022bd1f6c3b6e3deff7961c029232d9e
   ngOnInit(): void {    
     this.llamarCve();
     this.procedimiento()
