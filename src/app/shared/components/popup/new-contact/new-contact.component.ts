@@ -52,10 +52,10 @@ export class NewContactComponent implements OnInit {
     nombre: [this.data.nombre ? this.data.nombre: '', Validators.required],
     paterno: [this.data.apPaterno ?this.data.apPaterno: '', Validators.required],
     materno: [this.data.apMaterno ? this.data.apMaterno: '', Validators.required],
-    estatus: [this.data.estatus.toString()  != 0? this.data.estatus.toString() : '', Validators.required],
-    cveRol: [this.data.idRol.toString()  != 0? this.data.idRol.toString() : '', Validators.required],
-    telefono: [this.data.telefono.toString() ? this.data.telefono.toString() : '', Validators.required],
-    celular: [this.data.celular.toString() ? this.data.celular.toString() : '', Validators.required],
+    estatus: [this.data.estatus  > 0? this.data.estatus.toString() : '', Validators.required],
+    cveRol: [this.data.idRol   > 0? this.data.idRol.toString() : '', Validators.required],
+    telefono: [this.data.telefono ? this.data.telefono.toString() : '', Validators.required],
+    celular: [this.data.celular ? this.data.celular.toString() : '', Validators.required],
     puesto: [this.data.puesto ? this.data.puesto: '', Validators.required],
     correo: [this.data.correo ? this.data.correo: '', Validators.required],
     contrasena: [this.data.contrasena? this.data.contrasena: '', Validators.required],
@@ -300,7 +300,6 @@ export class NewContactComponent implements OnInit {
   }
 
   serviciosFaltantes(idContacto : number, identificador : string){
-    console.log(idContacto+"   "+identificador);
     
     this.contactService.selectServicioPorContacto(identificador,idContacto,1).subscribe(async (resp:responseService)=>{
       this.Servicios = resp.container      

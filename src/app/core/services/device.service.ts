@@ -51,6 +51,11 @@ export class DeviceService {
     return this.http.delete<responseService>(this.local+"Devices/router.php?id="+input,{headers});
   }
 
+  p2UpdateRouter(input: number) : Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')    
+    return this.http.delete<responseService>(this.local+"Devices/router.php?cve2="+input,{headers});
+  }
+
   insertarRouter(input : DeviceModel) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
     return this.http.post<responseService>(this.local+"Devices/router.php",input,{headers});
@@ -79,6 +84,11 @@ export class DeviceService {
     return this.http.delete<responseService>(this.local+"Devices/others.php?id="+input,{headers});
   }
 
+  p2UpdateOtros(input: number) : Observable<responseService>{
+    let headers = new HttpHeaders().set('Content-type','Application/json')    
+    return this.http.delete<responseService>(this.local+"Devices/others.php?cve2="+input,{headers});
+  }
+  
   insertarOtros(input : DeviceModel) : Observable<responseService>{
     let headers = new HttpHeaders().set('Content-type','Application/json')    
     return this.http.post<responseService>(this.local+"Devices/others.php",input,{headers});
