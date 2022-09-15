@@ -18,7 +18,7 @@ import { RepeteadMethods } from '../../RepeteadMethods';
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}],
 
 })
-export class ControlipsComponent implements OnInit {
+export class ControlipsComponent implements OnInit,OnDestroy {
   contenedor_carga = <HTMLDivElement> document.getElementById("contenedor_carga");
   ELEMENT_DATA: any = [ ];
   segmentos: any = [ ];
@@ -27,7 +27,7 @@ export class ControlipsComponent implements OnInit {
   $sub :  Subscription = new Subscription();
   ips :any =[ ];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns: string[] = ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping','opciones'];
+  displayedColumns: string[] = ['ip', 'tipoip', 'utilizado', 'tipoequipo', 'ping'];
   inicio : number=0;
   fin : number=10;
   monitoreo : any
@@ -131,12 +131,10 @@ async cargarInicio(){
   this.cargando = false;
   this.ELEMENT_DATA=[];
   this.dataSource = new MatTableDataSource();
-
  while (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
   if(this.inicio < this.fin){        
     
     this.monitoreoPing(this.ips[this.inicio].ip, this.inicio)
-
     this.ELEMENT_DATA[this.inicio] =  (    
       {
         ip: this.ips[this.inicio].ip,

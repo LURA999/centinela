@@ -51,15 +51,13 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
-    await this.repeater.llamarRepitdores().toPromise().then( (result : any) =>{
-      console.log(result)
-
-      for (let i=0; i<result.container.length; i++){
+    this.repeater.llamarRepitdores().subscribe(async (result : any) =>{
+    for await (const  i  of result.container){
       this.ELEMENT_DATA.push(
-        {id: result.container[i]["idRepetidora"],nombre: result.container[i]["nombreRepetidora"],latitud:result.container[i]["latitud"]
-          ,longitud:result.container[i]["longitud"],ciudad:result.container[i]["nombreCiudad"], estatus:this.estatus(result.container[i]["estatus"])}
+        {id: i.idRepetidora,nombre: i.nombreRepetidora,latitud:i.latitud
+          ,longitud:i.longitud,ciudad:i.nombreCiudad, estatus:this.estatus(i.estatus.toString())}
       );
-    this.numeroMayor(result.container[i]["idRepetidora"]);
+    this.numeroMayor(i.idRepetidora);
     }
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
@@ -161,7 +159,7 @@ async editar(id : number, nombre : string,latitud:string,longitud:number, ciudad
     animation: { to: "bottom" },
       height:"auto", width:"300px",
     });
-    await dialogRef.afterClosed().subscribe((result:any) => {
+     dialogRef.afterClosed().subscribe((result:any) => {
       try{
       if(result.mensaje.length > 0  ){
         this.ELEMENT_DATA.splice(this.buscandoIndice(id)
