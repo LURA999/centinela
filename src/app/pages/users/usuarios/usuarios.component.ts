@@ -10,6 +10,7 @@ import { EditUserComponent } from './../popup/edit-user/edit-user.component';
 import { DeleteUserComponent } from './../popup/delete-user/delete-user.component';
 import { MyCustomPaginatorIntl } from '../../MyCustomPaginatorIntl';
 import { RepeteadMethods } from '../../RepeteadMethods';
+import { ENGINE_METHOD_ECDH } from 'constants';
 
 @Component({
   selector: 'app-usuarios',

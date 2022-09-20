@@ -39,6 +39,13 @@ export class SegmentsService {
   lastSegmento(){
     return this.http.get(this.local+"Repeater/segment.php?last=true");    
   }
+cantidadips0(cantidad:number){
+  return this.http.get(this.local+"Repeater/segment.php?cantidad="+cantidad);   
+}
+
+deleteIps(cveSegmet:number){
+  return this.http.get(this.local+"Repeater/segment.php?cveSegment="+cveSegmet);   
+}
 
   countActiveSegmento(segmento :number):Observable<responseService>{
     return this.http.get<responseService>(this.local+"Repeater/ip.php?cveSegmento="+segmento);

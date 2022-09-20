@@ -27,25 +27,28 @@ interface Grupo{
 viewValue:string
 correo:string
 }
-export interface ticket {
-  idTicket: Number,
-  servicio : string,
-  fechaAbierta: String,
-  fechaCerrada: String,
-  grupo: Number,
-  grupoModificado:Number|undefined,
-  tipo: Number,
-  agente: Number,
-  estado: Number,
-  prioridad:Number,
-  idUsuario:Number,
-  identificador :string,
-  nombre : string,
-  correoAbiertoUsuario : string,
-  nombreContacto : string ,
-  correoAgente : string,
-  correoGrupo : string
-}
+
+  export interface ticket {
+    idTicket: Number,
+    servicio : string,
+    fechaAbierta: String,
+    fechaCerrada: String,
+    grupo: Number,
+    grupoModificado:Number|undefined,
+    tipo: Number,
+    agente: Number,
+    estado: Number,
+    prioridad:Number,
+    idUsuario:Number,
+    identificador :string,
+    nombre : string,
+    correoAbiertoUsuario : string,
+    nombreContacto : string ,
+    correoAgente : string,
+    correoGrupo : string
+
+  }
+
 
 export interface usuario {
   apellidoPaterno: string,
@@ -63,10 +66,13 @@ export interface usuario {
 })
 export class AllTicketsComponent implements OnInit{
   cargando : boolean = false;
+  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket() 
+
   Grupos :Grupo []=[]
+  correos:any []=[]
   //var para borrar tickets
   borrar:boolean = true
-  correos : string [] = []
+  
   //variables de la tabla
   ELEMENT_DATA:  ticket[] = [ ];
   tickets:  ticket[] = [ ];
@@ -133,7 +139,7 @@ export class AllTicketsComponent implements OnInit{
   cBox : FormControl = new FormControl() 
   guardarIdcBox : number = 0;
   banderaCheckbox : boolean = true;
-  elTicket : ticket | undefined  
+  elTicket : number =0
 
 
   //iniciador de filtro primer grado
@@ -145,7 +151,6 @@ export class AllTicketsComponent implements OnInit{
 
 
   link : boolean = false
-  contactsEmailTicket =  new contactsEmailTicket();
   constructor(
     private userservice: UsersmoduleService,
     private fb : FormBuilder,
@@ -181,7 +186,11 @@ export class AllTicketsComponent implements OnInit{
     this.llamarCve();
     this.procedimiento(false);
     this.llenarUsuarios();
-  
+  console.log(this.usuariosGrupo);
+  console.log(this.ELEMENT_DATA);
+  console.log(this.Grupos);
+
+
   }
   //Grupos 
   async llamarCve(){
@@ -213,6 +222,8 @@ export class AllTicketsComponent implements OnInit{
 
   //Actualizando elementos de cada ticket y un poco mas
   async guardarGrupo(ticket:ticket,cve:string,cveTicket:string){ 
+    let grupo2= this.ELEMENT_DATA.find(element=>element.idTicket==Number(cveTicket))
+console.log(grupo2);
   this.ELEMENT_DATA[this.ELEMENT_DATA.indexOf(ticket!)].grupo = Number(cve)    
   let dosParamsNumGrupo:dosParamsNum = {
     cve : Number(cve),
@@ -227,23 +238,36 @@ export class AllTicketsComponent implements OnInit{
   
   await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
-      let grupo1= this.Grupos.find(element=>element.value==Number(cve))
-      this.correos.push(grupo1!.correo).toString()
-      let agente1=(this.usuariosGrupo.find(element=>element.idUsuario=ticket.agente))
-      this.correos.push(agente1!.correo).toString()
+
+
+
+//console.log(this.usuariosGrupo.find(element=>element.idUsuario=ticket.abiertoUsuario));//
+
+
+
+let grupo1= this.Grupos.find(element=>element.value==Number(cve))
+  this.correos.push(grupo1?.correo).toString()
+
+  let agente1=(this.usuariosGrupo.find(element=>element.idUsuario=ticket.agente))
+  this.correos.push(agente1?.correo).toString()
+
      this.contactsEmailTicket.TextoAsunto="El Ticket ha sido escalado al grupo:"+grupo1?.viewValue
      this.contactsEmailTicket.correo=ticket.correoAbiertoUsuario
-     this.contactsEmailTicket.prioridad=this.metodos.prioridadEnLetraTicket(ticket.prioridad.toString())
+     this.contactsEmailTicket.prioridad=ticket.prioridad.toString()
      this.contactsEmailTicket.servicio=ticket.servicio.toString()
      this.contactsEmailTicket.identificador=ticket.identificador
      this.contactsEmailTicket.nombreCliente=ticket.nombre
-     this.contactsEmailTicket.nombreContacto=ticket.nombreContacto
-     this.contactsEmailTicket.correoCc=this.correos
-this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.toString()) 
-  console.log(this.contactsEmailTicket);  
+this.contactsEmailTicket.nombreContacto=ticket.nombreContacto
+this.contactsEmailTicket.correoCc=this.correos
 
-     await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))  
-}  
+console.log(this.contactsEmailTicket);
+
+     await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
+        
+
+}
+    
+  
 
   async buscarUsuarionav(cve:string){
     this.optionsAgente = []
@@ -299,19 +323,15 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
   }
 
   async guardarEstado(cve:string,cveTicket:string,ticket:ticket){
-    
-    console.log(cve,cveTicket,ticket);
-    
-
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
         cve2 : Number(cveTicket),
         cveUsuario: this.auth.getCveId()
-      } 
 
-      if(Number(cve) == 4){
-        this.contactsEmailTicket.TextoAsunto="El Ticket "+cveTicket+" se ha cerrado"  
+      } 
+if(Number(cve) == 4){
+        this.contactsEmailTicket.TextoAsunto="El Ticket "+cveTicket+" se ha cerrado"
         this.contactsEmailTicket.correo = ticket.correoAbiertoUsuario
         this.contactsEmailTicket.nombreContacto = ticket.nombreContacto
         this.contactsEmailTicket.correoCc= [ticket.correoAgente,ticket.correoGrupo]
@@ -319,11 +339,8 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
         this.contactsEmailTicket.servicio=ticket.servicio
         this.contactsEmailTicket.identificador=ticket.identificador
         this.contactsEmailTicket.nombreCliente=ticket.nombre
-        this.contactsEmailTicket.estatus="Cerrado"
-
         await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
       }
-
         await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       }
   }
@@ -349,27 +366,15 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
     this.procedimiento(false)
   }
 
-    async cerrarTicket(){      
-      this.contactsEmailTicket.TextoAsunto="El Ticket "+this.elTicket!.idTicket+" se ha cerrado"  
-      this.contactsEmailTicket.correo = this.elTicket!.correoAbiertoUsuario
-      this.contactsEmailTicket.nombreContacto = this.elTicket!.nombreContacto
-      this.contactsEmailTicket.correoCc= [this.elTicket?.correoAgente!,this.elTicket!.correoGrupo]
-      this.contactsEmailTicket.prioridad= this.metodos.prioridadEnLetraTicket(this.elTicket!.prioridad.toString())
-      this.contactsEmailTicket.servicio=this.elTicket!.servicio
-      this.contactsEmailTicket.identificador=this.elTicket!.identificador
-      this.contactsEmailTicket.nombreCliente=this.elTicket!.nombre
-      this.contactsEmailTicket.estatus="Cerrado"
-
-    await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
-
+    async cerrarTicket(){
+ 
       let dosParamsNum : dosParamsNum = {
         cve:4,
-        cve2:Number(this.elTicket!.idTicket),
+        cve2:Number(this.elTicket),
         cveUsuario: this.auth.getCveId()
       }
       await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       this.procedimiento(false)
-
 
     }
 
@@ -430,7 +435,7 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
     return this.todoEstado.filter(estado => estado.toLowerCase().includes(filterValue));
   }
 
-  borrarClick(bool : boolean, idTicket : ticket,matCheck : MatCheckbox ){
+  borrarClick(bool : boolean, idTicket : number,matCheck : MatCheckbox ){
     this.borrar = bool
     this.elTicket = idTicket
     this.cBox.reset()
@@ -495,10 +500,10 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
     form.cve = this.auth.getCveId()
     console.log(form);
     
-    this.ELEMENT_DATA = new Array<ticket>();
+    this.ELEMENT_DATA=[];
     this.dataSource = new MatTableDataSource();
 
-     this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{      
+     this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{
         for await (const iterator of resp.container) {
           this.ELEMENT_DATA.push(iterator)
           if(this.gruposCve.indexOf(iterator.grupo) == -1){
@@ -509,7 +514,8 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;    
         this.paginator.length =  this.tickets.length;  
-        this.cargando = true
+        this.cargando = true;
+
     })    
     
   }

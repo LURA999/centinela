@@ -145,6 +145,12 @@ ul {
     margin: 6px!important;
    }
 
+::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
+    min-width: 0!important;
+    padding: 6px!important;
+    margin: 6px!important;
+   }
+
 
    .mat-tab-label.mat-tab-label-active {
     min-width: 25px !important;
@@ -153,12 +159,6 @@ ul {
     color: rgb(0, 255, 200);
     font-weight: 700;
 }
-
-::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
-    min-width: 0!important;
-    padding: 0 15% 0 15%!important;
-    margin: 7px 0 7px 0!important;
-   }
 /*cuando disminuye el tamaño de pantalla*/
 
 @media (max-width:1200px) {
@@ -182,6 +182,12 @@ ul {
     .bSecundario {
         width: 100%;
     }
+
+    ::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
+        min-width: 0!important;
+        padding: 0 15% 0 15%!important;
+        margin: 7px 0 7px 0!important;
+       }
 }
 
 

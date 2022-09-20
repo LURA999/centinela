@@ -88,7 +88,7 @@ export class ControlipsComponent implements OnInit,OnDestroy {
       }
     this.inicio++      
   }
-  if(this.ELEMENT_DATA.length == 0 ){
+  if(this.ELEMENT_DATA){
     this.comentario = false;
   }else {
     this.comentario = true;
@@ -145,7 +145,7 @@ async refrescar(){
       }
     this.inicio++      
     }
-    if(this.ELEMENT_DATA.length == 0 ){
+    if(this.ELEMENT_DATA ){
       this.comentario = false;
   }else {
     this.comentario = true;
@@ -176,7 +176,7 @@ async cargarInicio(){
     }
   this.inicio++      
   }
-  if(this.ELEMENT_DATA.length == 0 ){
+  if(this.ELEMENT_DATA ){
     this.comentario = false;
 }else {
   this.comentario = true;

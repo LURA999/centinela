@@ -91,6 +91,8 @@ export class TableLogComponent implements OnInit {
     this.cargando = false;             
     
     this.$sub.add( this.servicioLog.llamarTodo(this.id).subscribe((resp:responseService) =>{     
+      console.log(resp.container);
+      
       if(resp.info !='bad'){
       for (let i = 0; i < resp.container.length; i++) {
         this.ELEMENT_DATA.push({

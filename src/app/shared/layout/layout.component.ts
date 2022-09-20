@@ -3,7 +3,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import {  lastValueFrom, Observable, Observer, Subscription } from 'rxjs';
 import { startWith,map } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControl } from '@angular/forms';
 import { SearchService } from 'src/app/core/services/search.service';
@@ -115,6 +115,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     private _filter(value: string): string[] {
         const filterValue :string= value.toLowerCase();
         return this.options.filter((option :string) => option.toLowerCase().includes(filterValue));
+        
       }
       private _filterContacts(value: string): string[] {
         const filterValue = value.toLowerCase();
@@ -123,8 +124,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
        private _filterTickets(value: string): string[] {
         const filterValue = value.toLowerCase();
         return this.tickets.filter((option :string) => option.toLowerCase().includes(filterValue));
-      }
-
+       
+       }
     salir(){
       if(this.auth.getTipo()==1){
           this.auth.cerrarSesion();
@@ -243,10 +244,13 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         this.serviciosbooleanlabel=false
         this.options=[]
       }
-    this.cargando=false
+
+         
     }
 
     async contacto(id:string,event : any){
+      this.cargando=true
+
         if(this.botoncontacto==true||this.botontodos==true){
         id = id.split(" ")[0]
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
@@ -269,10 +273,12 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           this.contactosbooleanlabel=false
           this.contacts=[]  
         }
-    }
+        
+      }
 
 
     async ticket(id:string,event : any){
+      this.cargando=true
       if(this.botontickets==true||this.botontodos==true){
         id = id.split(" ")[0]
         if(event.key !== "tab" && event.key !=="ArrowUp" && event.key !=="ArrowDown"
@@ -296,6 +302,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         this.ticketsbooleanlabel=false
         this.tickets=[]
       }
+      
+
     }
 
     async irServicio (servicio : string){
@@ -329,7 +337,10 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   }  
   }
      
-          
+ 
+
+
+ 
   
 
 

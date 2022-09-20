@@ -27,12 +27,13 @@
              (keyup)="ticket(id.value,$event)"
              [matAutocomplete]="auto" #id >
       <mat-autocomplete   autoActiveFirstOption #auto="matAutocomplete" >
-        <mat-option id="ocultar" [disabled]="true" style="height: 50px;">
+
+        <mat-option id="ocultar" [disabled]="true" style="height: 50px;" >
         <div id="botones">
-        <button mat-button  [ngClass]="{'true': this.botontodos===true,   'false': this.botontodos===false}" class="filtros" (click)="todosbutton(id.value,$event)" >Todos</button>
-          <button mat-button  [ngClass]="{'true': this.botonservicio===true,   'false': this.botonservicio===false}" class="filtros" (click)="serviciobutton(id.value,$event)">Servicios</button>
-          <button mat-button  [ngClass]="{'true': this.botoncontacto===true,   'false': this.botoncontacto===false}" class="filtros" (click)="contactobutton(id.value,$event)">Contactos</button>
-          <button mat-button   [ngClass]="{'true': this.botontickets===true,   'false': this.botontickets===false}" class="filtros" (click)="ticketbutton(id.value,$event)">Tickets</button>
+        <button mat-button  [class]="{'true': this.botontodos===true,   'false': this.botontodos===false}" class="filtros" (click)="todosbutton(id.value,$event)" >Todos</button>
+          <button mat-button  [class]="{'true': this.botonservicio===true,   'false': this.botonservicio===false}" class="filtros" (click)="serviciobutton(id.value,$event)">Servicios</button>
+          <button mat-button  [class]="{'true': this.botoncontacto===true,   'false': this.botoncontacto===false}" class="filtros" (click)="contactobutton(id.value,$event)">Contactos</button>
+          <button mat-button   [class]="{'true': this.botontickets===true,   'false': this.botontickets===false}" class="filtros" (click)="ticketbutton(id.value,$event)">Tickets</button>
         </div>
       </mat-option>
         <div id="opciones">
@@ -55,7 +56,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="contactosbooleanlabel===false || this.botoncontacto===false&&this.botontodos===false " class="tipo">Contactos</mat-label>
         <mat-divider></mat-divider>
-        <mat-option (click)="irContacto(option)" *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
+        <mat-option  (click)="irContacto(option)" *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
           <mat-icon id="account_box"> account_box</mat-icon>
           <div id="nombre">
           {{option.split(" ")[0]}}
@@ -72,7 +73,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="ticketsbooleanlabel === false || this.botontickets===false&&this.botontodos===false "   class="tipo">Tickets</mat-label>
         <mat-divider></mat-divider>
-        <mat-option (click)="irTicket(option)" *ngFor="let option of filteredTickets  | async" [value]="option" >
+        <mat-option  (click)="irTicket(option)" *ngFor="let option of filteredTickets  | async" [value]="option" >
           <mat-icon id="confirmation_number">confirmation_number </mat-icon>
           <div id="ticket">
             {{option.split(" ")[0]}}
