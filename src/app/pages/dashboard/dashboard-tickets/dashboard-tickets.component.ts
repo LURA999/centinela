@@ -118,7 +118,8 @@ interface grupo{
 export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy {
   selected : Date | undefined;
   selected2 : Date | undefined;
-  
+  cargando : boolean = false;
+
   selectedFake : string ="";
   selectedFake2 : string ="";
 
@@ -162,7 +163,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   ultimoDiaString :string= formatDate(this.ultimoDia,'yyyy-MM-dd',"en-US");
 
   //Para la tabla
-  ELEMENT_DATA:  any[] = [ ];
+  ELEMENT_DATA:  any = [ ];
   displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   @ViewChild ("paginator") paginator!:MatPaginator;
@@ -210,6 +211,8 @@ ngOnDestroy(): void {
 
   }
   
+ 
+
   graficaDeBarras(selectedFake:string,selectedFake2:string){
     this.chartOptionsBar = {
       title:{
@@ -758,6 +761,15 @@ ngOnDestroy(): void {
       this.paginator.length =  this.tickets.length;  
     })
   }
+
+
+  hayUsers(){
+    if(this.ELEMENT_DATA != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
+  }
   async llenarListaEmpresas(selectedFake:string,selectedFake2:string){
     this.empresa = []
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{      
@@ -868,6 +880,7 @@ ngOnDestroy(): void {
      }))
   
   }
+  
 
   abrirEstadoEmpresas(estatus:number){
     this.complementoAbrirForm()

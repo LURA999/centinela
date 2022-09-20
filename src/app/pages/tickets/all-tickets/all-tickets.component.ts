@@ -54,6 +54,7 @@ export interface usuario {
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class AllTicketsComponent implements OnInit{
+  cargando : boolean = false;
 
   Grupos :Grupo []=[]
   //var para borrar tickets
@@ -185,6 +186,15 @@ export class AllTicketsComponent implements OnInit{
     }
     })
   }
+
+  hayUsers(){
+    if(this.ELEMENT_DATA.length != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 
 //Metodo utilizado para hacer todos los filtros
   async procedimiento(limpieza: Boolean){

@@ -26,6 +26,8 @@ interface tickets {
   styleUrls: ['./table-tickets.component.css']
 })
 export class TableTicketsComponent implements OnInit {
+  cargando : boolean = false;
+
   ELEMENT_DATA:  tickets[] = [ ];
   @Input() selectedFake : string = ""
   @Input() selectedFake2 : string = ""
@@ -49,9 +51,18 @@ export class TableTicketsComponent implements OnInit {
         }             
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;    
-        this.paginator.length =  this.ELEMENT_DATA.length;    
+        this.paginator.length =  this.ELEMENT_DATA.length;  
+        this.cargando = true;
+  
       }
       })
+  }
+  hayUsers(){
+    if(this.ELEMENT_DATA.length != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   salirForm(){

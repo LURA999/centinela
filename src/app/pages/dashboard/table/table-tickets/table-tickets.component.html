@@ -30,6 +30,8 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    <div class="existe" [hidden]="hayUsers()">No se encontraron resultados... </div>
+
     <mat-paginator #paginator class="all-tickets"
             [pageSize]="6"
             hidePageSize="true"

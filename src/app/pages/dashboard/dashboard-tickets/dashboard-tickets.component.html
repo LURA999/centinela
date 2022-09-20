@@ -7,11 +7,11 @@
         </mat-card-header>
           <div class="mat2 primerFila">
             <mat-card class="cardList" id="top10Empresas" >
-                <h3>Top de las 10 empresas con mas tickets</h3>
+                <h1 style="font-weight: bold;">TOP 10 CLIENTES </h1>
                 <ng-container *ngIf="empresa.length === 0; else elseTemplate">
                     <mat-grid-list  cols="4" >
                         <mat-divider></mat-divider>
-                            <span><b>No hay empresas</b></span>
+                            <span><b>No hay Clientes</b></span>
                     </mat-grid-list>
                 </ng-container>
                 <ng-template #elseTemplate>
@@ -19,9 +19,17 @@
                         <div class="seccion" (click)="abrirTopEmpresaTicket(com.idCliente,com.nombre)">
                             <mat-divider></mat-divider>
                                 <div class="cuerpo" >
-                                    <div><b>Empresa</b>: {{com.nombre}}</div>
-                                    <div><b>Servicio</b>: {{com.totalTicket}}</div>
+                                    <div  style="font-weight: bold;">Cliente: {{com.nombre}} </div>
+                                    <div style="font-weight: bold;"> Tickets: {{com.totalTicket}} </div>
+                                    <mat-icon style="color: rgb(175, 24, 175);
+                                    margin-left: 67px;
+                                    display: flex;
+                                    margin-top: -19px;
+                                    font-size: 19px;" >confirmation_number</mat-icon>
                                 </div>
+                           
+
+                            
                         </div>
                         </mat-grid-list>
                 </ng-template>
@@ -93,12 +101,13 @@
           </div>
           <div class="mat2">
             <mat-card class="cardList" id="estadosTickets" >
-                <h3>Tickets abiertos, pausados, cerrados</h3>
+                <h3 style="font-weight: bold; font-size: 14px;">TICKETS POR ESTADO </h3>
                 <mat-grid-list >
                         <mat-divider></mat-divider>
                             <div class="seccion" (click)="abrirEstadoEmpresas(1)">
-                            <div><b>Estado</b>: Abierto</div>
-                            <div ><b>Total</b>: {{
+                               
+                            <div> Abierto   <mat-icon style="color: green; float: right; margin-top:10px;">door_front</mat-icon></div>
+                            <div style="font-weight: bold;">Total: {{
                                 estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===1?estadoServicio[0].totalTicket:
                                 estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===1?estadoServicio[1].totalTicket:
                                 estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===1?estadoServicio[2].totalTicket:
@@ -106,8 +115,8 @@
                             </div>
                             <mat-divider></mat-divider>
                             <div class="seccion" (click)="abrirEstadoEmpresas(2)">
-                            <div><b>Estado</b>: En Progreso</div>
-                            <div ><b>Total</b>: {{
+                                <div> En progreso   <mat-icon style="color: rgb(0, 75, 128); float: right; margin-top:10px;">refresh</mat-icon></div>
+                                <div style="font-weight: bold;">Total: {{
                                 estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===2?estadoServicio[0].totalTicket:
                                 estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===2?estadoServicio[1].totalTicket:
                                 estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===2?estadoServicio[2].totalTicket:
@@ -115,8 +124,8 @@
                             </div>
                             <mat-divider></mat-divider>
                             <div class="seccion" (click)="abrirEstadoEmpresas(3)">
-                            <div><b>Estado</b>: Pausado</div>
-                            <div ><b>Total</b>: {{
+                                <div> Pausado   <mat-icon style="color: rgb(128, 0, 115); float: right; margin-top:10px;">pause</mat-icon></div>
+                                <div style="font-weight: bold;">Total: {{
                                 estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===3?estadoServicio[0].totalTicket:
                                 estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===3?estadoServicio[1].totalTicket:
                                 estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===3?estadoServicio[2].totalTicket:
@@ -124,8 +133,9 @@
                             </div>
                             <mat-divider></mat-divider>
                             <div class="seccion"  (click)="abrirEstadoEmpresas(4)">
-                            <div><b>Estado</b>: Cerrado</div>
-                            <div><b>Total</b>: {{estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===4?estadoServicio[0].totalTicket:
+                                <div> Cerrado   <mat-icon style="color: rgb(128, 0, 17); float: right; margin-top:10px;">lock</mat-icon></div>
+                                <div style="font-weight: bold;">Total: {{
+                                estadoServicio[0]!==undefined && estadoServicio[0].idEstadoTicket===4?estadoServicio[0].totalTicket:
                                 estadoServicio[1]!==undefined && estadoServicio[1].idEstadoTicket===4?estadoServicio[1].totalTicket:
                                 estadoServicio[2]!==undefined && estadoServicio[2].idEstadoTicket===4?estadoServicio[2].totalTicket:
                                 estadoServicio[3]!==undefined && estadoServicio[3].idEstadoTicket===4?estadoServicio[3].totalTicket:0}}</div>      
@@ -205,6 +215,8 @@
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                     </table>
+                    <div class="existe" [hidden]="hayUsers()">No se encontraron resultados... </div>
+
                 </mat-grid-list>
             </mat-card>
             <mat-card class="pie" id="pieTipos">
