@@ -85,8 +85,11 @@
                     <div>
                         <mat-form-field style="width: auto;" appearance="standard">
                         <mat-label>Buscar</mat-label>
-                        <input matInput (keyup)="filtrarTabla($event)" placeholder="Buscar coincidencia..." #input>   
-                        </mat-form-field>
+                        <input  [value]="correolink" matInput (keyup)="filtrarTabla($event)" placeholder="Buscar coincidencia..." #input>   
+
+                    <button id="boton" (click)="filtrarLink()" style="display: none;">BOTON</button>    
+
+                    </mat-form-field>
                     </div>
                 </div>
             </div>

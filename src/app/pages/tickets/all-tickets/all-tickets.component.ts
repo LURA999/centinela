@@ -54,6 +54,7 @@ export interface usuario {
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class AllTicketsComponent implements OnInit{
+  cargando : boolean = false;
 
   Grupos :Grupo []=[]
   //var para borrar tickets
@@ -177,11 +178,23 @@ export class AllTicketsComponent implements OnInit{
   //Grupos 
   async llamarCve(){
     await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
+      console.log(result.container);
+      
     for(let i=0;i<result.container.length;i++){
     this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
     }
     })
   }
+
+  hayUsers(){
+    if(this.ELEMENT_DATA.length != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 
 //Metodo utilizado para hacer todos los filtros
   async procedimiento(limpieza: Boolean){
@@ -441,7 +454,9 @@ export class AllTicketsComponent implements OnInit{
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;    
         this.paginator.length =  this.tickets.length;  
+        this.cargando = true
     })    
+    
   }
 
   //filtros de tercer grado
@@ -485,7 +500,6 @@ export class AllTicketsComponent implements OnInit{
 
 
 }
-
 
 
 

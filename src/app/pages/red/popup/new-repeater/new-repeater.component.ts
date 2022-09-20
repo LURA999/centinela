@@ -16,7 +16,6 @@ export class NewRepeaterComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private repidorService : RepeaterService,public dialogRef: MatDialogRef<NewRepeaterComponent>) { }
 
   ngOnInit(): void {
-    console.log(this.data);
     
   }
   async crearCliente(nombre : string,latitud : string ,longitud : string, selectEstatus : number, selectCiudad: number){

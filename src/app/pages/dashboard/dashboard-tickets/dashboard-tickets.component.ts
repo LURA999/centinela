@@ -119,7 +119,8 @@ interface grupo{
 export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy {
   selected : Date | undefined;
   selected2 : Date | undefined;
-  
+  cargando : boolean = false;
+
   selectedFake : string ="";
   selectedFake2 : string ="";
 
@@ -213,6 +214,8 @@ ngOnDestroy(): void {
 
   }
   
+ 
+
   graficaDeBarras(selectedFake:string,selectedFake2:string){
     this.chartOptionsBar = {
       title:{
@@ -819,6 +822,14 @@ ngOnDestroy(): void {
     })
   }
 
+
+  hayUsers(){
+    if(this.ELEMENT_DATA.length != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
+  }
   async llenarListaEmpresas(selectedFake:string,selectedFake2:string){
     this.empresa = []
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{      
@@ -929,6 +940,7 @@ ngOnDestroy(): void {
      })
   
   }
+  
 
   abrirEstadoEmpresas(estatus:number){
     this.complementoAbrirForm()

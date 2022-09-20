@@ -98,7 +98,6 @@ buscandoIndice(id:number){
 
 
 Newregister(){
-  console.log(this.ciudades);
   
   let dialogRef  = this.dialog.open(NewRepeaterComponent,
     {data: {opc : false, ciudades: this.ciudades },

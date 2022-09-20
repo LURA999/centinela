@@ -29,6 +29,9 @@ export class NewEquipamentComponent implements OnInit {
 
   identificador :string = this.sepId[0]+"-"+this.sepId[1]+"-"+this.sepId[3];
   contadorIdenti :string = this.sepId[2];
+  IpsNuevas :number[]=[]
+  IpsEliminados :number[]=[]
+  ipsControl :number[]=[]
 
   cadenaDeIps : string =""
   repetidoras : any [] =[];
@@ -333,6 +336,7 @@ export class NewEquipamentComponent implements OnInit {
          )
         break;
     case 2:
+      
       this.createComponent(
         { title: ip?ip:"", id: num.toString(),
           state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) }, event
@@ -389,10 +393,13 @@ export class NewEquipamentComponent implements OnInit {
       }
       let array = this.IpSeleccionadas[index].toString().split(",");
       this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
+      console.log(this.IpSeleccionadas);
+      
       event.destroy()
 
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"").replace(/([,]+)*/,"");     
       this.cadenaDeIps = this.cadenaDeIps.replace(/[,][,]/,",");
+      
       if((this.cadenaDeIps[this.cadenaDeIps.length-1] === "," ? true : false) === true) 
       {
         this.cadenaDeIps=this.cadenaDeIps.substring(0, this.cadenaDeIps.length - 1);
@@ -417,15 +424,18 @@ export class NewEquipamentComponent implements OnInit {
 
   /**Este te trae todas las ips de un dispositivo, se usara cuando le piques a editar */
   async ipsEditarRouter(id:number){    
-    
+
     this.ipService.selectIpOneRouter(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {
-       this.ipsDefault = resp.container;          
+       this.ipsDefault = resp.container; 
+         console.log(this.ipsDefault);
+         
        for await (let y of this.ipsDefault){
         this.ipsOficialesViejos.push(y.idIp)
        this.indicesSegmentos= y.idSegmento
         this.guardarIp(y.idIp,2,y.ip,y);
       }
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
+
     })
   }
 
@@ -436,8 +446,12 @@ export class NewEquipamentComponent implements OnInit {
         this.ipsOficialesViejos.push(y.idIp)
        this.indicesSegmentos= y.idSegmento
         this.guardarIp(y.idIp,2,y.ip,y);
+        console.log(this.IpSeleccionadas);
+        
       }
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
     })
+    console.log(this.IpSeleccionadas);
+    
   }
 }

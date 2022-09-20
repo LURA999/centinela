@@ -106,7 +106,6 @@ estatus:string=""
   
     await this.userservice.llamarUsuarios().toPromise().then( (result : any) =>{
       
-  console.log(result.container);
   
       for (let i=0; i<result.container.length; i++){
       this.ELEMENT_DATA.push(
@@ -114,10 +113,8 @@ estatus:string=""
       });
     this.numeroMayor(result.container[i]["idUsuario"]);
     }
-    console.log(this.ELEMENT_DATA);
     
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
-      console.log(this.dataSource);
       
       this.dataSource.paginator =  this.paginator2;
       this.cargando = true;

@@ -60,7 +60,7 @@ export class SegmentsComponent implements OnInit {
     await this.llenarTabla()
     if(this.id != undefined){  
       this.link = false    
-      this.dataSource.filter = (this.id+"").trim().toLowerCase();
+      this.dataSource.filter = (this.id.toString()).trim().toLowerCase();
     }
    }
 

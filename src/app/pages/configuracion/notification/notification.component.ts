@@ -52,7 +52,6 @@ export class NotificationComponent implements OnInit {
    
 
     await this.notifyService.llamarNotify().toPromise().then( (result : any) =>{
-      console.log(result.container[1]);
       
 
       for (let i=0; i<result.container.length; i++){

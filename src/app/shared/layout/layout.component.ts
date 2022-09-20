@@ -181,7 +181,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
    }else{
     this.filteredOptions = new FormControl('').valueChanges;
     this.botonservicio=false
-    console.log("servicio es true");
    }
 }
 
@@ -195,7 +194,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
    }
    if(this.botoncontacto==false){
     this.botoncontacto=true
-    console.log(this.botoncontacto+"contacto");
     this.contacto(id,event);
    
    }else{
@@ -219,7 +217,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
    }else{
     this.filteredTickets = new FormControl('').valueChanges;
     this.botontickets=false
-    console.log("servicio es true");
    }
 }
     async servicio(id:string,event : any){
@@ -262,7 +259,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           }else{
             this.contactosbooleanlabel=false
             this.contacts=[]
-            console.log(this.contacts);
           }
         });
         this.filteredContacts = this.myControl.valueChanges.pipe(
@@ -308,6 +304,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     var estatus=servicio.split(" | ")[3]
       
     if(Number(estatus)!=2){
+      
       this.router.navigateByUrl("/admin/client/"+Number(number)+"/"+onlyservice).then(() => {
       window.location.reload();            
      });
@@ -317,12 +314,20 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           
   }
 
+
   async irTicket (ticket : string){
     ticket=ticket.split(" ")[0]
       this.router.navigateByUrl("/admin/tickets/edit-ticket/"+ticket).then(() => {
       window.location.reload();
      });
+  }    
+     
+          
   }
 
 
-}
+
+
+
+  
+

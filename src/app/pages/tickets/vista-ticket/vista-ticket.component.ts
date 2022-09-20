@@ -16,8 +16,9 @@ import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.i
 import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+import { contains } from 'jquery';
 interface Grupo{
-  value:number
+value:number
 viewValue:string
 }
 export interface Comment {
@@ -59,8 +60,7 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
-  Grupos :Grupo []=[]
-
+  Grupos:Grupo[]=[]
   mobileQuery: MediaQueryList;
   position : boolean = false
   moveProp : boolean = false
@@ -102,7 +102,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   comment: Comment[] = [ ];
 
   constructor(
-    private userservice: UsersmoduleService,
+    private userservice:UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private servTicket:TicketService,
@@ -121,18 +121,24 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.llamarCve();
     this.procedimiento()
   }
-//Grupos select
-async llamarCve(){
-  await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{    
+  
+  //Metodo llamar Grupo
+  async llamarCve(){
+    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
+      
+      
     for(let i=0;i<result.container.length;i++){
+      
+    
     this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
     }
-  })
-}
+    })
+  }
+
   async procedimiento(){
     await this.llamarUnTicket()
     await this.llamarVariantesDeTicket()
@@ -148,12 +154,16 @@ async llamarCve(){
 }
 
   async llamarUnTicket(){
+   
+    
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
-    this.form.controls["cveGrupo"].setValue(this.datosTicket.cveGrupo)
-    this.form.controls["tipo"].setValue(this.datosTicket.tipo.toString())
-    this.form.controls["prioridad"].setValue(this.datosTicket.prioridad.toString())
-    this.form.controls["estado"].setValue(this.datosTicket.estado.toString())
-    this.form.controls["cveUsuario"].setValue(this.datosTicket.cveUsuario.toString())
+    console.log(this.datosTicket);
+    this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
+    this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
+    this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
+    this.form.controls["estado"].setValue(await this.datosTicket.estado.toString())
+    this.form.controls["cveUsuario"].setValue(await this.datosTicket.cveUsuario.toString())
+
   }
 
  async llamarVariantesDeTicket(){

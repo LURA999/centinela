@@ -29,6 +29,8 @@ interface tickets {
   styleUrls: ['./table-tickets.component.css']
 })
 export class TableTicketsComponent implements OnInit {
+  cargando : boolean = false;
+
   ELEMENT_DATA:  tickets[] = [ ];
   tickets:tickets []= [];
   @Input() selectedFake : string = ""
@@ -80,6 +82,13 @@ export class TableTicketsComponent implements OnInit {
       this.dataSource.paginator = this.paginator;    
       this.paginator.length =   await res.container.length;        
       })
+  }
+  hayUsers(){
+    if(this.ELEMENT_DATA.length != 0 || this.cargando ==false){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   async pageEvents(event: any) {  

@@ -37,14 +37,12 @@ export class UsersmoduleService {
       }
 
       insertarGroup(input:GroupModel){
-        console.log(input);
         
         let headers = new HttpHeaders().set('Content-type','Application/json')
         return this.http.post(this.local+"Users/UsersModule.php?Group=",input, {headers});
       }
 
       llamarListaAgentes(id:number){ 
-        console.log(id);
         
         return this.http.get(this.local+"Users/usersModule.php?id="+id);
       }
@@ -68,7 +66,6 @@ updateUser(input:UsersModel){
 }
 
 updateGroup(input:GroupModel){
-  console.log(input);
   
   let headers = new HttpHeaders().set('Content-type','Application/json')
   return this.http.patch(this.local+"Users/UsersModule.php?UpdateGroup=",input, {headers});
@@ -81,7 +78,6 @@ deleteUser(id:number){
 }
 
 deleteGroup(id:number){
-console.log(id);
 
   return this.http.delete(this.local+"Users/usersModule.php?DeleteGroup="+id);
 }

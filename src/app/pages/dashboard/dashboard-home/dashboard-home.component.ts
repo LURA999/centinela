@@ -82,7 +82,6 @@ this.chartOptions2 ={
     stacked: true,
     events: {
       selection: function(chart:any, e:any) {
-        console.log(new Date(e.xaxis.min));
       }
     }
   },
