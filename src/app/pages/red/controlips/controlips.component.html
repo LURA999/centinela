@@ -52,7 +52,7 @@
           </ng-container>
           <ng-container matColumnDef="tipoequipo">
             <th mat-header-cell *matHeaderCellDef >TIPO DE EQUIPO</th>
-            <td mat-cell *matCellDef="let element">------</td>
+            <td mat-cell *matCellDef="let element">{{element.tipoequipo.length===0? 'Ninguno':element.tipoequipo}}</td>
           </ng-container>
           <ng-container matColumnDef="ping">
             <th mat-header-cell *matHeaderCellDef >PING</th>

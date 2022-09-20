@@ -31,6 +31,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     <mat-paginator #paginator class="all-tickets"
+            (page)="pageEvents($event)"
             [pageSize]="6"
             hidePageSize="true"
             aria-label="Select page">

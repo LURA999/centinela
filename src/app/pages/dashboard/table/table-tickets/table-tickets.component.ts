@@ -11,6 +11,9 @@ import { NewEquipamentComponent } from 'src/app/pages/customers/popup/new-equipa
 import { ViewEstatusEnterpriseComponent } from '../../forms/view-estatus-enterprise/view-estatus-enterprise.component';
 import { ViewTicketsEnterpriseComponent } from '../../forms/view-tickets-enterprise/view-tickets-enterprise.component';
 
+
+
+
 interface tickets {
   idTicket: number;
   servicio:string;
@@ -27,6 +30,7 @@ interface tickets {
 })
 export class TableTicketsComponent implements OnInit {
   ELEMENT_DATA:  tickets[] = [ ];
+  tickets:tickets []= [];
   @Input() selectedFake : string = ""
   @Input() selectedFake2 : string = ""
   @Input() estatus : number = 0
@@ -37,22 +41,92 @@ export class TableTicketsComponent implements OnInit {
   displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   @ViewChild ("paginator") paginator!:MatPaginator;
+
+
+  inicio : number=0;
+  fin : number=6;
+  
   constructor(private serviceDash : dashboardTicketsService,private auth :AuthService) { }
 
   ngOnInit(): void {    
+    this.cargarInicio();
+  }
+
+  async cargarInicio(){
     this.serviceDash.rangoDeFechasForm(this.selectedFake,this.selectedFake2,this.estatus,this.empresa,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{    
-      if (res.container.length >0) {
-      this.ELEMENT_DATA=[];
+      this.ELEMENT_DATA=[];   
+      this.tickets =  res.container     
       this.dataSource = new MatTableDataSource();
-        for await (const i of res.container) {
-          this.ELEMENT_DATA.push({idTicket:i.idTicket,servicio:i.servicio,fechaAbierta:i.fechaAbierta,fechaCerrada:i.fechaCerrada,grupo:i.grupo,estado:i.estado})
-        }             
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-        this.dataSource.paginator = this.paginator;    
-        this.paginator.length =  this.ELEMENT_DATA.length;    
-      }
+       while (this.inicio < this.fin + 2 && this.inicio <  this.tickets.length) {
+      if(this.inicio < this.fin){              
+        this.ELEMENT_DATA[this.inicio] =  (    
+          {
+            idTicket:res.container[this.inicio].idTicket,
+            servicio:res.container[this.inicio].servicio,
+            fechaAbierta:res.container[this.inicio].fechaAbierta,
+            fechaCerrada:res.container[this.inicio].fechaCerrada,
+            grupo:res.container[this.inicio].grupo,
+            estado:res.container[this.inicio].estado
+          });        
+        }
+      this.inicio++      
+      }    
+      if(this.ELEMENT_DATA.length == 0 ){
+        //this.comentario = false;
+      }else {
+        //this.comentario = true;
+      }          
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;    
+      this.paginator.length =   await res.container.length;        
       })
   }
+
+  async pageEvents(event: any) {  
+    if(event.previousPageIndex > event.pageIndex) {
+    this.inicio = (this.inicio-(this.inicio%6)) - 12;    
+    if(this.inicio < 0){
+      this.inicio = 0;
+    }
+    this.fin =  (this.fin - (this.fin%6)) - 6;    
+    await this.cargarSiguientePag();
+  } else {
+    this.inicio = this.fin;
+    this.fin = this.fin + 6;
+    await this.cargarSiguientePag();
+  }
+}
+
+  async cargarSiguientePag(){
+    /*this.comentario = true
+    this.cargando = false;*/
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource();
+   while (this.inicio < this.fin + 2 && this.inicio < this.tickets.length) {
+    if(this.inicio < this.fin){              
+      this.ELEMENT_DATA[this.inicio] =  (    
+        {
+          idTicket:this.tickets[this.inicio].idTicket,
+          servicio:this.tickets[this.inicio].servicio,
+          fechaAbierta:this.tickets[this.inicio].fechaAbierta,
+          fechaCerrada:this.tickets[this.inicio].fechaCerrada,
+          grupo:this.tickets[this.inicio].grupo,
+          estado:this.tickets[this.inicio].estado
+        });        
+      }
+    this.inicio++      
+    }
+    if(this.ELEMENT_DATA.length == 0 ){
+      //this.comentario = false;
+    }else {
+      //this.comentario = true;
+    }
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;    
+    this.paginator.length =  await this.tickets.length;  
+   // this.cargando = true; 
+    }
+
 
   salirForm(){
     this.dialogRef?.close()

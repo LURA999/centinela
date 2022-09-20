@@ -10,6 +10,7 @@ import { lastValueFrom, Subscription } from 'rxjs';
 import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'; 
 import { RepeteadMethods } from '../../RepeteadMethods';
+import { responseService } from 'src/app/models/responseService.model';
 
 @Component({
   selector: 'app-controlips',
@@ -39,13 +40,11 @@ export class ControlipsComponent implements OnInit,OnDestroy {
   @ViewChild ("paginator") paginator2:any;
 
   constructor(private dialog:NgDialogAnimationService, private ipService : IpService, private segmentoService : SegmentsService) { 
-    this.procedmiento();
 
   }
   
-
   ngOnInit(): void {   
-    
+    this.procedmiento();
   }
 
   ngOnDestroy(): void {
@@ -54,10 +53,10 @@ export class ControlipsComponent implements OnInit,OnDestroy {
 
   
   async procedmiento(){
-    await this.ipServicios(); 
-    await this.segmentosArray();
-    this.cargando = true;
-    await this.cargarInicio();
+  await this.ipServicios(); 
+  this.cargando = true;
+  await this.segmentosArray();
+   // await this.cargarInicio();
   }
 
   async segmentosArray(){
@@ -67,8 +66,39 @@ export class ControlipsComponent implements OnInit,OnDestroy {
   }
 
  async ipServicios(){
-  this.ips =await lastValueFrom(this.ipService.select())
-  this.ips = this.ips.container;
+ this.ipService.select().subscribe( async (res:any) =>{
+    this.ips = res.container;
+    this.comentario = true
+    this.cargando = false;
+    this.ELEMENT_DATA=[];
+    
+    this.dataSource = new MatTableDataSource();
+    while (this.inicio < this.fin + 2 && this.inicio < this.ips.length) {
+      if(this.inicio < this.fin){        
+    
+      this.monitoreoPing(this.ips[this.inicio].ip, this.inicio)
+      this.ELEMENT_DATA[this.inicio] =  (    
+        {
+          ip: this.ips[this.inicio].ip,
+          tipoip: this.repetheadMethods.tipo(this.ips[this.inicio].tipo),
+          utilizado: this.ips[this.inicio].nombre,
+          tipoequipo: this.ips[this.inicio].dispositivo,
+          ping: this.ips[this.inicio].ping,
+        });        
+      }
+    this.inicio++      
+  }
+  if(this.ELEMENT_DATA.length == 0 ){
+    this.comentario = false;
+  }else {
+    this.comentario = true;
+  }
+  this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  this.dataSource.paginator = this.paginator2;    
+  this.paginator2.length = await this.ips.length;  
+  this.cargando = true; 
+
+  })
  }
 
   Configuracion(){
@@ -109,7 +139,7 @@ async refrescar(){
           ip: this.ips[this.inicio].ip,
           tipoip: this.repetheadMethods.tipo(this.ips[this.inicio].tipo),
           utilizado: this.ips[this.inicio].nombre,
-          tipoequipo: "-----",
+          tipoequipo: this.ips[this.inicio].dispositivo,
           ping: this.ips[this.inicio].ping,
         });        
       }
@@ -140,7 +170,7 @@ async cargarInicio(){
         ip: this.ips[this.inicio].ip,
         tipoip: this.repetheadMethods.tipo(this.ips[this.inicio].tipo),
         utilizado: this.ips[this.inicio].nombre,
-        tipoequipo: "-----",
+        tipoequipo: this.ips[this.inicio].dispositivo,
         ping: this.ips[this.inicio].ping,
       });        
     }
@@ -209,6 +239,9 @@ async cargarInicio(){
       if(clave.length > 0){
         let ipsFake : any = await lastValueFrom(this.ipService.selectIpTodosSolo( clave))
         ipsFake = ipsFake.container;
+        console.log(ipsFake);
+        console.log(clave);
+        
         
         this.mostrarSoloUnaFila(ipsFake);
         if(ipsFake.length > 0){
@@ -241,9 +274,11 @@ async cargarInicio(){
         ip: ipsFake[0].ip,
         tipoip: this.repetheadMethods.tipo(ipsFake[0].tipo),
         utilizado: ipsFake[0].nombre,
-        tipoequipo: "-----",
+        tipoequipo: ipsFake[0].dispositivo,
         ping: ipsFake[0].ping,
       });        
+      console.log(this.ELEMENT_DATA);
+
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator = this.paginator2;    
       this.paginator2.length = this.ips.length;  
@@ -273,7 +308,7 @@ async cargarInicio(){
         temp.push(this.ips[x1].ip)
         temp.push(this.repetheadMethods.tipo(this.ips[x1].tipo))
         temp.push(this.ips[x1].nombre?this.ips[x1].nombre:"Ninguno")
-        temp.push("----")
+        temp.push(this.ips[x1].dispositivo?this.ips[x1].dispositivo:"Ninguno")
         temp.push(await this.monitoreoPingSinIndex(this.ips[x1].ip)) 
         worksheet.addRow(temp)
 

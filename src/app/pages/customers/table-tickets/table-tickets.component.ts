@@ -44,6 +44,9 @@ export class TableTicketsComponent implements OnInit {
   tablaTicket :any [] = []
   mayorNumero : number = 0
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  inicio : number=0;
+  fin : number=10;
+  comentario : boolean = true
   constructor( private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,
     private notificationService: NotificationService, private servicioTickets : TicketService
     ,private DataService : DataService, private ruta : Router ) {
@@ -120,22 +123,26 @@ export class TableTicketsComponent implements OnInit {
      let identi = sepId[0]+"-"+sepId[1]+"-"+sepId[3];
      let contador = Number(sepId[2]);
      
-    this.$sub.add( this.servicioTickets.llamarTodo(this.id,identi+" "+contador).subscribe((resp:any) =>{      
+    this.$sub.add( this.servicioTickets.llamarTodo(this.id,identi+" "+contador).subscribe(async (resp:any) =>{      
+      this.tablaTicket = resp.container
       if(resp.container.length !=0){
-      for (let i = 0; i < resp.container.length; i++) {
-        this.ELEMENT_DATA.push({
-          num:resp.container[i].idTicket,
-          departamento: resp.container[i].departamento,
-          asunto:resp.container[i].asunto,
-          servicio:resp.container[i].servicio,
-          fechaCerrada:resp.container[i].fechaCerrada,
-          fechaAbierta:resp.container[i].fechaAbierta,
-          estado:resp.container[i].estado,
-          agente: resp.container[i].agente,
+        while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {
+          if(this.inicio < this.fin){    
+          this.ELEMENT_DATA.push({
+          num:resp.container[this.inicio].idTicket,
+          departamento: resp.container[this.inicio].departamento,
+          asunto:resp.container[this.inicio].asunto,
+          servicio:resp.container[this.inicio].servicio,
+          fechaCerrada:resp.container[this.inicio].fechaCerrada,
+          fechaAbierta:resp.container[this.inicio].fechaAbierta,
+          estado:resp.container[this.inicio].estado,
+          agente: resp.container[this.inicio].agente,
         })   
-      }      
+      }
+      this.inicio++;      
+      }
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator =  this.paginator2;    
+      this.dataSource.paginator =  await this.paginator2;    
       this.dataSource.sort =  this.sort;
     }
     }))
@@ -144,29 +151,84 @@ export class TableTicketsComponent implements OnInit {
   
    llenarTabla(){
     this.cargando = false;             
-    this.$sub.add( this.servicioTickets.llamarTodo(this.id,"").subscribe((resp:any) =>{      
+    this.$sub.add( this.servicioTickets.llamarTodo(this.id,"").subscribe(async(resp:any) =>{      
+      this.tablaTicket = resp.container      
       if(resp.container.length !=0){
-      for (let i = 0; i < resp.container.length; i++) {
-        this.ELEMENT_DATA.push({
-          num:resp.container[i].idTicket,
-          departamento: resp.container[i].departamento,
-          asunto:resp.container[i].asunto,
-          servicio:resp.container[i].servicio,
-          fechaCerrada:resp.container[i].fechaCerrada,
-          fechaAbierta:resp.container[i].fechaAbierta,
-          estado:resp.container[i].estado,
-          agente: resp.container[i].agente,
-        })   
-      }      
+        while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {
+          if(this.inicio < this.fin){    
+          this.ELEMENT_DATA.push({
+          num:resp.container[this.inicio].idTicket,
+          departamento: resp.container[this.inicio].departamento,
+          asunto:resp.container[this.inicio].asunto,
+          servicio:resp.container[this.inicio].servicio,
+          fechaCerrada:resp.container[this.inicio].fechaCerrada,
+          fechaAbierta:resp.container[this.inicio].fechaAbierta,
+          estado:resp.container[this.inicio].estado,
+          agente: resp.container[this.inicio].agente,
+          })   
+        } 
+        this.inicio++     
+      }
+      
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator =  this.paginator2;    
+      this.dataSource.paginator =  await this.paginator2;    
       this.dataSource.sort =  this.sort;
     }
+ 
+    
     }))
     this.cargando = true;
 
   }
-
+  
+  async cargarInicio(){
+    this.comentario = true
+    this.cargando = false;
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource();
+   while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {
+    if(this.inicio < this.fin){        
+      this.ELEMENT_DATA[this.inicio] =  (    
+        {
+          num:this.tablaTicket[this.inicio].idTicket,
+          departamento: this.tablaTicket[this.inicio].departamento,
+          asunto:this.tablaTicket[this.inicio].asunto,
+          servicio:this.tablaTicket[this.inicio].servicio,
+          fechaCerrada:this.tablaTicket[this.inicio].fechaCerrada,
+          fechaAbierta:this.tablaTicket[this.inicio].fechaAbierta,
+          estado:this.tablaTicket[this.inicio].estado,
+          agente: this.tablaTicket[this.inicio].agente,
+        });        
+      }
+    this.inicio++      
+    }
+    if(this.ELEMENT_DATA.length == 0 ){
+      this.comentario = false;
+    }else {
+      this.comentario = true;
+    }
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator2;    
+    this.paginator2.length = await this.tablaTicket.length;  
+    this.cargando = true; 
+    }
+  
+  
+  async pageEvents(event: any) {  
+      if(event.previousPageIndex > event.pageIndex) {
+      this.inicio = (this.inicio-(this.inicio%10)) - 20;
+      if(this.inicio < 0){
+        this.inicio = 0;
+      }
+      this.fin =  (this.fin - (this.fin%10)) - 10;
+      await this.cargarInicio();
+    } else {
+      this.inicio = this.fin;
+      this.fin = this.fin + 10;
+      await this.cargarInicio();
+    }
+  }
+ 
   async eliminar(){
     let dialogRef =  this.dialog.open(DeleteComponent,
       {data: {idCliente : this.id, opc: 5, salir : true},

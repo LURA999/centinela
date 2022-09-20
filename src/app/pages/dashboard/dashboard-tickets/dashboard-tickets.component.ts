@@ -97,6 +97,7 @@ interface tickets {
   fechaAbierta:string;
   fechaCerrada:string | undefined;
   grupo:string;
+  estado:string;
 }
 
 interface servicioTicket {
@@ -145,7 +146,6 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   empresa: topEmpresa[] = [ ];
   tiposTickets: tiposTickets[] = [ ];
   estadoServicio: estadoServicio [] = [];
-  tickets: tickets [] = [];
   servicioTicket: servicioTicket [] = [];
 
 
@@ -163,6 +163,9 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
 
   //Para la tabla
   ELEMENT_DATA:  any[] = [ ];
+  inicio : number=0;
+  fin : number=6;
+  tickets : tickets []=[]
   displayedColumns: string[] = ['idTicket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','estado'];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   @ViewChild ("paginator") paginator!:MatPaginator;
@@ -175,7 +178,7 @@ export class DashboardTicketsComponent implements OnInit,AfterViewInit,OnDestroy
   fecha1:string = ""
   fecha2:string = ""
 
-
+  
 
   constructor(private breakpointObserver: BreakpointObserver,mediaMatcher: MediaMatcher,
     private dataService:DataLayoutService, private serviceDash : dashboardTicketsService,
@@ -336,7 +339,6 @@ ngOnDestroy(): void {
     var fechaFin  :Date  = new Date(selectedFake2);
     var diff = fechaFin.getTime() - fechaInicio.getTime();
     let cantidadMeses :number = Number(fechaFin.getMonth()) + Number(fechaInicio.getMonth())
-    console.log("meses "+cantidadMeses+" fechaFin "+Number(fechaFin.getMonth())+", fechaInicio "+Number(fechaInicio.getMonth()));
      
     let diasCantidad :number = (diff/(1000*60*60*24))+1;
     let dataGrupo : number []= []
@@ -386,7 +388,6 @@ ngOnDestroy(): void {
     :0); i++) {
       dataGrupoAux.push(0)
     } 
-    console.log(dataGrupoAux);
   
     if (diasCantidad<=31) {
       //insertar dias
@@ -405,7 +406,6 @@ ngOnDestroy(): void {
         Number(new Date(this.date.getFullYear(), i + 1, 0).getDay())),'yyyy-MM-dd',"en-US")) 
         
       }
-      console.log(this.fechaLabel);
       
     }
   
@@ -437,9 +437,7 @@ ngOnDestroy(): void {
              * con las fechas de las consultas, el booleano es para controlar las inserciones y para no
              * insertar en mas fechas/categorias/eje x de la grafica
              */
-            for await (const x of this.fechaLabel) {
-              console.log(new Date(i.fecha).getTime()+" <= "+new Date(x).getTime());
-              
+            for await (const x of this.fechaLabel) {              
             if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
   
               dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket) 
@@ -452,11 +450,7 @@ ngOnDestroy(): void {
             this.grupos.push({name:grupoCambiar, data:dataGrupo })
             grupoCambiar = i.nombre;  
             dataGrupo = Array<number>(dataGrupo.length).fill(0)   
-            for await (const x of this.fechaLabel) {
-              console.log(i.fecha+" <= "+x);
-  
-              console.log(new Date(i.fecha).getTime()+" <= "+new Date(x).getTime());
-  
+            for await (const x of this.fechaLabel) {  
               if(new Date(i.fecha).getTime() <= new Date(x).getTime() && pasarForAwait ===false){
                 dataGrupo[this.fechaLabel.indexOf(x)] +=Number(i.totalTicket)      
                 pasarForAwait =true
@@ -522,11 +516,8 @@ ngOnDestroy(): void {
             }
          }
         }
-  
         this.grupos.push({name:grupoCambiar, data:dataGrupo })
-  
       }  
-      console.log(dataGrupo);
       
       this.chartOptionsLine = {
         series: this.grupos,
@@ -742,22 +733,92 @@ ngOnDestroy(): void {
     }) 
   }
 
+
+  async pageEvents(event: any) {  
+      if(event.previousPageIndex > event.pageIndex) {
+      this.inicio = (this.inicio-(this.inicio%6)) - 12;
+      console.log(this.inicio);
+      
+      if(this.inicio < 0){
+        this.inicio = 0;
+      }
+      this.fin =  (this.fin - (this.fin%6)) - 6;
+      console.log(this.fin);
+      
+      await this.cargarSiguientePag();
+    } else {
+      this.inicio = this.fin;
+      console.log(this.fin);
+
+      this.fin = this.fin + 6;
+      console.log(this.fin);
+
+      await this.cargarSiguientePag();
+    }
+  }
+
+  async cargarSiguientePag(){
+    /*this.comentario = true
+    this.cargando = false;*/
+    this.ELEMENT_DATA=[];
+    this.dataSource = new MatTableDataSource();
+   while (this.inicio < this.fin + 2 && this.inicio < this.tickets.length) {
+    if(this.inicio < this.fin){              
+      this.ELEMENT_DATA[this.inicio] =  (    
+        {
+          idTicket:this.tickets[this.inicio].idTicket,
+          servicio:this.tickets[this.inicio].servicio,
+          fechaAbierta:this.tickets[this.inicio].fechaAbierta,
+          fechaCerrada:this.tickets[this.inicio].fechaCerrada,
+          grupo:this.tickets[this.inicio].grupo,
+          estado:this.tickets[this.inicio].estado,
+
+        });        
+      }
+    this.inicio++      
+    }
+    if(this.ELEMENT_DATA.length == 0 ){
+      //this.comentario = false;
+    }else {
+      //this.comentario = true;
+    }
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;    
+    this.paginator.length =  await this.tickets.length;  
+   // this.cargando = true; 
+    }
+
+
   async llenarListaTickets(selectedFake:string,selectedFake2:string){
     this.serviceDash.rangoDeFechasForm(selectedFake,selectedFake2,0,0,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{    
-    this.ELEMENT_DATA=[];
-    console.log(res);
-    
+    this.ELEMENT_DATA=[];   
+    this.tickets =  res.container     
     this.dataSource = new MatTableDataSource();
-      for await (const i of res.container) {
-        this.ELEMENT_DATA.push({idTicket:i.idTicket,servicio:i.servicio,fechaAbierta:i.fechaAbierta,fechaCerrada:i.fechaCerrada,grupo:i.grupo,estado:i.estado})
-      }      
-      console.log(this.ELEMENT_DATA);
-      
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.paginator = this.paginator;    
-      this.paginator.length =  this.tickets.length;  
+     while (this.inicio < this.fin + 2 && this.inicio <  this.tickets.length) {
+    if(this.inicio < this.fin){              
+      this.ELEMENT_DATA[this.inicio] =  (    
+        {
+          idTicket:res.container[this.inicio].idTicket,
+          servicio:res.container[this.inicio].servicio,
+          fechaAbierta:res.container[this.inicio].fechaAbierta,
+          fechaCerrada:res.container[this.inicio].fechaCerrada,
+          grupo:res.container[this.inicio].grupo,
+          estado:res.container[this.inicio].estado
+        });        
+      }
+    this.inicio++      
+    }    
+    if(this.ELEMENT_DATA.length == 0 ){
+      //this.comentario = false;
+    }else {
+      //this.comentario = true;
+    }          
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;    
+    this.paginator.length =   await res.container.length;        
     })
   }
+
   async llenarListaEmpresas(selectedFake:string,selectedFake2:string){
     this.empresa = []
     this.serviceDash.rangoDeFechas(selectedFake,selectedFake2,3,this.auth.getCveGrupo()).subscribe(async(res : responseService)=>{      
@@ -864,8 +925,8 @@ ngOnDestroy(): void {
       height:"auto", width:"70%"
      });
 
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
-     }))
+    dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+     })
   
   }
 
@@ -877,8 +938,8 @@ ngOnDestroy(): void {
       height:"auto", width:"70%"
      });
 
-     this.$sub.add(dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
-     }))
+     dialogRef.afterClosed().subscribe((result:DeviceModel)=>{
+     })
   
   }
 
