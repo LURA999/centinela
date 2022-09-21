@@ -134,7 +134,11 @@ export class TableRsComponent implements OnInit {
         this.notificationService.openSnackBar("Se elimino con exito");
       })
     }
-    }catch(Exception){}
+    }catch(Exception){
+      this.ELEMENT_DATA =  []  
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      this.llenarTabla()
+    }
   }
     }));
   }
@@ -170,7 +174,7 @@ export class TableRsComponent implements OnInit {
   }
   
   insertar(){
-    this.mayorNumeroAux = Number(this.mayorNumeroAux) + 1;
+    
     let dialogRef  = this.dialog.open(NewRsComponent,
       {data: {opc : false, idCliente : this.id , salir : true},
       animation: { to: "bottom" },
@@ -180,18 +184,11 @@ export class TableRsComponent implements OnInit {
      this.paginator2.firstPage();
      
      this.$sub.add(dialogRef.afterClosed().subscribe((result:RsModel)=>{
-      if(result !=undefined){
-       try{
-        this.ELEMENT_DATA.unshift({id: this.mayorNumeroAux,
-          rs:result.rs, fechaAlta:result.fechaEspanol, estatus:this.metodo.estatus(result.estatus),cveEstatus:result.estatus});
-        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
-        this.dataSource.paginator = this.paginator2;    
-        this.dataSource.sort = this.sort;
-        setTimeout(()=>{
-        this.notificationService.openSnackBar("Se agrego con exito");
-        })
-      }catch(Exception){}
-    }
+      this.llenarTabla();
+      setTimeout(()=>{
+        this.notificationService.openSnackBar("Se inserto con exito");
+      })
      }))
+
   }
 }

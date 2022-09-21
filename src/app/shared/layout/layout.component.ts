@@ -321,9 +321,16 @@ export class LayoutComponent implements OnInit, AfterViewInit {
       window.location.reload();
      });
   }    
+  irContacto(link:string){
+    this.router.navigateByUrl('/admin/client/'+link.split(' | ')[2]+'/contact/'+link.split(' | ')[1]
+    ).then(() => {
+    window.location.reload();
+   });
+  }  
+  }
      
           
-  }
+  
 
 
 

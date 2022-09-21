@@ -55,7 +55,7 @@
         <mat-divider></mat-divider>
         <mat-label [hidden]="contactosbooleanlabel===false || this.botoncontacto===false&&this.botontodos===false " class="tipo">Contactos</mat-label>
         <mat-divider></mat-divider>
-        <mat-option [routerLink]="['/admin/client/'+option.split(' | ')[2]+'/contact/'+option.split(' | ')[1]]" *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
+        <mat-option (click)="irContacto(option)" *ngFor="let option of filteredContacts  | async; let i= index " id="{{i}}" [value]="option" >
           <mat-icon id="account_box"> account_box</mat-icon>
           <div id="nombre">
           {{option.split(" ")[0]}}

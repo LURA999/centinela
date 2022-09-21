@@ -139,6 +139,12 @@ mat-card#pieAgentes {
     width: 100%;
 }
 
+
+.matgrid{
+    overflow-y: auto;
+    height: 300px;
+}
+
 /***Responsive de las graficas de pie */
 @media (max-width:973px) {
     .mat2 {

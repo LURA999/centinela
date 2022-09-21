@@ -57,7 +57,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
         {id: i.idRepetidora,nombre: i.nombreRepetidora,latitud:i.latitud
           ,longitud:i.longitud,ciudad:i.nombreCiudad, estatus:this.estatus(i.estatus.toString())}
       );
-    this.numeroMayor(i.idRepetidora);
     }
       this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  this.paginator2;    
@@ -71,30 +70,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
-
-
-arrayRemove(arr : any, index : any) { 
-  for( var i = 0; i < arr.length; i++){ 
-  
-    if ( arr[i]["id"] === arr[index]["id"]) { 
-
-        arr.splice(i, 1); 
-    }
-
-  }
-  return arr;
-}
-buscandoIndice(id:number){
-  let i = 0
-  while (true) {
-    const element = this.ELEMENT_DATA[i]["id"];
-    if(element===id){
-     return i
-    }
-    i++;
-  }
-}
 
 
 Newregister(){
@@ -121,7 +96,11 @@ Newregister(){
       this.notificationService.openSnackBar("Se agrego con exito");
       })
      }
-    }catch(Exception){}
+    }catch(Exception){}finally{
+      this.ELEMENT_DATA = []
+      this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+      this.llenarTabla()
+    }
    })
 }
 
@@ -136,8 +115,6 @@ async eliminar(id:number){
     await dialogRef.afterClosed().subscribe((result : any) => {
       try{
       if(result.length > 0  ){
-        this.ELEMENT_DATA =  this.arrayRemove(this.ELEMENT_DATA, this.buscandoIndice(id))
-
         this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator2;
         this.dataSource.sort = this.sort;
@@ -146,7 +123,11 @@ async eliminar(id:number){
         this.notificationService.openSnackBar("Se elimino con exito");
       })
     }
-    }catch(Exception){}
+    }catch(Exception){}finally{
+      this.ELEMENT_DATA = []
+      this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+      this.llenarTabla()
+    }
     });
 }
 
@@ -161,18 +142,16 @@ async editar(id : number, nombre : string,latitud:string,longitud:number, ciudad
      dialogRef.afterClosed().subscribe((result:any) => {
       try{
       if(result.mensaje.length > 0  ){
-        this.ELEMENT_DATA.splice(this.buscandoIndice(id)
-          ,1,{id:id,nombre:result.nombre, latitud: result.latitud,longitud:result.longitud,
-            ciudad:this.ciudades[result.cveCiudad]["nombre"],estatus:this.estatus(result.estatus)})
-        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
-        this.dataSource.paginator = this.paginator2;  
-        this.dataSource.sort = this.sort;
-
+ 
         setTimeout(()=>{          
         this.notificationService.openSnackBar("Se actualizo con exito");  
         })
       }
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.ELEMENT_DATA = []
+        this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
+        this.llenarTabla()
+      }
     }); 
 }
 
@@ -184,6 +163,7 @@ estatus(numero : string) {
       return "inactivo"
   }
 }
+
 estatusNumero(numero : string) {
   switch(numero){
     case 'activo':
@@ -224,13 +204,4 @@ hayClientes2(){
     return "none";
   }
 }
-
-
-  /**Guardando numero mayor */
-  numeroMayor(numero : number){
-    if(this.mayorNumero <numero){
-      this.mayorNumero = numero
-    }
-  }
-
 }

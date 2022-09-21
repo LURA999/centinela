@@ -15,7 +15,8 @@
                     </mat-grid-list>
                 </ng-container>
                 <ng-template #elseTemplate>
-                    <mat-grid-list *ngFor="let com of empresa"  cols="4" >
+                    <div class="matgrid">
+                        <mat-grid-list *ngFor="let com of empresa"  cols="4" >
                         <div class="seccion" (click)="abrirTopEmpresaTicket(com.idCliente,com.nombre)">
                             <mat-divider></mat-divider>
                                 <div class="cuerpo" >
@@ -27,11 +28,9 @@
                                     margin-top: -19px;
                                     font-size: 19px;" >confirmation_number</mat-icon>
                                 </div>
-                           
-
-                            
                         </div>
                         </mat-grid-list>
+                    </div>
                 </ng-template>
                 
                 

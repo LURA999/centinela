@@ -257,7 +257,14 @@ export class NewEquipamentComponent implements OnInit {
           for await (const i of this.ipsOficialesEliminados) {
             await lastValueFrom(this.deviceService.p2UpdateOtros(i));
           }
-
+          console.log("ACTUALES");
+          console.log(this.ipsOficialesViejos);
+          console.log("Eliminados");
+          console.log(this.ipsOficialesEliminados);
+          console.log("Nuevos");
+          console.log(this.ipsOficialesActualizados);
+          
+            
         }else{
           for await (const i of this.ipsOficialesActualizados) {
             await lastValueFrom(this.deviceService.insertarRouterP2({cve2:i,cve:this.data.model.idDevice}));
@@ -326,10 +333,12 @@ export class NewEquipamentComponent implements OnInit {
       //arra para enviar a mysql (array de solo los ips modificados) INSERTAR
     if (this.ipsOficialesViejos.indexOf(Number(num)) == -1) {
       this.ipsOficialesActualizados.push(Number(num))
-    } 
-    this.ipsOficialesEliminados.splice(this.ipsOficialesEliminados.indexOf(Number(num)),1)
-    console.log(this.ipsOficialesActualizados);
-    console.log(this.ipsOficialesEliminados);
+    }
+    
+    if(this.ipsOficialesEliminados.indexOf(Number(num)) != -1){
+      this.ipsOficialesEliminados.splice(this.ipsOficialesEliminados.indexOf(Number(num)),1)
+    }
+    
     this.createComponent(
         { title: this.ip?._selectionModel.selected[0].viewValue?this.ip?._selectionModel.selected[0].viewValue:"", id: num.toString(),
           state: true, index:this.guardandoindicesSegmentos.indexOf(this.indicesSegmentos) },event.source._keyManager._activeItem
@@ -371,30 +380,27 @@ export class NewEquipamentComponent implements OnInit {
       if(box.id !== undefined){
         box._disabled = false;
         box._selected = false;        
-        if(this.ipsOficialesViejos.indexOf(id) != -1){
-          this.ipsOficialesEliminados.push(id)
-        }
-        this.ipsOficialesActualizados.splice(this.ipsOficialesActualizados.indexOf(id),1)
         this._renderer.removeAttribute(box._element.nativeElement,"hidden")
-
-        console.log(this.ipsOficialesActualizados);
-        console.log(this.ipsOficialesEliminados);
       }else{
-        if(this.ipsOficialesViejos.indexOf(id) != -1){
-          this.ipsOficialesEliminados.push(id)
-        }
-        this.ipsOficialesActualizados.splice(this.ipsOficialesActualizados.indexOf(id),1)
-        console.log(this.ipsOficialesActualizados);
-        console.log(this.ipsOficialesEliminados);
-
-        
         this.ipsGuardadas.unshift(box)
         this.tabChangeSegmento(); 
       }
+
+      if (this.ipsOficialesActualizados.indexOf(id) != -1) {
+        this.ipsOficialesActualizados.splice(this.ipsOficialesActualizados.indexOf(id),1)        
+      } 
+
+      if(this.ipsOficialesViejos.indexOf(id) != -1){
+        this.ipsOficialesEliminados.push(id)
+      }
+      
+      /*
+      if(this.ipsOficialesActualizados.length >0 && this.ipsOficialesActualizados.indexOf(id) == 1){
+        this.ipsOficialesActualizados.splice(this.ipsOficialesActualizados.indexOf(id),1)
+      }
+*/
       let array = this.IpSeleccionadas[index].toString().split(",");
       this.IpSeleccionadas[index].splice(array.indexOf(id.toString()),1);
-      console.log(this.IpSeleccionadas);
-      
       event.destroy()
 
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,"").replace(/([,]+)*/,"");     
@@ -426,9 +432,7 @@ export class NewEquipamentComponent implements OnInit {
   async ipsEditarRouter(id:number){    
 
     this.ipService.selectIpOneRouter(id, this.identificador, 2, Number(this.contadorIdenti)).subscribe(async (resp: responseService) => {
-       this.ipsDefault = resp.container; 
-         console.log(this.ipsDefault);
-         
+       this.ipsDefault = resp.container;          
        for await (let y of this.ipsDefault){
         this.ipsOficialesViejos.push(y.idIp)
        this.indicesSegmentos= y.idSegmento
@@ -445,13 +449,9 @@ export class NewEquipamentComponent implements OnInit {
       for await (let y of this.ipsDefault){
         this.ipsOficialesViejos.push(y.idIp)
        this.indicesSegmentos= y.idSegmento
-        this.guardarIp(y.idIp,2,y.ip,y);
-        console.log(this.IpSeleccionadas);
-        
+        this.guardarIp(y.idIp,2,y.ip,y);        
       }
       this.cadenaDeIps = JSON.stringify(this.IpSeleccionadas).replace(/\]/gi,"").replace(/\[/gi,"").replace(/\"/gi,""); 
     })
-    console.log(this.IpSeleccionadas);
-    
   }
 }

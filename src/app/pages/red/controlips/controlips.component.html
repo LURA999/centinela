@@ -11,6 +11,7 @@
             <mat-label>Subred</mat-label>
             <mat-select matNativeControl (selectionChange)="filtrar($event.value)" required>
               <mat-option value="0" selected disabled>Seleccione un IP</mat-option>
+              <mat-option value="-1" (click)="ipServicios()">Todas las Ips</mat-option>
               <mat-option *ngFor="let item of segmentos; let i = index" [value]="item.segmentoInicial+'-'+item.segmentoFinal" ><b>{{item.segmento}}</b> : {{item.segmentoInicial}} - {{item.segmentoFinal}}  </mat-option>
             </mat-select>
           </mat-form-field>

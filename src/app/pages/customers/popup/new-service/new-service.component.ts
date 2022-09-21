@@ -81,6 +81,7 @@ export class NewServiceComponent implements OnInit {
     this.logModel.cveUsuario =this.authService.getCveId()
     this.logModel.cveCliente =  Number(this.ruta.url.split("/")[3]);
     this.logModel.cve=this.serviceM.identificador;
+    this.logModel.categoria = 1;
     if(this.data.opc == false){   
       if(nombre.length > 0 && selectCiudad !=undefined && latitud.length > 0 
         && longitud.length > 0 && estado.length > 0 && avenida.length > 0 
@@ -94,7 +95,6 @@ export class NewServiceComponent implements OnInit {
         /**Insertamos el registro de esta actividad, con sus respectivas variables*/
         this.logModel.tipo[0]=1;
         this.logModel.cve = this.data.Empresa+"-"+selectCiudad+"-"+this.serviceM.contador.toString().padStart(4,"0")+"-"+ this.serviceM.plan
-        
         await lastValueFrom(this.logService.insertLog(this.logModel,2))
         this.dialogRef.close(this.serviceM)
         }else{

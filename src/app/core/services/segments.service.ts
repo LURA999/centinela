@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { segmentsModel } from '../../models/segments.model';
 import { Observable } from 'rxjs';
+import { responseService } from 'src/app/models/responseService.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,4 +40,7 @@ export class SegmentsService {
     return this.http.get(this.local+"Repeater/segment.php?last=true");    
   }
 
+  countActiveSegmento(segmento :number):Observable<responseService>{
+    return this.http.get<responseService>(this.local+"Repeater/ip.php?cveSegmento="+segmento);
+  }
 }

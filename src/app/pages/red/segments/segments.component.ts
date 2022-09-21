@@ -12,6 +12,7 @@ import { MyCustomPaginatorIntl } from './../../MyCustomPaginatorIntl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { rango_ip } from '../popup/new-segment/rango_ip';
 import { ActivatedRoute } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-segments',
@@ -109,9 +110,6 @@ export class SegmentsComponent implements OnInit {
       await dialogRef.afterClosed().subscribe((result:any) => {
         try{
         if(result.mensaje.length > 0  ){
-          this.ELEMENT_DATA.splice(this.buscandoIndice(id)
-            ,1,{id:id,nombre:result.nombre, segmento: result.segmento,diagonal:result.diagonal,
-              repetear: result.cveRepetdora,tipo:this.tipo(result.tipo),estatus:this.estatus(result.estatus)})
           this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA)
           this.dataSource.paginator = this.paginator2;  
           this.dataSource.sort = this.sort;
@@ -119,10 +117,19 @@ export class SegmentsComponent implements OnInit {
           this.notificationService.openSnackBar("Se actualizo con exito");  
           })
         }
-        }catch(Exception){}
+        }catch(Exception){}finally{
+          this.llenarTabla()
+          this.ELEMENT_DATA = []
+          this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+        }
       }); 
   }
   async eliminarSegmento (id:number){    
+    let cantidadIpActivas : number= 
+    Number(await (await lastValueFrom(this.segmentServicio.countActiveSegmento(id))).container[0].cantidad)
+    console.log(cantidadIpActivas);
+    
+    if(cantidadIpActivas == 0){
     let dialogRef = await this.dialog.open(DeleteComponent,
       {data: {idSegmento : id, opc: 1},
       animation: { to: "bottom" },
@@ -130,8 +137,7 @@ export class SegmentsComponent implements OnInit {
       });
       await dialogRef.afterClosed().subscribe((result : any) => {
         try{
-        if(result.length > 0  ){
-          this.ELEMENT_DATA =  this.arrayRemove(this.ELEMENT_DATA, this.buscandoIndice(id)) 
+        if(result.length > 0  ){ 
           this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator2;
           this.dataSource.sort = this.sort;
@@ -140,8 +146,15 @@ export class SegmentsComponent implements OnInit {
           this.notificationService.openSnackBar("Se elimino con exito");
         })
       }
-      }catch(Exception){}
+      }catch(Exception){}finally{
+        this.llenarTabla()
+        this.ELEMENT_DATA = []
+        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+      }
       });
+    }else{
+      alert("No es posible, este segmento tiene dispositivos asignados");
+    }
   }
   
   
@@ -177,7 +190,10 @@ export class SegmentsComponent implements OnInit {
       }
       this.cargando = true;
     });
-      
+  
+    
+
+
   }
 
   applyFilter(event: Event) {
@@ -214,26 +230,7 @@ hayClientes2(){
 buscarRuta(event : any){
   event.value = this.id==0? "" : this.id;
 }
-  /**Guardando numero mayor */
-
-  arrayRemove(arr : any, index : any) { 
-    for( var i = 0; i < arr.length; i++){ 
-      if ( arr[i]["id"] === arr[index]["id"]) { 
-          arr.splice(i, 1); 
-      }
-    }
-    return arr;
-  }
-  buscandoIndice(id:number){
-    let i = 0
-    while (true) {
-      const element = this.ELEMENT_DATA[i]["id"];
-      if(element===id){
-       return i
-      }
-      i++;
-    }
-  }
+  
   estatus(numero : string) {
    if(numero == '1'){
     return "activo"

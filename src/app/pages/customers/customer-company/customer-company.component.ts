@@ -107,11 +107,9 @@ Link(){
   
  })
 }
-filtrarLink(){
-  console.log("entra");
-  
-  this.DataService.open.emit({palabraBuscar:this.correolink})
 
+filtrarLink(){
+  this.DataService.open.emit({palabraBuscar:this.correolink})
 }
 
   filtrarTabla(event:any){

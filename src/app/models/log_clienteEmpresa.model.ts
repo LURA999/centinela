@@ -7,4 +7,5 @@ export class log_clienteEmpresa{
     serviciosAltas : string = ""
     serviciosBajas : string = ""
     campos : string = ""
+    categoria : number = 0
 }

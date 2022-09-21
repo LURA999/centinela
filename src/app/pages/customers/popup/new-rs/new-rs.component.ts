@@ -37,6 +37,7 @@ export class NewRsComponent implements OnInit {
     this.rsModel.fechaEspanol = this.metodo.cambiarSeparadoresFecha(fechaValue,"/","-")
     this.rsModel.estatus = select
     this.logModel.cveUsuario = this.autoServicio.getCveId(); 
+    this.logModel.categoria = 2;
     
     if(this.data.opc ==false){
       this.logModel.cveCliente = this.data.idCliente

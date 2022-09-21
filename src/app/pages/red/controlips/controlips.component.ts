@@ -54,7 +54,7 @@ export class ControlipsComponent implements OnInit,OnDestroy {
   
   async procedmiento(){
   await this.ipServicios(); 
-  this.cargando = true;
+  
   await this.segmentosArray();
    // await this.cargarInicio();
   }

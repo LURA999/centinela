@@ -14,9 +14,15 @@ export class DeleteComponent implements OnInit {
   
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private segmentsService : SegmentsService, private repeaterCliente : RepeaterService
   ,public dialogRef: MatDialogRef<DeleteComponent>,private contactService:ContactService) { }
-
+   mensaje :string= "¿Estas seguro que desea eliminarlo?";
   ngOnInit(): void {
-
+    switch(Number(this.data.opc)){
+      case 0:
+        break;
+      case 1:
+        this.mensaje = "¿Esta seguro que desea eliminar el segmento?"       
+        break;
+    }
   }
   
   async confirmar(){
