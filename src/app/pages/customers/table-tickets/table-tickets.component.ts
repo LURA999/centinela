@@ -79,6 +79,8 @@ export class TableTicketsComponent implements OnInit {
   }
   filtrar(palabra: string) {
     this.dataSource.filter = palabra.trim().toLowerCase();
+   
+    
   } 
 
 

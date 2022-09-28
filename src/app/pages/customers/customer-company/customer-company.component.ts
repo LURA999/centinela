@@ -95,6 +95,7 @@ export class CustomerCompanyComponent implements OnInit {
     this.datosCliente()
     this.Link()
     
+    console.log(this.ELEMENT_DATA_TICKETS);
     
   } 
         

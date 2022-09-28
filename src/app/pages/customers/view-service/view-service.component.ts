@@ -85,6 +85,7 @@ export class ViewServiceComponent implements OnInit {
       this.load = true
       this.mapaDireccion()
     })
+  
   }
 
   //Abre el mapa en base a su respectiva direccion

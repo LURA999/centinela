@@ -17,7 +17,7 @@
         <mat-label>R.S.</mat-label>
         <mat-select  id="selectRs" matNativeControl [(value)]="data.idRazonSocial" required #selectRS>
           <mat-option value="0" disabled>Seleccione una razon social</mat-option>
-          <mat-option *ngFor="let dato of data.arrayRS" [value]="dato.idRazonSocial"> {{dato.razonSocial}}</mat-option>
+          <mat-option *ngFor="let dato of data.arrayRS" [value]="dato.idRazonSocial"> {{dato.razonSocial.toString()}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -26,7 +26,7 @@
         <mat-label>Ciudad</mat-label>
         <mat-select id="selectCiudad" matNativeControl [(value)]="data.cveCiudad"  required #selectCiudad>
           <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
-          <mat-option *ngFor="let dato of data.arrayCiudad" [value]="dato.idCiudad"> {{dato.nombre}}</mat-option>
+          <mat-option *ngFor="let dato of data.arrayCiudad" [value]="dato.idCiudad"> {{dato.nombre.toString()}}</mat-option>
         </mat-select>
       </mat-form-field>
       </div>
