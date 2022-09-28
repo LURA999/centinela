@@ -254,7 +254,10 @@ correos:string []=[]
       }else{        
         for await (const usuario of resp.container) {
           this.usuarios.push(usuario)    
+           
         }
+        console.log(this.usuarios);
+
       }    
       this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
@@ -350,13 +353,21 @@ correos:string []=[]
       cve : 0,
       cve2 : this.idTicket 
     } 
+    console.log(this.varDetalle);
+
      this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max    
      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
+
       console.log(this.varDetalle);
+      
       
     }  
 
   async agenteGuardar(cve:number){
+    console.log(cve);
+    console.log(this.varDetalle);
+
+    
     let dosParamsNum:dosParamsNum = {
       cve : cve,
       cve2 : this.idTicket,
@@ -443,18 +454,19 @@ correos:string []=[]
   }
 
   async actualizar4params(){    
-
-    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
-      await this.guardarGrupo(this.form.controls["cveGrupo"].value)
-    }
-
-    if(this.agenteNuevo !== undefined && this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
-      await this.agenteGuardar(this.agenteNuevo.idUsuario)
+  
+    if(this.agenteNuevo !== undefined && this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){           
+      await this.agenteGuardar(this.agenteNuevo.idUsuario)  
+      console.log(this.agenteNuevo.idUsuario+"AGENTE NUEVO");
+      
     }else{
       if(this.datosTicket.cveGrupo.toString() === this.form.controls["cveGrupo"].value.toString()
-       && this.agenteNuevo !== undefined){
+       && this.agenteNuevo !== undefined){   
+        console.log(this.agenteNuevo!.idUsuario ) ;
+             
         await this.guardarGrupo(this.form.controls["cveGrupo"].value)
-        await this.agenteGuardar(this.agenteNuevo!.idUsuario )
+        await this.agenteGuardar(this.agenteNuevo!.idUsuario )  
+
       }
     }
 
@@ -471,59 +483,30 @@ correos:string []=[]
     }
 
     if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){ 
+console.log(this.Grupos);
+
      let grupo1= this.Grupos.find(element=>element.value==this.datosTicket.cveGrupo.toString())
      let grupo2=this.Grupos.find(element=>element.value==this.form.controls["cveGrupo"].value.toString())
    this.correos.push(grupo1!.correo).toString()
    this.correos.push(grupo2!.correo).toString()
-   console.log(this.datosTicket.idUsuario);
-   
-
-   
 
    let agente1=this.usuarios.find(element=>element.idUsuario==this.datosTicket.cveUsuario.toString())
    let agente2=this.usuarios.find(element=>element.idUsuario==this.form.controls["cveUsuario"].value.toString())
    this.correos.push(agente1?.correo).toString()
    this.correos.push(agente2?.correo).toString()
-  
    
       this.contactsEmailTicket.TextoAsunto="El Ticket se ha escalado del grupo:"+grupo1?.viewValue+" al grupo: "+grupo2?.viewValue
-      this.contactsEmailTicket.correo=this.datosTicket.correoAbierto
-      this.contactsEmailTicket.prioridad=this.metodos.prioridadEnLetraTicket(this.form.controls["prioridad"].value)
+      this.contactsEmailTicket.correo="rub_evil@hotmail.com"
+      this.contactsEmailTicket.prioridad=this.form.controls["prioridad"].value
       this.contactsEmailTicket.servicio=this.datosTicket.servicio
       this.contactsEmailTicket.identificador=this.datosTicket.identificador
       this.contactsEmailTicket.nombreCliente=this.datosTicket.cliente
-      this.contactsEmailTicket.nombreContacto=this.datosTicket.contacto
-      this.contactsEmailTicket.correoCc=this.correos
-      this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(this.form.controls["estado"].value)
+this.contactsEmailTicket.nombreContacto=this.datosTicket.contacto
+this.contactsEmailTicket.correoCc=this.correos
 
-
+console.log(this.contactsEmailTicket);
 
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
-    }
-
-
-    if( this.form.controls["estado"].value.toString()==4){
-
-      let grupo2=this.Grupos.find(element=>element.value==this.form.controls["cveGrupo"].value.toString())
-    this.correos.push(grupo2!.correo).toString()
- 
-    let creador=this.usuarios.find(element=>element.idUsuario==this.datosTicket.cveUsuario.toString())
-
-    let agente2=this.usuarios.find(element=>element.idUsuario==this.form.controls["cveUsuario"].value.toString())
-    this.correos.push(agente2?.correo).toString()
-
-       this.contactsEmailTicket.TextoAsunto="El Ticket ha sido cerrado"
-       this.contactsEmailTicket.correo=this.datosTicket.correoAbierto
-       this.contactsEmailTicket.prioridad=this.metodos.prioridadEnLetraTicket(this.form.controls["prioridad"].value)
-       this.contactsEmailTicket.servicio=this.datosTicket.servicio
-       this.contactsEmailTicket.identificador=this.datosTicket.identificador
-       this.contactsEmailTicket.nombreCliente=this.datosTicket.cliente
-       this.contactsEmailTicket.nombreContacto=this.datosTicket.contacto
-       this.contactsEmailTicket.correoCc=this.correos
-       this.contactsEmailTicket.estatus="Cerrado"
-
- 
-       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
     }
 
     this.varDetalle = undefined
@@ -564,7 +547,9 @@ correos:string []=[]
     this.tipoComentario = true
   }
 
-  async enviarMensaje(){    
+  async enviarMensaje(){
+    console.log( this.auth.getCveId());
+    
     let form : enviarComentarioInterface ={
       cveTicket: this.idTicket,
       comentario: this.textArea.value,

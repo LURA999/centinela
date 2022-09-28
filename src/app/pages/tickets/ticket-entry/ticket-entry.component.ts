@@ -27,6 +27,11 @@ interface Grupo{
 value:number
 viewValue:string
 }
+
+interface usuario{
+  value:number
+  viewValue:string
+  }
 interface datosServicio {
   idCliente:number|undefined,
   cliente : string,
@@ -82,7 +87,7 @@ export class TicketEntryComponent implements OnInit {
   //Variables para guardar servicios
   contactoLista: any[] = [];
   asuntosArray: any [] = []
-  usuarios : any [] = []
+  usuarios : usuario [] = []
   arrayRol : any [] = []
   Grupos : Grupo [] = []
 
@@ -380,18 +385,20 @@ export class TicketEntryComponent implements OnInit {
      ));
   }
 
-  buscarUsuarios(){
+  async buscarUsuarios(){
+    this.usuarios=[]
     let cve : number = this.idGrupo.value    
     this.formTicket.controls["cveUsuario"].reset();
-    this.usarioservice.usuariosGrupo(cve).subscribe((resp:responseService)=>{
-      console.log(resp);
+    await this.userservice.llamarListaAgentes(cve).toPromise().then( (result : any) =>{
       
-      if(resp.status === "not found"){
-        this.usuarios = []
-      }else{
-       this.usuarios = resp.container;
+      console.log();
+      
+      for(let i=0;i<result.container.length;i++){
+
+      this.usuarios.push({value:result.container[i]["idUsuario"], viewValue:result.container[i]["nombre"] })
       }
-    })
+      });
+    
   }  
 
   agregarContacto(datos : number){        
@@ -481,6 +488,7 @@ export class TicketEntryComponent implements OnInit {
       
       this.contactsEmailTicket.correo = this.contactoLista[this.contactoPrincipal!].correo
       this.contactsEmailTicket.texto =  this.formTicket.controls["descripcion"].value
+    this.contactsEmailTicket.TextoAsunto="Gracias por ponerte en contacto, se ha abierto un ticket para su solicitud"
       this.contactsEmailTicket.prioridad = this.metodos.prioridadEnLetraTicket(this.formTicket.controls["prioridad"].value)
       this.contactsEmailTicket.identificador = this.identificador
       this.contactsEmailTicket.servicio = this.datosServicio?.servicio!

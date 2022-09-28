@@ -46,7 +46,6 @@ correo:string
     nombreContacto : string ,
     correoAgente : string,
     correoGrupo : string
-
   }
 
 

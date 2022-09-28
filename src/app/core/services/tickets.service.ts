@@ -51,9 +51,13 @@ export class TicketService {
         return this.http.patch<responseService>(this.local+"Tickets/tickets.php?estado=true",input);
     }
     actualizarAgente(input : dosParamsNum) : Observable<responseService>{
+        console.log(input);
+        
         return this.http.patch<responseService>(this.local+"Tickets/tickets.php?agente=true",input);
     }
     actualizarGrupo(input : dosParamsNum) : Observable<responseService>{
+        console.log(input);
+         
         return this.http.patch<responseService>(this.local+"Tickets/tickets.php?grupo=true",input);
     }
     actualizarTipo(input : dosParamsNum) : Observable<responseService>{
@@ -66,6 +70,7 @@ export class TicketService {
 
     //Enviar correoTicket 
     enviarCorreo(email: contactsEmailTicket) : Observable<responseService>{
+
         return this.http.post<responseService>(this.local+"Tickets/correoTicket.php",email);
     }
 

@@ -101,9 +101,9 @@
                             <div class="campoAgente">
                                 <mat-form-field appearance="fill">
                                     <mat-label>Agente</mat-label>
-                                    <mat-select formControlName="cveUsuario">
-                                        <mat-option *ngFor="let i of usuarios" [value]="i.idUsuario">{{i.usuario}}
-                                        </mat-option>
+                                    <mat-select formControlName="cveUsuario" #idUsuario>
+                                        <mat-option [value]="option.value" *ngFor="let option of usuarios">{{
+                                            option.viewValue }} </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
