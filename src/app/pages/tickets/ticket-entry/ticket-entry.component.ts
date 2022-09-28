@@ -487,6 +487,7 @@ export class TicketEntryComponent implements OnInit {
       this.contactsEmailTicket.nombreContacto = this.contactoLista[this.contactoPrincipal!].nombre
       this.contactsEmailTicket.nombreCliente = this.datosServicio?.cliente!
       
+    
       let form : formTicketInterface
       form = this.formTicket.value
       form.abiertoUsuario = this.guarduser.getCveId()

@@ -42,12 +42,12 @@ export class NewGroupComponent implements OnInit {
     })
   }
   
-  async subir(nombre:string,rol:number,estatus:number){
+  async subir(nombre:string,rol:number,estatus:number,correo:string){
     if(nombre==undefined||rol==undefined||estatus==undefined||nombre==""){
       alert("Por favor llene todos los campos");
     }else{
     this.groupmodel.nombre=nombre
-    
+    this.groupmodel.correo=correo
     this.groupmodel.cveRol=rol
 this.groupmodel.estatus=estatus
 
@@ -58,4 +58,3 @@ this.groupmodel.estatus=estatus
     }
     
   }
-

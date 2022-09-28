@@ -21,13 +21,15 @@ import { Router } from '@angular/router';
 import { MatSelect } from '@angular/material/select';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
+import { contactsEmailTicket } from 'src/app/models/contactsEmailTicket.model';
 interface Grupo{
   value:number
 viewValue:string
+correo:string
 }
 export interface ticket {
   idTicket: Number,
-  servicio : String,
+  servicio : string,
   fechaAbierta: String,
   fechaCerrada: String,
   grupo: Number,
@@ -36,7 +38,13 @@ export interface ticket {
   agente: Number,
   estado: Number,
   prioridad:Number,
-  idUsuario:Number
+  idUsuario:Number,
+  identificador :string,
+  nombre : string,
+  correoAbiertoUsuario : string,
+  nombreContacto : string ,
+  correoAgente : string,
+  correoGrupo : string
 }
 
 export interface usuario {
@@ -55,11 +63,10 @@ export interface usuario {
 })
 export class AllTicketsComponent implements OnInit{
   cargando : boolean = false;
-
   Grupos :Grupo []=[]
   //var para borrar tickets
   borrar:boolean = true
-  
+  correos : string [] = []
   //variables de la tabla
   ELEMENT_DATA:  ticket[] = [ ];
   tickets:  ticket[] = [ ];
@@ -126,7 +133,7 @@ export class AllTicketsComponent implements OnInit{
   cBox : FormControl = new FormControl() 
   guardarIdcBox : number = 0;
   banderaCheckbox : boolean = true;
-  elTicket : number =0
+  elTicket : ticket | undefined  
 
 
   //iniciador de filtro primer grado
@@ -138,6 +145,7 @@ export class AllTicketsComponent implements OnInit{
 
 
   link : boolean = false
+  contactsEmailTicket =  new contactsEmailTicket();
   constructor(
     private userservice: UsersmoduleService,
     private fb : FormBuilder,
@@ -182,7 +190,7 @@ export class AllTicketsComponent implements OnInit{
       console.log(result.container);
       
     for(let i=0;i<result.container.length;i++){
-    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"],correo:result.container[i]["correo"] })
     }
     })
   }
@@ -219,7 +227,23 @@ export class AllTicketsComponent implements OnInit{
   
   await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))
   await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
-  }  
+      let grupo1= this.Grupos.find(element=>element.value==Number(cve))
+      this.correos.push(grupo1!.correo).toString()
+      let agente1=(this.usuariosGrupo.find(element=>element.idUsuario=ticket.agente))
+      this.correos.push(agente1!.correo).toString()
+     this.contactsEmailTicket.TextoAsunto="El Ticket ha sido escalado al grupo:"+grupo1?.viewValue
+     this.contactsEmailTicket.correo=ticket.correoAbiertoUsuario
+     this.contactsEmailTicket.prioridad=this.metodos.prioridadEnLetraTicket(ticket.prioridad.toString())
+     this.contactsEmailTicket.servicio=ticket.servicio.toString()
+     this.contactsEmailTicket.identificador=ticket.identificador
+     this.contactsEmailTicket.nombreCliente=ticket.nombre
+     this.contactsEmailTicket.nombreContacto=ticket.nombreContacto
+     this.contactsEmailTicket.correoCc=this.correos
+this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.toString()) 
+  console.log(this.contactsEmailTicket);  
+
+     await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))  
+}  
 
   async buscarUsuarionav(cve:string){
     this.optionsAgente = []
@@ -274,13 +298,32 @@ export class AllTicketsComponent implements OnInit{
     
   }
 
-  async guardarEstado(cve:string,cveTicket:string){
+  async guardarEstado(cve:string,cveTicket:string,ticket:ticket){
+    
+    console.log(cve,cveTicket,ticket);
+    
+
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
         cve : Number(cve),
         cve2 : Number(cveTicket),
         cveUsuario: this.auth.getCveId()
       } 
+
+      if(Number(cve) == 4){
+        this.contactsEmailTicket.TextoAsunto="El Ticket "+cveTicket+" se ha cerrado"  
+        this.contactsEmailTicket.correo = ticket.correoAbiertoUsuario
+        this.contactsEmailTicket.nombreContacto = ticket.nombreContacto
+        this.contactsEmailTicket.correoCc= [ticket.correoAgente,ticket.correoGrupo]
+        this.contactsEmailTicket.prioridad= this.metodos.prioridadEnLetraTicket(ticket.prioridad.toString())
+        this.contactsEmailTicket.servicio=ticket.servicio
+        this.contactsEmailTicket.identificador=ticket.identificador
+        this.contactsEmailTicket.nombreCliente=ticket.nombre
+        this.contactsEmailTicket.estatus="Cerrado"
+
+        await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
+      }
+
         await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       }
   }
@@ -306,15 +349,27 @@ export class AllTicketsComponent implements OnInit{
     this.procedimiento(false)
   }
 
-    async cerrarTicket(){
- 
+    async cerrarTicket(){      
+      this.contactsEmailTicket.TextoAsunto="El Ticket "+this.elTicket!.idTicket+" se ha cerrado"  
+      this.contactsEmailTicket.correo = this.elTicket!.correoAbiertoUsuario
+      this.contactsEmailTicket.nombreContacto = this.elTicket!.nombreContacto
+      this.contactsEmailTicket.correoCc= [this.elTicket?.correoAgente!,this.elTicket!.correoGrupo]
+      this.contactsEmailTicket.prioridad= this.metodos.prioridadEnLetraTicket(this.elTicket!.prioridad.toString())
+      this.contactsEmailTicket.servicio=this.elTicket!.servicio
+      this.contactsEmailTicket.identificador=this.elTicket!.identificador
+      this.contactsEmailTicket.nombreCliente=this.elTicket!.nombre
+      this.contactsEmailTicket.estatus="Cerrado"
+
+    await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
+
       let dosParamsNum : dosParamsNum = {
         cve:4,
-        cve2:Number(this.elTicket),
+        cve2:Number(this.elTicket!.idTicket),
         cveUsuario: this.auth.getCveId()
       }
       await lastValueFrom(this.ticketService.actualizarEstado(dosParamsNum))
       this.procedimiento(false)
+
 
     }
 
@@ -375,7 +430,7 @@ export class AllTicketsComponent implements OnInit{
     return this.todoEstado.filter(estado => estado.toLowerCase().includes(filterValue));
   }
 
-  borrarClick(bool : boolean, idTicket : number,matCheck : MatCheckbox ){
+  borrarClick(bool : boolean, idTicket : ticket,matCheck : MatCheckbox ){
     this.borrar = bool
     this.elTicket = idTicket
     this.cBox.reset()
@@ -440,10 +495,10 @@ export class AllTicketsComponent implements OnInit{
     form.cve = this.auth.getCveId()
     console.log(form);
     
-    this.ELEMENT_DATA=[];
+    this.ELEMENT_DATA = new Array<ticket>();
     this.dataSource = new MatTableDataSource();
 
-     this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{
+     this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{      
         for await (const iterator of resp.container) {
           this.ELEMENT_DATA.push(iterator)
           if(this.gruposCve.indexOf(iterator.grupo) == -1){

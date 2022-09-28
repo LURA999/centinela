@@ -197,7 +197,7 @@
                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
                         <ng-container matColumnDef="checkbox" >
                           <th mat-header-cell *matHeaderCellDef>  </th>
-                          <td mat-cell *matCellDef="let element"> <mat-checkbox [id]="element.idTicket" [formControl] = "cBox" color="primary" (click)="borrarClick(matBorrar.checked,element.idTicket,matBorrar)" (change)="borrarChange(element.idTicket,matBorrar)" #matBorrar > </mat-checkbox> </td>
+                          <td mat-cell *matCellDef="let element"> <mat-checkbox [id]="element.idTicket" [formControl] = "cBox" color="primary" (click)="borrarClick(matBorrar.checked,element,matBorrar)" (change)="borrarChange(element.idTicket,matBorrar)" #matBorrar > </mat-checkbox> </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="ticket">
@@ -248,7 +248,7 @@
                           <th mat-header-cell *matHeaderCellDef> Estado </th>
                           <td mat-cell *matCellDef="let element"> 
                             <mat-form-field appearance="standard" class="matformfield">
-                              <mat-select [value]="element.estado.toString()" (selectionChange)="guardarEstado(estadoTable.value,element.idTicket)" #estadoTable>
+                              <mat-select [value]="element.estado.toString()" (selectionChange)="guardarEstado(estadoTable.value,element.idTicket,element)" #estadoTable>
                                   <mat-option value="1">Abierto</mat-option>
                                   <mat-option value="2">En progreso</mat-option>
                                   <mat-option value="3">Pausado</mat-option>

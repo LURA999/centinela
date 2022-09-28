@@ -13,8 +13,13 @@ import { rango_ip } from './rango_ip';
   styleUrls: ['./new-segment.component.css']
 })
 
-export class NewSegmentComponent implements OnInit {
+export class NewSegmentComponent {
   contenedor_carga = <HTMLDivElement> document.getElementById("contenedor_carga");
+  arrayLoading = ["Por favor no cierre el navegador",
+  "Subiendo todas las ips que general el segmento...",
+  "Esto puede demorar dependiendo de la cantidad IPs generados",
+  "Si interrumpe la pagina, se subira incompletamente"];
+
   subnetting = require('ip-utils')
   repetearArray: any []= [];
   arrayPromises : any []=[]
@@ -25,10 +30,6 @@ export class NewSegmentComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private segmentService : SegmentsService,
   public dialogRef: MatDialogRef<NewSegmentComponent>, private ipService : IpService  ) { }
-
-  ngOnInit(): void {
-
-  }
   
   pingURL() {
   
@@ -44,6 +45,7 @@ export class NewSegmentComponent implements OnInit {
       if(existe == 0)
       {
         if(nombre.length >0 && diagonal> 0 && this.segmentoFormControl.valid == true  && selectTipo != undefined && selectEstatus !=undefined && Selectrepetear !=undefined){
+          //se activa el loading general
           this.contenedor_carga.style.display = "block";
           // se guarda el rango del segmentos y todos sus subnets          
           let segmentoFinal = await this.subnetting.subnet(segmento+"/"+diagonal).info();

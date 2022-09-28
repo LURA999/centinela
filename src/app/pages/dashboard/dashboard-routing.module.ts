@@ -12,8 +12,8 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'dashboard-red', component: DashboardRedComponent },
-    {path: 'dashboard-tickets', component: DashboardTicketsComponent},
-    {path: 'dashboard-home', component: DashboardHomeComponent}
+      {path: 'dashboard-tickets', component: DashboardTicketsComponent},
+      {path: 'dashboard-home', component: DashboardHomeComponent}
 
     ]
   }

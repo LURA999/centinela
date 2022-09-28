@@ -20,6 +20,7 @@ export class EditGroupComponent implements OnInit {
   cargando : boolean = false;
   mayorNumero : number =0;
 nombre:string=""
+correo:string=""
 cveRol:number=0;
 estatus:number=0;
   ELEMENT_DATA : any =[]
@@ -50,16 +51,19 @@ this.llenarlista();
     this.nombre=result.container[0]["nombre"]
     this.estatus=result.container[0]["estatus"]
     this.cveRol=result.container[0]["cveRol"]
+    this.correo=result.container[0]["correo"]
 
   });
   
   }
 
- async enviar(nombre:string,cveRol:number,estatus:number){
+ async enviar(nombre:string,cveRol:number,estatus:number,correo:string){
   this.groupmodel.cveRol=cveRol
   this.groupmodel.nombre=nombre
   this.groupmodel.estatus=estatus
   this.groupmodel.id=this.data.idGrupo
+  this.groupmodel.correo=correo
+
 await lastValueFrom(this.userservice.updateGroup(this.groupmodel));
 
 this.dialogRef.close('Se ha Actualizado con exito');
@@ -68,4 +72,3 @@ this.dialogRef.close('Se ha Actualizado con exito');
 
 
 }
-  

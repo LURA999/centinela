@@ -75,9 +75,9 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Plan</mat-label>
-      <mat-select id="selectPlan" matNativeControl [(value)]="data.cvePlan"required #selectPlan>
+      <mat-select id="selectPlan" matNativeControl  [value]="data.cvePlan.toString()"required #selectPlan>
         <mat-option value="0" disabled>Seleccione una ciudad</mat-option>
-        <mat-option *ngFor="let dato of data.arrayPlan" [value]="dato.idPlan"> {{dato.nombre}}</mat-option>
+        <mat-option *ngFor="let dato of data.arrayPlan" [value]="dato.idPlan.toString()"> {{dato.nombre}}</mat-option>
       </mat-select>
     </mat-form-field>
     </div>
@@ -91,7 +91,7 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Estatus</mat-label>
-      <mat-select  matNativeControl [(value)]="data.cveEstatus "required #selectEstatus>
+      <mat-select  matNativeControl [value]="data.cveEstatus.toString()" required #selectEstatus>
         <mat-option value="0" disabled>Seleccione un estatus</mat-option>
         <mat-option value="1">activo</mat-option>
         <mat-option value="2">inactivo</mat-option>

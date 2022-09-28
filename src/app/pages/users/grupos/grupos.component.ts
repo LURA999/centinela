@@ -36,7 +36,7 @@ estatus:string=""
 
   ELEMENT_DATA : any =[]
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  displayedColumns = ['nombre','agentes','opciones'];
+  displayedColumns = ['nombre','agentes','correo','opciones'];
   constructor(     private notificationService: NotificationService
     ,   private dialog : NgDialogAnimationService, private userservice : UsersmoduleService) { }
 
@@ -137,8 +137,10 @@ estatus:string=""
       
   
       for (let i=0; i<result.container.length; i++){
+        console.log(result.container);
+        
       this.ELEMENT_DATA.push(
-        {id: result.container[i]["idGrupo"],nombre: result.container[i]["nombre"],agentes: result.container[i]["agentes"]
+        {id: result.container[i]["idGrupo"],nombre: result.container[i]["nombre"],agentes: result.container[i]["agentes"],correo: result.container[i]["correo"]
       });
     this.numeroMayor(result.container[i]["idGrupo"]);
     }
@@ -181,8 +183,3 @@ estatus:string=""
   }
   
   }
-  
-
-
-
-

@@ -17,10 +17,17 @@ import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 import { contains } from 'jquery';
+import { contactsEmailTicket } from 'src/app/models/contactsEmailTicket.model';
 interface Grupo{
 value:number
 viewValue:string
+correo:string
 }
+interface Agente{
+  value:number
+  viewValue:string
+  correo:string
+  }
 export interface Comment {
   mensaje?: string;
   usuarioRespondido : string;
@@ -60,7 +67,10 @@ export interface datosUsuario {
 })
 
 export class VistaTicketComponent implements AfterViewInit,OnInit {
+  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket() 
   Grupos:Grupo[]=[]
+  Agentes:Agente[]=[]
+correos:string []=[]
   mobileQuery: MediaQueryList;
   position : boolean = false
   moveProp : boolean = false
@@ -134,9 +144,11 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     for(let i=0;i<result.container.length;i++){
       
     
-    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"],correo: result.container[i]["correo"]})
     }
     })
+   
+  
   }
 
   async procedimiento(){
@@ -155,9 +167,9 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
 
   async llamarUnTicket(){
    
-    
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
     console.log(this.datosTicket);
+    
     this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
     this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
@@ -167,7 +179,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   }
 
  async llamarVariantesDeTicket(){
-  /**Pidiendo pings para los otros equipos*/
+  /*Pidiendo pings para los otros equipos*/
   this.ipService.selectIpOneEquipament(0,this.datosTicket.identificador,3,this.datosTicket.contador).subscribe(async(resp:responseService) =>{      
     if(resp.status === "not found"){
     }else{
@@ -238,9 +250,10 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       this.usuarios = []
       if(resp.status === "not found"){
         this.usuarios = []
+
       }else{        
         for await (const usuario of resp.container) {
-          this.usuarios.push(usuario)        
+          this.usuarios.push(usuario)    
         }
       }    
       this.filteredOptions = this.myControl.valueChanges.pipe(
@@ -326,6 +339,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
 
 
   async guardarGrupo(cve:StringConstructor){ 
+
     let dosParamsNumGrupo:dosParamsNum = {
       cve : Number(cve),
       cve2 : this.idTicket,
@@ -338,8 +352,7 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     } 
      this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max    
      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
-
-      
+      console.log(this.varDetalle);
       
     }  
 
@@ -348,9 +361,14 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
       cve : cve,
       cve2 : this.idTicket,
       cveUsuario: this.auth.getCveId(),
+    
       cveLogDet: this.varDetalle 
+
     }
       await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
+
+     
+      
   }
 
   async guardarEstado(cve:string){
@@ -425,18 +443,18 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
   }
 
   async actualizar4params(){    
-    
-    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){      
+
+    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
       await this.guardarGrupo(this.form.controls["cveGrupo"].value)
     }
 
-    if(this.agenteNuevo !== undefined && this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){           
-      await this.agenteGuardar(this.agenteNuevo.idUsuario)  
+    if(this.agenteNuevo !== undefined && this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
+      await this.agenteGuardar(this.agenteNuevo.idUsuario)
     }else{
       if(this.datosTicket.cveGrupo.toString() === this.form.controls["cveGrupo"].value.toString()
-       && this.agenteNuevo !== undefined){        
+       && this.agenteNuevo !== undefined){
         await this.guardarGrupo(this.form.controls["cveGrupo"].value)
-        await this.agenteGuardar(this.agenteNuevo!.idUsuario )  
+        await this.agenteGuardar(this.agenteNuevo!.idUsuario )
       }
     }
 
@@ -451,6 +469,63 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     if(this.datosTicket.estado.toString() !== this.form.controls["estado"].value.toString()){
       await this.guardarEstado(this.form.controls["estado"].value)
     }
+
+    if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){ 
+     let grupo1= this.Grupos.find(element=>element.value==this.datosTicket.cveGrupo.toString())
+     let grupo2=this.Grupos.find(element=>element.value==this.form.controls["cveGrupo"].value.toString())
+   this.correos.push(grupo1!.correo).toString()
+   this.correos.push(grupo2!.correo).toString()
+   console.log(this.datosTicket.idUsuario);
+   
+
+   
+
+   let agente1=this.usuarios.find(element=>element.idUsuario==this.datosTicket.cveUsuario.toString())
+   let agente2=this.usuarios.find(element=>element.idUsuario==this.form.controls["cveUsuario"].value.toString())
+   this.correos.push(agente1?.correo).toString()
+   this.correos.push(agente2?.correo).toString()
+  
+   
+      this.contactsEmailTicket.TextoAsunto="El Ticket se ha escalado del grupo:"+grupo1?.viewValue+" al grupo: "+grupo2?.viewValue
+      this.contactsEmailTicket.correo=this.datosTicket.correoAbierto
+      this.contactsEmailTicket.prioridad=this.metodos.prioridadEnLetraTicket(this.form.controls["prioridad"].value)
+      this.contactsEmailTicket.servicio=this.datosTicket.servicio
+      this.contactsEmailTicket.identificador=this.datosTicket.identificador
+      this.contactsEmailTicket.nombreCliente=this.datosTicket.cliente
+      this.contactsEmailTicket.nombreContacto=this.datosTicket.contacto
+      this.contactsEmailTicket.correoCc=this.correos
+      this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(this.form.controls["estado"].value)
+
+
+
+      await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
+    }
+
+
+    if( this.form.controls["estado"].value.toString()==4){
+
+      let grupo2=this.Grupos.find(element=>element.value==this.form.controls["cveGrupo"].value.toString())
+    this.correos.push(grupo2!.correo).toString()
+ 
+    let creador=this.usuarios.find(element=>element.idUsuario==this.datosTicket.cveUsuario.toString())
+
+    let agente2=this.usuarios.find(element=>element.idUsuario==this.form.controls["cveUsuario"].value.toString())
+    this.correos.push(agente2?.correo).toString()
+
+       this.contactsEmailTicket.TextoAsunto="El Ticket ha sido cerrado"
+       this.contactsEmailTicket.correo=this.datosTicket.correoAbierto
+       this.contactsEmailTicket.prioridad=this.metodos.prioridadEnLetraTicket(this.form.controls["prioridad"].value)
+       this.contactsEmailTicket.servicio=this.datosTicket.servicio
+       this.contactsEmailTicket.identificador=this.datosTicket.identificador
+       this.contactsEmailTicket.nombreCliente=this.datosTicket.cliente
+       this.contactsEmailTicket.nombreContacto=this.datosTicket.contacto
+       this.contactsEmailTicket.correoCc=this.correos
+       this.contactsEmailTicket.estatus="Cerrado"
+
+ 
+       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
+    }
+
     this.varDetalle = undefined
     this.agenteNuevo = undefined
     await this.llamarUnTicket();
@@ -489,11 +564,13 @@ export class VistaTicketComponent implements AfterViewInit,OnInit {
     this.tipoComentario = true
   }
 
-  async enviarMensaje(){
+  async enviarMensaje(){    
     let form : enviarComentarioInterface ={
       cveTicket: this.idTicket,
       comentario: this.textArea.value,
       cveUsuario: this.auth.getCveId(),
+      
+      
       estatus: 1,
       tipo: this.tipoComentario ===false?7:8
     }

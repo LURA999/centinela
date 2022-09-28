@@ -26,6 +26,7 @@ export class UsuarioService {
   }
 
   usuariosGrupo(cve : number) :Observable<responseService> {
+    
     return this.http.get<responseService>(this.local+'/Users/user.php?cveGroup='+cve);
   }
 }

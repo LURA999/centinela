@@ -75,8 +75,19 @@ ul li {
     padding-top: 7px;
     }
 
+   /* img {
+        background: url('../../../../assets/icon/telephone.svg') no-repeat left top;
+        background-size: 30px;
+        padding-left: 40px;
+        padding-top: 31px;
+        }
+
+        .rowsLi{
+            padding-left: 40px;
+            padding-top: 10px;
+        }*/
 .dividerLi{
-    height: 65px;
+    height: 78px;
     background: #ccc;
     border:0.1px solid #ccc;
     position: absolute;
@@ -128,10 +139,29 @@ ul {
     border-radius: 50px;
     padding: 5px;
 }
+::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
+    min-width: 0!important;
+    padding: 6px!important;
+    margin: 6px!important;
+   }
 
+
+   .mat-tab-label.mat-tab-label-active {
+    min-width: 25px !important;
+    padding: 5px;
+    background-color: transparent;
+    color: rgb(0, 255, 200);
+    font-weight: 700;
+}
+
+::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
+    min-width: 0!important;
+    padding: 0 15% 0 15%!important;
+    margin: 7px 0 7px 0!important;
+   }
 /*cuando disminuye el tamaño de pantalla*/
 
-@media (max-width:1390px) {
+@media (max-width:1200px) {
     .sub-container {
         display: contents;
         /*flex-flow: column-reverse;*/
@@ -150,35 +180,32 @@ ul {
         width: 33%;
     }
     .bSecundario {
-        width: 22%;
+        width: 100%;
     }
 }
 
 
 /**responsive con una resolucion 1852px para abajo px como maximo
-y minimo 413px
-LINEAS DE la lista de etiquetas*/
+y minimo 413px LINEAS DE la lista de etiquetas*/
 
 @media (max-width:785px) {
-    .dividerLi{
-        height: 85px;
+    .col-sm{
+        width: 140px;
+        padding-left: 5px;
+        font-size: 12px;
     }
+    
 }
 
-@media (max-width:701px) {
-    .dividerLi{
-        height: 105px;
-    }
-}
-
+/*
 @media (max-width:688px) {
     .dividerLi{
-        height: 125px;
+        height: 138px;
     }
 }
 
 @media (max-width:528px) {
     .dividerLi{
-        height: 145px;
+        height: 158px;
     }
-}
+}*/

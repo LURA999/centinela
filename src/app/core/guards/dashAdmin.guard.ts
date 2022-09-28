@@ -14,7 +14,7 @@ export class DashAdminGuard implements CanActivate {
       return true
     }else{
      
-        this.route.navigateByUrl('/admin/dashboard')
+        this.route.navigateByUrl('/admin/dashboard/dashboard-tickets')
         
       
       return false;
