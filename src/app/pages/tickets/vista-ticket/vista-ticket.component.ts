@@ -1,7 +1,7 @@
-import { MediaMatcher } from '@angular/cdk/layout';
+
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { lastValueFrom, map, Observable, startWith, Subscription } from 'rxjs';
+import { lastValueFrom, map, Observable, startWith, Subscription, timeout } from 'rxjs';
 import { TicketService } from 'src/app/core/services/tickets.service';
 import { responseService } from 'src/app/models/responseService.model';
 import { UsuarioService } from 'src/app/core/services/user.service';
@@ -16,18 +16,14 @@ import { enviarComentarioInterface } from 'src/app/interfaces/enviarComentario.i
 import { Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
-import { contains } from 'jquery';
+import { MediaMatcher } from '@angular/cdk/layout';
 import { contactsEmailTicket } from 'src/app/models/contactsEmailTicket.model';
+
 interface Grupo{
+correo: string;
 value:number
 viewValue:string
-correo:string
 }
-interface Agente{
-  value:number
-  viewValue:string
-  correo:string
-  }
 export interface Comment {
   mensaje?: string;
   usuarioRespondido : string;
@@ -66,11 +62,9 @@ export interface datosUsuario {
   styleUrls: ['./vista-ticket.component.css']
 })
 
-export class VistaTicketComponent implements AfterViewInit,OnInit {
-  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket() 
+export class VistaTicketComponent implements OnInit {
   Grupos:Grupo[]=[]
-  Agentes:Agente[]=[]
-correos:string []=[]
+  correos : string [] = []
   mobileQuery: MediaQueryList;
   position : boolean = false
   moveProp : boolean = false
@@ -111,6 +105,7 @@ correos:string []=[]
 
   comment: Comment[] = [ ];
 
+  contactsEmailTicket : contactsEmailTicket = new contactsEmailTicket()
   constructor(
     private userservice:UsersmoduleService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -123,7 +118,8 @@ correos:string []=[]
     private deviceService : DeviceService,
     private ticketService: TicketService,
     private auth : AuthService, 
-    public regresar : Location
+    public regresar : Location,
+    private renderer: Renderer2
     ) {       
     this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
     this.idTicket = this.idTicket
@@ -134,7 +130,15 @@ correos:string []=[]
   ngOnInit(): void {    
     this.llamarCve();
     this.procedimiento()
+    this.changeDetectorRef.detectChanges();    
+    this.renderer.listen(document.getElementById("buttonload"),"click", ()=>{
+     this.renderer.addClass(document.getElementById("buttonload"),"onclic")    
+     this.actualizar4params()
+   })
+    
   }
+
+ 
   
   //Metodo llamar Grupo
   async llamarCve(){
@@ -144,11 +148,9 @@ correos:string []=[]
     for(let i=0;i<result.container.length;i++){
       
     
-    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"],correo: result.container[i]["correo"]})
+    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"], correo: result.container[i]["correo"]})
     }
     })
-   
-  
   }
 
   async procedimiento(){
@@ -167,9 +169,9 @@ correos:string []=[]
 
   async llamarUnTicket(){
    
+    
     this.datosTicket = await (await lastValueFrom(this.servTicket.llamarTicket(this.idTicket))).container[0]
     console.log(this.datosTicket);
-    
     this.form.controls["cveGrupo"].setValue(await this.datosTicket.cveGrupo)
     this.form.controls["tipo"].setValue(await this.datosTicket.tipo.toString())
     this.form.controls["prioridad"].setValue(await this.datosTicket.prioridad.toString())
@@ -250,10 +252,9 @@ correos:string []=[]
       this.usuarios = []
       if(resp.status === "not found"){
         this.usuarios = []
-
       }else{        
         for await (const usuario of resp.container) {
-          this.usuarios.push(usuario)    
+          this.usuarios.push(usuario)        
         }
       }    
       this.filteredOptions = this.myControl.valueChanges.pipe(
@@ -310,10 +311,6 @@ correos:string []=[]
   }
 
 
-  ngAfterViewInit(): void {
-    this.changeDetectorRef.detectChanges();    
-   
-  }
   
   /** Monitreo de ping */
   async monitoreoPing( ip : string, i : number,array:pingDatos[]) { 
@@ -338,8 +335,7 @@ correos:string []=[]
   }
 
 
-  async guardarGrupo(cve:StringConstructor){ 
-
+  async guardarGrupo(cve:String){ 
     let dosParamsNumGrupo:dosParamsNum = {
       cve : Number(cve),
       cve2 : this.idTicket,
@@ -352,7 +348,8 @@ correos:string []=[]
     } 
      this.varDetalle = await(await lastValueFrom(this.ticketService.actualizarGrupo(dosParamsNumGrupo))).container[0].max    
      await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNumAgente))
-      console.log(this.varDetalle);
+
+      
       
     }  
 
@@ -361,16 +358,13 @@ correos:string []=[]
       cve : cve,
       cve2 : this.idTicket,
       cveUsuario: this.auth.getCveId(),
-    
       cveLogDet: this.varDetalle 
-
     }
       await lastValueFrom(this.ticketService.actualizarAgente(dosParamsNum))
-
-     
-      
   }
+  
 
+ 
   async guardarEstado(cve:string){
     if(Number(cve) > 0){
       let dosParamsNum:dosParamsNum = {
@@ -442,8 +436,7 @@ correos:string []=[]
     
   }
 
-  async actualizar4params(){    
-
+  async actualizar4params(){        
     if(this.datosTicket.cveGrupo.toString() !== this.form.controls["cveGrupo"].value.toString()){
       await this.guardarGrupo(this.form.controls["cveGrupo"].value)
     }
@@ -475,10 +468,6 @@ correos:string []=[]
      let grupo2=this.Grupos.find(element=>element.value==this.form.controls["cveGrupo"].value.toString())
    this.correos.push(grupo1!.correo).toString()
    this.correos.push(grupo2!.correo).toString()
-   console.log(this.datosTicket.idUsuario);
-   
-
-   
 
    let agente1=this.usuarios.find(element=>element.idUsuario==this.datosTicket.cveUsuario.toString())
    let agente2=this.usuarios.find(element=>element.idUsuario==this.form.controls["cveUsuario"].value.toString())
@@ -501,8 +490,8 @@ correos:string []=[]
       await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket)) 
     }
 
-
-    if( this.form.controls["estado"].value.toString()==4){
+    
+    if( this.form.controls["estado"].value.toString()==4 && Number(this.datosTicket.estado) !== 4){
 
       let grupo2=this.Grupos.find(element=>element.value==this.form.controls["cveGrupo"].value.toString())
     this.correos.push(grupo2!.correo).toString()
@@ -528,10 +517,22 @@ correos:string []=[]
 
     this.varDetalle = undefined
     this.agenteNuevo = undefined
+   
+    this.renderer.setStyle(document.getElementById("buttonload"),"animation-delay","0s")
+    this.renderer.removeClass(document.getElementById("buttonload"),"onclic")
+    this.renderer.addClass(document.getElementById("buttonload"),"validate")
+    await this.delay(1500)
+    this.renderer.setStyle(document.getElementById("buttonload"),"animation-delay","1s")
     await this.llamarUnTicket();
     await this.imprimirComentarios();
+    this.renderer.removeClass(document.getElementById("buttonload"),"validate")
+    
   }
 
+   async delay(ms: number) {
+    return await new Promise( resolve => setTimeout(resolve,ms));
+    }
+  
   async imprimirComentarios(){  
     this.comment = []
     this.ticketService.llamarHistorial(this.idTicket).subscribe(async (resp:responseService)=>{
@@ -564,13 +565,11 @@ correos:string []=[]
     this.tipoComentario = true
   }
 
-  async enviarMensaje(){    
+  async enviarMensaje(){
     let form : enviarComentarioInterface ={
       cveTicket: this.idTicket,
       comentario: this.textArea.value,
       cveUsuario: this.auth.getCveId(),
-      
-      
       estatus: 1,
       tipo: this.tipoComentario ===false?7:8
     }

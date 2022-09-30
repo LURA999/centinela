@@ -160,9 +160,9 @@
                             </div>
 
                             <div class="botonesSolicitud">
-                                <button mat-stroked-button color="primary">Cancelar</button>
-                                <button mat-raised-button color="primary" (click)="enviarTicket()" aria-busy="true"
-                                    [disabled]="desacBtnCrear">Crear</button>
+                                <button mat-stroked-button color="primary" [disabled]="desacBtnCrear">Cancelar</button>
+                                <button mat-raised-button color="primary" id="enviarTicket" (click)="enviarTicket()"
+                                 [disabled]="desacBtnCrear"></button>
                             </div>
                         </form>
                     </mat-card-content>

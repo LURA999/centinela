@@ -7,6 +7,6 @@ export class contactsEmailTicket {
     servicio : string = ""
     nombreContacto : string = ""
     nombreCliente : string = ""
-    TextoAsunto? : string = ""
+    TextoAsunto : string = ""
     estatus:string=""
 }

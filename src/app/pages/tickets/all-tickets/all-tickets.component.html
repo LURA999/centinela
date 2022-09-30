@@ -59,6 +59,7 @@
                   <mat-paginator #paginator class="all-tickets"
                   [pageSize]="15"
                   hidePageSize="true"
+                  (page)="pageEvents($event)"
                   aria-label="Select page">
                   </mat-paginator>
                 </div>
@@ -87,7 +88,6 @@
                             <mat-label>Grupo</mat-label>
                             <mat-select formControlName="grupo" (selectionChange)="buscarUsuarionav(grupoNav.value)" #grupoNav>
                               <mat-option [value]="option.value" *ngFor="let option of Grupos" >{{ option.viewValue }} </mat-option>
-
                             </mat-select> 
                           </mat-form-field>
                         </div>
@@ -197,7 +197,7 @@
                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
                         <ng-container matColumnDef="checkbox" >
                           <th mat-header-cell *matHeaderCellDef>  </th>
-                          <td mat-cell *matCellDef="let element"> <mat-checkbox [id]="element.idTicket" [formControl] = "cBox" color="primary" (click)="borrarClick(matBorrar.checked,element,matBorrar)" (change)="borrarChange(element.idTicket,matBorrar)" #matBorrar > </mat-checkbox> </td>
+                          <td mat-cell *matCellDef="let element"> <mat-checkbox [id]="element.idTicket" [formControl] = "cBox" color="primary" (click)="borrarClick(matBorrar.checked,element.idTicket,matBorrar)" (change)="borrarChange(element.idTicket,matBorrar)" #matBorrar > </mat-checkbox> </td>
                         </ng-container>
                       
                         <ng-container matColumnDef="ticket">
@@ -211,11 +211,11 @@
                         </ng-container>
                         <ng-container matColumnDef="fechaAbierta">
                           <th mat-header-cell *matHeaderCellDef> Fecha abierto </th>
-                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.fechaAbierta}} </td>
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]" class="letraFecha"> <div class="letraFecha2">{{element.fechaAbierta}}</div> </td>
                         </ng-container>
                         <ng-container matColumnDef="fechaCerrada">
                           <th mat-header-cell *matHeaderCellDef> Fecha cerrado </th>
-                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]"> {{element.fechaCerrada ? element.fechaCerrada  : "No asignada"}} </td>
+                          <td mat-cell *matCellDef="let element" [routerLink]="['/admin/tickets/edit-ticket/',element.idTicket]" class="letraFecha"> <div class="letraFecha2">{{element.fechaCerrada ? element.fechaCerrada  : "No asignada"}}</div> </td>
                         </ng-container>
                         <ng-container matColumnDef="grupo">
                           <th mat-header-cell *matHeaderCellDef> Grupo </th>
@@ -239,7 +239,7 @@
                           <mat-form-field  appearance="standard" class="matformfield">
                             <mat-label>Agente</mat-label>
                             <mat-select [id]="element.idTicket" [value]="element.idUsuario.toString()" (selectionChange)="agenteGuardar(element,agenteTable.value,element.idTicket)" #agenteTable>
-                                <mat-option [value] ="0"> No asignado </mat-option>
+                                <mat-option value ="0"> No asignado </mat-option>
                                 <mat-option *ngFor="let i of usuariosGrupo[element.grupoModificado===undefined? gruposCve.indexOf(element.grupo):element.grupoModificado]" [value]="i.idUsuario.toString()">{{i.usuario}}</mat-option>
                             </mat-select>
                         </mat-form-field> </td>
@@ -273,11 +273,7 @@
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                       </table>
-                      <div class="existe" [hidden]="hayUsers()">No se encontraron resultados... </div>
-
-
-
-                      
+                      <div class="existe" [hidden]="hayUsers()">No se encontraron resultados... </div>                      
                     </div>
                 </mat-drawer-container>
             </mat-card-content>  

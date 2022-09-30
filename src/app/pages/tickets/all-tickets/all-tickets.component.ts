@@ -33,9 +33,9 @@ export interface ticket {
   fechaAbierta: String,
   fechaCerrada: String,
   grupo: Number,
-  grupoModificado:Number|undefined,
+  grupoModificado?:Number,
   tipo: Number,
-  agente: Number,
+  agente: String,
   estado: Number,
   prioridad:Number,
   idUsuario:Number,
@@ -72,7 +72,9 @@ export class AllTicketsComponent implements OnInit{
   tickets:  ticket[] = [ ];
   displayedColumns: string[] = ['checkbox', 'ticket', 'servicio', 'fechaAbierta', 'fechaCerrada','grupo','tipo','agente','estado',"prioridad"];
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);  
-
+  inicio : number=0;
+  fin : number=15;
+  tablaTicket : any []=[]
 
   //variables para los inputs con opciones y con autocomplete
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -82,7 +84,6 @@ export class AllTicketsComponent implements OnInit{
   estadosCve : number [] = [];
   todoEstado: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
   todoEstadoAux: string[] = ['Abierto', 'En progreso', 'Pausado', 'Cerrado'];
-
 
   //Variables para los grupos que se estan abriendo en la tabla
   usuariosGrupo : any [] = []
@@ -185,12 +186,9 @@ export class AllTicketsComponent implements OnInit{
   }
   //Grupos 
   async llamarCve(){
-    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
-      
-      console.log(result.container);
-      
-    for(let i=0;i<result.container.length;i++){
-    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"],correo:result.container[i]["correo"] })
+    this.userservice.llamarGroup("Group").subscribe(async(result : any) =>{
+    for await (const ob of result.container){
+    this.Grupos.push({value:ob.idGrupo, viewValue:ob.nombre,correo:ob.correo })
     }
     })
   }
@@ -240,8 +238,6 @@ export class AllTicketsComponent implements OnInit{
      this.contactsEmailTicket.nombreContacto=ticket.nombreContacto
      this.contactsEmailTicket.correoCc=this.correos
 this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.toString()) 
-  console.log(this.contactsEmailTicket);  
-
      await lastValueFrom(this.ticketService.enviarCorreo(this.contactsEmailTicket))  
 }  
 
@@ -493,22 +489,50 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
     }
     form.cveGrupo = this.auth.getCveGrupo()  
     form.cve = this.auth.getCveId()
-    console.log(form);
     
     this.ELEMENT_DATA = new Array<ticket>();
-    this.dataSource = new MatTableDataSource();
-
-     this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{      
-        for await (const iterator of resp.container) {
-          this.ELEMENT_DATA.push(iterator)
-          if(this.gruposCve.indexOf(iterator.grupo) == -1){
-            this.gruposCve.push(Number(iterator.grupo));
-            this.buscarUsuariosTabla(iterator.grupo.toString()) 
-          } 
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA); 
+    try {
+      this.paginator.firstPage()
+    } catch (error) { }
+    
+    this.search.buscarPorNavbar(form).subscribe(async (resp:responseService)=>{    
+      this.tablaTicket = resp.container  
+      this.inicio = 0
+      this.fin = 15      
+      if(this.tablaTicket.length > 0){
+        while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {          
+          if(this.inicio < this.fin){    
+          this.ELEMENT_DATA[this.inicio] = ({
+            agente: this.tablaTicket[this.inicio].agente,
+            correoAbiertoUsuario: this.tablaTicket[this.inicio].correoAbiertoUsuario,
+            correoAgente:  this.tablaTicket[this.inicio].correoAgente,
+            correoGrupo: this.tablaTicket[this.inicio].correoGrupo,
+            estado: this.tablaTicket[this.inicio].estado,
+            fechaAbierta: this.tablaTicket[this.inicio].fechaAbierta,
+            fechaCerrada:this.tablaTicket[this.inicio].fechaCerrada,
+            grupo:this.tablaTicket[this.inicio].grupo,
+            idTicket: this.tablaTicket[this.inicio].idTicket,
+            idUsuario: this.tablaTicket[this.inicio].idUsuario,
+            identificador:  this.tablaTicket[this.inicio].identificador,
+            nombre: this.tablaTicket[this.inicio].nombre,
+            nombreContacto: this.tablaTicket[this.inicio].nombreContacto,
+            prioridad:this.tablaTicket[this.inicio].prioridad,
+            servicio : this.tablaTicket[this.inicio].servicio,
+            tipo : this.tablaTicket[this.inicio].tipo
+            })   
+            if(this.gruposCve.indexOf(this.tablaTicket[this.inicio].grupo) == -1){
+              this.gruposCve.push(Number(await this.tablaTicket[this.inicio].grupo));
+              await this.buscarUsuariosTabla( await this.tablaTicket[this.inicio].grupo.toString()) 
+            }   
+          }
+          this.inicio++     
         }
-        this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-        this.dataSource.paginator = this.paginator;    
-        this.paginator.length =  this.tickets.length;  
+      }
+      
+        this.dataSource = new MatTableDataSource( this.ELEMENT_DATA);
+        this.dataSource.paginator =  this.paginator;   
+        this.paginator.length =  await this.tablaTicket.length;  
         this.cargando = true
     })    
     
@@ -522,6 +546,58 @@ this.contactsEmailTicket.estatus=this.metodos.estadoEnLetraTicket(ticket.estado.
    // this.search.buscarPorNavbar(formNavSearchTicket)
   }
 
+  async pageEvents(event: any) {  
+    if(event.previousPageIndex > event.pageIndex) {
+    this.inicio = (this.inicio-(this.inicio%15)) -   30;
+    if(this.inicio < 0){
+      this.inicio = 0;
+    }
+    this.fin =  (this.fin - (this.fin%15)) - 15;
+    await this.cargarInicio();
+  } else {
+    this.inicio = this.fin;
+    this.fin = this.fin + 15;
+    await this.cargarInicio();
+  }
+}   
+
+async cargarInicio(){
+  this.ELEMENT_DATA=[];
+  this.dataSource = new MatTableDataSource(); 
+  while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {
+    if(this.inicio < this.fin){    
+    this.ELEMENT_DATA[this.inicio] = ({
+      agente: this.tablaTicket[this.inicio].agente,
+      correoAbiertoUsuario: this.tablaTicket[this.inicio].correoAbiertoUsuario,
+      correoAgente:  this.tablaTicket[this.inicio].correoAgente,
+      correoGrupo: this.tablaTicket[this.inicio].correoGrupo,
+      estado: this.tablaTicket[this.inicio].estado,
+      fechaAbierta: this.tablaTicket[this.inicio].fechaAbierta,
+      fechaCerrada:this.tablaTicket[this.inicio].fechaCerrada,
+      grupo:this.tablaTicket[this.inicio].grupo,
+      idTicket: this.tablaTicket[this.inicio].idTicket,
+      idUsuario: this.tablaTicket[this.inicio].idUsuario,
+      identificador:  this.tablaTicket[this.inicio].identificador,
+      nombre: this.tablaTicket[this.inicio].nombre,
+      nombreContacto: this.tablaTicket[this.inicio].nombreContacto,
+      prioridad:this.tablaTicket[this.inicio].prioridad,
+      servicio : this.tablaTicket[this.inicio].servicio,
+      tipo : this.tablaTicket[this.inicio].tipo
+      })   
+      if(this.gruposCve.indexOf(this.tablaTicket[this.inicio].grupo) == -1){
+        this.gruposCve.push(Number(this.tablaTicket[this.inicio].grupo));
+        this.buscarUsuariosTabla(this.tablaTicket[this.inicio].grupo.toString()) 
+      }
+    }
+    this.inicio++         
+  }
+  
+  this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+  this.dataSource.paginator = this.paginator;    
+  this.paginator.length =  await this.tablaTicket.length;  
+  this.cargando = true
+
+}
   //Filtro de primer grado
 
   async cambiarTitulo(opc:Number){

@@ -1,4 +1,61 @@
 /*TABLA*/
+  
+  #buttonload {
+    border-radius: 10px;
+    outline: none;
+    height: 40px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    width: 100%;
+
+}
+  
+  #buttonload:after {
+    content: "Acutalizar";
+  }
+  
+  .onclic {
+    margin: -30px;
+    transform: scale(0.4);
+    width:40px !important;
+    padding:40px !important;
+    border-radius: 50px !important;
+    background: #fff;   
+    box-shadow: none !important; 
+    cursor: auto !important;
+    border:8px solid #bbbbbb;
+    border-left-color: rgb(61, 148, 235);
+  -webkit-animation: rotating 2s 0.25s linear infinite !important;
+          animation: rotating 2s 0.25s linear infinite !important;
+         
+  }
+
+    .onclic:after {
+        content: "" !important;
+    }  
+
+  .validate {
+    font-size: 13px;
+    background-color: green;
+    transition: 1s ;
+  }
+
+  .validate:after {
+    content: "✓" !important;  
+    }
+  
+  @keyframes rotating {
+    from {
+      transform: scale(0.4) rotate(0deg);
+    }
+    to {
+      transform: scale(0.4) rotate(360deg);
+    }
+  }
 .tabla{
     overflow-x:auto ;
     width: 100%;
@@ -14,7 +71,7 @@ td.mat-cell.cdk-cell {
     padding-right: 15px;
 }
 
-/** Sidenav*/
+/* Sidenav*/
 .sidenav-child{
     padding:10px;
     background-color: #f3f3f3;    
@@ -43,7 +100,7 @@ td.mat-cell.cdk-cell {
     font-size: 12px;
 }
 
-/**Datos de imagen*/
+/*Datos de imagen*/
 .datosPerfil {
     display: flex;
 }
@@ -82,7 +139,7 @@ mat-form-field {
 }
 
 
-/**Comentarios*/
+/*Comentarios*/
 
 .comentario {
     display: flex;
@@ -157,13 +214,13 @@ textarea {
     padding-left: 5px;
     padding-right: 5px;
 }
-/** buton para abrir contactos*/
+/* buton para abrir contactos*/
 .bDato{
     display: flex;
     justify-content: end;
 }
 
-/**blockquote*/
+/*blockquote*/
 blockquote {
     margin: 0px 1rem 1rem;
 }
@@ -178,7 +235,7 @@ blockquote {
 }
 
 
-/**mat-sidenav**/
+/*mat-sidenav*/
 
 #sidenavContacto{
     width: 210px;

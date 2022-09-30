@@ -26,9 +26,10 @@ import { UsersmoduleService } from 'src/app/core/services/usersmodule.service';
 interface Grupo{
 value:number
 viewValue:string
+correo:string
 }
 interface datosServicio {
-  idCliente:number|undefined,
+  idCliente?:number,
   cliente : string,
   servicio : string,
   plan : string,
@@ -148,14 +149,10 @@ export class TicketEntryComponent implements OnInit {
 
 //MetodoParallamar Grupos
   async llamarCve(){
-    await this.userservice.llamarGroup("Group").toPromise().then( (result : any) =>{
-      
-      
-    for(let i=0;i<result.container.length;i++){
-      
-    
-    this.Grupos.push({value:result.container[i]["idGrupo"], viewValue:result.container[i]["nombre"] })
-    }
+    this.userservice.llamarGroup("Group").subscribe( async(result : any) =>{
+      for await(const i of result.container){
+        this.Grupos.push({value:i.idGrupo, viewValue:i.nombre, correo:i.correo })
+      }
     })
   }
 
@@ -237,11 +234,12 @@ export class TicketEntryComponent implements OnInit {
      this.rellenandoContactos()
     /**Llenando datos laterales del servicio */
      this.serviceService.selectVistaServicio(this.id,this.contador,2).subscribe((resp : responseService)=>{      
-      
+      console.log(resp.container);
+          
       console.log(resp.container);
       
       this.datosServicio = {
-        idCliente : resp.container[0].idCliente,
+       idCliente : resp.container[0].idCliente,
       cliente : resp.container[0].cliente,
       servicio : resp.container[0].servicio,
       plan : resp.container[0].plan,
@@ -320,13 +318,11 @@ export class TicketEntryComponent implements OnInit {
         }
       }      
     })
-
   }
 
   rellenandoContactos(){
     this.contactoService.llamar_Contactos_OnlyServicio(this.cveCliente!,this.contador!,2,this.id!).subscribe(async(resp:responseService)=>{
-      this.contactoLista =  resp.container      
-      
+      this.contactoLista =  resp.container        
      /**Se llena el mat-autocomplete de los contactos */ 
       this.filteredContacts =  this.myControlContacts.valueChanges.pipe(
         startWith(''),
@@ -342,7 +338,6 @@ export class TicketEntryComponent implements OnInit {
     let ping : string = ""
     this.$sub.add(this.ipService.ping(ip).subscribe((resp:any) => {
       ping = resp.container.time
-      
       try{
         array[i].ping = ping; 
         if(resp.container.status == "200"){
@@ -374,6 +369,8 @@ export class TicketEntryComponent implements OnInit {
      });
      this.$sub.add(dialogRef.afterClosed().subscribe(async (result:string)=>{       
       if(result !== ""){
+        console.log(result);
+        
         await this.llamarDatosDelServicio(result,2,true)
       }
      }
@@ -429,9 +426,8 @@ export class TicketEntryComponent implements OnInit {
 
   //Se activa cuando buscamos un identificador en el matAutocomplete
   async llamarDatosDelServicio(result :string,opc : number, buscarVentana:boolean){
-    
+
     await lastValueFrom(this.Search.searchTicketEntry(result,opc)).then( (result : responseService) =>{    
-      console.log(result.container);
       
       if(result.status !== "not there Services"){
       this.options= result.container;      
@@ -470,10 +466,18 @@ export class TicketEntryComponent implements OnInit {
   }
 
   async enviarTicket(){    
-
+    this.renderer.addClass(document.getElementById("enviarTicket"),"button--loading")
+    this.desacBtnCrear = true;
+    
+    
     if(this.formTicket.valid && this.myControl.valid){
       this.desacBtnCrear = true;
       if(this.agregarMasContacto == false){
+
+
+        let correogrupo=this.Grupos.find(element=>element.value==Number(this.formTicket.controls["cveGrupo"]))
+      
+        this.acomuladorContactos.push(correogrupo!.correo)
         this.contactsEmailTicket.correoCc  = this.acomuladorContactos
       }else{
         this.contactsEmailTicket.correoCc  = []
@@ -486,7 +490,7 @@ export class TicketEntryComponent implements OnInit {
       this.contactsEmailTicket.servicio = this.datosServicio?.servicio!
       this.contactsEmailTicket.nombreContacto = this.contactoLista[this.contactoPrincipal!].nombre
       this.contactsEmailTicket.nombreCliente = this.datosServicio?.cliente!
-      
+
     
       let form : formTicketInterface
       form = this.formTicket.value

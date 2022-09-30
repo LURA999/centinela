@@ -39,6 +39,8 @@ export class DeleteComponent implements OnInit {
       this.mensaje = "Si elimina esta razon social, los servicios relacionados se eliminaran tambien";       
         break;
       case 4:
+        this.mensaje = "Si elimina este servicio, los tickets relacionados se eliminaran tambien";       
+
         break;  
       case 5:
         break;

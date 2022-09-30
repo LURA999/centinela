@@ -45,7 +45,7 @@ export class TableTicketsComponent implements OnInit {
   mayorNumero : number = 0
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   inicio : number=0;
-  fin : number=10;
+  fin : number=5;
   comentario : boolean = true
   constructor( private dialog:NgDialogAnimationService, private rutaActiva:ActivatedRoute,
     private notificationService: NotificationService, private servicioTickets : TicketService
@@ -125,6 +125,8 @@ export class TableTicketsComponent implements OnInit {
      
     this.$sub.add( this.servicioTickets.llamarTodo(this.id,identi+" "+contador).subscribe(async (resp:any) =>{      
       this.tablaTicket = resp.container
+      console.log(resp.container);
+      
       if(resp.container.length !=0){
         while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {
           if(this.inicio < this.fin){    
@@ -144,6 +146,7 @@ export class TableTicketsComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  await this.paginator2;    
       this.dataSource.sort =  this.sort;
+      this.paginator2.length = await resp.container.length;
     }
     }))
     this.cargando = true;
@@ -153,6 +156,8 @@ export class TableTicketsComponent implements OnInit {
     this.cargando = false;             
     this.$sub.add( this.servicioTickets.llamarTodo(this.id,"").subscribe(async(resp:any) =>{      
       this.tablaTicket = resp.container      
+      console.log(resp.container);
+      
       if(resp.container.length !=0){
         while (this.inicio < this.fin + 2 && this.inicio < this.tablaTicket.length) {
           if(this.inicio < this.fin){    
@@ -173,6 +178,7 @@ export class TableTicketsComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
       this.dataSource.paginator =  await this.paginator2;    
       this.dataSource.sort =  this.sort;
+      this.paginator2.length = await resp.container.length;
     }
  
     
@@ -216,15 +222,15 @@ export class TableTicketsComponent implements OnInit {
   
   async pageEvents(event: any) {  
       if(event.previousPageIndex > event.pageIndex) {
-      this.inicio = (this.inicio-(this.inicio%10)) - 20;
+      this.inicio = (this.inicio-(this.inicio%5)) -   10;
       if(this.inicio < 0){
         this.inicio = 0;
       }
-      this.fin =  (this.fin - (this.fin%10)) - 10;
+      this.fin =  (this.fin - (this.fin%5)) - 5;
       await this.cargarInicio();
     } else {
       this.inicio = this.fin;
-      this.fin = this.fin + 10;
+      this.fin = this.fin + 5;
       await this.cargarInicio();
     }
   }
