@@ -9,8 +9,7 @@ import { DashAdminGuard } from './core/guards/dashAdmin.guard';
 
 const appRoutes: Routes = [ 
   { path: 'admin/client', canActivate:[DashAdminGuard],loadChildren: () => import('../app/pages/customers/customers.module').then(m => m.CustomersModule) },
-  { path: 'usuario',canActivate:[InicioGuard], component: LoginUsuarioComponent },
-  { path: 'admin',canActivate:[InicioGuard], component: LoginContactoComponent },
+  
   { path: 'admin/dashboard',canActivate:[DashAdminGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'usuario/dashboard',canActivate:[DashUsuarioGuard], loadChildren: () => import('../app/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'admin/red',canActivate:[DashAdminGuard], loadChildren: () => import('./pages/red/red.module').then(m => m.RedModule) },

@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ConfigService } from 'src/app/core/services/config.service';
+
 import { Title } from '@angular/platform-browser';
 import { Options } from '@popperjs/core';
 import { ApexOptions, ApexPlotOptions, ChartComponent } from "ng-apexcharts";
@@ -13,6 +15,7 @@ import {
   ApexLegend,
   ApexFill
 } from "ng-apexcharts";
+import { lastValueFrom } from 'rxjs';
 
 
 export type ChartOptions2 = {
@@ -53,10 +56,11 @@ export class DashboardHomeComponent implements OnInit {
   public chartOptions2: Partial<ChartOptions2>;
 
   
-
+  logo:any
   currentUser: any;
   contacts: any[]=[];
   constructor(
+    private configservice:ConfigService,
     private titleService: Title,
  ) {
 this.chartOptions2 ={
@@ -156,7 +160,10 @@ labels:true
     return series;
   };
   ngOnInit() {
-    this.titleService.setTitle('centinela - Inicio');
+    lastValueFrom(this.configservice.llamarEmpresa()).then( (result : any) =>{
+      this.logo=result.container[0]["logo"]
+      }); 
+    
     
   }
 }

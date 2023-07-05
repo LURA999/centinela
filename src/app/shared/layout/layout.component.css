@@ -51,6 +51,12 @@ mat-sidenav {
 
 }
 
+
+mat-sidenav-content{
+  background-color: #92a8bb;
+
+}
+
 /* Set height of wrapper to stop content from moving up & down */
 
 .progress-bar-container {
@@ -68,7 +74,7 @@ a.mat-list-item {
 }
 
 mat-toolbar {
-  background-color: #12344d !important;
+  background-color: #d49c34 !important;
   height: inherit;
 }
 
@@ -170,7 +176,7 @@ img {
 
   display: flex;
   float: right;
-
+  
 }
 
 .top {
@@ -190,6 +196,22 @@ img {
   height: 50%;
 
 }
+ 
+.dropdown{
+  padding-top: 0.7%;
+}
+
+
+  
+.menu{
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none; 
+  margin: 8px; 
+  color: white; 
+  font-size: 15px;
+  font-weight: bold;
+}
+
 
 ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible {
   border-radius: 10px;
@@ -308,7 +330,6 @@ img {
   padding: 0px;
   margin: 0px;
   width: 100%;
-  display: inline-flex;
   align-self: center;
 }
 

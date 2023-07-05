@@ -9,7 +9,7 @@
 
 /**Para cargar la pagina completa*/
 #contenedor_carga{
-  background-color: rgba(88, 88, 88, 60%);
+  background-color: rgba(27, 24, 24, 0.226);
   height: 100%;
   width:100%;
   position: fixed;
@@ -64,6 +64,8 @@ mat-card-title{
   margin-top: 10%;
   text-align: justify;
 }
+
+
 
 @keyframes cambio{
   0%{margin-left: 0;}

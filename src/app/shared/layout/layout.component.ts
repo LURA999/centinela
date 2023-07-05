@@ -12,13 +12,17 @@ import { responseService } from 'src/app/models/responseService.model';
 import { RepeteadMethods } from 'src/app/pages/RepeteadMethods';
 import { DataService } from 'src/app/core/services/data.service';
 import { DataLayoutService } from 'src/app/core/services/dataLayout.service';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
+  
     selector: 'app-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.css']
 })
 
 export class LayoutComponent implements OnInit, AfterViewInit {
+  
   dentro:boolean=false
   fuera:boolean=false
   nombre: string =""
@@ -70,6 +74,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         private Search:SearchService,
         private _renderer : Renderer2,
         private dataService : DataLayoutService
+        
       ) {
         this.notifier = notifierService;
         this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
