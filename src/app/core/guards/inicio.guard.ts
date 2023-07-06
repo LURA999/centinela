@@ -17,7 +17,7 @@ export class InicioGuard implements CanActivate {
       if(this.auth.getTipo() == 0){
         this.route.navigateByUrl('/usuario/dashboard')
       }else{
-        this.route.navigateByUrl('/admin/dashboard/dashboard-tickets')
+        this.route.navigateByUrl('/admin/dashboard/dashboard-home')
       }
       return false;
     }
