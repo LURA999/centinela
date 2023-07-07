@@ -12,6 +12,11 @@ import { NewManualComponent } from '../../manual/popup/new-manual/new-manual.com
 import { EditManualComponent } from '../../manual/popup/edit-manual/edit-manual.component';
 import { DeleteManualComponent } from '../../manual/popup/delete-manual/delete-manual.component';
 import { RepeteadMethods } from '../../RepeteadMethods';
+import JSPDF, { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
+import { log } from 'console';
+
 @Component({
   selector: 'app-productor',
   templateUrl: './productor.component.html',
@@ -19,8 +24,12 @@ import { RepeteadMethods } from '../../RepeteadMethods';
   providers: [{provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl}]
 })
 export class ProductorComponent implements OnInit {
+
+
+ 
   user:string =""
   ELEMENT_DATA : any =[]
+  ELEMENT_PRINT:any=[]
   dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   displayedColumns = ['id','nombre',"fecha","tipo",'opciones'];
   cargando : boolean = false;
@@ -45,6 +54,7 @@ fecha:string=""
   ) { }
   ngOnInit(): void {
     this.llenarTabla();
+
   }
 
   sanitizeUrl(archivo: string): SafeUrl {
@@ -137,18 +147,32 @@ async editar(id:number,nombre:string){
     }
 }
 async llenarTabla(){
+  
+  
+  
   this.cargando = false;
   this.ELEMENT_DATA = [];
   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
   await this.manualservice.llamarManual().toPromise().then( (result : any) =>{
     
+    
+    
     for (let i=0; i<result.container.length; i++){
+      
     this.ELEMENT_DATA.push(
       {id: result.container[i]["idManual"],nombre: result.container[i]["nombre"], fecha: result.container[i]["fecha"],tipo:this.documento(result.container[i]["tipo"])
-    });
+    }
+    
+    );
+  
+
   this.numeroMayor(result.container[i]["idManual"]);
   }
+
+  
     this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
+    console.log(this.ELEMENT_DATA);
+    
     
     this.dataSource.paginator =  this.paginator2;
     this.cargando = true;
@@ -167,7 +191,63 @@ hayManual(){
 applyFilter(event: Event) {
   const filterValue = (event.target as HTMLInputElement).value;
   this.dataSource.filter = filterValue.trim().toLowerCase();
+
+ this.ELEMENT_PRINT=this.dataSource.filteredData
+
+
+ 
+  
+  
 }
+
+
+imprimir() {
+  const arrayDatos= []; 
+  let i=0;
+    // Datos del array
+    if (this.ELEMENT_PRINT.length==0){
+
+    }
+
+    for (let i=0; i<this.ELEMENT_PRINT.length; i++){
+    arrayDatos.push(this.ELEMENT_PRINT["id"],['nombre'],['fecha'],['tipo'])
+   
+  }
+  
+      console.log(arrayDatos);
+      
+    const doc = new jsPDF();
+
+    
+const headers=[
+ 'Id', 'Nombre', 'RFC', 'Correo'
+];
+  
+    console.log(arrayDatos);
+    
+    
+
+    // Generar el PDF
+    (doc as any).autoTable({
+      head: [headers],
+      body: [arrayDatos] ,
+    
+
+
+
+      columnStyles: {
+        0: { columnWidth: 50 }, // Ancho de la primera columna
+        1: { columnWidth: 40 },  // Ancho de la segunda columna
+        2: { columnWidth: 40 }  // Ancho de la segunda columna
+      }
+    });
+
+    // Abrir el PDF en una nueva pestaña del navegador
+    doc.output('dataurlnewwindow');
+  }
+
+
+
 
 documento(numero:number) {
   switch(numero){
@@ -195,27 +275,7 @@ Asunto(numero:number) {
             return "VPN"
   }
 }
-async sortByUser(){
-  this.cargando = false;
-  this.ELEMENT_DATA = [];
-  this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  await this.manualservice.llamarManualbyuser(this.user).toPromise().then( (result : any) =>{
-    
-    for (let i=0; i<result.container.length; i++){
-    this.ELEMENT_DATA.push(
-      {id: result.container[i]["idManual"],nombre: result.container[i]["nombre"], fecha: result.container[i]["fecha"],archivo: result.container[i]["archivo"]
-        ,ubicacion:result.container[i]["ubicacion"],tipo:this.documento(result.container[i]["tipo"]), usuario:result.container[i]["usuario"], tamano:result.container[i]["tamano"],cveAsunto:result.container[i]["asunto"]
-    });
-  this.numeroMayor(result.container[i]["idManual"]);
-  }
-    this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
-    
-    this.dataSource.paginator =  this.paginator2;
-    this.cargando = true;
 
-  });
-    
-}
 
 }
 

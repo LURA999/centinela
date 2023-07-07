@@ -18,7 +18,8 @@ import { EditManualComponent } from '../../manual/popup/edit-manual/edit-manual.
     ProductorRoutingModule,
     CommonModule,
     SharedModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    
   ]
 })
 export class ProductorModule { }
